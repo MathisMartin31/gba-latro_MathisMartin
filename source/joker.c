@@ -13,8 +13,8 @@
 
 #include "pool.h"
 
-#define JOKER_SCORE_TEXT_Y 48
-#define HELD_CARD_SCORE_TEXT_Y 108
+#define JOKER_SCORE_TEXT_Y 6
+#define HELD_CARD_SCORE_TEXT_Y 13
 #define MAX_CARD_SCORE_STR_LEN 2
 #define NUM_JOKERS_PER_SPRITESHEET 2
 
@@ -30,6 +30,8 @@ static const unsigned short *joker_gfxPal[] =
 #include "../include/def_joker_gfx_table.h"
 #undef DEF_JOKER_GFX
 };
+
+static const Rect SCORE_GRAY_BG  = {1,  13,  1, 13 };
 
 const static u8 edition_price_lut[MAX_EDITIONS] =
 {
@@ -252,15 +254,23 @@ void joker_object_shake(JokerObject *joker_object, mm_word sound_id)
     sprite_object_shake(joker_object->sprite_object, sound_id);
 }
 
-void set_and_shift_text(char* str, int* cursor_pos_x, int* cursor_pos_y, int color_pb)
+void set_and_shift_text(char* str, short int* cursor_pos_x, short int* cursor_pos_y, int color_pb)
 {
-    tte_set_pos(*cursor_pos_x, *cursor_pos_y);
+    tte_set_pos(*cursor_pos_x * TILE_SIZE, *cursor_pos_y * TILE_SIZE);
     tte_set_special(color_pb * TTE_SPECIAL_PB_MULT_OFFSET);
     tte_write(str);
 
-    // + 1 For space
-    const int joker_score_display_offset_px = (MAX_CARD_SCORE_STR_LEN + 1) * TTE_CHAR_SIZE;
-    *cursor_pos_x += joker_score_display_offset_px;
+    unsigned long buf_len = strlen(str);
+
+    // draw colored background for score text
+    // is there a horizontal variant of "main_bg_se_copy_rect_1_tile_vert"?
+    for (int i = 0; i < buf_len; i++)
+    {
+        main_bg_se_copy_rect(SCORE_GRAY_BG, (BG_POINT){(*cursor_pos_x) + i, *cursor_pos_y});
+    }
+
+    // offset text, + 1 For space
+    *cursor_pos_x += buf_len + 1;
 }
 
 bool joker_object_score(JokerObject *joker_object, CardObject* card_object, enum JokerEvent joker_event, int *chips, int *mult, int *money, bool *retrigger)
@@ -284,18 +294,18 @@ bool joker_object_score(JokerObject *joker_object, CardObject* card_object, enum
     *retrigger = joker_effect.retrigger;
     // joker_effect.message will have been set if the Joker had anything custom to say
 
-    int cursorPosX = TILE_SIZE; // Offset of one tile to better center the text on the card
-    int cursorPosY = 0;
+    short int cursorPosX = 1; // Offset of one tile to better center the text on the card
+    short int cursorPosY = 0;
     if (joker_event == JOKER_EVENT_ON_CARD_HELD)
     {
         // display the text on top of the card instead of below the Joker for Held Cards effects
         // scored_card cannot be NULL here because of the joker event
-        cursorPosX += fx2int(card_object->sprite_object->x);
+        cursorPosX += fx2int(card_object->sprite_object->x) / TILE_SIZE;
         cursorPosY = HELD_CARD_SCORE_TEXT_Y;
     }
     else
     {
-        cursorPosX += fx2int(joker_object->sprite_object->x);
+        cursorPosX += fx2int(joker_object->sprite_object->x) / TILE_SIZE;
         cursorPosY = JOKER_SCORE_TEXT_Y;
     }
 

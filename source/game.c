@@ -534,6 +534,11 @@ static const Rect SCORE_FLAME_FRAMES_START  = {26,      21,      28,     21};
 static const BG_POINT SCORE_FLAME_CHIPS_POS = {1,       9};
 static const BG_POINT SCORE_FLAME_MULT_POS  = {5,       9};
 
+// Score background rects
+static const Rect CARD_SCORE_CLEAR_BG_RECT  = { 9,      0,       28,      0};
+static const BG_POINT CARD_SCORE_BG_POS     = { 9,      6};
+static const BG_POINT CARD_HELD_BG_POS      = { 9,      13};
+
 // Rects for TTE (in pixels)
 static const Rect HAND_SIZE_RECT            = {128,     128,    152,    160 }; // Seems to include both SELECT and PLAYING
 static const Rect HAND_SIZE_RECT_SELECT     = {128,     128,    152,    136 };
@@ -580,10 +585,10 @@ static const BG_POINT MAIN_MENU_ACE_T       = {88,      26};
 #define ITEM_SHOP_Y               71
 #define ROUND_END_REWARD_AMOUNT_X 168
 #define ROUND_END_REWARD_TEXT_X   88
-#define SCORED_CARD_TEXT_Y        48
 
 // SE sizes
 #define ROUND_END_BLACK_PANEL_INIT_BOTTOM_SE 12
+#define SCORED_CARD_TEXT_Y 6
 
 #define MAIN_MENU_BUTTONS 2
 #define MAIN_MENU_IMPLEMENTED_BUTTONS 1 // Remove this once all buttons are implemented
@@ -2278,6 +2283,7 @@ static void played_cards_update_loop(bool* discarded_card, bool* sound_played)
                         }
 
                         tte_erase_rect_wrapper(PLAYED_CARDS_SCORES_RECT);
+                        main_bg_se_copy_rect(CARD_SCORE_CLEAR_BG_RECT, CARD_SCORE_BG_POS);
 
                         // Activate Jokers for the previous scored card if any
 
@@ -2304,13 +2310,14 @@ static void played_cards_update_loop(bool* discarded_card, bool* sound_played)
 
                             if (card_object_is_selected(scored_card_object))
                             {
-                                tte_set_pos(fx2int(scored_card_object->sprite_object->x) + TILE_SIZE, SCORED_CARD_TEXT_Y); // Offset of 1 tile to keep the text on the card
-                                tte_set_special(TTE_BLUE_PB * TTE_SPECIAL_PB_MULT_OFFSET); // Set text color to blue from background memory
-
                                 // Write the score to a character buffer variable
                                 char score_buffer[INT_MAX_DIGITS + 2]; // for '+' and null terminator
                                 snprintf(score_buffer, sizeof(score_buffer), "+%d", card_get_value(scored_card_object->card));
-                                tte_write(score_buffer);
+                                // Offset of 1 tile to keep the text on the card
+                                short int cursorPosX = fx2int(scored_card_object->sprite_object->x) / 8 + 1;
+                                short int cursorPosY = SCORED_CARD_TEXT_Y;
+                                
+                                set_and_shift_text(score_buffer, &cursorPosX, &cursorPosY, TTE_BLUE_PB);
 
                                 card_object_shake(scored_card_object, SFX_CARD_SELECT);
 
@@ -2356,6 +2363,7 @@ static void played_cards_update_loop(bool* discarded_card, bool* sound_played)
                     if (i == 0 && (timer % FRAMES(30) == 0) && timer > FRAMES(40))
                     {
                         tte_erase_rect_wrapper(HELD_CARDS_SCORES_RECT);
+                        main_bg_se_copy_rect(CARD_SCORE_CLEAR_BG_RECT, CARD_HELD_BG_POS);
 
                         // Go through all held cards and see if they activate Jokers
                         for ( ; scored_card_index >= 0; scored_card_index--)
@@ -2386,6 +2394,7 @@ static void played_cards_update_loop(bool* discarded_card, bool* sound_played)
                     {
 
                         tte_erase_rect_wrapper(PLAYED_CARDS_SCORES_RECT);
+                        main_bg_se_copy_rect(CARD_SCORE_CLEAR_BG_RECT, CARD_SCORE_BG_POS);
 
                         if (check_and_score_joker_for_event(&_joker_scored_itr, NULL, JOKER_EVENT_INDEPENDENT))
                         {

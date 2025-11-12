@@ -137,4 +137,6 @@ bool joker_object_is_selected(JokerObject* joker_object);
 Sprite* joker_object_get_sprite(JokerObject* joker_object);
 int joker_get_random_rarity();
 
+void set_and_shift_text(char* str, short int* cursor_pos_x, short int* cursor_pos_y, int color_pb);
+
 #endif // JOKER_H
