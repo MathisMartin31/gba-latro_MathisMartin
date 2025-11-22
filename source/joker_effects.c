@@ -965,30 +965,29 @@ static JokerEffect seltzer_joker_effect(Joker *joker, Card *scored_card, enum Jo
     switch (joker_event)
     {
         case JOKER_EVENT_ON_JOKER_CREATED:
-            *p_hands_left_until_exp = 10; // remaining retriggered hands
+            (*p_hands_left_until_exp) = 1; // remaining retriggered hands
             break;
 
         case JOKER_EVENT_ON_HAND_PLAYED:
-            *p_last_retriggered_idx = UNDEFINED;
+            (*p_last_retriggered_idx) = UNDEFINED;
             break;
         
         case JOKER_EVENT_ON_CARD_SCORED_END:
-            // Works the same way as Dusk, but checks if it can still trigger
-            if (*p_hands_left_until_exp > 0)
+            // Works the same way as Dusk
+            // No need to check for p_hands_left_until_exp because the Joker
+            // will be destroyed the moment we hit 0
+            effect.retrigger = ((*p_last_retriggered_idx) < get_scored_card_index());
+            if (effect.retrigger)
             {
-                effect.retrigger = (*p_last_retriggered_idx < get_scored_card_index());
-                if (effect.retrigger)
-                {
-                    *p_last_retriggered_idx = get_scored_card_index();
-                    effect.message = "Again!";
-                }
-            } 
+                (*p_last_retriggered_idx) = get_scored_card_index();
+                effect.message = "Again!";
+            }
             break;
 
         case JOKER_EVENT_ON_HAND_SCORED_END:
-            if (*p_hands_left_until_exp > 0)
+            (*p_hands_left_until_exp)--;
+            if ((*p_hands_left_until_exp) > 0)
             {
-                (*p_hands_left_until_exp)--;
                 effect.message = "-1";
             }
             else

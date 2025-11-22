@@ -264,7 +264,7 @@ void set_and_shift_text(char* str, int* cursor_pos_x, int* cursor_pos_y, int col
     *cursor_pos_x += joker_score_display_offset_px;
 }
 
-bool joker_object_score(JokerObject *joker_object, CardObject* card_object, enum JokerEvent joker_event, u32 *chips, u32 *mult, int *money, bool *retrigger)
+bool joker_object_score(JokerObject *joker_object, CardObject* card_object, enum JokerEvent joker_event, u32 *chips, u32 *mult, int *money, bool *retrigger, bool *expire)
 {
     if (joker_object == NULL)
     {
@@ -289,6 +289,7 @@ bool joker_object_score(JokerObject *joker_object, CardObject* card_object, enum
     
     *money    += joker_effect.money;
     *retrigger = joker_effect.retrigger;
+    *expire    = joker_effect.expire;
     // joker_effect.message will have been set if the Joker had anything custom to say
 
     int cursorPosX = TILE_SIZE; // Offset of one tile to better center the text on the card
@@ -341,12 +342,13 @@ bool joker_object_score(JokerObject *joker_object, CardObject* card_object, enum
     {
         set_and_shift_text(joker_effect.message, &cursorPosX, &cursorPosY, TTE_WHITE_PB);
     }
-    if (joker_effect.expire)
-    {
-        // TODO make Jokers expire
-    }
 
     joker_object_shake(joker_object, sfx_id);
+
+    if (joker_effect.expire)
+    {
+        // TODO: Expire sound effect
+    }
 
     return true;
 }
