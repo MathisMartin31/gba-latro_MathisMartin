@@ -681,6 +681,13 @@ void set_seed(int seed)
     srand(rng_seed);
 }
 
+void swap_cards_in_hand(int a, int b)
+{
+    CardObject* temp = hand[a];
+    hand[a] = hand[b];
+    hand[b] = temp;
+}
+
 void sort_hand_by_suit()
 {
     for (int a = 0; a < hand_top; a++)
@@ -689,9 +696,7 @@ void sort_hand_by_suit()
         {
             if (hand[a] == NULL || (hand[b] != NULL && (hand[a]->card->suit > hand[b]->card->suit || (hand[a]->card->suit == hand[b]->card->suit && hand[a]->card->rank > hand[b]->card->rank))))
             {
-                CardObject* temp = hand[a];
-                hand[a] = hand[b];
-                hand[b] = temp;
+                swap_cards_in_hand(a, b);
             }
         }
     }
@@ -705,25 +710,14 @@ void sort_hand_by_rank()
         {
             if (hand[a] == NULL || (hand[b] != NULL && hand[a]->card->rank > hand[b]->card->rank))
             {
-                CardObject* temp = hand[a];
-                hand[a] = hand[b];
-                hand[b] = temp;
+                swap_cards_in_hand(a, b);
             }
         }
     }
 }
 
-void sort_cards()
+void sort_card_sprites()
 {
-    if (sort_by_suit)
-    {
-        sort_hand_by_suit();
-    }
-    else
-    {
-        sort_hand_by_rank();
-    }
-
     // Update the sprites in the hand by destroying them and creating new ones in the correct order
     // (This is feels like a diabolical solution but like literally how else would you do this)
     for (int i = 0; i <= hand_top; i++)
@@ -744,6 +738,20 @@ void sort_cards()
             sprite_position(card_object_get_sprite(hand[i]), fx2int(hand[i]->sprite_object->x), fx2int(hand[i]->sprite_object->y));
         }
     }
+}
+
+void sort_cards()
+{
+    if (sort_by_suit)
+    {
+        sort_hand_by_suit();
+    }
+    else
+    {
+        sort_hand_by_rank();
+    }
+
+    sort_card_sprites();
 }
 
 enum HandType hand_get_type()
@@ -1554,14 +1562,23 @@ static void game_playing_process_hand_select_input()
     {
         if (selection_y == 0)
         {
-            hand_set_focus(selection_x + 1); // The reason why this adds 1 is because the hand is drawn from right to left. There is no particular reason for this, it's just how I did it.
-
             // swap cards around if A is held down when pressing D-pad keys
             if (key_is_down(SELECT_CARD))
             {
-                // TODO swap selection_x and (selection_x+1)
-                moving_card = true;
+                if (selection_x < hand_top)
+                {
+                    swap_cards_in_hand(selection_x, selection_x + 1);
+                    moving_card = true;
+                    sort_card_sprites();
+                }
+                else
+                {
+                    hand_set_focus(selection_x - 1);
+                }
+                
             }
+
+            hand_set_focus(selection_x + 1); // The reason why this adds 1 is because the hand is drawn from right to left. There is no particular reason for this, it's just how I did it.
         }
         else
         {
@@ -1572,12 +1589,21 @@ static void game_playing_process_hand_select_input()
     {
         if (selection_y == 0)
         {
-            hand_set_focus(selection_x - 1);
             if (key_is_down(SELECT_CARD))
             {
-                // TODO swap selection_x and (selection_x-1)
-                moving_card = true;
+                if (selection_x > 0)
+                {
+                    swap_cards_in_hand(selection_x, selection_x - 1);
+                    moving_card = true;
+                    sort_card_sprites(); 
+                }
+                else
+                {
+                    hand_set_focus(selection_x + 1);
+                }
             }
+
+            hand_set_focus(selection_x - 1);
         }
         else
         {
