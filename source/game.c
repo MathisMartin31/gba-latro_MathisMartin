@@ -1548,12 +1548,20 @@ void game_start()
 static void game_playing_process_hand_select_input()
 {
     static bool discard_button_highlighted = false; // true = play button highlighted, false = discard button highlighted
+    static bool moving_card = false;
 
     if (key_hit(KEY_LEFT))
     {
         if (selection_y == 0)
         {
             hand_set_focus(selection_x + 1); // The reason why this adds 1 is because the hand is drawn from right to left. There is no particular reason for this, it's just how I did it.
+
+            // swap cards around if A is held down when pressing D-pad keys
+            if (key_is_down(SELECT_CARD))
+            {
+                // TODO swap selection_x and (selection_x+1)
+                moving_card = true;
+            }
         }
         else
         {
@@ -1565,6 +1573,11 @@ static void game_playing_process_hand_select_input()
         if (selection_y == 0)
         {
             hand_set_focus(selection_x - 1);
+            if (key_is_down(SELECT_CARD))
+            {
+                // TODO swap selection_x and (selection_x-1)
+                moving_card = true;
+            }
         }
         else
         {
@@ -1624,10 +1637,18 @@ static void game_playing_process_hand_select_input()
         memcpy16(&pal_bg_mem[PLAY_HAND_BTN_BORDER_PID], &pal_bg_mem[PLAY_HAND_BTN_PID], 1); // Play button highlight color
         memcpy16(&pal_bg_mem[DISCARD_BTN_BORDER_PID], &pal_bg_mem[DISCARD_BTN_PID], 1); // Discard button highlight color
         
-        if (key_hit(SELECT_CARD))
+        if (key_released(SELECT_CARD))
         {
-            hand_toggle_card_selection();
-            set_hand();
+            // avoid selecting the card we just swapped
+            if (moving_card)
+            {
+                moving_card = false;
+            }
+            else
+            {
+                hand_toggle_card_selection();
+                set_hand();
+            }
         }
 
         if (key_hit(DESELECT_CARDS))
