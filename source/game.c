@@ -716,17 +716,41 @@ void sort_hand_by_rank()
     }
 }
 
-void sort_card_sprites()
+void rearrange_card_sprites()
 {
     // Update the sprites in the hand by destroying them and creating new ones in the correct order
     // (This is feels like a diabolical solution but like literally how else would you do this)
     for (int i = 0; i <= hand_top; i++)
     {
-        if (hand[i] != NULL)
+        // a NULL card will only happen if we rearrange the sprites without having sorted them before
+        // Any NULL CardObject will be replaced by shifting all elements forward
+        if (hand[i] == NULL)
         {
-            // card_object_get_sprite() will not work here since we need the address
-            sprite_destroy(&(hand[i]->sprite_object->sprite));
+            int non_null_card_idx = i; // don't start at i+1 to avoid potential illegal array access
+            for ( ; non_null_card_idx <= hand_top; non_null_card_idx++)
+            {
+                if (hand[non_null_card_idx] != NULL)
+                {
+                    break;
+                }
+            }
+
+            // exit loop if there are not non NULL cards left/there are no more sprites to destroy
+            if (non_null_card_idx > hand_top)
+            {
+                break;
+            }
+
+            // if there is one, shift it and all the cards that follow
+            // and decrement i to check that card again
+            for (int j = 0; j <= hand_top - non_null_card_idx + 1; j++)
+            {
+                hand[i + j] = hand[non_null_card_idx + j];
+            }
         }
+
+        // card_object_get_sprite() will not work here since we need the address
+        sprite_destroy(&(hand[i]->sprite_object->sprite));
     }
 
     for (int i = 0; i <= hand_top; i++)
@@ -751,7 +775,7 @@ void sort_cards()
         sort_hand_by_rank();
     }
 
-    sort_card_sprites();
+    rearrange_card_sprites();
 }
 
 enum HandType hand_get_type()
@@ -1569,7 +1593,7 @@ static void game_playing_process_hand_select_input()
                 {
                     swap_cards_in_hand(selection_x, selection_x + 1);
                     moving_card = true;
-                    sort_card_sprites();
+                    rearrange_card_sprites();
                 }
                 else
                 {
@@ -1595,7 +1619,7 @@ static void game_playing_process_hand_select_input()
                 {
                     swap_cards_in_hand(selection_x, selection_x - 1);
                     moving_card = true;
-                    sort_card_sprites(); 
+                    rearrange_card_sprites(); 
                 }
                 else
                 {
@@ -1870,7 +1894,7 @@ void card_in_hand_loop_handle_discard_and_shuffling(int card_idx, FIXED* hand_x,
             {
                 discard_push(hand[card_idx]->card);
                 card_object_destroy(&hand[card_idx]);
-                sort_cards();
+                rearrange_card_sprites();
 
                 hand_top--;
                 cards_drawn++; // This technically isn't drawing cards, I'm just reusing the variable
@@ -2157,7 +2181,8 @@ static void cards_in_hand_update_loop()
                     played_push(hand[i]);
                     sprite_destroy(&hand[i]->sprite_object->sprite);
                     hand[i] = NULL;
-                    sort_cards();
+                    //sort_cards();
+                    rearrange_card_sprites();
 
                     play_sfx(SFX_CARD_DRAW, MM_BASE_PITCH_RATE + cards_drawn*PITCH_STEP_DISCARD_SFX);
 
