@@ -1576,19 +1576,40 @@ void game_start()
     game_change_state(GAME_STATE_BLIND_SELECT);
 }
 
+// When holding A, if we press an arrow key too fast, we will select the card instead of swapping it
+// This to fix inputs sometimes not registering when quickly selecting cards
+#define CARD_SWAP_TIME_THRESHOLD 5
+
 static void game_playing_process_hand_select_input()
 {
     static bool discard_button_highlighted = false; // true = play button highlighted, false = discard button highlighted
     static bool moving_card = false;
+    static uint select_down_timer = TM_ZERO;
+    static bool card_swapped_too_fast = false;
+
+    // save the timer when pressing A
+    if (key_hit(SELECT_CARD))
+    {
+        select_down_timer = timer;
+    }
 
     if (key_hit(KEY_LEFT))
     {
+        card_swapped_too_fast = (timer - select_down_timer) <= CARD_SWAP_TIME_THRESHOLD;
+
         if (selection_y == 0)
         {
             // swap cards around if A is held down when pressing D-pad keys
             if (key_is_down(SELECT_CARD))
             {
-                if (selection_x < hand_top)
+                // select the current card instead of moving it if we press the arrow key too fast
+                // and move focus to the next card as usual
+                if (card_swapped_too_fast)
+                {
+                    hand_toggle_card_selection();
+                    hand_set_focus(selection_x + 1);
+                }
+                else if (selection_x < hand_top)
                 {
                     swap_cards_in_hand(selection_x, selection_x + 1);
                     moving_card = true;
@@ -1610,11 +1631,18 @@ static void game_playing_process_hand_select_input()
     }
     else if (key_hit(KEY_RIGHT))
     {
+        card_swapped_too_fast = (timer - select_down_timer) <= CARD_SWAP_TIME_THRESHOLD;
+
         if (selection_y == 0)
         {
             if (key_is_down(SELECT_CARD))
             {
-                if (selection_x > 0)
+                if (card_swapped_too_fast)
+                {
+                    hand_toggle_card_selection();
+                    hand_set_focus(selection_x + 1);
+                }
+                else if (selection_x > 0)
                 {
                     swap_cards_in_hand(selection_x, selection_x - 1);
                     moving_card = true;
@@ -1688,9 +1716,10 @@ static void game_playing_process_hand_select_input()
         if (key_released(SELECT_CARD))
         {
             // avoid selecting the card we just swapped
-            if (moving_card)
+            if (moving_card || card_swapped_too_fast)
             {
                 moving_card = false;
+                card_swapped_too_fast = false;
             }
             else
             {
