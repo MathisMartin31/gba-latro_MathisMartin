@@ -1578,7 +1578,7 @@ void game_start()
 
 // When holding A, if we press an arrow key too fast, we will select the card instead of swapping it
 // This to fix inputs sometimes not registering when quickly selecting cards
-#define CARD_SWAP_TIME_THRESHOLD 5
+#define CARD_SWAP_TIME_THRESHOLD 10
 
 static void game_playing_process_hand_select_input()
 {
@@ -1640,7 +1640,7 @@ static void game_playing_process_hand_select_input()
                 if (card_swapped_too_fast)
                 {
                     hand_toggle_card_selection();
-                    hand_set_focus(selection_x + 1);
+                    hand_set_focus(selection_x - 1);
                 }
                 else if (selection_x > 0)
                 {
