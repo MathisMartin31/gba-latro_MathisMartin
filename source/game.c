@@ -1579,16 +1579,23 @@ void game_start()
 // When holding A, if we press an arrow key too fast, we should select the card
 // and change focus to the next one, instead of swapping them
 // This should fix inputs sometimes not registering when quickly selecting cards
-#define CARD_SWAP_TIME_THRESHOLD 10
+#define CARD_SWAP_TIME_THRESHOLD 5
+
+static void select_current_card()
+{
+    hand_toggle_card_selection();
+    set_hand();
+}
 
 static void game_playing_process_hand_select_input()
 {
     static bool discard_button_highlighted = false; // true = play button highlighted, false = discard button highlighted
     
     // card moving logic
-    static bool moving_card = false;
-    static bool card_moved_too_fast = false;
-    static uint move_timer = TM_ZERO;
+    static bool can_move_card = true;
+    static bool moving_card = false; // true if we are currently moving a card around
+    static bool card_moved_too_fast = false; // see define of CARD_SWAP_TIME_THRESHOLD
+    static uint move_timer = TM_ZERO;        // idem
 
     // Register timer when we hit A to pick a card
     // If we try to move the picked card before CARD_SWAP_TIME_THRESHOLD frames,
@@ -1606,7 +1613,7 @@ static void game_playing_process_hand_select_input()
             card_moved_too_fast = (timer - move_timer) < CARD_SWAP_TIME_THRESHOLD;
 
             // swap cards around if A is held down when pressing D-pad keys
-            if (key_is_down(SELECT_CARD) && !card_moved_too_fast)
+            if (key_is_down(SELECT_CARD) && can_move_card && !card_moved_too_fast)
             {
                 if (selection_x < hand_top)
                 {
@@ -1621,10 +1628,11 @@ static void game_playing_process_hand_select_input()
                 // select current card if we tried moving it too fast
                 if (card_moved_too_fast && !moving_card)
                 {
-                    hand_toggle_card_selection();
-                    set_hand();
+                    select_current_card();
                     // raise this flag to prevent selecting the next card when releasing A
                     moving_card = true;
+                    // and also this one so we don't drag the next card along if we don't release A
+                    can_move_card = false;
                 }
                 // The reason why this adds 1 is because the hand is drawn from right to left.
                 // There is no particular reason for this, it's just how I did it.
@@ -1642,7 +1650,7 @@ static void game_playing_process_hand_select_input()
         {
             card_moved_too_fast = (timer - move_timer) < CARD_SWAP_TIME_THRESHOLD;
 
-            if (key_is_down(SELECT_CARD) && !card_moved_too_fast)
+            if (key_is_down(SELECT_CARD) && can_move_card && !card_moved_too_fast)
             {
                 if (selection_x > 0)
                 {
@@ -1656,9 +1664,9 @@ static void game_playing_process_hand_select_input()
             {
                 if (card_moved_too_fast && !moving_card)
                 {
-                    hand_toggle_card_selection();
-                    set_hand();
+                    select_current_card();
                     moving_card = true;
+                    can_move_card = false;
                 }
 
                 hand_set_focus(selection_x - 1);
@@ -1727,10 +1735,10 @@ static void game_playing_process_hand_select_input()
         {
             if (!moving_card)
             {
-                hand_toggle_card_selection();
-                set_hand();
+                select_current_card();
             }
             moving_card = false;
+            can_move_card = true;
             move_timer = TM_ZERO;
         }
 
