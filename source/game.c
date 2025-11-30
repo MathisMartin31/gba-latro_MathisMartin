@@ -3262,7 +3262,10 @@ static void jokers_sel_row_on_selection_changed(SelectionGrid *selection_grid,
             {
                 sprite_object_set_focus(joker_object->sprite_object, true);
             }
-            print_price_under_sprite_object(joker_object->sprite_object, joker_get_sell_value(joker_object->joker));
+            if (!key_is_down(SELECT_CARD))
+            {
+                print_price_under_sprite_object(joker_object->sprite_object, joker_get_sell_value(joker_object->joker));
+            }
         }
     }
 
