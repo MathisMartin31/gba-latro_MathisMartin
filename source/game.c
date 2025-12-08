@@ -1035,6 +1035,8 @@ void display_mult(void)
     check_flaming_score();
 }
 
+// idx_a and idx_b are assumed to be valid indexes within the hand array
+// no checks will be performed here for performance's sake
 static void swap_cards_in_hand(int idx_a, int idx_b)
 {
     CardObject* temp = hand[idx_a];
@@ -1042,7 +1044,7 @@ static void swap_cards_in_hand(int idx_a, int idx_b)
     hand[idx_b] = temp;
 }
 
-static void sort_hand_by_suit()
+static void sort_hand_by_suit(void)
 {
     for (int idx_a = 0; idx_a < hand_top; idx_a++)
     {
@@ -1059,7 +1061,7 @@ static void sort_hand_by_suit()
     }
 }
 
-static void sort_hand_by_rank()
+static void sort_hand_by_rank(void)
 {
     for (int idx_a = 0; idx_a < hand_top; idx_a++)
     {
@@ -1074,7 +1076,7 @@ static void sort_hand_by_rank()
     }
 }
 
-static void rearrange_card_sprites()
+static void rearrange_card_sprites(void)
 {
     // Update the sprites in the hand by destroying them and creating new ones in the correct order
     // (This feels like a diabolical solution but like literally how else would you do this)
@@ -1126,7 +1128,7 @@ static void rearrange_card_sprites()
     }
 }
 
-void sort_cards()
+static void sort_cards(void)
 {
     if (sort_by_suit)
     {
