@@ -125,6 +125,13 @@
 
 #define NEXT_ROUND_BTN_SEL_X 0
 
+#define GAME_PLAYING_HAND_SEL_Y         0
+#define GAME_PLAYING_BUTTONS_SEL_Y      1
+#define GAME_PLAYING_PLAY_BTN_SEL_X     0
+#define GAME_PLAYING_DISCARD_BTN_SEL_X  1
+#define GAME_PLAYING_NUM_SEL_ROWS       2
+#define GAME_PLAYING_NUM_BOTTOM_BTNS    2
+
 #define REROLL_BTN_FRAME_PAL_IDX 7
 #define REROLL_BTN_PAL_IDX       3
 
@@ -1944,7 +1951,7 @@ static bool can_move_card = true;
 static bool moving_card = false; // true if we are currently moving a card around
 static uint selection_hit_timer = TM_ZERO;
 
-static inline void process_user_card_movement(enum ScreenHorzDir move_dir)
+static inline void apply_card_movement_input(enum ScreenHorzDir move_dir)
 {
     // When holding A, if we press an arrow key too fast, we should select the card
     // and change focus to the next one, instead of swapping them
@@ -1988,6 +1995,51 @@ static inline void process_user_card_movement(enum ScreenHorzDir move_dir)
     }
 }
 
+static int game_playing_bottom_row_highlight_btn_idx = UNDEFINED;
+
+static inline void game_playing_process_vertical_movement(enum ScreenVertDir dir)
+{
+    int new_selection_y = selection_y + dir;
+    if (new_selection_y >= GAME_PLAYING_NUM_SEL_ROWS || new_selection_y < 0)
+    {
+        return;
+    }
+
+    int previous_row_size = 0;
+    int new_row_size = 0;
+
+    if (selection_y == GAME_PLAYING_HAND_SEL_Y)
+    {
+        previous_row_size = hand_get_size();
+    }
+
+    if (new_selection_y == GAME_PLAYING_HAND_SEL_Y)
+    {
+        previous_row_size = GAME_PLAYING_NUM_BOTTOM_BTNS;
+        selection_x = selection_x * hand_get_size() / previous_row_size;
+        hand_set_focus(selection_x);
+    }
+    else if (new_selection_y == GAME_PLAYING_BUTTONS_SEL_Y)
+    {
+        
+    }
+}
+
+static inline void game_playing_process_card_movement_input(void)
+{
+    int horz_tri_input = 0;
+    int vert_tri_input = 0;
+
+    if ((horz_tri_input = bit_tribool(key_hit(KEY_ANY), KI_RIGHT, KI_LEFT)) != 0)
+    {
+        apply_card_movement_input(horz_tri_input);
+    }
+    else if (vert_tri_input = bit_tribool(key_hit(KEY_ANY), KI_DOWN, KI_UP))
+    {
+        game_playing_process_vertical_movement(vert_tri_input);
+    }
+}
+
 static inline void game_playing_process_hand_select_input(void)
 {
     // true = play button highlighted, false = discard button highlighted
@@ -2005,7 +2057,7 @@ static inline void game_playing_process_hand_select_input(void)
     {
         if (selection_y == 0)
         {
-            process_user_card_movement(SCREEN_LEFT);
+            apply_card_movement_input(SCREEN_LEFT);
         }
         else
         {
@@ -2016,7 +2068,7 @@ static inline void game_playing_process_hand_select_input(void)
     {
         if (selection_y == 0)
         {
-            process_user_card_movement(SCREEN_RIGHT);
+            apply_card_movement_input(SCREEN_RIGHT);
         }
         else
         {
