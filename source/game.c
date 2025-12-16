@@ -1951,7 +1951,7 @@ static bool can_move_card = true;
 static bool moving_card = false; // true if we are currently moving a card around
 static uint selection_hit_timer = TM_ZERO;
 
-static inline void apply_card_movement_input(enum ScreenHorzDir move_dir)
+static inline void game_playing_apply_card_movement_input(enum ScreenHorzDir move_dir)
 {
     // When holding A, if we press an arrow key too fast, we should select the card
     // and change focus to the next one, instead of swapping them
@@ -2001,7 +2001,7 @@ static inline void game_playing_process_card_sel_input(void)
 
     if (horz_tri_input != 0)
     {
-        apply_card_movement_input(horz_tri_input);
+        game_playing_apply_card_movement_input(horz_tri_input);
     }
 }
 
@@ -2078,18 +2078,33 @@ static inline void game_playing_process_hand_select_input(void)
         selection_hit_timer = timer;
     }
 
-    if (selection_y == GAME_PLAYING_HAND_SEL_Y)
+    if (key_hit(KEY_LEFT))
     {
-        game_playing_process_card_sel_input();
+        if (selection_y == GAME_PLAYING_HAND_SEL_Y)
+        {
+            game_playing_apply_card_movement_input(SCREEN_LEFT);
+        }
+        else if (selection_y == GAME_PLAYING_BUTTONS_SEL_Y)
+        {
+            game_playing_process_button_sel_input();
+        }
     } 
-    else if (selection_y == GAME_PLAYING_BUTTONS_SEL_Y)
+    else if (key_hit(KEY_RIGHT))
     {
-        game_playing_process_button_sel_input();
+        if (selection_y == GAME_PLAYING_HAND_SEL_Y)
+        {
+            game_playing_apply_card_movement_input(SCREEN_RIGHT);
+        }
+        else if (selection_y == GAME_PLAYING_BUTTONS_SEL_Y)
+        {
+            game_playing_process_button_sel_input();
+        }
     }
     else if (key_hit(KEY_UP) && selection_y == GAME_PLAYING_BUTTONS_SEL_Y)
     {
         selection_y = GAME_PLAYING_HAND_SEL_Y;
         selection_x *= hand_get_size() / GAME_PLAYING_NUM_BOTTOM_BTNS;
+        game_playing_process_button_sel_input();
     }
     else if (key_hit(KEY_DOWN) && selection_y == GAME_PLAYING_HAND_SEL_Y)
     {
@@ -2097,6 +2112,7 @@ static inline void game_playing_process_hand_select_input(void)
 
         // Using division and not multiplication here to avoid integer rounding to 0
         selection_x /= hand_get_size() / GAME_PLAYING_NUM_BOTTOM_BTNS;
+        game_playing_process_button_sel_input();
     }
     else if (selection_y == GAME_PLAYING_BUTTONS_SEL_Y)
     {
