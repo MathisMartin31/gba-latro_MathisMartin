@@ -2007,13 +2007,13 @@ static inline void game_playing_highlight_discard_btn(void)
     memset16(&pal_bg_mem[DISCARD_BTN_BORDER_PID], HIGHLIGHT_COLOR, 1);
 }
 
-static inline void game_playing_unhighlight_buttons()
+static inline void game_playing_unhighlight_buttons(void)
 {
     memcpy16(&pal_bg_mem[PLAY_HAND_BTN_BORDER_PID], &pal_bg_mem[PLAY_HAND_BTN_PID], 1);
     memcpy16(&pal_bg_mem[DISCARD_BTN_BORDER_PID], &pal_bg_mem[DISCARD_BTN_PID], 1);
 }
 
-static inline void game_playing_execute_hand_discard()
+static inline void game_playing_execute_hand_discard(void)
 {
     hand_state = HAND_DISCARD;
     selection_x = 0;
@@ -2029,7 +2029,7 @@ static inline void game_playing_execute_hand_discard()
     );
 }
 
-static inline void game_playing_execute_hand_play()
+static inline void game_playing_execute_hand_play(void)
 {
     hand_state = HAND_PLAY;
     selection_x = 0;
