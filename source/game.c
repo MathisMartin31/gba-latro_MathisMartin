@@ -1995,36 +1995,6 @@ static inline void apply_card_movement_input(enum ScreenHorzDir move_dir)
     }
 }
 
-static int game_playing_bottom_row_highlight_btn_idx = UNDEFINED;
-
-static inline void game_playing_process_vertical_movement(enum ScreenVertDir dir)
-{
-    int new_selection_y = selection_y + dir;
-    if (new_selection_y >= GAME_PLAYING_NUM_SEL_ROWS || new_selection_y < 0)
-    {
-        return;
-    }
-
-    int previous_row_size = 0;
-    int new_row_size = 0;
-
-    if (selection_y == GAME_PLAYING_HAND_SEL_Y)
-    {
-        previous_row_size = hand_get_size();
-    }
-
-    if (new_selection_y == GAME_PLAYING_HAND_SEL_Y)
-    {
-        previous_row_size = GAME_PLAYING_NUM_BOTTOM_BTNS;
-        selection_x = selection_x * hand_get_size() / previous_row_size;
-        hand_set_focus(selection_x);
-    }
-    else if (new_selection_y == GAME_PLAYING_BUTTONS_SEL_Y)
-    {
-        
-    }
-}
-
 static inline void game_playing_process_card_movement_input(void)
 {
     int horz_tri_input = 0;
@@ -2033,10 +2003,6 @@ static inline void game_playing_process_card_movement_input(void)
     if ((horz_tri_input = bit_tribool(key_hit(KEY_ANY), KI_RIGHT, KI_LEFT)) != 0)
     {
         apply_card_movement_input(horz_tri_input);
-    }
-    else if (vert_tri_input = bit_tribool(key_hit(KEY_ANY), KI_DOWN, KI_UP))
-    {
-        game_playing_process_vertical_movement(vert_tri_input);
     }
 }
 
