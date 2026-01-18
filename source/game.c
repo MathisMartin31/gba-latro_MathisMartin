@@ -1341,12 +1341,6 @@ static ContainedHandTypes compute_contained_hand_types(void)
         }
     }
 
-    tte_printf(
-        "#{P:%d,%d; cx:0x%X000}%u",
-        0, 0, TTE_WHITE_PB,
-        hand_types.value
-    );
-
     return hand_types;
 }
 
