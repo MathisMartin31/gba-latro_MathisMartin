@@ -496,10 +496,10 @@ static const HandValues hand_base_values[] = {
     {.chips = 10,  .mult = 2,  .display_name = "PAIR"   }, // PAIR
     {.chips = 20,  .mult = 2,  .display_name = "2 PAIR" }, // TWO_PAIR
     {.chips = 30,  .mult = 3,  .display_name = "3 OAK"  }, // THREE_OF_A_KIND
-    {.chips = 60,  .mult = 7,  .display_name = "4 OAK"  }, // FOUR_OF_A_KIND
     {.chips = 30,  .mult = 4,  .display_name = "STRT"   }, // STRAIGHT
     {.chips = 35,  .mult = 4,  .display_name = "FLUSH"  }, // FLUSH
     {.chips = 40,  .mult = 4,  .display_name = "FULL H" }, // FULL_HOUSE
+    {.chips = 60,  .mult = 7,  .display_name = "4 OAK"  }, // FOUR_OF_A_KIND
     {.chips = 100, .mult = 8,  .display_name = "STRT F" }, // STRAIGHT_FLUSH
     {.chips = 100, .mult = 8,  .display_name = "ROYAL F"}, // ROYAL_FLUSH
     {.chips = 120, .mult = 12, .display_name = "5 OAK"  }, // FIVE_OF_A_KIND
@@ -1122,11 +1122,6 @@ static inline void display_ante(int value)
     );
 }
 
-ContainedHandTypes* get_contained_hands(void)
-{
-    return &_contained_hands;
-}
-
 // idx_a and idx_b are assumed to be valid indexes within the hand array
 // no checks will be performed here for performance's sake
 static inline void swap_cards_in_hand(int idx_a, int idx_b)
@@ -1251,21 +1246,17 @@ static void sort_cards(void)
     reorder_card_sprites_layers();
 }
 
-void hand_get_type(void)
+static ContainedHandTypes compute_contained_hand_types(void)
 {
-    // resetting all hand info
-    hand_type = NONE;
-    memset16(&_contained_hands, 0, 1);
+    ContainedHandTypes hand_types = {0};
 
     // Idk if this is how Balatro does it but this is how I'm doing it
     if (hand_selections == 0 || hand_state == HAND_DISCARD)
     {
-        hand_type = NONE;
-        return;
+        return hand_types;
     }
 
-    hand_type = HIGH_CARD;
-    _contained_hands.HIGH_CARD = 1;
+    hand_types.HIGH_CARD = 1;
 
     u8 suits[NUM_SUITS];
     u8 ranks[NUM_RANKS];
@@ -1277,90 +1268,193 @@ void hand_get_type(void)
     // Pair and 2 Pair
     if (n_of_a_kind >= 2)
     {
-        hand_type = PAIR;
-        _contained_hands.PAIR = 1;
+        hand_types.PAIR = 1;
 
         if (hand_contains_two_pair(ranks))
         {
-            hand_type = TWO_PAIR;
-            _contained_hands.TWO_PAIR = 1;
+            hand_types.TWO_PAIR = 1;
         }
     }
 
     // 3 OAK
     if (n_of_a_kind >= 3)
     {
-        hand_type = THREE_OF_A_KIND;
-        _contained_hands.THREE_OF_A_KIND = 1;
+        hand_types.THREE_OF_A_KIND = 1;
     }
 
     // Straight
     if (hand_contains_straight(ranks))
     {
-        hand_type = STRAIGHT;
-        _contained_hands.STRAIGHT = 1;
+        hand_types.STRAIGHT = 1;
     }
 
     // Flush
     if (hand_contains_flush(suits))
     {
-        hand_type = FLUSH;
-        _contained_hands.FLUSH = 1;
+        hand_types.FLUSH = 1;
     }
 
     // Full House
     if (n_of_a_kind >= 3 && hand_contains_full_house(ranks))
     {
-        hand_type = FULL_HOUSE;
-        _contained_hands.FULL_HOUSE = 1;
+        hand_types.FULL_HOUSE = 1;
     }
 
     // 4 OAK
     if (n_of_a_kind >= 4)
     {
-        hand_type = FOUR_OF_A_KIND;
-        _contained_hands.FOUR_OF_A_KIND = 1;
+        hand_types.FOUR_OF_A_KIND = 1;
     }
 
     // Straight Flush
-    if (_contained_hands.STRAIGHT && _contained_hands.FLUSH)
+    if (hand_types.STRAIGHT && hand_types.FLUSH)
     {
-        hand_type = STRAIGHT_FLUSH;
-        _contained_hands.STRAIGHT_FLUSH = 1;
+        hand_types.STRAIGHT_FLUSH = 1;
     }
 
     // Royal Flush
-    if (_contained_hands.STRAIGHT_FLUSH)
+    if (hand_types.STRAIGHT_FLUSH)
     {
         if (ranks[TEN] && ranks[JACK] && ranks[QUEEN] && ranks[KING] && ranks[ACE])
         {
-            hand_type = ROYAL_FLUSH;
-            _contained_hands.ROYAL_FLUSH = 1;
+            hand_types.ROYAL_FLUSH = 1;
         }
     }
 
     // 5 OAK
     if (n_of_a_kind >= 5)
     {
-        hand_type = FIVE_OF_A_KIND;
-        _contained_hands.FIVE_OF_A_KIND = 1;
+        hand_types.FIVE_OF_A_KIND = 1;
     }
 
     // Flush House and Five
-    if (_contained_hands.FLUSH)
+    if (hand_types.FLUSH)
     {
-        if (_contained_hands.FULL_HOUSE)
+        if (hand_types.FULL_HOUSE)
         {
-            hand_type = FLUSH_HOUSE;
-            _contained_hands.FLUSH_HOUSE = 1;
+            hand_types.FLUSH_HOUSE = 1;
         }
 
-        if (_contained_hands.FIVE_OF_A_KIND)
+        if (hand_types.FIVE_OF_A_KIND)
         {
-            hand_type = FLUSH_FIVE;
-            _contained_hands.FLUSH_FIVE = 1;
+            hand_types.FLUSH_FIVE = 1;
         }
     }
+
+    tte_printf(
+        "#{P:%d,%d; cx:0x%X000}%u",
+        0, 0, TTE_WHITE_PB,
+        hand_types.value
+    );
+
+    return hand_types;
+}
+
+ContainedHandTypes* get_contained_hands(void)
+{
+    return &_contained_hands;
+}
+
+enum HandType compute_hand_type(struct ContainedHandTypes contained_types)
+{
+    // do a binary search by hand to try and be efficient instead of iterating naively
+    if (contained_types.value >= 64)
+    {
+        if (contained_types.value >= 512)
+        {
+            if (contained_types.value >= 2048)
+            {
+                if (contained_types.value >= 4096)
+                {
+                    return FLUSH_FIVE;
+                }
+                else
+                {
+                    return FLUSH_HOUSE;
+                }
+            }
+            else
+            {
+                if (contained_types.value >= 1024)
+                {
+                    return FIVE_OF_A_KIND;
+                }
+                else
+                {
+                    return ROYAL_FLUSH;
+                }
+            }
+        }
+        else
+        {
+            if (contained_types.value >= 128)
+            {
+                if (contained_types.value >= 256)
+                {
+                    return STRAIGHT_FLUSH;
+                }
+                else
+                {
+                    return FOUR_OF_A_KIND;
+                }
+            }
+            else
+            {
+                return FULL_HOUSE;
+            }
+        }
+    }
+    else
+    {
+        if (contained_types.value >= 4)
+        {
+            if (contained_types.value >= 16)
+            {
+                if (contained_types.value >= 32)
+                {
+                    return FLUSH;
+                }
+                else
+                {
+                    return STRAIGHT;
+                }
+            }
+            else
+            {
+                if (contained_types.value >= 8)
+                {
+                    return THREE_OF_A_KIND;
+                }
+                else
+                {
+                    return TWO_PAIR;
+                }
+            }
+        }
+        else
+        {
+            if (contained_types.value >= 1)
+            {
+                if (contained_types.value >= 2)
+                {
+                    return PAIR;
+                }
+                else
+                {
+                    return HIGH_CARD;
+                }
+            }
+            else
+            {
+                return NONE;
+            }
+        }
+    }
+}
+
+enum HandType* get_hand_type(void)
+{
+    return &hand_type;
 }
 
 // Returns true if the card is *considered* a face card
@@ -1821,7 +1915,8 @@ static void print_hand_type(const char* hand_type_str)
 static void set_hand(void)
 {
     tte_erase_rect_wrapper(HAND_TYPE_RECT);
-    hand_get_type();
+    _contained_hands = compute_contained_hand_types();
+    hand_type = compute_hand_type(_contained_hands);
 
     HandValues hand = hand_base_values[hand_type];
 

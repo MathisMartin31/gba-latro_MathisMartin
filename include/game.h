@@ -84,10 +84,10 @@ enum HandType
     PAIR,
     TWO_PAIR,
     THREE_OF_A_KIND,
-    FOUR_OF_A_KIND,
     STRAIGHT,
     FLUSH,
     FULL_HOUSE,
+    FOUR_OF_A_KIND,
     STRAIGHT_FLUSH,
     ROYAL_FLUSH,
     FIVE_OF_A_KIND,
@@ -95,24 +95,34 @@ enum HandType
     FLUSH_FIVE
 };
 
+// clang-format off
 // Store all contained hands to optimize "whole hand condition" Jokers
 typedef struct ContainedHandTypes
 {
-    u16 HIGH_CARD : 1;
-    u16 PAIR : 1;
-    u16 TWO_PAIR : 1;
-    u16 THREE_OF_A_KIND : 1;
-    u16 FOUR_OF_A_KIND : 1;
-    u16 STRAIGHT : 1;
-    u16 FLUSH : 1;
-    u16 FULL_HOUSE : 1;
-    u16 STRAIGHT_FLUSH : 1;
-    u16 ROYAL_FLUSH : 1;
-    u16 FIVE_OF_A_KIND : 1;
-    u16 FLUSH_HOUSE : 1;
-    u16 FLUSH_FIVE : 1;
-    u16 : 3;
+    union
+    {
+        struct
+        {
+            //  NONE                 //    0
+            u16 HIGH_CARD : 1;       //    1
+            u16 PAIR : 1;            //    2
+            u16 TWO_PAIR : 1;        //    4
+            u16 THREE_OF_A_KIND : 1; //    8
+            u16 STRAIGHT : 1;        //   16
+            u16 FLUSH : 1;           //   32
+            u16 FULL_HOUSE : 1;      //   64
+            u16 FOUR_OF_A_KIND : 1;  //  128
+            u16 STRAIGHT_FLUSH : 1;  //  256
+            u16 ROYAL_FLUSH : 1;     //  512
+            u16 FIVE_OF_A_KIND : 1;  // 1024
+            u16 FLUSH_HOUSE : 1;     // 2048
+            u16 FLUSH_FIVE : 1;      // 4096
+            u16 : 3;
+        };
+        u16 value;
+    };
 } ContainedHandTypes;
+// clang-format on
 
 typedef struct
 {
@@ -139,6 +149,7 @@ List* get_jokers_list(void);
 List* get_expired_jokers_list(void);
 
 ContainedHandTypes* get_contained_hands(void);
+enum HandType* get_hand_type(void);
 
 int get_deck_top(void);
 int get_num_discards_remaining(void);
