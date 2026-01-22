@@ -2025,7 +2025,8 @@ static bool game_playing_hand_row_on_selection_changed(
     int next_card_idx = UNDEFINED;
 
     // Do not use FRAMES(x) here as we are counting real frames ignoring game speed
-    card_moved_too_fast = (selection_hit_timer != UNDEFINED) && (timer - selection_hit_timer) < card_swap_time_threshold;
+    card_moved_too_fast = (selection_hit_timer != UNDEFINED) &&
+                          (timer - selection_hit_timer) < card_swap_time_threshold;
 
     if (prev_selection->y == GAME_PLAYING_HAND_SEL_Y)
     {
