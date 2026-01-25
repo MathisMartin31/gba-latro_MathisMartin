@@ -419,7 +419,7 @@ static uint rng_seed = 0;
 
 typedef void (*SubStateActionFn)(void);
 
-static uint timer = 0; // This might already exist in libtonc but idk so i'm just making my own
+static int timer = 0; // This might already exist in libtonc but idk so i'm just making my own
 // BY DEFAULT IS SET TO 1, but if changed to 2 or more, should speed up all (or most) of the game
 // aspects that should be sped up by speed, as in the original game.
 static int game_speed = 1;
@@ -2012,7 +2012,7 @@ static bool card_selected_instead_of_moved = false;
 // and change focus to the next one, instead of swapping them
 // This should fix inputs sometimes not registering when quickly selecting cards
 static const int card_swap_time_threshold = 6;
-static uint selection_hit_timer = UNDEFINED;
+static int selection_hit_timer = UNDEFINED;
 
 static bool game_playing_hand_row_on_selection_changed(
     SelectionGrid* selection_grid,
