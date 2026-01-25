@@ -3422,7 +3422,7 @@ static inline void game_playing_ui_text_update(void)
 
         // Deck size/max size
         tte_printf(
-            "#{P:%d,%d; cx:0x%X000}%d/%d",
+            "#{P:%d,%d; cx:0x%X000}%2d/%2d",
             DECK_SIZE_RECT.left,
             DECK_SIZE_RECT.top,
             TTE_WHITE_PB,
