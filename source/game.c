@@ -3421,6 +3421,8 @@ static inline void game_playing_ui_text_update(void)
         }
 
         // Deck size/max size
+        // TODO: the text will overflow if deck max size exceeds 99,
+        // we will need a fix at some point for this
         tte_erase_rect_wrapper(DECK_SIZE_RECT);
         tte_printf(
             "#{P:%d,%d; cx:0x%X000}%d/%d",
