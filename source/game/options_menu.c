@@ -148,7 +148,6 @@ static void disable_all_outlines_except_self(enum OptionButtons highlighted_btn)
 
 void game_options_menu_change_background(void)
 {
-    toggle_windows(false, false);
     tte_erase_screen();
 
     GRIT_CPY(pal_bg_mem, background_options_menu_gfxPal);
@@ -192,7 +191,8 @@ void game_options_menu_change_background(void)
 
 void game_options_menu_on_init()
 {
-
+    selection_y = 0;
+    change_background(BG_OPTIONS_MENU);
 }
 
 void game_options_menu_on_update()
@@ -318,5 +318,5 @@ void game_options_menu_on_update()
 
 void game_options_menu_on_exit()
 {
-
+    tte_erase_screen();
 }

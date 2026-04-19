@@ -49,6 +49,7 @@ void game_main_menu_change_background(void)
 
     // Disable the button highlight colors
     memcpy16(&pal_bg_mem[PLAY_BUTTON_OUTLINE_PID], &pal_bg_mem[PLAY_BUTTON_MAIN_COLOR_PID], 1);
+    memcpy16(&pal_bg_mem[OPTIONS_BUTTON_OUTLINE_PID], &pal_bg_mem[OPTIONS_BUTTON_MAIN_COLOR_PID], 1);
 }
 
 void game_main_menu_on_init()
@@ -135,8 +136,6 @@ void game_main_menu_on_update()
             );
             if (key_hit(SELECT_CARD))
             {
-                // TODO : implement options menu
-                change_background(BG_OPTIONS_MENU);
                 game_change_state(GAME_STATE_OPTIONS_MENU);
             }
             break;
