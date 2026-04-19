@@ -1,0 +1,37 @@
+/**
+ * @file options_menu.h
+ *
+ * @brief Common functions to render UI elements.
+ */
+#ifndef GAME_OPTIONS_MENU_H
+#define GAME_OPTIONS_MENU_H
+
+#include "game_variables.h"
+
+/**
+ * @brief Change the options menu background
+ */
+void game_options_menu_change_background(void);
+
+/**
+ * @brief Options menu state initialization
+ *
+ * @param vars passed @ref GameVariables struct
+ */
+void game_options_menu_on_init(GameVariables* vars);
+
+/**
+ * @brief Options menu state update
+ *
+ * @param vars passed @ref GameVariables struct
+ */
+void game_options_menu_on_update(GameVariables* vars);
+
+/**
+ * @brief Options menu cleanup (called when going back to main menu)
+ *
+ * @param vars passed @ref GameVariables struct
+ */
+void game_options_menu_on_exit(GameVariables* vars);
+
+#endif // GAME_OPTIONS_MENU_H
