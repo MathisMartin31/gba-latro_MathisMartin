@@ -17,11 +17,16 @@
 #include <tonc_math.h>
 #include <tonc_memdef.h>
 
-static const u32 PLAY_BUTTON_OUTLINE_PID = 2;
-static const u32 PLAY_BUTTON_MAIN_COLOR_PID = 5;
+#define PLAY_BUTTON_MAIN_COLOR_PID    5
+#define PLAY_BUTTON_OUTLINE_PID       6
+#define OPTIONS_BUTTON_MAIN_COLOR_PID 7
+#define OPTIONS_BUTTON_OUTLINE_PID    1
 
-static const u32 IMPLEMENTED_BUTTONS = 1; // Remove this once all buttons are implemented
-static const u32 PLAY_BTN_IDX = 0;
+enum MainButtons {
+    PLAY_BTN_IDX,
+    OPTIONS_BTN_IDX,
+    MAIN_MENU_NB_BTN
+};
 
 // Pixel sizes
 #define MAIN_MENU_ACE_T_X 88
@@ -84,25 +89,61 @@ void game_main_menu_on_update()
     }
     else if (key_hit(KEY_RIGHT))
     {
-        if (selection_x < IMPLEMENTED_BUTTONS - 1)
+        if (selection_x < MAIN_MENU_NB_BTN - 1)
         {
             selection_x++;
         }
     }
 
-    if (selection_x == PLAY_BTN_IDX)
+    switch (selection_x)
     {
-        memset16(&pal_bg_mem[PLAY_BUTTON_OUTLINE_PID], BTN_HIGHLIGHT_COLOR, 1);
-
-        if (key_hit(SELECT_CARD))
+        case PLAY_BTN_IDX:
         {
-            play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
-            game_change_state(GAME_STATE_GAME_START);
+            // Disable Option button
+            memcpy16(
+                &pal_bg_mem[OPTIONS_BUTTON_OUTLINE_PID],
+                &pal_bg_mem[OPTIONS_BUTTON_MAIN_COLOR_PID],
+                1
+            );
+            // Highlight Play button
+            memset16(
+                &pal_bg_mem[PLAY_BUTTON_OUTLINE_PID],
+                BTN_HIGHLIGHT_COLOR,
+                1
+            );
+            if (key_hit(SELECT_CARD))
+            {
+                play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
+                game_start();
+            }
+            break;
         }
-    }
-    else
-    {
-        memcpy16(&pal_bg_mem[PLAY_BUTTON_OUTLINE_PID], &pal_bg_mem[PLAY_BUTTON_MAIN_COLOR_PID], 1);
+
+        case OPTIONS_BTN_IDX:
+        {
+            // Disable Play button
+            memcpy16(
+                &pal_bg_mem[PLAY_BUTTON_OUTLINE_PID],
+                &pal_bg_mem[PLAY_BUTTON_MAIN_COLOR_PID],
+                1
+            );
+            // Highlight Option button
+            memset16(
+                &pal_bg_mem[OPTIONS_BUTTON_OUTLINE_PID],
+                BTN_HIGHLIGHT_COLOR,
+                1
+            );
+            if (key_hit(SELECT_CARD))
+            {
+                // TODO : implement options menu
+                change_background(BG_OPTIONS_MENU);
+                game_change_state(GAME_STATE_OPTIONS_MENU);
+            }
+            break;
+        }
+
+        default:
+            break;
     }
 }
 

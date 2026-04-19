@@ -15,23 +15,17 @@ void game_options_menu_change_background(void);
 
 /**
  * @brief Options menu state initialization
- *
- * @param vars passed @ref GameVariables struct
  */
-void game_options_menu_on_init(GameVariables* vars);
+void game_options_menu_on_init(void);
 
 /**
  * @brief Options menu state update
- *
- * @param vars passed @ref GameVariables struct
  */
-void game_options_menu_on_update(GameVariables* vars);
+void game_options_menu_on_update(void);
 
 /**
  * @brief Options menu cleanup (called when going back to main menu)
- *
- * @param vars passed @ref GameVariables struct
  */
-void game_options_menu_on_exit(GameVariables* vars);
+void game_options_menu_on_exit(void);
 
 #endif // GAME_OPTIONS_MENU_H
