@@ -64,7 +64,6 @@ void game_main_menu_on_init()
     main_menu_ace->sprite_object->ty = int2fx(MAIN_MENU_ACE_T_Y);
     main_menu_ace->sprite_object->y = main_menu_ace->sprite_object->ty;
     main_menu_ace->sprite_object->tscale = float2fx(0.8f);
-    selection_x = 0;
 }
 
 void game_main_menu_on_update()
