@@ -94,10 +94,22 @@ static const BG_POINT OPTIONS_SOUND_VALUE_TEXT_POS   = {160, 104};
 static const BG_POINT OPTIONS_BACK_TEXT_POS          = {104, 136};
 // clang-format on
 
-static int music_volume = 20;
-static u8 sound_volume = 20;
-static bool music_volume_changed = false;
-static bool sound_volume_changed = false;
+// Options-specific variables
+
+typedef struct
+{
+    int game_speed;
+    bool high_contrast;
+    u8 music_volume;
+    u8 sound_volume;
+} OptionValues;
+
+static OptionValues option_values = {1, false, 20, 20};
+
+static bool game_speed_changed    = false;
+static bool high_contrast_changed = false;
+static bool music_volume_changed  = false;
+static bool sound_volume_changed  = false;
 
 // Current selected button index
 static enum OptionButtons selection_y = GAME_SPEED_BTN_IDX;
@@ -246,14 +258,14 @@ void game_options_menu_on_update()
                 BTN_HIGHLIGHT_COLOR,
                 1
             );
-            if (key_hit(KEY_LEFT) && game_speed > GAME_SPEED_MIN)
+            if (key_hit(KEY_LEFT) && option_values.game_speed > GAME_SPEED_MIN)
             {
-                game_speed--;
+                option_values.game_speed--;
                 game_speed_changed = true;
             }
-            else if (key_hit(KEY_RIGHT) && game_speed < GAME_SPEED_MAX)
+            else if (key_hit(KEY_RIGHT) && option_values.game_speed < GAME_SPEED_MAX)
             {
-                game_speed++;
+                option_values.game_speed++;
                 game_speed_changed = true;
             }
             break;
@@ -270,7 +282,7 @@ void game_options_menu_on_update()
             );
             if (key_hit(SELECT_CARD))
             {
-                high_contrast = !high_contrast;
+                option_values.high_contrast = !option_values.high_contrast;
                 high_contrast_changed = true;
             }
             break;
@@ -285,14 +297,14 @@ void game_options_menu_on_update()
                 BTN_HIGHLIGHT_COLOR,
                 1
             );
-            if (key_hit(KEY_LEFT) && music_volume > VOLUME_VALUE_MIN)
+            if (key_hit(KEY_LEFT) && option_values.music_volume > VOLUME_VALUE_MIN)
             {
-                music_volume--;
+                option_values.music_volume--;
                 music_volume_changed = true;
             }
-            else if (key_hit(KEY_RIGHT) && music_volume < VOLUME_VALUE_MAX)
+            else if (key_hit(KEY_RIGHT) && option_values.music_volume < VOLUME_VALUE_MAX)
             {
-                music_volume++;
+                option_values.music_volume++;
                 music_volume_changed = true;
             }
             break;
@@ -305,14 +317,14 @@ void game_options_menu_on_update()
                 BTN_HIGHLIGHT_COLOR,
                 1
             );
-            if (key_hit(KEY_LEFT) && sound_volume > VOLUME_VALUE_MIN)
+            if (key_hit(KEY_LEFT) && option_values.sound_volume > VOLUME_VALUE_MIN)
             {
-                sound_volume--;
+                option_values.sound_volume--;
                 sound_volume_changed = true;
             }
-            else if (key_hit(KEY_RIGHT) && sound_volume < VOLUME_VALUE_MAX)
+            else if (key_hit(KEY_RIGHT) && option_values.sound_volume < VOLUME_VALUE_MAX)
             {
-                sound_volume++;
+                option_values.sound_volume++;
                 sound_volume_changed = true;
             }
             break;
@@ -343,7 +355,7 @@ void game_options_menu_on_update()
     // check if need to disable game speed arrows
     if (game_speed_changed)
     {
-        if (game_speed == GAME_SPEED_MIN)
+        if (option_values.game_speed == GAME_SPEED_MIN)
         {
             main_bg_se_copy_rect(
                 OPTIONS_SPEED_LESS_DISABLED_BTN_SRC_RECT,
@@ -358,7 +370,7 @@ void game_options_menu_on_update()
             );
         }
 
-        if (game_speed == GAME_SPEED_MAX)
+        if (option_values.game_speed == GAME_SPEED_MAX)
         {
             main_bg_se_copy_rect(
                 OPTIONS_SPEED_MORE_DISABLED_BTN_SRC_RECT,
@@ -374,7 +386,7 @@ void game_options_menu_on_update()
         }
 
         main_bg_se_copy_rect(
-            OPTIONS_SPEED_VALUES[game_speed-1],
+            OPTIONS_SPEED_VALUES[option_values.game_speed-1],
             OPTIONS_SPEED_VALUE_DEST_POS
         );
 
@@ -383,7 +395,7 @@ void game_options_menu_on_update()
 
     if (high_contrast_changed)
     {
-        if (high_contrast)
+        if (option_values.high_contrast)
         {
             main_bg_se_copy_rect(
                 OPTIONS_CONTRAST_VALUE_YES_SRC_RECT,
@@ -407,7 +419,7 @@ void game_options_menu_on_update()
         BG_POINT slider_segment_dest = OPTIONS_MUSIC_SLIDER_START_POS;
 
         // full part of the bar
-        for (; i < music_volume - 1; i++)
+        for (; i < option_values.music_volume - 1; i++)
         {
             main_bg_se_copy_rect(
                 OPTIONS_MUSIC_SLIDER_FULL_SRC,
@@ -419,7 +431,7 @@ void game_options_menu_on_update()
         // at exactly music_volume we either:
         //  - are in the middle of the bar, then we draw the frontier between full and empty tiles
         //  - are at the end, then draw a full segment
-        if (music_volume == VOLUME_VALUE_MAX)
+        if (option_values.music_volume == VOLUME_VALUE_MAX)
         {
             main_bg_se_copy_rect(
                 OPTIONS_MUSIC_SLIDER_FULL_SRC,
@@ -428,7 +440,7 @@ void game_options_menu_on_update()
         }
         else
         {
-            if (music_volume != VOLUME_VALUE_MIN)
+            if (option_values.music_volume != VOLUME_VALUE_MIN)
             {
                 // draw middle point
                 main_bg_se_copy_rect(
@@ -455,7 +467,7 @@ void game_options_menu_on_update()
             OPTIONS_MUSIC_VALUE_TEXT_POS.x,
             OPTIONS_MUSIC_VALUE_TEXT_POS.y,
             TTE_WHITE_PB,
-            (music_volume * VOLUME_VALUE_INCREMENT)
+            (option_values.music_volume * VOLUME_VALUE_INCREMENT)
         );
 
         music_volume_changed = false;
@@ -466,7 +478,7 @@ void game_options_menu_on_update()
         int i = 0;
         BG_POINT slider_segment_dest = OPTIONS_SOUND_SLIDER_START_POS;
 
-        for (; i < sound_volume - 1; i++)
+        for (; i < option_values.sound_volume - 1; i++)
         {
             main_bg_se_copy_rect(
                 OPTIONS_SOUND_SLIDER_FULL_SRC,
@@ -475,7 +487,7 @@ void game_options_menu_on_update()
             slider_segment_dest.x++;
         }
 
-        if (sound_volume == VOLUME_VALUE_MAX)
+        if (option_values.sound_volume == VOLUME_VALUE_MAX)
         {
             main_bg_se_copy_rect(
                 OPTIONS_SOUND_SLIDER_FULL_SRC,
@@ -484,7 +496,7 @@ void game_options_menu_on_update()
         }
         else
         {
-            if (sound_volume != VOLUME_VALUE_MIN)
+            if (option_values.sound_volume != VOLUME_VALUE_MIN)
             {
                 main_bg_se_copy_rect(
                     OPTIONS_SOUND_SLIDER_MID_SRC,
@@ -509,7 +521,7 @@ void game_options_menu_on_update()
             OPTIONS_SOUND_VALUE_TEXT_POS.x,
             OPTIONS_SOUND_VALUE_TEXT_POS.y,
             TTE_WHITE_PB,
-            (sound_volume * VOLUME_VALUE_INCREMENT)
+            (option_values.sound_volume * VOLUME_VALUE_INCREMENT)
         );
 
         sound_volume_changed = false;
@@ -518,6 +530,6 @@ void game_options_menu_on_update()
 
 void game_options_menu_on_exit()
 {
-    set_game_speed(game_speed);
+    set_game_speed(option_values.game_speed);
     tte_erase_screen();
 }
