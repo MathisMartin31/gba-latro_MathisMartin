@@ -18,6 +18,11 @@ typedef struct
 {
     s32 timer;
     u32 rng_seed;
+
+    int game_speed;
+    bool high_contrast;
+    u8 music_volume;
+    u8 sound_volume;
 } GameVariables;
 
 extern GameVariables g_game_vars;

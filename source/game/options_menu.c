@@ -4,6 +4,7 @@
 #include "audio_utils.h"
 #include "background_options_menu_gfx.h"
 #include "button.h"
+#include "card.h"
 #include "game.h"
 #include "game/common_ui.h"
 #include "game_variables.h"
@@ -93,18 +94,6 @@ static const BG_POINT OPTIONS_SOUND_VOLUME_TEXT_POS  = { 56, 104};
 static const BG_POINT OPTIONS_SOUND_VALUE_TEXT_POS   = {160, 104};
 static const BG_POINT OPTIONS_BACK_TEXT_POS          = {104, 136};
 // clang-format on
-
-// Options-specific variables
-
-typedef struct
-{
-    int game_speed;
-    bool high_contrast;
-    u8 music_volume;
-    u8 sound_volume;
-} OptionValues;
-
-static OptionValues option_values = {1, false, 20, 20};
 
 static bool game_speed_changed    = false;
 static bool high_contrast_changed = false;
@@ -223,6 +212,7 @@ void game_options_menu_on_init()
     music_volume_changed = true;
     sound_volume_changed = true;
     selection_y = 0;
+
     change_background(BG_OPTIONS_MENU);
     // Do a first update right off the bat
     game_options_menu_on_update();
@@ -258,14 +248,14 @@ void game_options_menu_on_update()
                 BTN_HIGHLIGHT_COLOR,
                 1
             );
-            if (key_hit(KEY_LEFT) && option_values.game_speed > GAME_SPEED_MIN)
+            if (key_hit(KEY_LEFT) && game_vars->game_speed > GAME_SPEED_MIN)
             {
-                option_values.game_speed--;
+                game_vars->game_speed--;
                 game_speed_changed = true;
             }
-            else if (key_hit(KEY_RIGHT) && option_values.game_speed < GAME_SPEED_MAX)
+            else if (key_hit(KEY_RIGHT) && game_vars->game_speed < GAME_SPEED_MAX)
             {
-                option_values.game_speed++;
+                game_vars->game_speed++;
                 game_speed_changed = true;
             }
             break;
@@ -282,7 +272,7 @@ void game_options_menu_on_update()
             );
             if (key_hit(SELECT_CARD))
             {
-                option_values.high_contrast = !option_values.high_contrast;
+                game_vars->high_contrast = !game_vars->high_contrast;
                 high_contrast_changed = true;
             }
             break;
@@ -297,14 +287,14 @@ void game_options_menu_on_update()
                 BTN_HIGHLIGHT_COLOR,
                 1
             );
-            if (key_hit(KEY_LEFT) && option_values.music_volume > VOLUME_VALUE_MIN)
+            if (key_hit(KEY_LEFT) && game_vars->music_volume > VOLUME_VALUE_MIN)
             {
-                option_values.music_volume--;
+                game_vars->music_volume--;
                 music_volume_changed = true;
             }
-            else if (key_hit(KEY_RIGHT) && option_values.music_volume < VOLUME_VALUE_MAX)
+            else if (key_hit(KEY_RIGHT) && game_vars->music_volume < VOLUME_VALUE_MAX)
             {
-                option_values.music_volume++;
+                game_vars->music_volume++;
                 music_volume_changed = true;
             }
             break;
@@ -317,14 +307,14 @@ void game_options_menu_on_update()
                 BTN_HIGHLIGHT_COLOR,
                 1
             );
-            if (key_hit(KEY_LEFT) && option_values.sound_volume > VOLUME_VALUE_MIN)
+            if (key_hit(KEY_LEFT) && game_vars->sound_volume > VOLUME_VALUE_MIN)
             {
-                option_values.sound_volume--;
+                game_vars->sound_volume--;
                 sound_volume_changed = true;
             }
-            else if (key_hit(KEY_RIGHT) && option_values.sound_volume < VOLUME_VALUE_MAX)
+            else if (key_hit(KEY_RIGHT) && game_vars->sound_volume < VOLUME_VALUE_MAX)
             {
-                option_values.sound_volume++;
+                game_vars->sound_volume++;
                 sound_volume_changed = true;
             }
             break;
@@ -355,7 +345,7 @@ void game_options_menu_on_update()
     // check if need to disable game speed arrows
     if (game_speed_changed)
     {
-        if (option_values.game_speed == GAME_SPEED_MIN)
+        if (game_vars->game_speed == GAME_SPEED_MIN)
         {
             main_bg_se_copy_rect(
                 OPTIONS_SPEED_LESS_DISABLED_BTN_SRC_RECT,
@@ -370,7 +360,7 @@ void game_options_menu_on_update()
             );
         }
 
-        if (option_values.game_speed == GAME_SPEED_MAX)
+        if (game_vars->game_speed == GAME_SPEED_MAX)
         {
             main_bg_se_copy_rect(
                 OPTIONS_SPEED_MORE_DISABLED_BTN_SRC_RECT,
@@ -386,7 +376,7 @@ void game_options_menu_on_update()
         }
 
         main_bg_se_copy_rect(
-            OPTIONS_SPEED_VALUES[option_values.game_speed-1],
+            OPTIONS_SPEED_VALUES[game_vars->game_speed-1],
             OPTIONS_SPEED_VALUE_DEST_POS
         );
 
@@ -395,7 +385,7 @@ void game_options_menu_on_update()
 
     if (high_contrast_changed)
     {
-        if (option_values.high_contrast)
+        if (game_vars->high_contrast)
         {
             main_bg_se_copy_rect(
                 OPTIONS_CONTRAST_VALUE_YES_SRC_RECT,
@@ -410,6 +400,8 @@ void game_options_menu_on_update()
             );
         }
 
+        high_contrast_cards(game_vars->high_contrast);
+
         high_contrast_changed = false;
     }
 
@@ -419,7 +411,7 @@ void game_options_menu_on_update()
         BG_POINT slider_segment_dest = OPTIONS_MUSIC_SLIDER_START_POS;
 
         // full part of the bar
-        for (; i < option_values.music_volume - 1; i++)
+        for (; i < game_vars->music_volume - 1; i++)
         {
             main_bg_se_copy_rect(
                 OPTIONS_MUSIC_SLIDER_FULL_SRC,
@@ -431,7 +423,7 @@ void game_options_menu_on_update()
         // at exactly music_volume we either:
         //  - are in the middle of the bar, then we draw the frontier between full and empty tiles
         //  - are at the end, then draw a full segment
-        if (option_values.music_volume == VOLUME_VALUE_MAX)
+        if (game_vars->music_volume == VOLUME_VALUE_MAX)
         {
             main_bg_se_copy_rect(
                 OPTIONS_MUSIC_SLIDER_FULL_SRC,
@@ -440,7 +432,7 @@ void game_options_menu_on_update()
         }
         else
         {
-            if (option_values.music_volume != VOLUME_VALUE_MIN)
+            if (game_vars->music_volume != VOLUME_VALUE_MIN)
             {
                 // draw middle point
                 main_bg_se_copy_rect(
@@ -467,7 +459,7 @@ void game_options_menu_on_update()
             OPTIONS_MUSIC_VALUE_TEXT_POS.x,
             OPTIONS_MUSIC_VALUE_TEXT_POS.y,
             TTE_WHITE_PB,
-            (option_values.music_volume * VOLUME_VALUE_INCREMENT)
+            (game_vars->music_volume * VOLUME_VALUE_INCREMENT)
         );
 
         music_volume_changed = false;
@@ -478,7 +470,7 @@ void game_options_menu_on_update()
         int i = 0;
         BG_POINT slider_segment_dest = OPTIONS_SOUND_SLIDER_START_POS;
 
-        for (; i < option_values.sound_volume - 1; i++)
+        for (; i < game_vars->sound_volume - 1; i++)
         {
             main_bg_se_copy_rect(
                 OPTIONS_SOUND_SLIDER_FULL_SRC,
@@ -487,7 +479,7 @@ void game_options_menu_on_update()
             slider_segment_dest.x++;
         }
 
-        if (option_values.sound_volume == VOLUME_VALUE_MAX)
+        if (game_vars->sound_volume == VOLUME_VALUE_MAX)
         {
             main_bg_se_copy_rect(
                 OPTIONS_SOUND_SLIDER_FULL_SRC,
@@ -496,7 +488,7 @@ void game_options_menu_on_update()
         }
         else
         {
-            if (option_values.sound_volume != VOLUME_VALUE_MIN)
+            if (game_vars->sound_volume != VOLUME_VALUE_MIN)
             {
                 main_bg_se_copy_rect(
                     OPTIONS_SOUND_SLIDER_MID_SRC,
@@ -521,7 +513,7 @@ void game_options_menu_on_update()
             OPTIONS_SOUND_VALUE_TEXT_POS.x,
             OPTIONS_SOUND_VALUE_TEXT_POS.y,
             TTE_WHITE_PB,
-            (option_values.sound_volume * VOLUME_VALUE_INCREMENT)
+            (game_vars->sound_volume * VOLUME_VALUE_INCREMENT)
         );
 
         sound_volume_changed = false;
@@ -530,6 +522,6 @@ void game_options_menu_on_update()
 
 void game_options_menu_on_exit()
 {
-    set_game_speed(option_values.game_speed);
+    set_game_speed(game_vars->game_speed);
     tte_erase_screen();
 }

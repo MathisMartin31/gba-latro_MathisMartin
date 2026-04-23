@@ -582,7 +582,7 @@ static int interest_start_time = UNDEFINED;
 
 // Red deck default (can later be moved to a deck.h file or something)
 static int max_hands = 4;
-static int max_discards = 4;
+static int max_discards = 40;
 // Set in game_init and game_round_init
 static int hands = 0;
 static int discards = 0;
