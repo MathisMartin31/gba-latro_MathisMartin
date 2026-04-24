@@ -9,9 +9,11 @@
 #include "game/common_ui.h"
 #include "game_variables.h"
 #include "graphic_utils.h"
+#include "save.h"
 #include "soundbank.h"
 
 #include <stdint.h>
+#include <string.h>
 #include <tonc.h>
 #include <tonc_math.h>
 #include <tonc_memdef.h>
@@ -23,6 +25,11 @@
 #define VOLUME_VALUE_MIN        0
 #define VOLUME_VALUE_MAX       20
 #define VOLUME_VALUE_INCREMENT  5
+
+#define DEFAULT_GAME_SPEED    1
+#define DEFAULT_HIGH_CONTRAST false
+#define DEFAULT_MUSIC_VOLUME  20
+#define DEFAULT_SOUND_VOLUME  20
 
 // Button indices
 enum OptionButtons
@@ -272,7 +279,7 @@ void game_options_menu_on_update()
             );
             if (key_hit(SELECT_CARD))
             {
-                game_vars->high_contrast = !game_vars->high_contrast;
+                game_vars->high_contrast = (game_vars->high_contrast == 1) ? false : true;
                 high_contrast_changed = true;
             }
             break;
@@ -522,6 +529,7 @@ void game_options_menu_on_update()
 
 void game_options_menu_on_exit()
 {
+    save_options(game_vars);
     set_game_speed(game_vars->game_speed);
     tte_erase_screen();
 }
