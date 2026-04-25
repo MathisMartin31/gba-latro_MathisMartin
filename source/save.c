@@ -159,4 +159,14 @@ void load_options(GameVariables* vars_ptr)
     sram_readBool(&(vars_ptr->high_contrast), OPTIONS_BASE, OPTIONS_CONTRAST_OFFSET);
     sram_read8   (&(vars_ptr->music_volume),  OPTIONS_BASE, OPTIONS_MUSIC_OFFSET);
     sram_read8   (&(vars_ptr->sound_volume),  OPTIONS_BASE, OPTIONS_SOUND_OFFSET);
+
+    // Data validation
+    if (vars_ptr->game_speed < GAME_SPEED_MIN || vars_ptr->game_speed > GAME_SPEED_MAX)
+        vars_ptr->game_speed = DEFAULT_GAME_SPEED;
+
+    if (vars_ptr->music_volume > VOLUME_VALUE_MAX)
+        vars_ptr->music_volume = DEFAULT_MUSIC_VOLUME;
+
+    if (vars_ptr->sound_volume > VOLUME_VALUE_MAX)
+        vars_ptr->sound_volume = DEFAULT_SOUND_VOLUME;
 }

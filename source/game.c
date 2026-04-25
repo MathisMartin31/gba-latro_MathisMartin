@@ -19,6 +19,7 @@
 #include "hand_analysis.h"
 #include "joker.h"
 #include "list.h"
+#include "save.h"
 #include "selection_grid.h"
 #include "soundbank.h"
 #include "splash_screen.h"
@@ -778,6 +779,8 @@ void game_init()
     _joker_scored_itr = list_itr_create(&_owned_jokers_list);
 
     jokers_available_to_shop_init();
+
+    load_options(&game_vars);
 
     hands = max_hands;
     discards = max_discards;
