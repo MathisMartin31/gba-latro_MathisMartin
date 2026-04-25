@@ -13,7 +13,7 @@ extern GameVariables g_game_vars;
 #define MAX_JOKERS_HELD_SIZE 5 // This doesn't account for negatives right now.
 #define MAX_SHOP_JOKERS      2 // TODO: Make this dynamic and allow for other items besides jokers
 #define MAX_SELECTION_SIZE   5
-#define FRAMES(x)            (((x) + game_speed - 1) / game_speed)
+#define FRAMES(x)            (((x) + (game_vars.game_speed) - 1) / (game_vars.game_speed))
 
 // TODO: Can make these dynamic to support interest-related jokers and vouchers
 #define MAX_INTEREST   5
@@ -174,7 +174,7 @@ void set_game_speed(int new_game_speed);
 bool is_shortcut_joker_active(void);
 int get_straight_and_flush_size(void);
 
-void game_start(void);
+void game_start(GameVariables* vars);
 
 // Temporary change for Refactor. Currently this compatibility binder is to allow
 // simultaneous integration of the new system in `common_ui` with the the existing

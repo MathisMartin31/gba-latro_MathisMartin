@@ -66,6 +66,7 @@
 #define CARD_UNFOCUSED_SEL_Y 15
 #define CARD_FOCUSED_SEL_Y   20
 
+// Timer defs
 #define TM_RESET_STATIC_VARS            30
 #define TM_END_POP_MENU_ANIM            13
 #define TM_START_ROUND_END_REWARDS_ANIM 1
@@ -430,9 +431,6 @@ static const BG_POINT HAND_PLAY_POS         = {120,     70};
 
 typedef void (*SubStateActionFn)(void);
 
-// BY DEFAULT IS SET TO 1, but if changed to 2 or more, should speed up all (or most) of the game
-// aspects that should be sped up by speed, as in the original game.
-static int game_speed = 1;
 static enum BackgroundId background = BG_NONE;
 
 static StateInfo state_info[] = {
@@ -583,7 +581,7 @@ static int interest_start_time = UNDEFINED;
 
 // Red deck default (can later be moved to a deck.h file or something)
 static int max_hands = 4;
-static int max_discards = 40;
+static int max_discards = 4;
 // Set in game_init and game_round_init
 static int hands = 0;
 static int discards = 0;
@@ -1040,13 +1038,13 @@ int get_num_hands_remaining(void)
 
 int get_game_speed(void)
 {
-    return game_speed;
+    return game_vars.game_speed;
 }
 
 // for the future when a menu actually lets this variable be changed.
 void set_game_speed(int new_game_speed)
 {
-    game_speed = new_game_speed;
+    game_vars.game_speed = new_game_speed;
 }
 
 u32 get_chips(void)
