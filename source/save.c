@@ -1,11 +1,14 @@
 #include "save.h"
+
 #include <string.h>
 
 // See https://gbadev.net/gbadoc/memory.html for more details on SRAM
 // A few important pieces of info:
 //   - Read/Writes are limited to 8-bits words.
-//   - Saving and loading bigger values in one memcpy does not work and results in weird memory contents.
-//   - Memory is filled with 1s by default (at least in mgba, not sure about real HW) 
+//   - Saving and loading bigger values in one memcpy does not work and results
+//     in weird memory contents.
+//   - Memory is filled with 1s by default
+//     (at least in mgba, not sure about real HW) 
 
 // Sections' bases are arbitrary and with a lot of margin to work with.
 // Offsets are relative to the sections' base and are in bytes
@@ -125,12 +128,14 @@ static inline void sram_readBool(void* data, u32 sram_base, u32 offset)
  */
 void clear_sram(void)
 {
+    // clang-format off
     u32 clear[40] = {
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
     };
+    // clang-format on
     memcpy(sram_mem, clear, sizeof(clear));
 }
 
@@ -142,10 +147,12 @@ void clear_sram(void)
  */
 void save_options(GameVariables* vars_ptr)
 {
+    // clang-format off
     sram_write32  (&(vars_ptr->game_speed),    OPTIONS_BASE, OPTIONS_SPEED_OFFSET);
     sram_writeBool(&(vars_ptr->high_contrast), OPTIONS_BASE, OPTIONS_CONTRAST_OFFSET);
     sram_write8   (&(vars_ptr->music_volume),  OPTIONS_BASE, OPTIONS_MUSIC_OFFSET);
     sram_write8   (&(vars_ptr->sound_volume),  OPTIONS_BASE, OPTIONS_SOUND_OFFSET);
+    // clang-format on
 }
 
 /**
@@ -155,10 +162,12 @@ void save_options(GameVariables* vars_ptr)
  */
 void load_options(GameVariables* vars_ptr)
 {
+    // clang-format off
     sram_read32  (&(vars_ptr->game_speed),    OPTIONS_BASE, OPTIONS_SPEED_OFFSET);
     sram_readBool(&(vars_ptr->high_contrast), OPTIONS_BASE, OPTIONS_CONTRAST_OFFSET);
     sram_read8   (&(vars_ptr->music_volume),  OPTIONS_BASE, OPTIONS_MUSIC_OFFSET);
     sram_read8   (&(vars_ptr->sound_volume),  OPTIONS_BASE, OPTIONS_SOUND_OFFSET);
+    // clang-format on
 
     // Data validation
     if (vars_ptr->game_speed < GAME_SPEED_MIN || vars_ptr->game_speed > GAME_SPEED_MAX)

@@ -10,7 +10,6 @@
 #include "pool.h"
 #include "soundbank.h"
 
-
 // Card sprites lookup table. First index is the suit, second index is the rank. The value is the
 // tile index.
 const static u16 _card_sprite_lut[NUM_SUITS][NUM_RANKS] = {
@@ -23,10 +22,12 @@ const static u16 _card_sprite_lut[NUM_SUITS][NUM_RANKS] = {
 // Palettes to use with cards
 // Could not fit inside the same PNG so we have to hardcode it unfortunately
 #define CARDS_PAL_SIZE 16
+// clang-format off
 const static u16 high_contrast_palette[CARDS_PAL_SIZE] = {
-    0x0000, 0x7FFF, 0x6B38, 0x023D,  0x61E0, 0x001B, 0x71B1, 0x28E7,
+    0x0000, 0x7FFF, 0x6B38, 0x023D, 0x61E0, 0x001B, 0x71B1, 0x28E7,
     0x0017, 0x28E7, 0x7E82, 0x029F, 0x739C, 0x28E7, 0x414C, 0x0000
 };
+// clang-format on
 static u16 normal_palette[CARDS_PAL_SIZE];
 
 void card_init()
@@ -39,19 +40,11 @@ void high_contrast_cards(bool enable)
 {
     if (enable)
     {
-        memcpy16(
-            &pal_obj_mem[CARD_PB],
-            high_contrast_palette,
-            CARDS_PAL_SIZE
-        );
+        memcpy16(&pal_obj_mem[CARD_PB], high_contrast_palette, CARDS_PAL_SIZE);
     }
     else
     {
-        memcpy16(
-            &pal_obj_mem[CARD_PB],
-            normal_palette,
-            CARDS_PAL_SIZE
-        );
+        memcpy16(&pal_obj_mem[CARD_PB], normal_palette, CARDS_PAL_SIZE);
     }
 }
 

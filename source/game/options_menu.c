@@ -30,14 +30,14 @@ enum OptionButtons
 };
 
 // Color palette indices
-#define MENU_BUTTON_MAIN_COLOR_PAL_IDX           1
-#define BACK_BUTTON_MAIN_COLOR_PAL_IDX           3
-#define SPEED_LESS_BUTTON_OUTLINE_COLOR_PAL_IDX  4
-#define SPEED_BUTTON_OUTLINE_COLOR_PAL_IDX       5
-#define SPEED_MORE_BUTTON_OUTLINE_COLOR_PAL_IDX  6
-#define CONTRAST_BUTTON_OUTLINE_COLOR_PAL_IDX    7
-#define MUSIC_BUTTON_OUTLINE_COLOR_PAL_IDX       8
-#define SOUND_BUTTON_OUTLINE_COLOR_PAL_IDX       9
+#define MENU_BUTTON_MAIN_COLOR_PAL_IDX          1
+#define BACK_BUTTON_MAIN_COLOR_PAL_IDX          3
+#define SPEED_LESS_BUTTON_OUTLINE_COLOR_PAL_IDX 4
+#define SPEED_BUTTON_OUTLINE_COLOR_PAL_IDX      5
+#define SPEED_MORE_BUTTON_OUTLINE_COLOR_PAL_IDX 6
+#define CONTRAST_BUTTON_OUTLINE_COLOR_PAL_IDX   7
+#define MUSIC_BUTTON_OUTLINE_COLOR_PAL_IDX      8
+#define SOUND_BUTTON_OUTLINE_COLOR_PAL_IDX      9
 #define BACK_BUTTON_OUTLINE_COLOR_PAL_IDX       10
 
 // Positions/Rects used to construct and update the menu
@@ -111,49 +111,50 @@ static void disable_all_outlines_except_self(enum OptionButtons highlighted_btn)
         1
     );
 
-    if (highlighted_btn != GAME_SPEED_BTN_IDX) {
+    if (highlighted_btn != GAME_SPEED_BTN_IDX)
+    {
         memcpy16(
             &pal_bg_mem[SPEED_BUTTON_OUTLINE_COLOR_PAL_IDX],
             &pal_bg_mem[MENU_BUTTON_MAIN_COLOR_PAL_IDX],
             1
         );
     }
-    if (highlighted_btn != HIGH_CONTRAST_BTN_IDX) {
+    if (highlighted_btn != HIGH_CONTRAST_BTN_IDX)
+    {
         memcpy16(
             &pal_bg_mem[CONTRAST_BUTTON_OUTLINE_COLOR_PAL_IDX],
             &pal_bg_mem[MENU_BUTTON_MAIN_COLOR_PAL_IDX],
             1
         );
     }
-    if (highlighted_btn != MUSIC_VOLUME_BTN_IDX) {
+    if (highlighted_btn != MUSIC_VOLUME_BTN_IDX)
+    {
         memcpy16(
             &pal_bg_mem[MUSIC_BUTTON_OUTLINE_COLOR_PAL_IDX],
             &pal_bg_mem[MENU_BUTTON_MAIN_COLOR_PAL_IDX],
             1
         );
     }
-    if (highlighted_btn != SOUND_VOLUME_BTN_IDX) {
+    if (highlighted_btn != SOUND_VOLUME_BTN_IDX)
+    {
         memcpy16(
             &pal_bg_mem[SOUND_BUTTON_OUTLINE_COLOR_PAL_IDX],
             &pal_bg_mem[MENU_BUTTON_MAIN_COLOR_PAL_IDX],
             1
         );
     }
-    if (highlighted_btn != BACK_BTN_IDX) {
+    if (highlighted_btn != BACK_BTN_IDX)
+    {
         memcpy16(
             &pal_bg_mem[BACK_BUTTON_OUTLINE_COLOR_PAL_IDX],
             &pal_bg_mem[BACK_BUTTON_MAIN_COLOR_PAL_IDX],
             1
         );
-    } 
+    }
 
     u16 color = 0x213f;
 
-    memcpy16(
-        &pal_bg_mem[MENU_BUTTON_MAIN_COLOR_PAL_IDX],
-        &color,
-        1
-    );
+    memcpy16(&pal_bg_mem[MENU_BUTTON_MAIN_COLOR_PAL_IDX], &color, 1);
 }
 
 void game_options_menu_change_background(void)
@@ -237,11 +238,7 @@ void game_options_menu_on_update()
         case GAME_SPEED_BTN_IDX:
         {
             // Highlight button
-            memset16(
-                &pal_bg_mem[SPEED_BUTTON_OUTLINE_COLOR_PAL_IDX],
-                BTN_HIGHLIGHT_COLOR,
-                1
-            );
+            memset16(&pal_bg_mem[SPEED_BUTTON_OUTLINE_COLOR_PAL_IDX], BTN_HIGHLIGHT_COLOR, 1);
             if (key_hit(KEY_LEFT) && game_vars->game_speed > GAME_SPEED_MIN)
             {
                 game_vars->game_speed--;
@@ -259,11 +256,7 @@ void game_options_menu_on_update()
         case HIGH_CONTRAST_BTN_IDX:
         {
             // Highlight button
-            memset16(
-                &pal_bg_mem[CONTRAST_BUTTON_OUTLINE_COLOR_PAL_IDX],
-                BTN_HIGHLIGHT_COLOR,
-                1
-            );
+            memset16(&pal_bg_mem[CONTRAST_BUTTON_OUTLINE_COLOR_PAL_IDX], BTN_HIGHLIGHT_COLOR, 1);
             if (key_hit(SELECT_CARD))
             {
                 game_vars->high_contrast = (game_vars->high_contrast == 1) ? false : true;
@@ -276,11 +269,7 @@ void game_options_menu_on_update()
         case MUSIC_VOLUME_BTN_IDX:
         {
             // Highlight button
-            memset16(
-                &pal_bg_mem[MUSIC_BUTTON_OUTLINE_COLOR_PAL_IDX],
-                BTN_HIGHLIGHT_COLOR,
-                1
-            );
+            memset16(&pal_bg_mem[MUSIC_BUTTON_OUTLINE_COLOR_PAL_IDX], BTN_HIGHLIGHT_COLOR, 1);
             if (key_hit(KEY_LEFT) && game_vars->music_volume > VOLUME_VALUE_MIN)
             {
                 game_vars->music_volume--;
@@ -296,11 +285,7 @@ void game_options_menu_on_update()
         case SOUND_VOLUME_BTN_IDX:
         {
             // Highlight button
-            memset16(
-                &pal_bg_mem[SOUND_BUTTON_OUTLINE_COLOR_PAL_IDX],
-                BTN_HIGHLIGHT_COLOR,
-                1
-            );
+            memset16(&pal_bg_mem[SOUND_BUTTON_OUTLINE_COLOR_PAL_IDX], BTN_HIGHLIGHT_COLOR, 1);
             if (key_hit(KEY_LEFT) && game_vars->sound_volume > VOLUME_VALUE_MIN)
             {
                 game_vars->sound_volume--;
@@ -317,11 +302,7 @@ void game_options_menu_on_update()
         case BACK_BTN_IDX:
         {
             // Highlight button
-            memset16(
-                &pal_bg_mem[BACK_BUTTON_OUTLINE_COLOR_PAL_IDX],
-                BTN_HIGHLIGHT_COLOR,
-                1
-            );
+            memset16(&pal_bg_mem[BACK_BUTTON_OUTLINE_COLOR_PAL_IDX], BTN_HIGHLIGHT_COLOR, 1);
             if (key_hit(SELECT_CARD))
             {
                 // TODO : save GameVariables struct in memory
@@ -370,7 +351,7 @@ void game_options_menu_on_update()
         }
 
         main_bg_se_copy_rect(
-            OPTIONS_SPEED_VALUES[game_vars->game_speed-1],
+            OPTIONS_SPEED_VALUES[game_vars->game_speed - 1],
             OPTIONS_SPEED_VALUE_DEST_POS
         );
 
@@ -407,10 +388,7 @@ void game_options_menu_on_update()
         // full part of the bar
         for (; i < game_vars->music_volume - 1; i++)
         {
-            main_bg_se_copy_rect(
-                OPTIONS_MUSIC_SLIDER_FULL_SRC,
-                slider_segment_dest
-            );
+            main_bg_se_copy_rect(OPTIONS_MUSIC_SLIDER_FULL_SRC, slider_segment_dest);
             slider_segment_dest.x++;
         }
 
@@ -419,20 +397,14 @@ void game_options_menu_on_update()
         //  - are at the end, then draw a full segment
         if (game_vars->music_volume == VOLUME_VALUE_MAX)
         {
-            main_bg_se_copy_rect(
-                OPTIONS_MUSIC_SLIDER_FULL_SRC,
-                slider_segment_dest
-            );
+            main_bg_se_copy_rect(OPTIONS_MUSIC_SLIDER_FULL_SRC, slider_segment_dest);
         }
         else
         {
             if (game_vars->music_volume != VOLUME_VALUE_MIN)
             {
                 // draw middle point
-                main_bg_se_copy_rect(
-                    OPTIONS_MUSIC_SLIDER_MID_SRC,
-                    slider_segment_dest
-                );
+                main_bg_se_copy_rect(OPTIONS_MUSIC_SLIDER_MID_SRC, slider_segment_dest);
                 i++;
                 slider_segment_dest.x++;
             }
@@ -440,10 +412,7 @@ void game_options_menu_on_update()
             // empty part of the bar
             for (; i < VOLUME_VALUE_MAX; i++)
             {
-                main_bg_se_copy_rect(
-                    OPTIONS_MUSIC_SLIDER_EMPTY_SRC,
-                    slider_segment_dest
-                );
+                main_bg_se_copy_rect(OPTIONS_MUSIC_SLIDER_EMPTY_SRC, slider_segment_dest);
                 slider_segment_dest.x++;
             }
         }
@@ -466,38 +435,26 @@ void game_options_menu_on_update()
 
         for (; i < game_vars->sound_volume - 1; i++)
         {
-            main_bg_se_copy_rect(
-                OPTIONS_SOUND_SLIDER_FULL_SRC,
-                slider_segment_dest
-            );
+            main_bg_se_copy_rect(OPTIONS_SOUND_SLIDER_FULL_SRC, slider_segment_dest);
             slider_segment_dest.x++;
         }
 
         if (game_vars->sound_volume == VOLUME_VALUE_MAX)
         {
-            main_bg_se_copy_rect(
-                OPTIONS_SOUND_SLIDER_FULL_SRC,
-                slider_segment_dest
-            );
+            main_bg_se_copy_rect(OPTIONS_SOUND_SLIDER_FULL_SRC, slider_segment_dest);
         }
         else
         {
             if (game_vars->sound_volume != VOLUME_VALUE_MIN)
             {
-                main_bg_se_copy_rect(
-                    OPTIONS_SOUND_SLIDER_MID_SRC,
-                    slider_segment_dest
-                );
+                main_bg_se_copy_rect(OPTIONS_SOUND_SLIDER_MID_SRC, slider_segment_dest);
                 i++;
                 slider_segment_dest.x++;
             }
 
             for (; i < VOLUME_VALUE_MAX; i++)
             {
-                main_bg_se_copy_rect(
-                    OPTIONS_SOUND_SLIDER_EMPTY_SRC,
-                    slider_segment_dest
-                );
+                main_bg_se_copy_rect(OPTIONS_SOUND_SLIDER_EMPTY_SRC, slider_segment_dest);
                 slider_segment_dest.x++;
             }
         }

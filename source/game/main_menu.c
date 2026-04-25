@@ -105,12 +105,10 @@ void game_main_menu_on_update()
                 &pal_bg_mem[OPTIONS_BUTTON_MAIN_COLOR_PID],
                 1
             );
+
             // Highlight Play button
-            memset16(
-                &pal_bg_mem[PLAY_BUTTON_OUTLINE_PID],
-                BTN_HIGHLIGHT_COLOR,
-                1
-            );
+            memset16(&pal_bg_mem[PLAY_BUTTON_OUTLINE_PID], BTN_HIGHLIGHT_COLOR, 1);
+
             if (key_hit(SELECT_CARD))
             {
                 play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
@@ -127,12 +125,10 @@ void game_main_menu_on_update()
                 &pal_bg_mem[PLAY_BUTTON_MAIN_COLOR_PID],
                 1
             );
+
             // Highlight Option button
-            memset16(
-                &pal_bg_mem[OPTIONS_BUTTON_OUTLINE_PID],
-                BTN_HIGHLIGHT_COLOR,
-                1
-            );
+            memset16(&pal_bg_mem[OPTIONS_BUTTON_OUTLINE_PID], BTN_HIGHLIGHT_COLOR, 1);
+
             if (key_hit(SELECT_CARD))
             {
                 game_change_state(GAME_STATE_OPTIONS_MENU);

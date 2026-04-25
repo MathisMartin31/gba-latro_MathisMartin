@@ -12,9 +12,9 @@
 #define GAME_SPEED_MAX 4
 
 // Volume is store from 0 to 20 but is an increment of 5 so 0 to 100 will be displayed
-#define VOLUME_VALUE_MIN        0
+#define VOLUME_VALUE_MIN       0
 #define VOLUME_VALUE_MAX       20
-#define VOLUME_VALUE_INCREMENT  5
+#define VOLUME_VALUE_INCREMENT 5
 
 #define DEFAULT_GAME_SPEED    1
 #define DEFAULT_HIGH_CONTRAST false
@@ -32,8 +32,8 @@ typedef struct
     s32 timer; // This might already exist in libtonc but idk so i'm just making my own
     u32 rng_seed;
 
-    // BY DEFAULT IS SET TO 1, but if changed to 2 or more, should speed up all (or most) of the game
-    // aspects that should be sped up by speed, as in the original game.
+    // BY DEFAULT IS SET TO 1, but if changed to 2 or more, should speed up all (or most) of the
+    // game aspects that should be sped up by speed, as in the original game.
     int game_speed;
 
     bool high_contrast;
