@@ -89,10 +89,10 @@ static const BG_POINT OPTIONS_SOUND_VALUE_TEXT_POS   = {160, 104};
 static const BG_POINT OPTIONS_BACK_TEXT_POS          = {104, 136};
 // clang-format on
 
-static bool game_speed_changed    = false;
+static bool game_speed_changed = false;
 static bool high_contrast_changed = false;
-static bool music_volume_changed  = false;
-static bool sound_volume_changed  = false;
+static bool music_volume_changed = false;
+static bool sound_volume_changed = false;
 
 // Current selected button index
 static enum OptionButtons selection_y = GAME_SPEED_BTN_IDX;

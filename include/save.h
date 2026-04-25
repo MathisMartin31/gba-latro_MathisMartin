@@ -7,6 +7,7 @@
 #define SAVE_H
 
 #include <tonc.h>
+
 #include "game_variables.h"
 
 void clear_sram(void);

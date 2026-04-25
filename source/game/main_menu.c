@@ -22,7 +22,8 @@
 #define OPTIONS_BUTTON_MAIN_COLOR_PID 7
 #define OPTIONS_BUTTON_OUTLINE_PID    1
 
-enum MainButtons {
+enum MainButtons
+{
     PLAY_BTN_IDX,
     OPTIONS_BTN_IDX,
     MAIN_MENU_NB_BTN
@@ -49,7 +50,11 @@ void game_main_menu_change_background(void)
 
     // Disable the button highlight colors
     memcpy16(&pal_bg_mem[PLAY_BUTTON_OUTLINE_PID], &pal_bg_mem[PLAY_BUTTON_MAIN_COLOR_PID], 1);
-    memcpy16(&pal_bg_mem[OPTIONS_BUTTON_OUTLINE_PID], &pal_bg_mem[OPTIONS_BUTTON_MAIN_COLOR_PID], 1);
+    memcpy16(
+        &pal_bg_mem[OPTIONS_BUTTON_OUTLINE_PID],
+        &pal_bg_mem[OPTIONS_BUTTON_MAIN_COLOR_PID],
+        1
+    );
 }
 
 void game_main_menu_on_init()

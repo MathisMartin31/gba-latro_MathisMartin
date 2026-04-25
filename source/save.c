@@ -8,7 +8,7 @@
 //   - Saving and loading bigger values in one memcpy does not work and results
 //     in weird memory contents.
 //   - Memory is filled with 1s by default
-//     (at least in mgba, not sure about real HW) 
+//     (at least in mgba, not sure about real HW)
 
 // Sections' bases are arbitrary and with a lot of margin to work with.
 // Offsets are relative to the sections' base and are in bytes
