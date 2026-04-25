@@ -114,7 +114,7 @@ void game_main_menu_on_update()
             if (key_hit(SELECT_CARD))
             {
                 play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
-                game_start(vars);
+                game_change_state(GAME_STATE_GAME_START);
             }
             break;
         }
