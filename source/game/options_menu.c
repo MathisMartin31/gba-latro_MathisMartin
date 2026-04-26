@@ -197,11 +197,7 @@ void game_options_menu_change_background(void)
     // Buttons
     main_bg_se_copy_rect(OPTIONS_SPEED_BTN_SRC_RECT, OPTIONS_SPEED_BTN_DEST_POS);
     main_bg_se_copy_rect(OPTIONS_CONTRAST_BTN_SRC_RECT, OPTIONS_CONTRAST_BTN_DEST_POS);
-    
-    main_bg_se_copy_expand_3x3_rect(
-        OPTIONS_BACK_BTN_DEST_RECT,
-        OPTIONS_BACK_BTN_SRC_RECT_3X3_POS
-    );
+    main_bg_se_copy_expand_3x3_rect(OPTIONS_BACK_BTN_DEST_RECT, OPTIONS_BACK_BTN_SRC_RECT_3X3_POS);
 
     // Volume sliders
     main_bg_se_copy_rect(OPTIONS_MUSIC_BAR_LEFT_END_SRC, OPTIONS_MUSIC_BAR_LEFT_END_DEST_POS);
@@ -212,10 +208,7 @@ void game_options_menu_change_background(void)
         OPTIONS_MUSIC_BAR_SHADOW_DEST,
         OPTIONS_VOLUME_BAR_SHADOW_SRC_POS
     );
-    main_bg_se_copy_expand_3w_row(
-        OPTIONS_SOUND_BAR_SHADOW_DEST,
-        OPTIONS_VOLUME_BAR_SHADOW_SRC_POS
-    );
+    main_bg_se_copy_expand_3w_row(OPTIONS_SOUND_BAR_SHADOW_DEST, OPTIONS_VOLUME_BAR_SHADOW_SRC_POS);
 
     tte_printf(
         "#{P:%d,%d; cx:0x%X000}Game Speed",
