@@ -15,4 +15,7 @@ void clear_sram(void);
 void save_options(GameVariables* vars_ptr);
 void load_options(GameVariables* vars_ptr);
 
+void save_game(GameVariables* vars_ptr);
+void load_game(GameVariables* vars_ptr);
+
 #endif // SAVE_H

@@ -2,6 +2,11 @@
 
 #include <string.h>
 
+#include "game.h"
+#include "joker.h"
+#include "list.h"
+#include "util.h"
+
 // See https://gbadev.net/gbadoc/memory.html for more details on SRAM
 // A few important pieces of info:
 //   - Read/Writes are limited to 8-bits words.
@@ -15,15 +20,39 @@
 // (the size of a write in SRAM)
 // This can be moved to a separate file if it starts to become too long.
 
-#define OPTIONS_BASE            0x0000
+#define OPTIONS_BASE            0x0010
 #define OPTIONS_SPEED_OFFSET    0
 #define OPTIONS_CONTRAST_OFFSET 4
 #define OPTIONS_MUSIC_OFFSET    5
 #define OPTIONS_SOUND_OFFSET    6
 
-#define GAME_BASE         0x1000
-#define GAME_TIMER_OFFSET 0
-#define GAME_SEED_OFFSET  4
+#define GAME_BASE                0x0030
+#define GAME_SAVE_VERSION_OFFSET 0
+#define GAME_SEED_OFFSET         4
+#define GAME_MONEY_OFFSET        8
+#define GAME_ANTE_OFFSET         12
+#define GAME_ROUND_OFFSET        16
+#define GAME_BLIND_OFFSET        20
+#define GAME_NEXT_BOSS_OFFSET    24
+
+#define CARDS_BASE 0x0060
+
+// This will be used to determine if the save is compatible
+#define SAVEFILE_VERSION 0
+
+enum DelimiterTag
+{
+    DTAG_JOKER,
+    DTAG_TAROT,
+    DTAG_PLANET,
+    DTAG_VOUCHER,
+    DTAG_SKIP_TAG,
+    DTAG_END,
+    DTAG_INVALID = UNDEFINED
+};
+
+// DelimiterTag is an enum of size sizeof(int) = 4
+#define CARDS_TAG_SIZE 4
 
 /**
  * @brief Write a single 8-bits word to SRAM.
@@ -129,7 +158,11 @@ static inline void sram_readBool(void* data, u32 sram_base, u32 offset)
 void clear_sram(void)
 {
     // clang-format off
-    u32 clear[40] = {
+    u32 clear[80] = {
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -156,7 +189,7 @@ void save_options(GameVariables* vars_ptr)
 }
 
 /**
- ** @brief Save options values from SRAM.
+ ** @brief Load options values from SRAM.
  *
  * @sa save_options
  */
@@ -179,3 +212,120 @@ void load_options(GameVariables* vars_ptr)
     if (vars_ptr->sound_volume > VOLUME_VALUE_MAX)
         vars_ptr->sound_volume = DEFAULT_SOUND_VOLUME;
 }
+
+/**
+ ** @brief Save game data to SRAM.
+ *
+ * @param vars_ptr Pointer to the game_variables structure holding global data.
+ */
+void save_game(GameVariables* vars_ptr)
+{
+    // Fixed position vars
+
+    u32 savefile_version = SAVEFILE_VERSION;
+    int money = get_money();
+    int ante = get_ante();
+    int round = get_round();
+    int current_blind = get_current_blind();
+    int next_boss_blind = get_next_boss_blind();
+
+    // clang-format off
+    sram_write32(&savefile_version,     GAME_BASE, GAME_SAVE_VERSION_OFFSET);
+    sram_write32(&(vars_ptr->rng_seed), GAME_BASE, GAME_SEED_OFFSET);
+    sram_write32(&money,                GAME_BASE, GAME_MONEY_OFFSET);
+    sram_write32(&ante,                 GAME_BASE, GAME_ANTE_OFFSET);
+    sram_write32(&round,                GAME_BASE, GAME_ROUND_OFFSET);
+    sram_write32(&current_blind,        GAME_BASE, GAME_BLIND_OFFSET);
+    sram_write32(&next_boss_blind,      GAME_BASE, GAME_NEXT_BOSS_OFFSET);
+    // clang-format on
+
+    // Variable length stuff.
+    // See discussion https://github.com/GBALATRO/balatro-gba/discussions/450 for
+    // technical details on how to handle saving/loading lists of objects.
+
+    u32 current_offset = 0;
+    int current_dtag;
+
+    List* jokers = get_jokers_list();
+    ListItr itr = list_itr_create(jokers);
+    JokerObject* joker_object;
+    current_dtag = DTAG_JOKER;
+    while ((joker_object = list_itr_next(&itr)))
+    {
+        sram_write32(&current_dtag, CARDS_BASE, current_offset);
+        current_offset += CARDS_TAG_SIZE;
+        sram_write8(&(joker_object->joker->id), CARDS_BASE, current_offset);
+        current_offset += 1;
+        sram_write32(&(joker_object->joker->persistent_state), CARDS_BASE, current_offset);
+        current_offset += 4;
+    }
+
+    // TODO: Consumables
+    // TODO: Skip Tags
+    // TODO: Vouchers
+
+    current_dtag = DTAG_END;
+    sram_write32(&current_dtag, CARDS_BASE, current_offset);
+}
+
+/**
+ ** @brief Load game data from SRAM.
+ *
+ * @sa save_game
+ */
+void load_game(GameVariables* vars_ptr)
+{
+    // Check save version, exit immediately if mismatched
+    u32 save_version;
+    sram_read32(&save_version, GAME_BASE, GAME_SAVE_VERSION_OFFSET);
+    if (save_version != SAVEFILE_VERSION)
+    {
+        return;
+    }
+
+    // TODO: Fixed position vars
+
+    // Variable length stuff.
+
+    List* jokers = get_jokers_list();
+    u8 id;
+    u32 persistent_state;
+    Joker* joker;
+    JokerObject* joker_object;
+
+    int current_dtag = DTAG_INVALID;
+    int current_offset = 0;
+
+    do
+    {
+        // Read delimiter tag to determine how to handle the data
+        sram_read32(&current_dtag, CARDS_BASE, current_offset);
+        current_offset += 4;
+
+        switch (current_dtag)
+        {
+            case DTAG_JOKER:
+            {
+                sram_read8(&id, CARDS_BASE, current_offset);
+                current_offset += 1;
+                sram_read32(&persistent_state, CARDS_BASE, current_offset);
+                current_offset += 4;
+
+                joker = joker_new(id);
+                joker->persistent_state = persistent_state;
+                joker_object = joker_object_new(joker);
+
+                list_push_back(jokers, joker_object);
+
+                break;
+            }
+
+            case DTAG_END:
+                return;
+            
+            default:
+                continue;
+        }
+    } while (current_dtag != DTAG_END);
+}
+

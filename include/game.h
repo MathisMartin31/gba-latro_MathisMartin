@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "blind.h"
 #include "game/common_ui.h"
 #include "game_variables.h"
 
@@ -166,6 +167,10 @@ int get_money(void);
 void set_money(int new_money);
 void display_money();
 void set_retrigger(bool new_retrigger);
+int get_ante();
+int get_round();
+enum BlindType get_current_blind();
+enum BlindType get_next_boss_blind();
 
 int get_game_speed(void);
 void set_game_speed(int new_game_speed);

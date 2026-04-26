@@ -8,7 +8,6 @@
 #include "background_main_menu_gfx.h"
 #include "background_shop_gfx.h"
 #include "bitset.h"
-#include "blind.h"
 #include "button.h"
 #include "card.h"
 #include "game/common_ui.h"
@@ -1051,6 +1050,26 @@ int get_game_speed(void)
 void set_game_speed(int new_game_speed)
 {
     game_vars.game_speed = new_game_speed;
+}
+
+int get_ante()
+{
+    return ante;
+}
+
+int get_round()
+{
+    return round;
+}
+
+enum BlindType get_current_blind()
+{
+    return current_blind;
+}
+
+enum BlindType get_next_boss_blind()
+{
+    return next_boss_blind;
 }
 
 u32 get_chips(void)
@@ -4568,6 +4587,9 @@ static void game_blind_select_on_init()
     selection_y = 0;
 
     play_sfx(SFX_POP, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
+
+    // test
+    save_game(&game_vars);
 }
 
 static void game_blind_select_on_update()
