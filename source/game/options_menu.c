@@ -44,11 +44,15 @@ enum OptionButtons
 // clang-format off
 
 // Values in tiles
-//static const Rect     OPTIONS_BACKGROUND_DEST_RECT             = { 3,  0, 26, 19};
-//static const BG_POINT OPTIONS_BACKGROUND_SRC_RECT_3X3_POS      = { 0, 20};
+static const Rect     OPTIONS_TILES_SRC_RECT                   = { 0,  0, 29, 19};
+static const BG_POINT OPTIONS_TILES_DEST_POS                   = { 0, 20};
+static const Rect     OPTIONS_BACKGROUND_DEST_RECT             = { 3,  0, 26, 19};
+static const BG_POINT OPTIONS_BACKGROUND_SRC_RECT_3X3_POS      = { 0, 20};
+static const Rect     OPTIONS_BACKGROUND_CLEAR_SRC_RECT        = {16,  0, 29,  5};
+static const BG_POINT OPTIONS_BACKGROUND_CLEAR_DEST_POS        = { 0,  0};
 
-//static const Rect     OPTIONS_SPEED_BTN_SRC_RECT               = { 4, 20,  9, 21};
-//static const BG_POINT OPTIONS_SPEED_BTN_DEST_POS               = {12,  3};
+static const Rect     OPTIONS_SPEED_BTN_SRC_RECT               = { 4, 20,  9, 21};
+static const BG_POINT OPTIONS_SPEED_BTN_DEST_POS               = {12,  3};
 static const Rect     OPTIONS_SPEED_LESS_ACTIVE_BTN_SRC_RECT   = { 3, 20,  3, 21};
 static const Rect     OPTIONS_SPEED_LESS_DISABLED_BTN_SRC_RECT = { 9, 22,  9, 23};
 static const BG_POINT OPTIONS_SPEED_LESS_BTN_DEST_POS          = {11,  3};
@@ -61,12 +65,21 @@ static const Rect     OPTIONS_SPEED_VALUES[GAME_SPEED_MAX]   = { { 6, 20,  7, 21
                                                                  { 7, 22,  8, 23} };
 static const BG_POINT OPTIONS_SPEED_VALUE_DEST_POS             = {14,  3};
 
-//static const Rect     OPTIONS_CONTRAST_BTN_SRC_RECT            = { 3, 24,  8, 25};
-//static const BG_POINT OPTIONS_CONTRAST_BTN_DEST_POS            = {12,  7};
+static const Rect     OPTIONS_CONTRAST_BTN_SRC_RECT            = { 3, 24,  8, 25};
+static const BG_POINT OPTIONS_CONTRAST_BTN_DEST_POS            = {12,  7};
 static const Rect     OPTIONS_CONTRAST_VALUE_YES_SRC_RECT      = { 4, 24,  7, 25};
 static const Rect     OPTIONS_CONTRAST_VALUE_NO_SRC_RECT       = { 9, 24, 12, 25};
 static const BG_POINT OPTIONS_CONTRAST_VALUE_DEST_POS          = {13,  7};
 
+
+static const Rect     OPTIONS_MUSIC_BAR_LEFT_END_SRC           = {11, 20, 11, 20};
+static const BG_POINT OPTIONS_MUSIC_BAR_LEFT_END_DEST_POS      = { 4, 11};
+static const Rect     OPTIONS_MUSIC_BAR_RIGHT_END_SRC          = {15, 20, 15, 20};
+static const BG_POINT OPTIONS_MUSIC_BAR_RIGHT_END_DEST_POS     = {25, 11};
+static const Rect     OPTIONS_SOUND_BAR_LEFT_END_SRC           = {11, 22, 11, 22};
+static const BG_POINT OPTIONS_SOUND_BAR_LEFT_END_DEST_POS      = { 4, 14};
+static const Rect     OPTIONS_SOUND_BAR_RIGHT_END_SRC          = {15, 22, 15, 22};
+static const BG_POINT OPTIONS_SOUND_BAR_RIGHT_END_DEST_POS     = {25, 14};
 static const Rect     OPTIONS_MUSIC_SLIDER_FULL_SRC            = {12, 20, 12, 20};
 static const Rect     OPTIONS_MUSIC_SLIDER_MID_SRC             = {13, 20, 13, 20};
 static const Rect     OPTIONS_MUSIC_SLIDER_EMPTY_SRC           = {14, 20, 14, 20};
@@ -75,9 +88,12 @@ static const Rect     OPTIONS_SOUND_SLIDER_MID_SRC             = {13, 22, 13, 22
 static const Rect     OPTIONS_SOUND_SLIDER_EMPTY_SRC           = {14, 22, 14, 22};
 static const BG_POINT OPTIONS_MUSIC_SLIDER_START_POS           = { 5, 11};
 static const BG_POINT OPTIONS_SOUND_SLIDER_START_POS           = { 5, 14};
+static const BG_POINT OPTIONS_VOLUME_BAR_SHADOW_SRC_POS        = {12, 21};
+static const Rect     OPTIONS_MUSIC_BAR_SHADOW_DEST            = { 5, 12, 24, 12};
+static const Rect     OPTIONS_SOUND_BAR_SHADOW_DEST            = { 5, 15, 24, 15};
 
-//static const Rect     OPTIONS_BACK_BTN_DEST_RECT               = { 4, 16, 25, 18};
-//static const BG_POINT OPTIONS_BACK_BTN_SRC_RECT_3X3_POS        = { 0, 23};
+static const Rect     OPTIONS_BACK_BTN_DEST_RECT               = { 4, 16, 25, 18};
+static const BG_POINT OPTIONS_BACK_BTN_SRC_RECT_3X3_POS        = { 0, 23};
 
 // Values in pixels
 static const BG_POINT OPTIONS_GAME_SPEED_TEXT_POS    = { 82,  16};
@@ -160,10 +176,46 @@ static void disable_all_outlines_except_self(enum OptionButtons highlighted_btn)
 void game_options_menu_change_background(void)
 {
     tte_erase_screen();
+    CBB_CLEAR(MAIN_BG_CBB);
 
     GRIT_CPY(pal_bg_mem, background_options_menu_gfxPal);
     GRIT_CPY(&tile_mem[MAIN_BG_CBB], background_options_menu_gfxTiles);
     GRIT_CPY(&se_mem[MAIN_BG_SBB], background_options_menu_gfxMap);
+
+    // Recreate menu frame
+
+    // Copy tiles out of frame and clean up initial copy
+    main_bg_se_copy_rect(OPTIONS_TILES_SRC_RECT, OPTIONS_TILES_DEST_POS);
+    main_bg_se_copy_rect(OPTIONS_BACKGROUND_CLEAR_SRC_RECT, OPTIONS_BACKGROUND_CLEAR_DEST_POS);
+
+    // Recreate base background frame
+    main_bg_se_copy_expand_3x3_rect(
+        OPTIONS_BACKGROUND_DEST_RECT,
+        OPTIONS_BACKGROUND_SRC_RECT_3X3_POS
+    );
+
+    // Buttons
+    main_bg_se_copy_rect(OPTIONS_SPEED_BTN_SRC_RECT, OPTIONS_SPEED_BTN_DEST_POS);
+    main_bg_se_copy_rect(OPTIONS_CONTRAST_BTN_SRC_RECT, OPTIONS_CONTRAST_BTN_DEST_POS);
+    
+    main_bg_se_copy_expand_3x3_rect(
+        OPTIONS_BACK_BTN_DEST_RECT,
+        OPTIONS_BACK_BTN_SRC_RECT_3X3_POS
+    );
+
+    // Volume sliders
+    main_bg_se_copy_rect(OPTIONS_MUSIC_BAR_LEFT_END_SRC, OPTIONS_MUSIC_BAR_LEFT_END_DEST_POS);
+    main_bg_se_copy_rect(OPTIONS_MUSIC_BAR_RIGHT_END_SRC, OPTIONS_MUSIC_BAR_RIGHT_END_DEST_POS);
+    main_bg_se_copy_rect(OPTIONS_SOUND_BAR_LEFT_END_SRC, OPTIONS_SOUND_BAR_LEFT_END_DEST_POS);
+    main_bg_se_copy_rect(OPTIONS_SOUND_BAR_RIGHT_END_SRC, OPTIONS_SOUND_BAR_RIGHT_END_DEST_POS);
+    main_bg_se_copy_expand_3w_row(
+        OPTIONS_MUSIC_BAR_SHADOW_DEST,
+        OPTIONS_VOLUME_BAR_SHADOW_SRC_POS
+    );
+    main_bg_se_copy_expand_3w_row(
+        OPTIONS_SOUND_BAR_SHADOW_DEST,
+        OPTIONS_VOLUME_BAR_SHADOW_SRC_POS
+    );
 
     tte_printf(
         "#{P:%d,%d; cx:0x%X000}Game Speed",
