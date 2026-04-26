@@ -18,4 +18,7 @@ void load_options();
 void save_game();
 void load_game();
 
+void test_save_game(void);
+void test_load_game(void);
+
 #endif // SAVE_H

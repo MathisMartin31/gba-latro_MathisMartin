@@ -515,6 +515,6 @@ void game_options_menu_on_update(void)
 
 void game_options_menu_on_exit(void)
 {
-    save_options();
+    save_game();
     tte_erase_screen();
 }

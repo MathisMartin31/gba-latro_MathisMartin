@@ -793,7 +793,7 @@ void game_init()
 
     jokers_available_to_shop_init();
 
-    load_options();
+    load_game();
 
     hands = max_hands;
     discards = max_discards;
