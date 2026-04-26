@@ -204,10 +204,7 @@ void game_options_menu_change_background(void)
     main_bg_se_copy_rect(OPTIONS_MUSIC_BAR_RIGHT_END_SRC, OPTIONS_MUSIC_BAR_RIGHT_END_DEST_POS);
     main_bg_se_copy_rect(OPTIONS_SOUND_BAR_LEFT_END_SRC, OPTIONS_SOUND_BAR_LEFT_END_DEST_POS);
     main_bg_se_copy_rect(OPTIONS_SOUND_BAR_RIGHT_END_SRC, OPTIONS_SOUND_BAR_RIGHT_END_DEST_POS);
-    main_bg_se_copy_expand_3w_row(
-        OPTIONS_MUSIC_BAR_SHADOW_DEST,
-        OPTIONS_VOLUME_BAR_SHADOW_SRC_POS
-    );
+    main_bg_se_copy_expand_3w_row(OPTIONS_MUSIC_BAR_SHADOW_DEST, OPTIONS_VOLUME_BAR_SHADOW_SRC_POS);
     main_bg_se_copy_expand_3w_row(OPTIONS_SOUND_BAR_SHADOW_DEST, OPTIONS_VOLUME_BAR_SHADOW_SRC_POS);
 
     tte_printf(
