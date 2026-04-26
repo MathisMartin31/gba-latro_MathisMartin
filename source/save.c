@@ -181,10 +181,10 @@ void clear_sram(void)
 void save_options()
 {
     // clang-format off
-    sram_write32  (&(game_vars.game_speed),    OPTIONS_BASE, OPTIONS_SPEED_OFFSET);
-    sram_writeBool(&(game_vars.high_contrast), OPTIONS_BASE, OPTIONS_CONTRAST_OFFSET);
-    sram_write8   (&(game_vars.music_volume),  OPTIONS_BASE, OPTIONS_MUSIC_OFFSET);
-    sram_write8   (&(game_vars.sound_volume),  OPTIONS_BASE, OPTIONS_SOUND_OFFSET);
+    sram_write32  (&(options_vars.game_speed),    OPTIONS_BASE, OPTIONS_SPEED_OFFSET);
+    sram_writeBool(&(options_vars.high_contrast), OPTIONS_BASE, OPTIONS_CONTRAST_OFFSET);
+    sram_write8   (&(options_vars.music_volume),  OPTIONS_BASE, OPTIONS_MUSIC_OFFSET);
+    sram_write8   (&(options_vars.sound_volume),  OPTIONS_BASE, OPTIONS_SOUND_OFFSET);
     // clang-format on
 }
 
@@ -196,21 +196,21 @@ void save_options()
 void load_options()
 {
     // clang-format off
-    sram_read32  (&(game_vars.game_speed),    OPTIONS_BASE, OPTIONS_SPEED_OFFSET);
-    sram_readBool(&(game_vars.high_contrast), OPTIONS_BASE, OPTIONS_CONTRAST_OFFSET);
-    sram_read8   (&(game_vars.music_volume),  OPTIONS_BASE, OPTIONS_MUSIC_OFFSET);
-    sram_read8   (&(game_vars.sound_volume),  OPTIONS_BASE, OPTIONS_SOUND_OFFSET);
+    sram_read32  (&(options_vars.game_speed),    OPTIONS_BASE, OPTIONS_SPEED_OFFSET);
+    sram_readBool(&(options_vars.high_contrast), OPTIONS_BASE, OPTIONS_CONTRAST_OFFSET);
+    sram_read8   (&(options_vars.music_volume),  OPTIONS_BASE, OPTIONS_MUSIC_OFFSET);
+    sram_read8   (&(options_vars.sound_volume),  OPTIONS_BASE, OPTIONS_SOUND_OFFSET);
     // clang-format on
 
     // Data validation
-    if (game_vars.game_speed < GAME_SPEED_MIN || game_vars.game_speed > GAME_SPEED_MAX)
-        game_vars.game_speed = DEFAULT_GAME_SPEED;
+    if (options_vars.game_speed < GAME_SPEED_MIN || options_vars.game_speed > GAME_SPEED_MAX)
+        options_vars.game_speed = DEFAULT_GAME_SPEED;
 
-    if (game_vars.music_volume > VOLUME_VALUE_MAX)
-        game_vars.music_volume = DEFAULT_MUSIC_VOLUME;
+    if (options_vars.music_volume > VOLUME_VALUE_MAX)
+        options_vars.music_volume = DEFAULT_MUSIC_VOLUME;
 
-    if (game_vars.sound_volume > VOLUME_VALUE_MAX)
-        game_vars.sound_volume = DEFAULT_SOUND_VOLUME;
+    if (options_vars.sound_volume > VOLUME_VALUE_MAX)
+        options_vars.sound_volume = DEFAULT_SOUND_VOLUME;
 }
 
 /**

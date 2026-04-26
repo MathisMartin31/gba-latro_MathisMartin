@@ -2,6 +2,7 @@
 
 #include "audio_utils.h"
 #include "game.h"
+#include "game_variables.h"
 #include "pool.h"
 #include "soundbank.h"
 #include "util.h"
@@ -209,8 +210,8 @@ void sprite_object_reset_transform(SpriteObject* sprite_object)
 
 void sprite_object_update(SpriteObject* sprite_object)
 {
-    sprite_object->vx += ((sprite_object->tx - sprite_object->x) * get_game_speed()) / 8;
-    sprite_object->vy += ((sprite_object->ty - sprite_object->y) * get_game_speed()) / 8;
+    sprite_object->vx += ((sprite_object->tx - sprite_object->x) * options_vars.game_speed) / 8;
+    sprite_object->vy += ((sprite_object->ty - sprite_object->y) * options_vars.game_speed) / 8;
 
     // Scale up the card when it's played
     sprite_object->vscale += (sprite_object->tscale - sprite_object->scale) / 8;

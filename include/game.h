@@ -14,7 +14,7 @@ extern GameVariables g_game_vars;
 #define MAX_JOKERS_HELD_SIZE 5 // This doesn't account for negatives right now.
 #define MAX_SHOP_JOKERS      2 // TODO: Make this dynamic and allow for other items besides jokers
 #define MAX_SELECTION_SIZE   5
-#define FRAMES(x)            (((x) + (game_vars.game_speed) - 1) / (game_vars.game_speed))
+#define FRAMES(x)            (((x) + (options_vars.game_speed) - 1) / (options_vars.game_speed))
 
 // TODO: Can make these dynamic to support interest-related jokers and vouchers
 #define MAX_INTEREST   5
@@ -171,9 +171,6 @@ int get_ante();
 int get_round();
 enum BlindType get_current_blind();
 enum BlindType get_next_boss_blind();
-
-int get_game_speed(void);
-void set_game_speed(int new_game_speed);
 
 // joker specific functions
 bool is_shortcut_joker_active(void);

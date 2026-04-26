@@ -558,14 +558,7 @@ static enum HandType hand_type = NONE;
 static ContainedHandTypes _contained_hands = {0};
 
 // Initialization of the global var
-GameVariables game_vars = {
-    0,
-    0,
-    DEFAULT_GAME_SPEED,
-    DEFAULT_HIGH_CONTRAST,
-    DEFAULT_MUSIC_VOLUME,
-    DEFAULT_SOUND_VOLUME
-};
+GameVariables game_vars = {0, 0};
 
 // The sprite that displays the blind when in "GAME_PLAYING/GAME_ROUND_END" state
 static Sprite* playing_blind_token = NULL;
@@ -1049,17 +1042,6 @@ int get_num_discards_remaining(void)
 int get_num_hands_remaining(void)
 {
     return hands;
-}
-
-int get_game_speed(void)
-{
-    return game_vars.game_speed;
-}
-
-// for the future when a menu actually lets this variable be changed.
-void set_game_speed(int new_game_speed)
-{
-    game_vars.game_speed = new_game_speed;
 }
 
 int get_ante()
@@ -3205,10 +3187,10 @@ static inline void game_playing_process_input_and_state(void)
         /* Using fixed point in case the score is lower than NUM_SCORE_LERP_STEPS and then
          * then the division rounds it down to 0 and it's never added to the total.
          * The operation is equivalent to
-         * fxdiv(int2fx(temp_score * get_game_speed()), int2fx(NUM_SCORE_LERP_STEPS))
+         * fxdiv(int2fx(temp_score * options_vars.game_speed), int2fx(NUM_SCORE_LERP_STEPS))
          */
-        lerped_temp_score -= int2fx(temp_score * get_game_speed()) / NUM_SCORE_LERP_STEPS;
-        lerped_score += int2fx(temp_score * get_game_speed()) / NUM_SCORE_LERP_STEPS;
+        lerped_temp_score -= int2fx(temp_score * options_vars.game_speed) / NUM_SCORE_LERP_STEPS;
+        lerped_score += int2fx(temp_score * options_vars.game_speed) / NUM_SCORE_LERP_STEPS;
 
         if (lerped_temp_score > 0)
         {
