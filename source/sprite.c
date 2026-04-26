@@ -210,8 +210,8 @@ void sprite_object_reset_transform(SpriteObject* sprite_object)
 
 void sprite_object_update(SpriteObject* sprite_object)
 {
-    sprite_object->vx += ((sprite_object->tx - sprite_object->x) * options_vars.game_speed) / 8;
-    sprite_object->vy += ((sprite_object->ty - sprite_object->y) * options_vars.game_speed) / 8;
+    sprite_object->vx += ((sprite_object->tx - sprite_object->x) * game_vars.game_speed) / 8;
+    sprite_object->vy += ((sprite_object->ty - sprite_object->y) * game_vars.game_speed) / 8;
 
     // Scale up the card when it's played
     sprite_object->vscale += (sprite_object->tscale - sprite_object->scale) / 8;

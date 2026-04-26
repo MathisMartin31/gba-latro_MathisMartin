@@ -558,7 +558,14 @@ static enum HandType hand_type = NONE;
 static ContainedHandTypes _contained_hands = {0};
 
 // Initialization of the global var
-GameVariables game_vars = {0, 0};
+GameVariables game_vars = {
+    0,
+    0,
+    DEFAULT_GAME_SPEED,
+    DEFAULT_HIGH_CONTRAST,
+    DEFAULT_MUSIC_VOLUME,
+    DEFAULT_SOUND_VOLUME
+};
 
 // The sprite that displays the blind when in "GAME_PLAYING/GAME_ROUND_END" state
 static Sprite* playing_blind_token = NULL;
@@ -3187,10 +3194,10 @@ static inline void game_playing_process_input_and_state(void)
         /* Using fixed point in case the score is lower than NUM_SCORE_LERP_STEPS and then
          * then the division rounds it down to 0 and it's never added to the total.
          * The operation is equivalent to
-         * fxdiv(int2fx(temp_score * options_vars.game_speed), int2fx(NUM_SCORE_LERP_STEPS))
+         * fxdiv(int2fx(temp_score * game_vars.game_speed), int2fx(NUM_SCORE_LERP_STEPS))
          */
-        lerped_temp_score -= int2fx(temp_score * options_vars.game_speed) / NUM_SCORE_LERP_STEPS;
-        lerped_score += int2fx(temp_score * options_vars.game_speed) / NUM_SCORE_LERP_STEPS;
+        lerped_temp_score -= int2fx(temp_score * game_vars.game_speed) / NUM_SCORE_LERP_STEPS;
+        lerped_score += int2fx(temp_score * game_vars.game_speed) / NUM_SCORE_LERP_STEPS;
 
         if (lerped_temp_score > 0)
         {
