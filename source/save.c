@@ -178,13 +178,13 @@ void clear_sram(void)
  *
  * @param vars_ptr Pointer to the game_variables structure holding all the data.
  */
-void save_options(GameVariables* vars_ptr)
+void save_options()
 {
     // clang-format off
-    sram_write32  (&(vars_ptr->game_speed),    OPTIONS_BASE, OPTIONS_SPEED_OFFSET);
-    sram_writeBool(&(vars_ptr->high_contrast), OPTIONS_BASE, OPTIONS_CONTRAST_OFFSET);
-    sram_write8   (&(vars_ptr->music_volume),  OPTIONS_BASE, OPTIONS_MUSIC_OFFSET);
-    sram_write8   (&(vars_ptr->sound_volume),  OPTIONS_BASE, OPTIONS_SOUND_OFFSET);
+    sram_write32  (&(game_vars.game_speed),    OPTIONS_BASE, OPTIONS_SPEED_OFFSET);
+    sram_writeBool(&(game_vars.high_contrast), OPTIONS_BASE, OPTIONS_CONTRAST_OFFSET);
+    sram_write8   (&(game_vars.music_volume),  OPTIONS_BASE, OPTIONS_MUSIC_OFFSET);
+    sram_write8   (&(game_vars.sound_volume),  OPTIONS_BASE, OPTIONS_SOUND_OFFSET);
     // clang-format on
 }
 
@@ -193,24 +193,24 @@ void save_options(GameVariables* vars_ptr)
  *
  * @sa save_options
  */
-void load_options(GameVariables* vars_ptr)
+void load_options()
 {
     // clang-format off
-    sram_read32  (&(vars_ptr->game_speed),    OPTIONS_BASE, OPTIONS_SPEED_OFFSET);
-    sram_readBool(&(vars_ptr->high_contrast), OPTIONS_BASE, OPTIONS_CONTRAST_OFFSET);
-    sram_read8   (&(vars_ptr->music_volume),  OPTIONS_BASE, OPTIONS_MUSIC_OFFSET);
-    sram_read8   (&(vars_ptr->sound_volume),  OPTIONS_BASE, OPTIONS_SOUND_OFFSET);
+    sram_read32  (&(game_vars.game_speed),    OPTIONS_BASE, OPTIONS_SPEED_OFFSET);
+    sram_readBool(&(game_vars.high_contrast), OPTIONS_BASE, OPTIONS_CONTRAST_OFFSET);
+    sram_read8   (&(game_vars.music_volume),  OPTIONS_BASE, OPTIONS_MUSIC_OFFSET);
+    sram_read8   (&(game_vars.sound_volume),  OPTIONS_BASE, OPTIONS_SOUND_OFFSET);
     // clang-format on
 
     // Data validation
-    if (vars_ptr->game_speed < GAME_SPEED_MIN || vars_ptr->game_speed > GAME_SPEED_MAX)
-        vars_ptr->game_speed = DEFAULT_GAME_SPEED;
+    if (game_vars.game_speed < GAME_SPEED_MIN || game_vars.game_speed > GAME_SPEED_MAX)
+        game_vars.game_speed = DEFAULT_GAME_SPEED;
 
-    if (vars_ptr->music_volume > VOLUME_VALUE_MAX)
-        vars_ptr->music_volume = DEFAULT_MUSIC_VOLUME;
+    if (game_vars.music_volume > VOLUME_VALUE_MAX)
+        game_vars.music_volume = DEFAULT_MUSIC_VOLUME;
 
-    if (vars_ptr->sound_volume > VOLUME_VALUE_MAX)
-        vars_ptr->sound_volume = DEFAULT_SOUND_VOLUME;
+    if (game_vars.sound_volume > VOLUME_VALUE_MAX)
+        game_vars.sound_volume = DEFAULT_SOUND_VOLUME;
 }
 
 /**
@@ -218,7 +218,7 @@ void load_options(GameVariables* vars_ptr)
  *
  * @param vars_ptr Pointer to the game_variables structure holding global data.
  */
-void save_game(GameVariables* vars_ptr)
+void save_game()
 {
     // Fixed position vars
 
@@ -231,7 +231,7 @@ void save_game(GameVariables* vars_ptr)
 
     // clang-format off
     sram_write32(&savefile_version,     GAME_BASE, GAME_SAVE_VERSION_OFFSET);
-    sram_write32(&(vars_ptr->rng_seed), GAME_BASE, GAME_SEED_OFFSET);
+    sram_write32(&(game_vars.rng_seed), GAME_BASE, GAME_SEED_OFFSET);
     sram_write32(&money,                GAME_BASE, GAME_MONEY_OFFSET);
     sram_write32(&ante,                 GAME_BASE, GAME_ANTE_OFFSET);
     sram_write32(&round,                GAME_BASE, GAME_ROUND_OFFSET);
@@ -273,7 +273,7 @@ void save_game(GameVariables* vars_ptr)
  *
  * @sa save_game
  */
-void load_game(GameVariables* vars_ptr)
+void load_game()
 {
     // Check save version, exit immediately if mismatched
     u32 save_version;

@@ -57,7 +57,7 @@ void game_main_menu_change_background(void)
     );
 }
 
-void game_main_menu_on_init()
+void game_main_menu_on_init(void)
 {
     affine_background_change_background(AFFINE_BG_MAIN_MENU);
     change_background(BG_MAIN_MENU);
@@ -71,7 +71,7 @@ void game_main_menu_on_init()
     main_menu_ace->sprite_object->tscale = float2fx(0.8f);
 }
 
-void game_main_menu_on_update()
+void game_main_menu_on_update(void)
 {
     card_object_update(main_menu_ace);
     main_menu_ace->sprite_object->trotation = lu_sin((g_game_vars.timer << 8) / 2) / 3;
@@ -146,7 +146,7 @@ void game_main_menu_on_update()
     }
 }
 
-void game_main_menu_on_exit()
+void game_main_menu_on_exit(void)
 {
     // Normally I would just cache these and hide/unhide but I didn't feel like dealing with
     // defining a layer for it
