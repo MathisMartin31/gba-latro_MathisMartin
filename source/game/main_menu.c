@@ -33,6 +33,8 @@ enum MainButtons
 #define MAIN_MENU_ACE_T_X 88
 #define MAIN_MENU_ACE_T_Y 26
 
+extern char balatro_version[];
+
 // Main menu sprite - the ace of spades
 static CardObject* main_menu_ace = NULL;
 
@@ -98,6 +100,28 @@ void game_main_menu_on_update(void)
         {
             selection_x++;
         }
+    }
+
+    // DEBUG: display git hash by holding L+R+START+SELECT
+    static bool is_version_shown = false;
+    if (key_is_down(KEY_START) && key_is_down(KEY_SELECT) &&
+        key_is_down(KEY_L) && key_is_down(KEY_R))
+    {
+        if (!is_version_shown)
+        {
+            tte_printf(
+                "#{P:%d,%d; cx:0x%X000}%s",
+                0, 152,
+                TTE_WHITE_PB,
+                balatro_version
+            );
+        }
+        is_version_shown = true;
+    }
+    else
+    {
+        tte_erase_screen();
+        is_version_shown = false;
     }
 
     switch (selection_x)

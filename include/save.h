@@ -10,8 +10,6 @@
 
 #include <tonc.h>
 
-void clear_sram(void);
-
 void save_options();
 void load_options();
 

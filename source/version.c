@@ -7,4 +7,4 @@
 #endif
 
 __attribute__((section(".version"), used)) const char balatro_version[] =
-    "GBALATRO_VERSION:" GIT_HASH GIT_DIRTY;
+    "GBALATRO-VERSION:" GIT_HASH GIT_DIRTY;

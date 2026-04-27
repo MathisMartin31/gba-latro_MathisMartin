@@ -13,13 +13,20 @@
 //   - Memory is filled with 1s by default
 //     (at least in mgba, not sure about real HW)
 
-#define VERSION_BASE 0x0000
-#define GAME_BASE    0x0010
-#define LISTS_BASE   0x0060
+#define CHECK_BASE 0x0000
+#define GAME_BASE  0x0010
+#define LISTS_BASE 0x0060
 
-// Spells GBAL, used to determine if the save data is junk
-#define SAVE_VALIDATION_MAGIC 0x4C414247
-#define SAVE_VALIDATION_SIZE  10
+#define CHECK_MAGIC     0x4C414247 // Spells GBAL, used to determine if the save data is junk
+#define CHECK_HASH_SIZE 7
+#define GIT_HASH_START  17 // starts after "GBALATRO-VERSION:" in the balatro_version var
+
+typedef struct SaveCheckInfo
+{
+    u32 magic;
+    bool dirty;
+    char githash[7];
+} SaveCheckInfo;
 
 enum DelimiterTag
 {
@@ -31,6 +38,8 @@ enum DelimiterTag
     DTAG_END,
     DTAG_INVALID = UNDEFINED
 };
+
+extern char balatro_version[];
 
 // DelimiterTag is an enum of size sizeof(int) = 4
 #define CARDS_TAG_SIZE 4
@@ -69,26 +78,50 @@ static inline void read_sram(u32 sram_base, u8* bytes, u32 size)
     }
 }
 
+// Check 7 chars of balatrà_version after the "GBALATRO_VERSION" preffix 
+static inline bool check_hash(const char* preffix)
+{
+    for (u32 i = 0; i < CHECK_HASH_SIZE; i++)
+    {
+        if (balatro_version[GIT_HASH_START + i] != preffix[i])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// This works because the balatro_version has "-dirty" added at the end if it's dirty
+static inline bool is_version_dirty()
+{
+    return strlen(balatro_version) > CHECK_HASH_SIZE;
+}
+
 static inline bool check_save()
 {
-    u8 validation[SAVE_VALIDATION_SIZE] = {0};
-    read_sram(VERSION_BASE, validation, SAVE_VALIDATION_SIZE);
+    SaveCheckInfo check;
+    read_sram(CHECK_BASE, (u8*)&check, sizeof(check));
 
-    u32 magic_word  = validation[0] + (validation[1] << 8) + (validation[2] << 16) + (validation[3] << 24);
-    //u32 githash_low = validation[4] + (validation[5] << 8) + (validation[6] << 16) + (validation[7] << 24);
-    //u16 githash_high = validation[8] + (validation[9] << 8);
-
-    bool is_valid = (magic_word == SAVE_VALIDATION_MAGIC);
+    bool is_valid = (check.magic == CHECK_MAGIC) &&
+                    check.dirty == is_version_dirty() &&
+                    check_hash(check.githash);
 
     return is_valid;
 }
 
 static inline void set_save_valid()
 {
-    u8 validation[SAVE_VALIDATION_SIZE] = {0};
-    u32 magic_word = SAVE_VALIDATION_MAGIC;
-    memcpy(validation, &magic_word, 4);
-    write_sram(VERSION_BASE, validation, SAVE_VALIDATION_SIZE);
+    SaveCheckInfo check = {};
+    check.magic = CHECK_MAGIC;
+    check.dirty = is_version_dirty();
+    memcpy(
+        &(check.githash),
+        (void*)(&balatro_version) + GIT_HASH_START,
+        CHECK_HASH_SIZE
+    );
+
+    write_sram(CHECK_BASE, (const u8*)&check, sizeof(check));
 }
 
 /**
