@@ -104,17 +104,12 @@ void game_main_menu_on_update(void)
 
     // DEBUG: display git hash by holding L+R+START+SELECT
     static bool is_version_shown = false;
-    if (key_is_down(KEY_START) && key_is_down(KEY_SELECT) &&
-        key_is_down(KEY_L) && key_is_down(KEY_R))
+    if (key_is_down(KEY_START) && key_is_down(KEY_SELECT) && key_is_down(KEY_L) &&
+        key_is_down(KEY_R))
     {
         if (!is_version_shown)
         {
-            tte_printf(
-                "#{P:%d,%d; cx:0x%X000}%s",
-                0, 152,
-                TTE_WHITE_PB,
-                balatro_version
-            );
+            tte_printf("#{P:%d,%d; cx:0x%X000}%s", 0, 152, TTE_WHITE_PB, balatro_version);
         }
         is_version_shown = true;
     }

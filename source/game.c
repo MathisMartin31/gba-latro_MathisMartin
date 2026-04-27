@@ -558,14 +558,8 @@ static enum HandType hand_type = NONE;
 static ContainedHandTypes _contained_hands = {0};
 
 // Initialization of the global var
-GameVariables game_vars = {
-    0,
-    0,
-    DEFAULT_GAME_SPEED,
-    DEFAULT_HIGH_CONTRAST,
-    DEFAULT_MUSIC_VOLUME,
-    DEFAULT_SOUND_VOLUME
-};
+GameVariables game_vars =
+    {0, 0, DEFAULT_GAME_SPEED, DEFAULT_HIGH_CONTRAST, DEFAULT_MUSIC_VOLUME, DEFAULT_SOUND_VOLUME};
 
 // The sprite that displays the blind when in "GAME_PLAYING/GAME_ROUND_END" state
 static Sprite* playing_blind_token = NULL;

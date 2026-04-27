@@ -1,11 +1,11 @@
 #include "save.h"
 
-#include <string.h>
-
 #include "game.h"
 #include "joker.h"
 #include "list.h"
 #include "util.h"
+
+#include <string.h>
 
 // See https://gbadev.net/gbadoc/memory.html for more details on SRAM
 // A few important pieces of info:
@@ -56,7 +56,7 @@ static inline void write_sram(u32 sram_base, const u8* bytes, u32 size)
     if (sram_base + size >= SRAM_SIZE)
         return;
 
-    for(u32 i = 0; i < size; i++)
+    for (u32 i = 0; i < size; i++)
     {
         sram_mem[sram_base + i] = bytes[i];
     }
@@ -72,7 +72,7 @@ static inline void read_sram(u32 sram_base, u8* bytes, u32 size)
     if (sram_base + size >= SRAM_SIZE)
         return;
 
-    for(u32 i = 0; i < size; i++)
+    for (u32 i = 0; i < size; i++)
     {
         bytes[i] = sram_mem[sram_base + i];
     }
@@ -103,8 +103,7 @@ static inline bool check_save()
     SaveCheckInfo check;
     read_sram(CHECK_BASE, (u8*)&check, sizeof(check));
 
-    bool is_valid = (check.magic == CHECK_MAGIC) &&
-                    check.dirty == is_version_dirty() &&
+    bool is_valid = (check.magic == CHECK_MAGIC) && check.dirty == is_version_dirty() &&
                     check_hash(check.githash);
 
     return is_valid;
@@ -115,11 +114,7 @@ static inline void set_save_valid()
     SaveCheckInfo check = {};
     check.magic = CHECK_MAGIC;
     check.dirty = is_version_dirty();
-    memcpy(
-        &(check.githash),
-        (void*)(&balatro_version) + GIT_HASH_START,
-        CHECK_HASH_SIZE
-    );
+    memcpy(&(check.githash), (void*)(&balatro_version) + GIT_HASH_START, CHECK_HASH_SIZE);
 
     write_sram(CHECK_BASE, (const u8*)&check, sizeof(check));
 }
