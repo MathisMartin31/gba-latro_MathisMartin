@@ -558,7 +558,7 @@ static enum HandType hand_type = NONE;
 static ContainedHandTypes _contained_hands = {0};
 
 // Initialization of the global var
-GameVariables game_vars = {
+GameVariables g_game_vars = {
     0,
     0,
     0,
@@ -935,7 +935,7 @@ void game_change_state(enum GameState new_game_state)
 
 u32 get_rand()
 {
-    game_vars.rng_step++;
+    g_game_vars.rng_step++;
     return rand();
 }
 
@@ -2067,8 +2067,8 @@ static void game_win_on_init(void)
 static inline void set_seed(int seed)
 {
     srand(seed);
-    game_vars.rng_seed = seed;
-    game_vars.rng_step = 0;
+    g_game_vars.rng_seed = seed;
+    g_game_vars.rng_step = 0;
 }
 
 // Playing state functions
@@ -3202,10 +3202,10 @@ static inline void game_playing_process_input_and_state(void)
         /* Using fixed point in case the score is lower than NUM_SCORE_LERP_STEPS and then
          * then the division rounds it down to 0 and it's never added to the total.
          * The operation is equivalent to
-         * fxdiv(int2fx(temp_score * game_vars.game_speed), int2fx(NUM_SCORE_LERP_STEPS))
+         * fxdiv(int2fx(temp_score * g_game_vars.game_speed), int2fx(NUM_SCORE_LERP_STEPS))
          */
-        lerped_temp_score -= int2fx(temp_score * game_vars.game_speed) / NUM_SCORE_LERP_STEPS;
-        lerped_score += int2fx(temp_score * game_vars.game_speed) / NUM_SCORE_LERP_STEPS;
+        lerped_temp_score -= int2fx(temp_score * g_game_vars.game_speed) / NUM_SCORE_LERP_STEPS;
+        lerped_score += int2fx(temp_score * g_game_vars.game_speed) / NUM_SCORE_LERP_STEPS;
 
         if (lerped_temp_score > 0)
         {
@@ -4896,7 +4896,7 @@ static void game_blind_select_on_exit(void)
 void game_start(void)
 {
     // set_seed(9); // 9 is a full house
-    set_seed(game_vars.rng_seed);
+    set_seed(g_game_vars.rng_seed);
 
     affine_background_change_background(AFFINE_BG_GAME);
 
