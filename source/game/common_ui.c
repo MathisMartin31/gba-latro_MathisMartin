@@ -22,13 +22,12 @@ static const BackgroundRenderCallback bgCallbacks[] = {
 
 void change_background(enum BackgroundId id)
 {
-    if (id == BG_MAIN_MENU)
+    if (id != background && bgCallbacks[id] != NULL)
     {
-        if (id != background)
-        {
-            bgCallbacks[id]();
-        }
+        bgCallbacks[id]();
     }
-    change_background_legacy(id);
     background = id;
+
+    // Can be removed once all states have their own "change_background" func
+    change_background_legacy(id);
 }
