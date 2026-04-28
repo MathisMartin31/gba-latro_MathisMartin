@@ -5,6 +5,7 @@
 #include "list.h"
 #include "util.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 // See https://gbadev.net/gbadoc/memory.html for more details on SRAM
@@ -78,7 +79,7 @@ static inline void read_sram(u32 sram_base, u8* bytes, u32 size)
     }
 }
 
-// Check 7 chars of balatrà_version after the "GBALATRO_VERSION" preffix 
+// Check 7 chars of balatrà_version after the "GBALATRO_VERSION" preffix
 static inline bool check_hash(const char* preffix)
 {
     for (u32 i = 0; i < CHECK_HASH_SIZE; i++)
@@ -151,4 +152,10 @@ void load_game(void)
 
     if (game_vars.sound_volume > VOLUME_VALUE_MAX)
         game_vars.sound_volume = DEFAULT_SOUND_VOLUME;
+
+    // return to where we were in the random sequence so that the run stays reproducible
+    for (u32 i = 0; i < game_vars.rng_step; i++)
+    {
+        (void)rand();
+    }
 }

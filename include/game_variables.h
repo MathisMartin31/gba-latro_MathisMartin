@@ -31,6 +31,7 @@ typedef struct
 {
     s32 timer; // This might already exist in libtonc but idk so i'm just making my own
     u32 rng_seed;
+    u32 rng_step; // Position in the rng sequence.
 
     // BY DEFAULT IS SET TO 1, but if changed to 2 or more, should speed up all (or most) of the
     // game aspects that should be sped up by speed, as in the original game.

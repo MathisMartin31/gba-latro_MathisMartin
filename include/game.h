@@ -172,6 +172,8 @@ int get_round();
 enum BlindType get_current_blind();
 enum BlindType get_next_boss_blind();
 
+u32 get_rand();
+
 // joker specific functions
 bool is_shortcut_joker_active(void);
 int get_straight_and_flush_size(void);

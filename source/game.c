@@ -558,8 +558,15 @@ static enum HandType hand_type = NONE;
 static ContainedHandTypes _contained_hands = {0};
 
 // Initialization of the global var
-GameVariables game_vars =
-    {0, 0, DEFAULT_GAME_SPEED, DEFAULT_HIGH_CONTRAST, DEFAULT_MUSIC_VOLUME, DEFAULT_SOUND_VOLUME};
+GameVariables game_vars = {
+    0,
+    0,
+    0,
+    DEFAULT_GAME_SPEED,
+    DEFAULT_HIGH_CONTRAST,
+    DEFAULT_MUSIC_VOLUME,
+    DEFAULT_SOUND_VOLUME
+};
 
 // The sprite that displays the blind when in "GAME_PLAYING/GAME_ROUND_END" state
 static Sprite* playing_blind_token = NULL;
@@ -924,6 +931,12 @@ void game_change_state(enum GameState new_game_state)
 
         game_state = new_game_state;
     }
+}
+
+u32 get_rand()
+{
+    game_vars.rng_step++;
+    return rand();
 }
 
 CardObject** get_hand_array(void)
@@ -1952,7 +1965,7 @@ static inline void deck_shuffle(void)
 {
     for (int i = deck_top; i > 0; i--)
     {
-        int j = rand() % (i + 1);
+        int j = get_rand() % (i + 1);
         Card* temp = deck[i];
         deck[i] = deck[j];
         deck[j] = temp;
@@ -2053,8 +2066,9 @@ static void game_win_on_init(void)
 // General functions
 static inline void set_seed(int seed)
 {
-    g_game_vars.rng_seed = seed;
-    srand(g_game_vars.rng_seed);
+    srand(seed);
+    game_vars.rng_seed = seed;
+    game_vars.rng_step = 0;
 }
 
 // Playing state functions
@@ -2212,7 +2226,7 @@ static bool game_playing_hand_row_on_selection_changed(
              */
             play_sfx(
                 SFX_CARD_FOCUS,
-                MM_BASE_PITCH_RATE + rand() % CARD_FOCUS_SFX_PITCH_OFFSET_RANGE,
+                MM_BASE_PITCH_RATE + get_rand() % CARD_FOCUS_SFX_PITCH_OFFSET_RANGE,
                 SFX_DEFAULT_VOLUME
             );
         }
@@ -2232,7 +2246,7 @@ static bool game_playing_hand_row_on_selection_changed(
              */
             play_sfx(
                 SFX_CARD_FOCUS,
-                MM_BASE_PITCH_RATE + rand() % CARD_FOCUS_SFX_PITCH_OFFSET_RANGE,
+                MM_BASE_PITCH_RATE + get_rand() % CARD_FOCUS_SFX_PITCH_OFFSET_RANGE,
                 SFX_DEFAULT_VOLUME
             );
         }
@@ -3986,7 +4000,7 @@ static inline int game_shop_get_rand_available_joker_id(void)
         return UNDEFINED;
 
     int matching_joker_ids[jokers_avail_size];
-    int fallback_random_idx = random() % jokers_avail_size;
+    int fallback_random_idx = get_rand() % jokers_avail_size;
     int fallback_random_joker_id = UNDEFINED;
     int match_count = 0;
 
@@ -4006,7 +4020,7 @@ static inline int game_shop_get_rand_available_joker_id(void)
     }
 
     int selected_joker_id =
-        (match_count > 0) ? matching_joker_ids[random() % match_count] : fallback_random_joker_id;
+        (match_count > 0) ? matching_joker_ids[get_rand() % match_count] : fallback_random_joker_id;
 
     return selected_joker_id;
 }
@@ -4881,8 +4895,8 @@ static void game_blind_select_on_exit(void)
 
 void game_start(void)
 {
-    set_seed(g_game_vars.rng_seed);
     // set_seed(9); // 9 is a full house
+    set_seed(game_vars.rng_seed);
 
     affine_background_change_background(AFFINE_BG_GAME);
 

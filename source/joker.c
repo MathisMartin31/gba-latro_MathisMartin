@@ -367,7 +367,7 @@ Sprite* joker_object_get_sprite(JokerObject* joker_object)
 int joker_get_random_rarity()
 {
     int joker_rarity = 0;
-    int rarity_roll = random() % 100;
+    int rarity_roll = get_rand() % 100;
     if (rarity_roll < COMMON_JOKER_CHANCE)
     {
         joker_rarity = COMMON_JOKER;
