@@ -197,9 +197,6 @@ static bool high_contrast_changed = false;
 static bool music_volume_changed = false;
 static bool sound_volume_changed = false;
 
-// Current selected button index
-static enum OptionButtons selection_y = GAME_SPEED_BTN_IDX;
-
 static void disable_all_outlines_except_self(enum OptionButtons highlighted_btn)
 {
     // These two get disabled no matter what
@@ -292,7 +289,6 @@ void game_options_menu_on_init(void)
     high_contrast_changed = true;
     music_volume_changed = true;
     sound_volume_changed = true;
-    selection_y = 0;
 
     change_background(BG_OPTIONS_MENU);
 
