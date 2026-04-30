@@ -308,49 +308,6 @@ void game_options_menu_on_update(void)
 {
     selection_grid_process_input(&options_menu_selection_grid);
 
-    /*
-    switch (selection_y)
-    {
-        // Sliders : decrease/increase value by pressing left/right until bar is empty/full
-        case MUSIC_VOLUME_BTN_IDX:
-        {
-            // Highlight button
-            memset16(&pal_bg_mem[MUSIC_BUTTON_OUTLINE_COLOR_PAL_IDX], BTN_HIGHLIGHT_COLOR, 1);
-            if (key_hit(KEY_LEFT) && g_game_vars.music_volume > VOLUME_VALUE_MIN)
-            {
-                g_game_vars.music_volume--;
-                music_volume_changed = true;
-            }
-            else if (key_hit(KEY_RIGHT) && g_game_vars.music_volume < VOLUME_VALUE_MAX)
-            {
-                g_game_vars.music_volume++;
-                music_volume_changed = true;
-            }
-            break;
-        }
-        case SOUND_VOLUME_BTN_IDX:
-        {
-            // Highlight button
-            memset16(&pal_bg_mem[SOUND_BUTTON_OUTLINE_COLOR_PAL_IDX], BTN_HIGHLIGHT_COLOR, 1);
-            if (key_hit(KEY_LEFT) && g_game_vars.sound_volume > VOLUME_VALUE_MIN)
-            {
-                g_game_vars.sound_volume--;
-                sound_volume_changed = true;
-            }
-            else if (key_hit(KEY_RIGHT) && g_game_vars.sound_volume < VOLUME_VALUE_MAX)
-            {
-                g_game_vars.sound_volume++;
-                sound_volume_changed = true;
-            }
-            break;
-        }
-
-        // Should not happen
-        default:
-            break;
-    }
-    */
-
     // check if need to disable game speed arrows
     if (game_speed_changed)
     {
@@ -626,6 +583,9 @@ static bool music_volume_row_on_selection_changed(
 {
     change_button_highlight(row_idx, prev_selection, new_selection);
 
+    if (prev_selection->y != new_selection->y)
+        return true;
+
     if (key_hit(KEY_LEFT) && g_game_vars.music_volume > VOLUME_VALUE_MIN)
     {
         g_game_vars.music_volume--;
@@ -648,6 +608,20 @@ static bool sound_volume_row_on_selection_changed(
 )
 {
     change_button_highlight(row_idx, prev_selection, new_selection);
+
+    if (prev_selection->y != new_selection->y)
+        return true;
+
+    if (key_hit(KEY_LEFT) && g_game_vars.sound_volume > VOLUME_VALUE_MIN)
+    {
+        g_game_vars.sound_volume--;
+        sound_volume_changed = true;
+    }
+    else if (key_hit(KEY_RIGHT) && g_game_vars.sound_volume < VOLUME_VALUE_MAX)
+    {
+        g_game_vars.sound_volume++;
+        sound_volume_changed = true;
+    }
 
     return true;
 }
