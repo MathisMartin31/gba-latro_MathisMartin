@@ -23,12 +23,12 @@
 #define CHECK_HASH_SIZE 7
 #define GIT_HASH_START  17 // starts after "GBALATRO-VERSION:" in the balatro_version var
 
-typedef struct SaveCheckInfo
+typedef struct SaveHeader
 {
     u32 magic;
     bool dirty;
     char githash[7];
-} SaveCheckInfo;
+} SaveHeader;
 
 enum DelimiterTag
 {
@@ -114,9 +114,9 @@ static inline bool is_version_dirty()
  ** @brief Writes a magic number and ROM version info to SRAM to signal that the
  *         save data exists and allow the game to determine if it is compatible.
  */
-static inline void set_save_valid()
+static inline void set_save_header()
 {
-    SaveCheckInfo check = {};
+    SaveHeader check = {};
     check.magic = CHECK_MAGIC;
     check.dirty = is_version_dirty();
     memcpy(&(check.githash), (void*)(&balatro_version) + GIT_HASH_START, CHECK_HASH_SIZE);
@@ -129,9 +129,9 @@ static inline void set_save_valid()
  *
  * @sa set_save_valid
  */
-static inline bool check_save()
+static inline bool check_save_header()
 {
-    SaveCheckInfo check;
+    SaveHeader check;
     read_sram(CHECK_BASE, (u8*)&check, sizeof(check));
 
     bool is_valid = (check.magic == CHECK_MAGIC) && check.dirty == is_version_dirty() &&
@@ -142,13 +142,13 @@ static inline bool check_save()
 
 void save_game(void)
 {
-    set_save_valid();
+    set_save_header();
     write_sram(GAME_BASE, (const u8*)&g_game_vars, sizeof(g_game_vars));
 }
 
 void load_game(void)
 {
-    if (!check_save())
+    if (!check_save_header())
         return;
 
     read_sram(GAME_BASE, (u8*)&g_game_vars, sizeof(g_game_vars));
