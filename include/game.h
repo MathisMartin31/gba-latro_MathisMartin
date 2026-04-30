@@ -163,12 +163,8 @@ void display_chips(void);
 u32 get_mult(void);
 void set_mult(u32 new_mult);
 void display_mult(void);
-int get_money(void);
-void set_money(int new_money);
 void display_money(void);
 void set_retrigger(bool new_retrigger);
-int get_ante(void);
-int get_round(void);
 enum BlindType get_current_blind(void);
 enum BlindType get_next_boss_blind(void);
 

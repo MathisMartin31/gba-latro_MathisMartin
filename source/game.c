@@ -553,15 +553,16 @@ static enum HandType hand_type = NONE;
 static ContainedHandTypes _contained_hands = {0};
 
 // Initialization of the global var
+// clang-frmat off
 GameVariables g_game_vars = {
-    0,
-    0,
-    0,
+    0, 0, 0,
+    0, 0, 0,
     DEFAULT_GAME_SPEED,
     DEFAULT_HIGH_CONTRAST,
     DEFAULT_MUSIC_VOLUME,
     DEFAULT_SOUND_VOLUME
 };
+// clang-frmat on
 
 // The sprite that displays the blind when in "GAME_PLAYING/GAME_ROUND_END" state
 static Sprite* playing_blind_token = NULL;
@@ -597,9 +598,6 @@ static int max_discards = 4;
 static int hands = 0;
 static int discards = 0;
 
-static int round = 0;
-static int ante = 0;
-static int money = 0;
 static u32 score = 0;
 static u32 temp_score = 0; // This is the score that shows in the same spot as the hand type.
 static bool score_flames_active = false;
@@ -737,7 +735,7 @@ static inline void jokers_available_to_shop_init(void)
 static void reroll_boss_blind(bool no_tiles)
 {
     // Showdown blinds only show up on ante 8, 16, etc...
-    next_boss_blind = roll_blind_type((ante % 8 == 0) && (ante > 0));
+    next_boss_blind = roll_blind_type((g_game_vars.ante % 8 == 0) && (g_game_vars.ante > 0));
     if (!no_tiles)
     {
         apply_blind_tiles(next_boss_blind, BOSS_BLIND_TOKEN_LAYER);
@@ -798,10 +796,10 @@ void game_init()
     blinds_states[0] = BLIND_STATE_CURRENT;
     blinds_states[1] = BLIND_STATE_UPCOMING;
     blinds_states[2] = BLIND_STATE_UPCOMING;
-    ante = STARTING_ANTE;
-    money = STARTING_MONEY;
+    g_game_vars.ante = STARTING_ANTE;
+    g_game_vars.money = STARTING_MONEY;
     score = STARTING_SCORE;
-    round = 0;
+    g_game_vars.round = 0;
 
     // Initialize/reset unbeaten Boss/Showdown Blinds so they are all available
     init_unbeaten_blinds_list(false);
@@ -1053,16 +1051,6 @@ int get_num_hands_remaining(void)
     return hands;
 }
 
-int get_ante()
-{
-    return ante;
-}
-
-int get_round()
-{
-    return round;
-}
-
 enum BlindType get_current_blind()
 {
     return current_blind;
@@ -1093,16 +1081,6 @@ void set_mult(u32 new_mult)
     mult = new_mult;
 }
 
-int get_money(void)
-{
-    return money;
-}
-
-void set_money(int new_money)
-{
-    money = new_money;
-}
-
 void set_retrigger(bool new_retrigger)
 {
     retrigger = new_retrigger;
@@ -1114,7 +1092,7 @@ void display_money()
     tte_erase_rect_wrapper(MONEY_TEXT_RECT);
 
     char money_str_buff[INT_MAX_DIGITS + 2]; // + 2 for null terminator and "$" sign
-    snprintf(money_str_buff, sizeof(money_str_buff), "$%d", money);
+    snprintf(money_str_buff, sizeof(money_str_buff), "$%d", g_game_vars.money);
 
     // Bias left so the number is centered and the "$" sign is on the left
     update_text_rect_to_center_str(&money_text_rect, money_str_buff, SCREEN_LEFT);
@@ -1831,7 +1809,7 @@ static void display_score(u32 value)
 static void check_flaming_score(void)
 {
     u32 curr_score = u32_protected_mult(chips, mult);
-    u32 required_score = blind_get_requirement(current_blind, ante);
+    u32 required_score = blind_get_requirement(current_blind, g_game_vars.ante);
     if (curr_score >= required_score && !score_flames_active)
     {
         // start flaming score
@@ -1859,7 +1837,7 @@ static void display_round(void)
         ROUND_TEXT_RECT.left,
         ROUND_TEXT_RECT.top,
         TTE_YELLOW_PB,
-        round
+        g_game_vars.round
     );
 }
 
@@ -1999,7 +1977,7 @@ static void game_round_on_init(void)
     }
 
     Rect blind_req_text_rect = BLIND_REQ_TEXT_RECT;
-    u32 blind_requirement = blind_get_requirement(current_blind, ante);
+    u32 blind_requirement = blind_get_requirement(current_blind, g_game_vars.ante);
 
     char blind_req_str_buff[UINT_MAX_DIGITS + 1];
 
@@ -2403,13 +2381,13 @@ static inline void game_playing_handle_round_over(void)
 {
     enum GameState next_state = GAME_STATE_ROUND_END;
 
-    if (score >= blind_get_requirement(current_blind, ante))
+    if (score >= blind_get_requirement(current_blind, g_game_vars.ante))
     {
         if (current_blind > BLIND_TYPE_BIG)
         {
-            if (ante < MAX_ANTE)
+            if (g_game_vars.ante < MAX_ANTE)
             {
-                display_ante(++ante);
+                display_ante(++g_game_vars.ante);
 
                 // mark current boss blind as beaten and allow for reroll
                 set_blind_beaten(next_boss_blind);
@@ -2732,7 +2710,7 @@ static bool check_and_score_joker_for_event(
 
 static inline bool game_round_is_over(void)
 {
-    return hands == 0 || score >= blind_get_requirement(current_blind, ante);
+    return hands == 0 || score >= blind_get_requirement(current_blind, g_game_vars.ante);
 }
 
 // Basically a copy of HAND_DISCARD
@@ -3563,7 +3541,7 @@ static void game_playing_on_update(void)
 
 static int calculate_interest_reward(void)
 {
-    int reward = (money / 5) * INTEREST_PER_5;
+    int reward = (g_game_vars.money / 5) * INTEREST_PER_5;
     if (reward > MAX_INTEREST)
         reward = MAX_INTEREST;
     return reward;
@@ -3632,7 +3610,7 @@ static void game_round_end_display_finished_blind()
 {
     obj_unhide(round_end_blind_token->obj, 0);
 
-    int current_ante = ante;
+    int current_ante = g_game_vars.ante;
 
     // Beating the boss blind increases the ante, so we need to display the previous ante value
     if (current_blind > BLIND_TYPE_BIG)
@@ -3880,7 +3858,7 @@ static void game_round_end_display_rewards()
 static inline void game_round_end_cashout(void)
 {
     // Reward the player
-    money += hands + blind_get_reward(current_blind) + calculate_interest_reward();
+    g_game_vars.money += hands + blind_get_reward(current_blind) + calculate_interest_reward();
     display_money();
 
     hands = max_hands;          // Reset the hands to the maximum
@@ -4186,7 +4164,7 @@ static inline void game_sell_joker(int joker_idx)
         return;
 
     JokerObject* joker_object = (JokerObject*)list_get_at_idx(&_owned_jokers_list, joker_idx);
-    money += joker_get_sell_value(joker_object->joker);
+    g_game_vars.money += joker_get_sell_value(joker_object->joker);
     display_money();
     erase_price_under_sprite_object(joker_object->sprite_object);
 
@@ -4242,8 +4220,8 @@ static inline void game_shop_buy_joker(int shop_joker_idx)
 {
     JokerObject* joker_object = (JokerObject*)list_get_at_idx(&_shop_jokers_list, shop_joker_idx);
 
-    money -= joker_object->joker->value; // Deduct the money spent on the joker
-    display_money();                     // Update the money display
+    g_game_vars.money -= joker_object->joker->value; // Deduct the money spent on the joker
+    display_money();                                 // Update the money display
     erase_price_under_sprite_object(joker_object->sprite_object);
     sprite_object_set_focus(joker_object->sprite_object, false);
     add_to_held_jokers(joker_object);
@@ -4281,7 +4259,7 @@ static void shop_top_row_on_key_transit(SelectionGrid* selection_grid, Selection
         JokerObject* joker_object =
             (JokerObject*)list_get_at_idx(&_shop_jokers_list, shop_joker_idx);
         if (joker_object == NULL || list_get_len(&_owned_jokers_list) >= MAX_JOKERS_HELD_SIZE ||
-            money < joker_object->joker->value)
+            g_game_vars.money < joker_object->joker->value)
         {
             return;
         }
@@ -4380,7 +4358,7 @@ static bool shop_reroll_row_on_selection_changed(
 
 static inline void game_shop_reroll(int* reroll_cost)
 {
-    money -= *reroll_cost;
+    g_game_vars.money -= *reroll_cost;
     display_money(); // Update the money display
 
     ListItr itr = list_itr_create(&_shop_jokers_list);
@@ -4431,7 +4409,7 @@ static void shop_reroll_row_on_key_transit(SelectionGrid* selection_grid, Select
         return;
     }
 
-    if (money >= reroll_cost)
+    if (g_game_vars.money >= reroll_cost)
     {
         // TODO: Add money sound effect
         play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
@@ -4667,7 +4645,7 @@ static inline void game_blind_select_print_blind_req(enum BlindTokens blind)
 {
     Rect blind_req_score_rect = game_blind_select_get_req_score_rect(blind);
 
-    u32 blind_req = blind_get_requirement(get_blind_type_from_token(blind), ante);
+    u32 blind_req = blind_get_requirement(get_blind_type_from_token(blind), g_game_vars.ante);
 
     char blind_req_str_buff[UINT_MAX_DIGITS + 1];
     truncate_uint_to_suffixed_str(
@@ -4765,7 +4743,7 @@ static void game_blind_select_handle_input()
             play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
             state_info[game_state].substate = BLIND_SELECTED_ANIM_SEQ;
             g_game_vars.timer = TM_ZERO;
-            ++round;
+            ++g_game_vars.round;
             display_round();
         }
         else if (current_blind <= BLIND_TYPE_BIG)
@@ -4941,7 +4919,7 @@ void game_start(void)
         ANTE_TEXT_RECT.left,
         ANTE_TEXT_RECT.top,
         TTE_YELLOW_PB,
-        ante,
+        g_game_vars.ante,
         TTE_WHITE_PB,
         MAX_ANTE
     ); // Ante
@@ -5025,7 +5003,7 @@ static void game_over_on_exit(void)
         ANTE_TEXT_RECT.left,
         ANTE_TEXT_RECT.top,
         TTE_YELLOW_PB,
-        ante,
+        g_game_vars.ante,
         TTE_WHITE_PB,
         MAX_ANTE
     );

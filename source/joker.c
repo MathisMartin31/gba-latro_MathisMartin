@@ -1,6 +1,7 @@
 #include "joker.h"
 
 #include "card.h"
+#include "game_variables.h"
 #include "graphic_utils.h"
 #include "joker_gfx.h"
 #include "pool.h"
@@ -271,7 +272,7 @@ bool joker_object_score(
 
     u32 chips = get_chips();
     u32 mult = get_mult();
-    int money = get_money();
+    int money = g_game_vars.money;
 
     if (effect_flags_ret & JOKER_EFFECT_FLAG_RETRIGGER)
     {
@@ -345,7 +346,7 @@ bool joker_object_score(
     // Update values
     set_chips(chips);
     set_mult(mult);
-    set_money(money);
+    g_game_vars.money = money;
 
     // Update displays
     display_chips();
