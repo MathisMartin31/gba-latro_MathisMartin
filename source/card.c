@@ -1,8 +1,8 @@
 #include "card.h"
 
 #include "deck_gfx.h"
-#include "high_contrast_deck_pal_gfx.h"
 #include "graphic_utils.h"
+#include "high_contrast_deck_pal_gfx.h"
 
 #include <maxmod.h>
 #include <stdlib.h>

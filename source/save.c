@@ -101,10 +101,11 @@ static inline bool check_hash(const char* prefix)
 
 /**
  ** @brief Determines if the current build is considered "dirty" aka has uncommited changes.
- *         This works because the balatro_version string has "-dirty" added at the end if it's dirty.
+ *         This works because the balatro_version string has "-dirty" added at the end if it's
+ *         dirty.
  *
  * @returns true if version is dirty, false otherwise.
- */ 
+ */
 static inline bool is_version_dirty()
 {
     return strlen(balatro_version) > CHECK_HASH_SIZE;

@@ -625,4 +625,3 @@ static bool sound_volume_row_on_selection_changed(
 
     return true;
 }
-
