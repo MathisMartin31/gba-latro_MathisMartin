@@ -102,21 +102,30 @@ void game_main_menu_on_update(void)
         }
     }
 
-    // DEBUG: display git hash by holding L+R+START+SELECT
-    static bool is_version_shown = false;
+    // DEBUG: toggle git hash display by pressing L+R+START+SELECT
+    static bool combo_pressed = false;
+    static bool show_version = false;
     if (key_is_down(KEY_START) && key_is_down(KEY_SELECT) && key_is_down(KEY_L) &&
         key_is_down(KEY_R))
     {
-        if (!is_version_shown)
+        if (!combo_pressed)
         {
-            tte_printf("#{P:%d,%d; cx:0x%X000}%s", 0, 152, TTE_WHITE_PB, balatro_version);
+            show_version = !show_version;
+            if (show_version)
+            {
+                tte_printf("#{P:%d,%d; cx:0x%X000}%s", 0, 152, TTE_WHITE_PB, balatro_version);
+            }
+            else
+            {
+                tte_erase_screen();
+            }
         }
-        is_version_shown = true;
+
+        combo_pressed = true;
     }
     else
     {
-        tte_erase_screen();
-        is_version_shown = false;
+        combo_pressed = false;
     }
 
     switch (selection_x)
