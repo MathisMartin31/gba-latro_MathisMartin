@@ -42,8 +42,8 @@ enum DelimiterTag
 
 extern char balatro_version[];
 
-// DelimiterTag is an enum of size sizeof(int) = 4
-#define CARDS_TAG_SIZE 4
+// DelimiterTag is an enum of size sizeof(u8) = 1
+#define CARDS_TAG_SIZE 1
 
 /**
  ** @brief Write raw binary data to SRAM
@@ -79,12 +79,18 @@ static inline void read_sram(u32 sram_base, u8* bytes, u32 size)
     }
 }
 
-// Check 7 chars of balatrà_version after the "GBALATRO_VERSION" preffix
-static inline bool check_hash(const char* preffix)
+/**
+ ** @brief Checks the 7 chars of balatro_version after the "GBALATRO_VERSION" prefix
+ *         representing the git hash of the code the build is based on.
+ *
+ * @returns true if the git hash of the ROM is equal to the hash saved in SRAM.
+*           false if they are different.
+ */
+static inline bool check_hash(const char* prefix)
 {
     for (u32 i = 0; i < CHECK_HASH_SIZE; i++)
     {
-        if (balatro_version[GIT_HASH_START + i] != preffix[i])
+        if (balatro_version[GIT_HASH_START + i] != prefix[i])
         {
             return false;
         }
@@ -93,23 +99,21 @@ static inline bool check_hash(const char* preffix)
     return true;
 }
 
-// This works because the balatro_version has "-dirty" added at the end if it's dirty
+/**
+ ** @brief Determines if the current build is considered "dirty" aka has uncommited changes.
+ *         This works because the balatro_version string has "-dirty" added at the end if it's dirty.
+ *
+ * @returns true if version is dirty, false otherwise.
+ */ 
 static inline bool is_version_dirty()
 {
     return strlen(balatro_version) > CHECK_HASH_SIZE;
 }
 
-static inline bool check_save()
-{
-    SaveCheckInfo check;
-    read_sram(CHECK_BASE, (u8*)&check, sizeof(check));
-
-    bool is_valid = (check.magic == CHECK_MAGIC) && check.dirty == is_version_dirty() &&
-                    check_hash(check.githash);
-
-    return is_valid;
-}
-
+/**
+ ** @brief Writes a magic number and ROM version info to SRAM to signal that the
+ *         save data exists and allow the game to determine if it is compatible.
+ */
 static inline void set_save_valid()
 {
     SaveCheckInfo check = {};
@@ -121,19 +125,27 @@ static inline void set_save_valid()
 }
 
 /**
- ** @brief Save game data to SRAM.
+ ** @brief Reads whether the save data exists and is valid.
+ *
+ * @sa set_save_valid
  */
+static inline bool check_save()
+{
+    SaveCheckInfo check;
+    read_sram(CHECK_BASE, (u8*)&check, sizeof(check));
+
+    bool is_valid = (check.magic == CHECK_MAGIC) && check.dirty == is_version_dirty() &&
+                    check_hash(check.githash);
+
+    return is_valid;
+}
+
 void save_game(void)
 {
     set_save_valid();
     write_sram(GAME_BASE, (const u8*)&g_game_vars, sizeof(g_game_vars));
 }
 
-/**
- ** @brief Load game data from SRAM.
- *
- * @sa save_game
- */
 void load_game(void)
 {
     if (!check_save())
