@@ -4,7 +4,6 @@
 #include "audio_utils.h"
 #include "background_options_menu_gfx.h"
 #include "button.h"
-#include "card.h"
 #include "game.h"
 #include "game/common_ui.h"
 #include "game_variables.h"
@@ -167,10 +166,6 @@ static void disable_all_outlines_except_self(enum OptionButtons highlighted_btn)
             1
         );
     }
-
-    u16 color = 0x213f;
-
-    memcpy16(&pal_bg_mem[MENU_BUTTON_MAIN_COLOR_PAL_IDX], &color, 1);
 }
 
 void game_options_menu_change_background(void)
@@ -416,8 +411,6 @@ void game_options_menu_on_update(void)
                 OPTIONS_CONTRAST_VALUE_DEST_POS
             );
         }
-
-        high_contrast_cards(g_game_vars.high_contrast);
 
         high_contrast_changed = false;
     }

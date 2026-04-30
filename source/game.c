@@ -4898,6 +4898,9 @@ void game_start(void)
     hands = max_hands;
     discards = max_discards;
 
+    // Activate high contrast palette for cards if loaded settings tell us to
+    toggle_high_contrast_cards(g_game_vars.high_contrast);
+
     // Fill the deck with all the cards. Later on this can be replaced with a more dynamic system
     // that allows for different decks and card types.
     for (int suit = 0; suit < NUM_SUITS; suit++)

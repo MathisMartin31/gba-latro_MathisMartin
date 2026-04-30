@@ -1,6 +1,7 @@
 #include "card.h"
 
 #include "deck_gfx.h"
+#include "high_contrast_deck_pal_gfx.h"
 #include "graphic_utils.h"
 
 #include <maxmod.h>
@@ -19,24 +20,21 @@ const static u16 _card_sprite_lut[NUM_SUITS][NUM_RANKS] = {
     {624, 640, 656, 672, 688, 704, 720, 736, 752, 768, 784, 800, 816}
 };
 
-// Palettes to use with cards
-// Could not fit inside the same PNG so we have to hardcode it unfortunately
 #define CARDS_PAL_SIZE 16
-// clang-format off
-const static u16 high_contrast_palette[CARDS_PAL_SIZE] = {
-    0x0000, 0x7FFF, 0x6B38, 0x023D, 0x61E0, 0x001B, 0x71B1, 0x28E7,
-    0x0017, 0x28E7, 0x7E82, 0x029F, 0x739C, 0x28E7, 0x414C, 0x0000
-};
-// clang-format on
 static u16 normal_palette[CARDS_PAL_SIZE];
+static u16 high_contrast_palette[CARDS_PAL_SIZE];
 
 void card_init()
 {
     GRIT_CPY(&pal_obj_mem[CARD_PB], deck_gfxPal);
+
+    // High contrast palette has been encoded into a separate, small, png file
+    // in the same order as the normal deck image so that we need only copy it as is.
     GRIT_CPY(&normal_palette, deck_gfxPal);
+    GRIT_CPY(&high_contrast_palette, high_contrast_deck_pal_gfxPal);
 }
 
-void high_contrast_cards(bool enable)
+void toggle_high_contrast_cards(bool enable)
 {
     if (enable)
     {

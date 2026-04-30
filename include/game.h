@@ -159,20 +159,20 @@ int get_num_hands_remaining(void);
 
 u32 get_chips(void);
 void set_chips(u32 new_chips);
-void display_chips();
+void display_chips(void);
 u32 get_mult(void);
 void set_mult(u32 new_mult);
-void display_mult();
+void display_mult(void);
 int get_money(void);
 void set_money(int new_money);
-void display_money();
+void display_money(void);
 void set_retrigger(bool new_retrigger);
-int get_ante();
-int get_round();
-enum BlindType get_current_blind();
-enum BlindType get_next_boss_blind();
+int get_ante(void);
+int get_round(void);
+enum BlindType get_current_blind(void);
+enum BlindType get_next_boss_blind(void);
 
-u32 get_rand();
+u32 get_rand(void);
 
 // joker specific functions
 bool is_shortcut_joker_active(void);
