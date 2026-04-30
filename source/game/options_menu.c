@@ -9,6 +9,7 @@
 #include "game_variables.h"
 #include "graphic_utils.h"
 #include "save.h"
+#include "selection_grid.h"
 #include "soundbank.h"
 
 #include <stdint.h>
@@ -38,6 +39,99 @@ enum OptionButtons
 #define MUSIC_BUTTON_OUTLINE_COLOR_PAL_IDX      8
 #define SOUND_BUTTON_OUTLINE_COLOR_PAL_IDX      9
 #define BACK_BUTTON_OUTLINE_COLOR_PAL_IDX       10
+
+// Define selection grid for the menu buttons
+
+static void high_contrast_on_pressed(void);
+static void back_on_pressed(void);
+static int options_menu_return_row_size(void);
+static void options_menu_row_on_key_transit(SelectionGrid* selection_grid, Selection* selection);
+static bool game_speed_row_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+);
+static bool music_volume_row_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+);
+static bool sound_volume_row_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+);
+static bool high_contrast_row_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+);
+static bool back_row_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+);
+
+// clang-format off
+SelectionGridRow options_menu_selection_rows[] = {
+    {
+        GAME_SPEED_BTN_IDX,
+        options_menu_return_row_size,
+        game_speed_row_on_selection_changed,
+        NULL,
+        {.wrap = true}
+    },
+    {
+        HIGH_CONTRAST_BTN_IDX,
+        options_menu_return_row_size,
+        high_contrast_row_on_selection_changed,
+        options_menu_row_on_key_transit,
+        {.wrap = false}
+    },
+    {
+        MUSIC_VOLUME_BTN_IDX,
+        options_menu_return_row_size,
+        music_volume_row_on_selection_changed,
+        NULL,
+        {.wrap = true}
+    },
+    {
+        SOUND_VOLUME_BTN_IDX,
+        options_menu_return_row_size,
+        sound_volume_row_on_selection_changed,
+        NULL,
+        {.wrap = true}
+    },
+    {
+        BACK_BTN_IDX,
+        options_menu_return_row_size,
+        back_row_on_selection_changed,
+        options_menu_row_on_key_transit,
+        {.wrap = false}
+    }
+};
+
+Button options_menu_buttons[] = {
+    {SPEED_BUTTON_OUTLINE_COLOR_PAL_IDX,    MENU_BUTTON_MAIN_COLOR_PAL_IDX, NULL,                     NULL},
+    {CONTRAST_BUTTON_OUTLINE_COLOR_PAL_IDX, MENU_BUTTON_MAIN_COLOR_PAL_IDX, high_contrast_on_pressed, NULL},
+    {MUSIC_BUTTON_OUTLINE_COLOR_PAL_IDX,    MENU_BUTTON_MAIN_COLOR_PAL_IDX, NULL,                     NULL},
+    {SOUND_BUTTON_OUTLINE_COLOR_PAL_IDX,    MENU_BUTTON_MAIN_COLOR_PAL_IDX, NULL,                     NULL},
+    {BACK_BUTTON_OUTLINE_COLOR_PAL_IDX,     BACK_BUTTON_MAIN_COLOR_PAL_IDX, back_on_pressed,          NULL}
+};
+// clang-format on
+
+const Selection OPTIONS_MENU_INIT_SEL = {0, 0};
+
+SelectionGrid options_menu_selection_grid = {
+    options_menu_selection_rows,
+    NB_OPTIONS_BUTTONS,
+    OPTIONS_MENU_INIT_SEL
+};
 
 // Positions/Rects used to construct and update the menu
 // clang-format off
@@ -126,45 +220,9 @@ static void disable_all_outlines_except_self(enum OptionButtons highlighted_btn)
         1
     );
 
-    if (highlighted_btn != GAME_SPEED_BTN_IDX)
+    for (int i = 0; i < NB_OPTIONS_BUTTONS; i++)
     {
-        memcpy16(
-            &pal_bg_mem[SPEED_BUTTON_OUTLINE_COLOR_PAL_IDX],
-            &pal_bg_mem[MENU_BUTTON_MAIN_COLOR_PAL_IDX],
-            1
-        );
-    }
-    if (highlighted_btn != HIGH_CONTRAST_BTN_IDX)
-    {
-        memcpy16(
-            &pal_bg_mem[CONTRAST_BUTTON_OUTLINE_COLOR_PAL_IDX],
-            &pal_bg_mem[MENU_BUTTON_MAIN_COLOR_PAL_IDX],
-            1
-        );
-    }
-    if (highlighted_btn != MUSIC_VOLUME_BTN_IDX)
-    {
-        memcpy16(
-            &pal_bg_mem[MUSIC_BUTTON_OUTLINE_COLOR_PAL_IDX],
-            &pal_bg_mem[MENU_BUTTON_MAIN_COLOR_PAL_IDX],
-            1
-        );
-    }
-    if (highlighted_btn != SOUND_VOLUME_BTN_IDX)
-    {
-        memcpy16(
-            &pal_bg_mem[SOUND_BUTTON_OUTLINE_COLOR_PAL_IDX],
-            &pal_bg_mem[MENU_BUTTON_MAIN_COLOR_PAL_IDX],
-            1
-        );
-    }
-    if (highlighted_btn != BACK_BTN_IDX)
-    {
-        memcpy16(
-            &pal_bg_mem[BACK_BUTTON_OUTLINE_COLOR_PAL_IDX],
-            &pal_bg_mem[BACK_BUTTON_MAIN_COLOR_PAL_IDX],
-            1
-        );
+        button_set_highlight(&options_menu_buttons[i], i == highlighted_btn);
     }
 }
 
@@ -232,9 +290,6 @@ void game_options_menu_change_background(void)
         OPTIONS_BACK_TEXT_POS.y,
         TTE_WHITE_PB
     );
-
-    // Disable the button highlight colors
-    disable_all_outlines_except_self(NB_OPTIONS_BUTTONS);
 }
 
 void game_options_menu_on_init(void)
@@ -246,62 +301,22 @@ void game_options_menu_on_init(void)
     selection_y = 0;
 
     change_background(BG_OPTIONS_MENU);
+
+    // Select game speed button by default
+    options_menu_selection_grid.selection = OPTIONS_MENU_INIT_SEL;
+    disable_all_outlines_except_self(GAME_SPEED_BTN_IDX);
+
     // Do a first update right off the bat
     game_options_menu_on_update();
 }
 
 void game_options_menu_on_update(void)
 {
-    if (key_hit(KEY_UP))
-    {
-        if (selection_y > 0)
-        {
-            selection_y--;
-        }
-    }
-    else if (key_hit(KEY_DOWN))
-    {
-        if (selection_y < NB_OPTIONS_BUTTONS - 1)
-        {
-            selection_y++;
-        }
-    }
+    selection_grid_process_input(&options_menu_selection_grid);
 
-    disable_all_outlines_except_self(selection_y);
-
+    /*
     switch (selection_y)
     {
-        // Increase/decrease value with left/right arrow keys if possible
-        case GAME_SPEED_BTN_IDX:
-        {
-            // Highlight button
-            memset16(&pal_bg_mem[SPEED_BUTTON_OUTLINE_COLOR_PAL_IDX], BTN_HIGHLIGHT_COLOR, 1);
-            if (key_hit(KEY_LEFT) && g_game_vars.game_speed > GAME_SPEED_MIN)
-            {
-                g_game_vars.game_speed--;
-                game_speed_changed = true;
-            }
-            else if (key_hit(KEY_RIGHT) && g_game_vars.game_speed < GAME_SPEED_MAX)
-            {
-                g_game_vars.game_speed++;
-                game_speed_changed = true;
-            }
-            break;
-        }
-
-        // Toggle value by pressing the A button
-        case HIGH_CONTRAST_BTN_IDX:
-        {
-            // Highlight button
-            memset16(&pal_bg_mem[CONTRAST_BUTTON_OUTLINE_COLOR_PAL_IDX], BTN_HIGHLIGHT_COLOR, 1);
-            if (key_hit(SELECT_CARD))
-            {
-                g_game_vars.high_contrast = (g_game_vars.high_contrast == 1) ? false : true;
-                high_contrast_changed = true;
-            }
-            break;
-        }
-
         // Sliders : decrease/increase value by pressing left/right until bar is empty/full
         case MUSIC_VOLUME_BTN_IDX:
         {
@@ -353,6 +368,7 @@ void game_options_menu_on_update(void)
         default:
             break;
     }
+    */
 
     // check if need to disable game speed arrows
     if (game_speed_changed)
@@ -510,4 +526,147 @@ void game_options_menu_on_exit(void)
 {
     save_game();
     tte_erase_screen();
+}
+
+/**
+ * @brief Handles input for the high contrast card toggle button and nothing more.
+ */
+static void high_contrast_on_pressed(void)
+{
+    g_game_vars.high_contrast = (g_game_vars.high_contrast == 1) ? false : true;
+    high_contrast_changed = true;
+}
+
+/**
+ * @brief Handles input for the back button and nothing more.
+ */
+static void back_on_pressed(void)
+{
+    if (key_hit(SELECT_CARD))
+    {
+        change_background(BG_MAIN_MENU);
+        game_change_state(GAME_STATE_MAIN_MENU);
+    }
+}
+
+/**
+ * @brief Gives the width of options menu rows in selection grid.
+ *
+ * @returns Always 1, all rows contain only 1 button. Could have been a define
+ *          but I had to make this a function so it could be given to the
+ *          SelectionGrid constructor.
+ */
+static int options_menu_return_row_size(void)
+{
+    return 1;
+}
+
+static void change_button_highlight(
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+)
+{
+    if (prev_selection->y == row_idx && prev_selection->x >= 0 &&
+        prev_selection->x < NB_OPTIONS_BUTTONS)
+    {
+        button_set_highlight(&options_menu_buttons[row_idx], false);
+    }
+
+    if (new_selection->y == row_idx)
+    {
+        button_set_highlight(&options_menu_buttons[row_idx], true);
+    }
+}
+
+/**
+ * @brief Handles left/Right inputs on the row of the Game Speed button.
+ *        Is used to increased/decrease the speed value, instead of relying on a
+ *        `on_key_transit` function because the latter does not take directional
+ *        inputs.
+ */
+static bool game_speed_row_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+)
+{
+    change_button_highlight(row_idx, prev_selection, new_selection);
+
+    // Can only change game speed by pressing left/right while staying on the button's row
+    if (prev_selection->y != new_selection->y)
+        return true;
+
+    if (key_hit(KEY_LEFT) && g_game_vars.game_speed > GAME_SPEED_MIN)
+    {
+        g_game_vars.game_speed--;
+        game_speed_changed = true;
+    }
+    else if (key_hit(KEY_RIGHT) && g_game_vars.game_speed < GAME_SPEED_MAX)
+    {
+        g_game_vars.game_speed++;
+        game_speed_changed = true;
+    }
+
+    return true;
+}
+
+/**
+ * @brief Handles input for SelectionGridRows containing "normal" buttons.
+ */
+static void options_menu_row_on_key_transit(SelectionGrid* selection_grid, Selection* selection)
+{
+    if (key_hit(SELECT_CARD))
+    {
+        button_press(&options_menu_buttons[selection->y]);
+    }
+}
+
+static bool high_contrast_row_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+)
+{
+    change_button_highlight(row_idx, prev_selection, new_selection);
+
+    return true;
+}
+
+static bool music_volume_row_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+)
+{
+    change_button_highlight(row_idx, prev_selection, new_selection);
+
+    return true;
+}
+
+static bool sound_volume_row_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+)
+{
+    change_button_highlight(row_idx, prev_selection, new_selection);
+
+    return true;
+}
+
+static bool back_row_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+)
+{
+    change_button_highlight(row_idx, prev_selection, new_selection);
+
+    return true;
 }
