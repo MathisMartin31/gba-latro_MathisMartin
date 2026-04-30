@@ -84,7 +84,7 @@ static inline void read_sram(u32 sram_base, u8* bytes, u32 size)
  *         representing the git hash of the code the build is based on.
  *
  * @returns true if the git hash of the ROM is equal to the hash saved in SRAM.
-*           false if they are different.
+ *          false if they are different.
  */
 static inline bool check_hash(const char* prefix)
 {
