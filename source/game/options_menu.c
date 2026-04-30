@@ -458,6 +458,7 @@ static void change_button_highlight(
 
     if (new_selection->y == row_idx)
     {
+        play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
         button_set_highlight(&options_menu_buttons[row_idx], true);
     }
 }
