@@ -23,6 +23,17 @@
 #define CHECK_HASH_SIZE 7
 #define GIT_HASH_START  17 // starts after "GBALATRO-VERSION:" in the balatro_version var
 
+// clang-format off
+/**
+ * @brief Structurer holding save data header info to be packed and written to SRAM for validation.
+ * Defined in this discussion as follows: https://github.com/GBALATRO/balatro-gba/discussions/450
+ * word | Byte 0 | Byte 1 | Byte 2 | Byte 3 | name         | purpose
+ * -----|--------|--------|--------|--------|--------------|------------------------------------------------------------------
+ * 0    | 0x47   | 0x42   | 0x41   | 0x4C   | MAGIC        | Identify if proceeding data is valid and not junk, spells "GBAL"
+ * 1    | Dirty  | H[0]   | H[1]   | H[2]   | GITHASH_LOW  | Dirty flag, followed by the first 3 bytes of shortened git hash H
+ * 2    | H[3]   | H[4]   | H[5]   | H[6]   | GITHASH_HIGH | Last 4 bytes of shortened git hash H, with a dirty flag
+ */
+// clang-format on
 typedef struct SaveHeader
 {
     u32 magic;
