@@ -64,13 +64,7 @@ static bool sound_volume_row_on_selection_changed(
     const Selection* prev_selection,
     const Selection* new_selection
 );
-static bool high_contrast_row_on_selection_changed(
-    SelectionGrid* selection_grid,
-    int row_idx,
-    const Selection* prev_selection,
-    const Selection* new_selection
-);
-static bool back_row_on_selection_changed(
+static bool regular_button_row_on_selection_changed(
     SelectionGrid* selection_grid,
     int row_idx,
     const Selection* prev_selection,
@@ -89,7 +83,7 @@ SelectionGridRow options_menu_selection_rows[] = {
     {
         HIGH_CONTRAST_BTN_IDX,
         options_menu_return_row_size,
-        high_contrast_row_on_selection_changed,
+        regular_button_row_on_selection_changed,
         options_menu_row_on_key_transit,
         {.wrap = false}
     },
@@ -110,7 +104,7 @@ SelectionGridRow options_menu_selection_rows[] = {
     {
         BACK_BTN_IDX,
         options_menu_return_row_size,
-        back_row_on_selection_changed,
+        regular_button_row_on_selection_changed,
         options_menu_row_on_key_transit,
         {.wrap = false}
     }
@@ -347,19 +341,6 @@ void game_options_menu_on_update(void)
             {
                 g_game_vars.sound_volume++;
                 sound_volume_changed = true;
-            }
-            break;
-        }
-
-        case BACK_BTN_IDX:
-        {
-            // Highlight button
-            memset16(&pal_bg_mem[BACK_BUTTON_OUTLINE_COLOR_PAL_IDX], BTN_HIGHLIGHT_COLOR, 1);
-            if (key_hit(SELECT_CARD))
-            {
-                // TODO : save GameVariables struct in memory
-                change_background(BG_MAIN_MENU);
-                game_change_state(GAME_STATE_MAIN_MENU);
             }
             break;
         }
@@ -613,7 +594,9 @@ static bool game_speed_row_on_selection_changed(
 }
 
 /**
- * @brief Handles input for SelectionGridRows containing "normal" buttons.
+ * @brief Handles input for all SelectionGridRows in options menu, only actually does
+ *        something on rows containing "normal" buttons (those for which the on_pressed
+ *        method in options_menu_buttons is not NULL).
  */
 static void options_menu_row_on_key_transit(SelectionGrid* selection_grid, Selection* selection)
 {
@@ -623,7 +606,7 @@ static void options_menu_row_on_key_transit(SelectionGrid* selection_grid, Selec
     }
 }
 
-static bool high_contrast_row_on_selection_changed(
+static bool regular_button_row_on_selection_changed(
     SelectionGrid* selection_grid,
     int row_idx,
     const Selection* prev_selection,
@@ -631,7 +614,6 @@ static bool high_contrast_row_on_selection_changed(
 )
 {
     change_button_highlight(row_idx, prev_selection, new_selection);
-
     return true;
 }
 
@@ -643,6 +625,17 @@ static bool music_volume_row_on_selection_changed(
 )
 {
     change_button_highlight(row_idx, prev_selection, new_selection);
+
+    if (key_hit(KEY_LEFT) && g_game_vars.music_volume > VOLUME_VALUE_MIN)
+    {
+        g_game_vars.music_volume--;
+        music_volume_changed = true;
+    }
+    else if (key_hit(KEY_RIGHT) && g_game_vars.music_volume < VOLUME_VALUE_MAX)
+    {
+        g_game_vars.music_volume++;
+        music_volume_changed = true;
+    }
 
     return true;
 }
@@ -659,14 +652,3 @@ static bool sound_volume_row_on_selection_changed(
     return true;
 }
 
-static bool back_row_on_selection_changed(
-    SelectionGrid* selection_grid,
-    int row_idx,
-    const Selection* prev_selection,
-    const Selection* new_selection
-)
-{
-    change_button_highlight(row_idx, prev_selection, new_selection);
-
-    return true;
-}
