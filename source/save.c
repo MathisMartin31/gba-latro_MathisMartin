@@ -4,6 +4,7 @@
 #include "joker.h"
 #include "list.h"
 #include "util.h"
+#include "version.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -39,8 +40,6 @@ enum DelimiterTag
     DTAG_END,
     DTAG_INVALID = UNDEFINED
 };
-
-extern char balatro_version[];
 
 // DelimiterTag is an enum of size sizeof(u8) = 1
 #define CARDS_TAG_SIZE 1
