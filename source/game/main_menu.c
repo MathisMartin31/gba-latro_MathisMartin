@@ -9,22 +9,30 @@
 #include "game/common_ui.h"
 #include "game_variables.h"
 #include "graphic_utils.h"
+#include "selection_grid.h"
 #include "soundbank.h"
 #include "sprite.h"
+#include "version.h"
 
 #include <stdint.h>
 #include <tonc.h>
 #include <tonc_math.h>
 #include <tonc_memdef.h>
 
+// Once saving/reloading a save is fully functional, just
+// uncomment all the lines related to the "Resume" button
+
 #define PLAY_BUTTON_MAIN_COLOR_PID    5
 #define PLAY_BUTTON_OUTLINE_PID       6
+//#define RESUME_BUTTON_MAIN_COLOR_PID  ??
+//#define RESUME_BUTTON_OUTLINE_PID     ??
 #define OPTIONS_BUTTON_MAIN_COLOR_PID 7
 #define OPTIONS_BUTTON_OUTLINE_PID    1
 
 enum MainButtons
 {
     PLAY_BTN_IDX,
+    //RESUME_BTN_IDX,
     OPTIONS_BTN_IDX,
     MAIN_MENU_NB_BTN
 };
@@ -33,13 +41,49 @@ enum MainButtons
 #define MAIN_MENU_ACE_T_X 88
 #define MAIN_MENU_ACE_T_Y 26
 
-extern char balatro_version[];
+// Define SelectionGrid for the main menu buttons
+
+static int main_menu_return_row_size(void);
+static bool main_menu_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+);
+static void main_menu_on_key_transit(SelectionGrid* selection_grid, Selection* selection);
+
+static void play_on_pressed(void);
+//static void resume_on_pressed(void);
+static void options_on_pressed(void);
+
+// clang-format off
+SelectionGridRow main_menu_selection_rows[] = {
+    {
+        0,
+        main_menu_return_row_size,
+        main_menu_on_selection_changed,
+        main_menu_on_key_transit,
+        {.wrap = false}
+    },
+};
+
+Button main_menu_buttons[] = {
+    {PLAY_BUTTON_OUTLINE_PID,    PLAY_BUTTON_MAIN_COLOR_PID,    play_on_pressed,    NULL},
+    //{RESUME_BUTTON_OUTLINE_PID,  RESUME_BUTTON_MAIN_COLOR_PID,  resume_on_pressed,    NULL},
+    {OPTIONS_BUTTON_OUTLINE_PID, OPTIONS_BUTTON_MAIN_COLOR_PID, options_on_pressed, NULL},
+};
+
+const Selection MAIN_MENU_INIT_SEL = {0, 0};
+
+SelectionGrid main_menu_selection_grid = {
+    main_menu_selection_rows,
+    1,
+    MAIN_MENU_INIT_SEL
+};
+// clang-format on
 
 // Main menu sprite - the ace of spades
 static CardObject* main_menu_ace = NULL;
-
-// Current selected button index
-static int selection_x = 0;
 
 void game_main_menu_change_background(void)
 {
@@ -71,6 +115,18 @@ void game_main_menu_on_init(void)
     main_menu_ace->sprite_object->ty = int2fx(MAIN_MENU_ACE_T_Y);
     main_menu_ace->sprite_object->y = main_menu_ace->sprite_object->ty;
     main_menu_ace->sprite_object->tscale = float2fx(0.8f);
+
+    // Select Play button by default, but only on boot.
+    // If we return from the options menu, we want the Options button to be highlighted.
+    static bool on_boot = true;
+    if (on_boot)
+    {
+        on_boot = false;
+        main_menu_selection_grid.selection = MAIN_MENU_INIT_SEL;
+    }
+
+    // Highlight current button
+    button_set_highlight(&main_menu_buttons[main_menu_selection_grid.selection.x], true);
 }
 
 void game_main_menu_on_update(void)
@@ -87,21 +143,44 @@ void game_main_menu_on_update(void)
         g_game_vars.rng_seed *= 2;
     }
 
-    if (key_hit(KEY_LEFT))
+    selection_grid_process_input(&main_menu_selection_grid);
+}
+
+void game_main_menu_on_exit(void)
+{
+    // Normally I would just cache these and hide/unhide but I didn't feel like dealing with
+    // defining a layer for it
+    card_destroy(&main_menu_ace->card);
+    card_object_destroy(&main_menu_ace);
+}
+
+// Implement SelectionGrid handler functions
+
+static int main_menu_return_row_size(void)
+{
+    return MAIN_MENU_NB_BTN;
+}
+
+static bool main_menu_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+)
+{
+    if (prev_selection->x >= 0 && prev_selection->x < MAIN_MENU_NB_BTN)
     {
-        if (selection_x > 0)
-        {
-            selection_x--;
-        }
-    }
-    else if (key_hit(KEY_RIGHT))
-    {
-        if (selection_x < MAIN_MENU_NB_BTN - 1)
-        {
-            selection_x++;
-        }
+        button_set_highlight(&main_menu_buttons[prev_selection->x], false);
     }
 
+    play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
+    button_set_highlight(&main_menu_buttons[new_selection->x], true);
+
+    return true;
+}
+
+static void main_menu_on_key_transit(SelectionGrid* selection_grid, Selection* selection)
+{
     // DEBUG: toggle git hash display by pressing L+R+START+SELECT
     static bool combo_pressed = false;
     static bool show_version = false;
@@ -128,56 +207,23 @@ void game_main_menu_on_update(void)
         combo_pressed = false;
     }
 
-    switch (selection_x)
+    if (key_hit(SELECT_CARD))
     {
-        case PLAY_BTN_IDX:
-        {
-            // Disable Option button
-            memcpy16(
-                &pal_bg_mem[OPTIONS_BUTTON_OUTLINE_PID],
-                &pal_bg_mem[OPTIONS_BUTTON_MAIN_COLOR_PID],
-                1
-            );
-
-            // Highlight Play button
-            memset16(&pal_bg_mem[PLAY_BUTTON_OUTLINE_PID], BTN_HIGHLIGHT_COLOR, 1);
-
-            if (key_hit(SELECT_CARD))
-            {
-                play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
-                game_change_state(GAME_STATE_GAME_START);
-            }
-            break;
-        }
-
-        case OPTIONS_BTN_IDX:
-        {
-            // Disable Play button
-            memcpy16(
-                &pal_bg_mem[PLAY_BUTTON_OUTLINE_PID],
-                &pal_bg_mem[PLAY_BUTTON_MAIN_COLOR_PID],
-                1
-            );
-
-            // Highlight Option button
-            memset16(&pal_bg_mem[OPTIONS_BUTTON_OUTLINE_PID], BTN_HIGHLIGHT_COLOR, 1);
-
-            if (key_hit(SELECT_CARD))
-            {
-                game_change_state(GAME_STATE_OPTIONS_MENU);
-            }
-            break;
-        }
-
-        default:
-            break;
+        button_press(&main_menu_buttons[selection->x]);
     }
 }
 
-void game_main_menu_on_exit(void)
+static void play_on_pressed(void)
 {
-    // Normally I would just cache these and hide/unhide but I didn't feel like dealing with
-    // defining a layer for it
-    card_destroy(&main_menu_ace->card);
-    card_object_destroy(&main_menu_ace);
+    game_change_state(GAME_STATE_GAME_START);
+}
+
+//static void resume_on_pressed(void)
+//{
+//    game_change_state(GAME_STATE_RESUME_MENU);
+//}
+
+static void options_on_pressed(void)
+{
+    game_change_state(GAME_STATE_OPTIONS_MENU);
 }
