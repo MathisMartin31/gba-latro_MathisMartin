@@ -263,7 +263,7 @@ void game_options_menu_on_init(void)
     options_menu_selection_grid.selection = OPTIONS_MENU_INIT_SEL;
     disable_all_outlines_except_self(GAME_SPEED_BTN_IDX);
 
-    // Do an update on the first frame 
+    // Do an update on the first frame
     on_boot = true;
     game_options_menu_on_update();
     on_boot = false;
@@ -472,7 +472,6 @@ static void back_on_pressed(void)
         {
             game_change_state(GAME_STATE_MAIN_MENU);
         }
-        
     }
 }
 

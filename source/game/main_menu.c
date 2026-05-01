@@ -53,7 +53,7 @@ static bool main_menu_on_selection_changed(
 static void main_menu_on_key_transit(SelectionGrid* selection_grid, Selection* selection);
 
 static void play_on_pressed(void);
-//static void resume_on_pressed(void);
+// static void resume_on_pressed(void);
 static void options_on_pressed(void);
 
 // clang-format off
