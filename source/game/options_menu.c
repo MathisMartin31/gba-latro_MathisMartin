@@ -169,13 +169,18 @@ static const BG_POINT OPTIONS_MUSIC_VOLUME_TEXT_POS  = { 56,  80};
 static const BG_POINT OPTIONS_MUSIC_VALUE_TEXT_POS   = {160,  80};
 static const BG_POINT OPTIONS_SOUND_VOLUME_TEXT_POS  = { 56, 104};
 static const BG_POINT OPTIONS_SOUND_VALUE_TEXT_POS   = {160, 104};
-static const BG_POINT OPTIONS_BACK_TEXT_POS          = {104, 136};
+static const BG_POINT OPTIONS_BACK_SAVE_TEXT_POS     = { 72, 136};
 // clang-format on
 
+static bool on_boot = true;
 static bool game_speed_changed = false;
 static bool high_contrast_changed = false;
 static bool music_volume_changed = false;
 static bool sound_volume_changed = false;
+
+static bool any_value_changed = false;
+static bool back_btn_is_save_state = false;
+static bool save_pressed = false;
 
 static void disable_all_outlines_except_self(enum OptionButtons highlighted_btn)
 {
@@ -195,6 +200,18 @@ static void disable_all_outlines_except_self(enum OptionButtons highlighted_btn)
     {
         button_set_highlight(&options_menu_buttons[i], i == highlighted_btn);
     }
+}
+
+static void change_back_save_text(bool is_back)
+{
+    char* btn_text = is_back ? "    Back    " : "Save Changes";
+    tte_printf(
+        "#{P:%d,%d; cx:0x%X000}%s",
+        OPTIONS_BACK_SAVE_TEXT_POS.x,
+        OPTIONS_BACK_SAVE_TEXT_POS.y,
+        TTE_WHITE_PB,
+        btn_text
+    );
 }
 
 void game_options_menu_change_background(void)
@@ -230,12 +247,7 @@ void game_options_menu_change_background(void)
         OPTIONS_SOUND_VOLUME_TEXT_POS.y,
         TTE_WHITE_PB
     );
-    tte_printf(
-        "#{P:%d,%d; cx:0x%X000}Back",
-        OPTIONS_BACK_TEXT_POS.x,
-        OPTIONS_BACK_TEXT_POS.y,
-        TTE_WHITE_PB
-    );
+    change_back_save_text(true);
 }
 
 void game_options_menu_on_init(void)
@@ -251,8 +263,10 @@ void game_options_menu_on_init(void)
     options_menu_selection_grid.selection = OPTIONS_MENU_INIT_SEL;
     disable_all_outlines_except_self(GAME_SPEED_BTN_IDX);
 
-    // Do a first update right off the bat
+    // Do an update on the first frame 
+    on_boot = true;
     game_options_menu_on_update();
+    on_boot = false;
 }
 
 void game_options_menu_on_update(void)
@@ -298,6 +312,7 @@ void game_options_menu_on_update(void)
         );
 
         game_speed_changed = false;
+        any_value_changed = true;
     }
 
     if (high_contrast_changed)
@@ -318,6 +333,7 @@ void game_options_menu_on_update(void)
         }
 
         high_contrast_changed = false;
+        any_value_changed = true;
     }
 
     if (music_volume_changed)
@@ -366,6 +382,7 @@ void game_options_menu_on_update(void)
         );
 
         music_volume_changed = false;
+        any_value_changed = true;
     }
 
     if (sound_volume_changed)
@@ -408,12 +425,23 @@ void game_options_menu_on_update(void)
         );
 
         sound_volume_changed = false;
+        any_value_changed = true;
     }
+
+    // Except on the first update where it is forced to display the loaded values
+    // instead of the default ones, if any value was changed, edit the last button
+    // text to read "Save Changes" instead of "Back"
+    if (!on_boot && any_value_changed && !back_btn_is_save_state && !save_pressed)
+    {
+        change_back_save_text(false);
+        back_btn_is_save_state = true;
+    }
+
+    any_value_changed = false;
 }
 
 void game_options_menu_on_exit(void)
 {
-    save_game();
     tte_erase_screen();
 }
 
@@ -427,14 +455,24 @@ static void high_contrast_on_pressed(void)
 }
 
 /**
- * @brief Handles input for the back button and nothing more.
+ * @brief Handles input for the Sack/Save button.
  */
 static void back_on_pressed(void)
 {
     if (key_hit(SELECT_CARD))
     {
-        change_background(BG_MAIN_MENU);
-        game_change_state(GAME_STATE_MAIN_MENU);
+        if (back_btn_is_save_state)
+        {
+            save_game();
+            change_back_save_text(true);
+            back_btn_is_save_state = false;
+            save_pressed = false;
+        }
+        else
+        {
+            game_change_state(GAME_STATE_MAIN_MENU);
+        }
+        
     }
 }
 
