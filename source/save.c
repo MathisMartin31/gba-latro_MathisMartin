@@ -42,35 +42,38 @@ typedef struct SaveHeader
     char githash[7];
 } SaveHeader;
 
-enum DelimiterTag
+typedef struct JokerSaveData
 {
-    DTAG_JOKER,
-    DTAG_TAROT,
-    DTAG_PLANET,
-    DTAG_VOUCHER,
-    DTAG_SKIP_TAG,
-    DTAG_END,
-    DTAG_INVALID = UNDEFINED
-};
+    u32 id; // Inefficient here, but keeps the save data aligned on 4 bytes
+    u32 persistent_state;
+} JokerSaveData;
+#define JOKER_DATA_SIZE 8
 
-// DelimiterTag is an enum of size sizeof(u8) = 1
-#define CARDS_TAG_SIZE 1
+#define DTAG_JOKER    0x524B4F4A // Spells JOKR
+#define DTAG_TAROT    0x544F5254 // Spells TROT
+#define DTAG_PLANET   0x544E4C50 // Spells PLNT
+#define DTAG_VOUCHER  0x52484356 // Spells VCHR
+#define DTAG_SKIP_TAG 0x47415453 // Spells STAG
+#define DTAG_END      0x444E45ff // Spells END
+#define DTAG_SIZE     4
 
 /**
  ** @brief Write raw binary data to SRAM
  *
- * @param sram_base address written to in the SRAM
+ * @param sram_base pointer to address written to in the SRAM. Will get incremented by `size`.
  * @param bytes pointer to the written data
  * @param size number of bytes written
  */
-static inline void write_sram(u32 sram_base, const u8* bytes, u32 size)
+static inline void write_sram(u32* sram_base, const u8* bytes, u32 size)
 {
-    if (sram_base + size >= SRAM_SIZE)
-        return;
+    // Don't know if check is necessary since we'll never reach 32kB of save data
+    // if (*sram_base + size >= SRAM_SIZE)
+    //     return;
 
     for (u32 i = 0; i < size; i++)
     {
-        sram_mem[sram_base + i] = bytes[i];
+        sram_mem[*sram_base] = bytes[i];
+        (*sram_base)++;
     }
 }
 
@@ -79,14 +82,27 @@ static inline void write_sram(u32 sram_base, const u8* bytes, u32 size)
  *
  * @sa write_sram
  */
-static inline void read_sram(u32 sram_base, u8* bytes, u32 size)
+static inline void read_sram(u32* sram_base, u8* bytes, u32 size)
 {
-    if (sram_base + size >= SRAM_SIZE)
-        return;
+    // Same as write_sram
+    // if (*sram_base + size >= SRAM_SIZE)
+    //     return;
 
     for (u32 i = 0; i < size; i++)
     {
-        bytes[i] = sram_mem[sram_base + i];
+        bytes[i] = sram_mem[*sram_base];
+        (*sram_base)++;
+    }
+}
+
+/**
+ ** @brief Clear entirety of SRAM by filling it with ones.
+ */
+static inline void clear_sram()
+{
+    for (u32 i = 0; i < SRAM_SIZE; i++)
+    {
+        sram_mem[i] = 0xff;
     }
 }
 
@@ -133,7 +149,8 @@ static inline void set_save_header()
     check.dirty = is_version_dirty();
     memcpy(&(check.githash), (void*)(&balatro_version) + GIT_HASH_START, CHECK_HASH_SIZE);
 
-    write_sram(CHECK_BASE, (const u8*)&check, sizeof(check));
+    u32 write_address = CHECK_BASE;
+    write_sram(&write_address, (const u8*)&check, sizeof(check));
 }
 
 /**
@@ -144,7 +161,8 @@ static inline void set_save_header()
 static inline bool check_save_header()
 {
     SaveHeader check;
-    read_sram(CHECK_BASE, (u8*)&check, sizeof(check));
+    u32 write_address = CHECK_BASE;
+    read_sram(&write_address, (u8*)&check, sizeof(check));
 
     bool is_valid = (check.magic == CHECK_MAGIC) && check.dirty == is_version_dirty() &&
                     check_hash(check.githash);
@@ -154,8 +172,48 @@ static inline bool check_save_header()
 
 void save_game(void)
 {
+    clear_sram();
+
+    // Save fixed vars (money, etc)
     set_save_header();
-    write_sram(GAME_BASE, (const u8*)&g_game_vars, sizeof(g_game_vars));
+    u32 write_address = GAME_BASE;
+    write_sram(&write_address, (const u8*)&g_game_vars, sizeof(g_game_vars));
+
+    write_address = LISTS_BASE;
+    u32 list_tag = DTAG_JOKER;
+    ListItr itr;
+
+    // Save Jokers
+
+    List* jokers = get_jokers_list();
+    u32 nb_jokers = list_get_len(jokers);
+
+    // Prefix array with delimiter and size of array so we can read it later
+    write_sram(&write_address, (const u8*)&list_tag, DTAG_SIZE);
+    write_sram(&write_address, (const u8*)&nb_jokers, sizeof(nb_jokers));
+
+    if (nb_jokers > 0)
+    {
+        itr = list_itr_create(jokers);
+        JokerObject* joker_object;
+        while ((joker_object = list_itr_next(&itr)))
+        {
+            JokerSaveData data = {
+                (u32)joker_object->joker->id,
+                joker_object->joker->persistent_state
+            };
+            write_sram(&write_address, (const u8*)&data, sizeof(data));
+        }
+    }
+
+    // Save Tarot cards
+
+    list_tag = DTAG_TAROT;
+    write_sram(&write_address, (const u8*)&list_tag, DTAG_SIZE);
+    write_sram(&write_address, (const u8*)&nb_jokers, sizeof(nb_jokers));
+
+    list_tag = DTAG_END;
+    write_sram(&write_address, (const u8*)&list_tag, DTAG_SIZE);
 }
 
 void load_game(void)
@@ -163,7 +221,8 @@ void load_game(void)
     if (!check_save_header())
         return;
 
-    read_sram(GAME_BASE, (u8*)&g_game_vars, sizeof(g_game_vars));
+    u32 read_address = GAME_BASE;
+    read_sram(&read_address, (u8*)&g_game_vars, sizeof(g_game_vars));
 
     // Data validation in case we start from junk data
     if (g_game_vars.game_speed < GAME_SPEED_MIN || g_game_vars.game_speed > GAME_SPEED_MAX)
