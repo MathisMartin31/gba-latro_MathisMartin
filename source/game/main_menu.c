@@ -22,17 +22,17 @@
 // Once saving/reloading a save is fully functional, just
 // uncomment all the lines related to the "Resume" button
 
-#define PLAY_BUTTON_MAIN_COLOR_PID    5
-#define PLAY_BUTTON_OUTLINE_PID       6
-//#define RESUME_BUTTON_MAIN_COLOR_PID  ??
-//#define RESUME_BUTTON_OUTLINE_PID     ??
+#define PLAY_BUTTON_MAIN_COLOR_PID 5
+#define PLAY_BUTTON_OUTLINE_PID    6
+// #define RESUME_BUTTON_MAIN_COLOR_PID  ??
+// #define RESUME_BUTTON_OUTLINE_PID     ??
 #define OPTIONS_BUTTON_MAIN_COLOR_PID 7
 #define OPTIONS_BUTTON_OUTLINE_PID    1
 
 enum MainButtons
 {
     PLAY_BTN_IDX,
-    //RESUME_BTN_IDX,
+    // RESUME_BTN_IDX,
     OPTIONS_BTN_IDX,
     MAIN_MENU_NB_BTN
 };
@@ -218,10 +218,10 @@ static void play_on_pressed(void)
     game_change_state(GAME_STATE_GAME_START);
 }
 
-//static void resume_on_pressed(void)
-//{
-//    game_change_state(GAME_STATE_RESUME_MENU);
-//}
+// static void resume_on_pressed(void)
+// {
+//     game_change_state(GAME_STATE_RESUME_MENU);
+// }
 
 static void options_on_pressed(void)
 {
