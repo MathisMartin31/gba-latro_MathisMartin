@@ -115,6 +115,7 @@ void game_main_menu_on_init(void)
     main_menu_ace->sprite_object->ty = int2fx(MAIN_MENU_ACE_T_Y);
     main_menu_ace->sprite_object->y = main_menu_ace->sprite_object->ty;
     main_menu_ace->sprite_object->tscale = float2fx(0.8f);
+    card_object_update(main_menu_ace);
 
     // Select Play button by default, but only on boot.
     // If we return from the options menu, we want the Options button to be highlighted.
