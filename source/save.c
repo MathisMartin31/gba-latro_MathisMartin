@@ -1,5 +1,6 @@
 #include "save.h"
 
+#include "audio_utils.h"
 #include "game.h"
 #include "joker.h"
 #include "list.h"
@@ -181,4 +182,6 @@ void load_game(void)
     {
         (void)rand();
     }
+
+    mmSetModuleVolume(MM_FULL_MODULE_VOLUME * g_game_vars.music_volume / VOLUME_VALUE_MAX);
 }

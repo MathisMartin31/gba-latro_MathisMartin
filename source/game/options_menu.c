@@ -543,6 +543,8 @@ static bool music_volume_row_on_selection_changed(
         music_volume_changed = true;
     }
 
+    mmSetModuleVolume(MM_FULL_MODULE_VOLUME * g_game_vars.music_volume / VOLUME_VALUE_MAX);
+
     return true;
 }
 
