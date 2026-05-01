@@ -11,15 +11,15 @@
 #define GAME_SPEED_MIN 1
 #define GAME_SPEED_MAX 4
 
-// Volume is store from 0 to 20 but is an increment of 5 so 0 to 100 will be displayed
+// Volume is stored from 0 to 5 but is an increment of 20 so 0 to 100 will be displayed
 #define VOLUME_VALUE_MIN       0
-#define VOLUME_VALUE_MAX       20
-#define VOLUME_VALUE_INCREMENT 5
+#define VOLUME_VALUE_MAX       5
+#define VOLUME_VALUE_INCREMENT 20
 
 #define DEFAULT_GAME_SPEED    1
 #define DEFAULT_HIGH_CONTRAST false
-#define DEFAULT_MUSIC_VOLUME  20
-#define DEFAULT_SOUND_VOLUME  20
+#define DEFAULT_MUSIC_VOLUME  VOLUME_VALUE_MAX
+#define DEFAULT_SOUND_VOLUME  VOLUME_VALUE_MAX
 
 /**
  * @brief A central location for all game variables.

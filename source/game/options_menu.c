@@ -155,6 +155,12 @@ static const Rect     OPTIONS_SOUND_SLIDER_MID_SRC             = {13, 22, 13, 22
 static const Rect     OPTIONS_SOUND_SLIDER_EMPTY_SRC           = {14, 22, 14, 22};
 static const BG_POINT OPTIONS_MUSIC_SLIDER_START_POS           = { 5, 11};
 static const BG_POINT OPTIONS_SOUND_SLIDER_START_POS           = { 5, 14};
+static const BG_POINT OPTIONS_MUSIC_SLIDER_END_POS             = {24, 11};
+static const BG_POINT OPTIONS_SOUND_SLIDER_END_POS             = {24, 14};
+static const u8       OPTIONS_MUSIC_SLIDER_SEGMENT_LENGTH      = (OPTIONS_MUSIC_SLIDER_END_POS.x - OPTIONS_MUSIC_SLIDER_START_POS.x + 1)
+                                                                    / VOLUME_VALUE_MAX;
+static const u8       OPTIONS_SOUND_SLIDER_SEGMENT_LENGTH      = (OPTIONS_SOUND_SLIDER_END_POS.x - OPTIONS_SOUND_SLIDER_START_POS.x + 1)
+                                                                    / VOLUME_VALUE_MAX;
 
 // Values in pixels
 static const BG_POINT OPTIONS_GAME_SPEED_TEXT_POS    = { 82,  16};
@@ -320,7 +326,7 @@ void game_options_menu_on_update(void)
         BG_POINT slider_segment_dest = OPTIONS_MUSIC_SLIDER_START_POS;
 
         // full part of the bar
-        for (; i < g_game_vars.music_volume - 1; i++)
+        for (; i < g_game_vars.music_volume * OPTIONS_MUSIC_SLIDER_SEGMENT_LENGTH - 1; i++)
         {
             main_bg_se_copy_rect(OPTIONS_MUSIC_SLIDER_FULL_SRC, slider_segment_dest);
             slider_segment_dest.x++;
@@ -344,7 +350,7 @@ void game_options_menu_on_update(void)
             }
 
             // empty part of the bar
-            for (; i < VOLUME_VALUE_MAX; i++)
+            for (; i < VOLUME_VALUE_MAX * OPTIONS_MUSIC_SLIDER_SEGMENT_LENGTH; i++)
             {
                 main_bg_se_copy_rect(OPTIONS_MUSIC_SLIDER_EMPTY_SRC, slider_segment_dest);
                 slider_segment_dest.x++;
@@ -367,7 +373,7 @@ void game_options_menu_on_update(void)
         int i = 0;
         BG_POINT slider_segment_dest = OPTIONS_SOUND_SLIDER_START_POS;
 
-        for (; i < g_game_vars.sound_volume - 1; i++)
+        for (; i < g_game_vars.sound_volume * OPTIONS_SOUND_SLIDER_SEGMENT_LENGTH - 1; i++)
         {
             main_bg_se_copy_rect(OPTIONS_SOUND_SLIDER_FULL_SRC, slider_segment_dest);
             slider_segment_dest.x++;
@@ -386,7 +392,7 @@ void game_options_menu_on_update(void)
                 slider_segment_dest.x++;
             }
 
-            for (; i < VOLUME_VALUE_MAX; i++)
+            for (; i < VOLUME_VALUE_MAX * OPTIONS_SOUND_SLIDER_SEGMENT_LENGTH; i++)
             {
                 main_bg_se_copy_rect(OPTIONS_SOUND_SLIDER_EMPTY_SRC, slider_segment_dest);
                 slider_segment_dest.x++;
