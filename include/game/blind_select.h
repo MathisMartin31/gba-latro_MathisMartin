@@ -6,8 +6,6 @@
 #ifndef GAME_BLIND_SELECT_H
 #define GAME_BLIND_SELECT_H
 
-#include "game_variables.h"
-
 /**
  * @brief Change to the blind select background
  */

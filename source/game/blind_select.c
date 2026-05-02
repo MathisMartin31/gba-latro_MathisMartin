@@ -163,8 +163,8 @@ static void game_blind_select_handle_input()
 
             selection_y = 0; // Reset selection to first option
 
-            background = UNDEFINED; // Force refresh of the background
-            change_background(BG_BLIND_SELECT);
+            //background = UNDEFINED; // Force refresh of the background
+            change_background(BG_BLIND_SELECT, true);
 
             // TODO: Create a generic vertical move by any number of tiles to avoid for loops?
             for (int i = 0; i < 12; i++)

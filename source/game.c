@@ -680,10 +680,10 @@ static inline void jokers_available_to_shop_init(void)
 static void reroll_boss_blind(bool no_tiles)
 {
     // Showdown blinds only show up on ante 8, 16, etc...
-    next_boss_blind = roll_blind_type((g_game_vars.ante % 8 == 0) && (g_game_vars.ante > 0));
+    g_game_vars.next_boss_blind = roll_blind_type((g_game_vars.ante % 8 == 0) && (g_game_vars.ante > 0));
     if (!no_tiles)
     {
-        apply_blind_tiles(next_boss_blind, BOSS_BLIND_TOKEN_LAYER);
+        apply_blind_tiles(g_game_vars.next_boss_blind, BOSS_BLIND_TOKEN_LAYER);
     }
 }
 
@@ -960,11 +960,6 @@ int get_num_discards_remaining(void)
 int get_num_hands_remaining(void)
 {
     return hands;
-}
-
-enum BlindType get_next_boss_blind()
-{
-    return next_boss_blind;
 }
 
 u32 get_chips(void)
@@ -1515,12 +1510,12 @@ void change_background_legacy(enum BackgroundId id)
         // Copy boss blind colors to blind select palette
         memset16(
             &pal_bg_mem[1],
-            blind_get_color(next_boss_blind, BLIND_BACKGROUND_MAIN_COLOR_INDEX),
+            blind_get_color(g_game_vars.next_boss_blind, BLIND_BACKGROUND_MAIN_COLOR_INDEX),
             1
         );
         memset16(
             &pal_bg_mem[7],
-            blind_get_color(next_boss_blind, BLIND_BACKGROUND_SHADOW_COLOR_INDEX),
+            blind_get_color(g_game_vars.next_boss_blind, BLIND_BACKGROUND_SHADOW_COLOR_INDEX),
             1
         );
 
@@ -2269,7 +2264,7 @@ static inline void game_playing_handle_round_over(void)
                 display_ante(++g_game_vars.ante);
 
                 // mark current boss blind as beaten and allow for reroll
-                set_blind_beaten(next_boss_blind);
+                set_blind_beaten(g_game_vars.next_boss_blind);
                 boss_rolled_this_ante = false;
             }
             else
@@ -4454,7 +4449,7 @@ static enum BlindType get_blind_type_from_token(enum BlindTokens blind)
             blind_type = BLIND_TYPE_BIG;
             break;
         default:
-            blind_type = next_boss_blind;
+            blind_type = g_game_vars.next_boss_blind;
             break;
     }
     return blind_type;

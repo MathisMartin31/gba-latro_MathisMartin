@@ -46,6 +46,7 @@ typedef struct
     // Blind variables
 
     enum BlindType current_blind;
+    enum BlindType next_boss_blind;
 
     // Options variables
 
