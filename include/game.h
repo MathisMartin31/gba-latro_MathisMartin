@@ -166,7 +166,6 @@ void set_mult(u32 new_mult);
 void display_mult(void);
 void display_money(void);
 void set_retrigger(bool new_retrigger);
-enum BlindType get_current_blind(void);
 enum BlindType get_next_boss_blind(void);
 
 u32 get_rand(void);

@@ -1,6 +1,7 @@
 #include "blind_select.h"
 
 #include "audio_utils.h"
+#include "blind.h"
 #include "game.h"
 #include "game_variables.h"
 #include "graphic_utils.h"
@@ -47,6 +48,7 @@ enum BlindSelectState substate;
 
 static const Rect POP_MENU_ANIM_RECT        = {9,       7,      24,     31 };
 static const u32 TM_END_ANIM_SEQ = 12;
+static const u32 TM_BLIND_SELECT_START = 1;
 
 static void game_blind_select_start_anim_seq()
 {
@@ -66,6 +68,85 @@ static void game_blind_select_start_anim_seq()
         game_blind_select_print_blinds_reqs_and_rewards();
         substate = BLIND_SELECT;
         g_game_vars.timer = TM_ZERO; // Reset the timer
+    }
+}
+
+static void game_blind_select_handle_input()
+{
+    if (g_game_vars.timer == TM_BLIND_SELECT_START && g_game_vars.current_blind == BLIND_TYPE_BOSS)
+    {
+        selection_y = 0;
+    }
+
+    // Blind select input logic
+    if (key_hit(KEY_UP))
+    {
+        selection_y = 0;
+    }
+    else if (key_hit(KEY_DOWN) && g_game_vars.current_blind <= BLIND_TYPE_BIG)
+    {
+        selection_y = 1;
+    }
+    else if (key_hit(SELECT_CARD))
+    {
+        game_blind_select_erase_blind_reqs_and_rewards();
+
+        if (selection_y == 0) // Blind selected
+        {
+            play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
+            state_info[game_state].substate = BLIND_SELECTED_ANIM_SEQ;
+            g_game_vars.timer = TM_ZERO;
+            ++g_game_vars.round;
+            display_round();
+        }
+        else if (g_game_vars.current_blind <= BLIND_TYPE_BIG)
+        {
+            play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
+            increment_blind(BLIND_STATE_SKIPPED);
+
+            selection_y = 0; // Reset selection to first option
+
+            background = UNDEFINED; // Force refresh of the background
+            change_background(BG_BLIND_SELECT);
+
+            // TODO: Create a generic vertical move by any number of tiles to avoid for loops?
+            for (int i = 0; i < 12; i++)
+            {
+                main_bg_se_copy_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
+            }
+
+            for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
+            {
+                sprite_position(
+                    blind_select_tokens[i],
+                    blind_select_tokens[i]->pos.x,
+                    blind_select_tokens[i]->pos.y - (TILE_SIZE * 12)
+                );
+            }
+
+            game_blind_select_print_blinds_reqs_and_rewards();
+
+            g_game_vars.timer = TM_ZERO;
+        }
+    }
+
+    if (selection_y == 0)
+    {
+        memset16(&pal_bg_mem[BLIND_SELECT_BTN_SELECTED_BORDER_PID], 0xFFFF, 1);
+        memcpy16(
+            &pal_bg_mem[BLIND_SKIP_BTN_SELECTED_BORDER_PID],
+            &pal_bg_mem[BLIND_SKIP_BTN_PID],
+            1
+        );
+    }
+    else
+    {
+        memcpy16(
+            &pal_bg_mem[BLIND_SELECT_BTN_SELECTED_BORDER_PID],
+            &pal_bg_mem[BLIND_SELECT_BTN_PID],
+            1
+        );
+        memset16(&pal_bg_mem[BLIND_SKIP_BTN_SELECTED_BORDER_PID], 0xFFFF, 1);
     }
 }
 

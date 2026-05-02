@@ -84,8 +84,6 @@
 #define TM_SHOP_PRC_INPUT_START         1
 #define TM_DISP_BLIND_PANEL_FINISH      7
 #define TM_DISP_BLIND_PANEL_START       1
-#define TM_BLIND_SELECT_START           1
-#define TM_END_ANIM_SEQ                 12
 
 // TODO: Rename "PID" to "PAL_IDX"
 // Palette IDs
@@ -537,7 +535,6 @@ static Sprite* blind_select_tokens[NUM_BLINDS_PER_ANTE] = {NULL};
 static bool boss_rolled_this_ante = false;
 // Will be rolled later, just giving it a valid value
 static enum BlindType next_boss_blind = BLIND_TYPE_HOOK;
-static enum BlindType current_blind = BLIND_TYPE_SMALL;
 
 // The current state of the blinds, this is used to determine what the game is doing at any given
 // time
@@ -754,7 +751,7 @@ void game_init()
     hands = max_hands;
     discards = max_discards;
     g_game_vars.timer = TM_ZERO;
-    current_blind = BLIND_TYPE_SMALL;
+    g_game_vars.current_blind = BLIND_TYPE_SMALL;
     blinds_states[0] = BLIND_STATE_CURRENT;
     blinds_states[1] = BLIND_STATE_UPCOMING;
     blinds_states[2] = BLIND_STATE_UPCOMING;
@@ -1011,11 +1008,6 @@ int get_num_discards_remaining(void)
 int get_num_hands_remaining(void)
 {
     return hands;
-}
-
-enum BlindType get_current_blind()
-{
-    return current_blind;
 }
 
 enum BlindType get_next_boss_blind()
@@ -1442,14 +1434,14 @@ void change_background_legacy(enum BackgroundId id)
             GRIT_CPY(&tile8_mem[MAIN_BG_CBB], background_gfxTiles);
             GRIT_CPY(&se_mem[MAIN_BG_SBB], background_gfxMap);
 
-            if (current_blind == BLIND_TYPE_BIG) // Change text and palette depending on blind type
+            if (g_game_vars.current_blind == BLIND_TYPE_BIG) // Change text and palette depending on blind type
             {
                 main_bg_se_copy_rect(BIG_BLIND_TITLE_SRC_RECT, TOP_LEFT_BLIND_TITLE_POINT);
             }
-            else if (current_blind > BLIND_TYPE_BIG)
+            else if (g_game_vars.current_blind > BLIND_TYPE_BIG)
             {
                 main_bg_se_copy_rect(BOSS_BLIND_TITLE_SRC_RECT, TOP_LEFT_BLIND_TITLE_POINT);
-                affine_background_set_color(blind_get_color(current_blind, BLIND_SHADOW_COLOR_INDEX)
+                affine_background_set_color(blind_get_color(g_game_vars.current_blind, BLIND_SHADOW_COLOR_INDEX)
                 );
             }
 
@@ -1459,17 +1451,17 @@ void change_background_legacy(enum BackgroundId id)
             // doesn't use the blind token's exact colors so a different approach is required
             memset16(
                 &pal_bg_mem[BLIND_BG_PRIMARY_PID],
-                blind_get_color(current_blind, BLIND_BACKGROUND_MAIN_COLOR_INDEX),
+                blind_get_color(g_game_vars.current_blind, BLIND_BACKGROUND_MAIN_COLOR_INDEX),
                 1
             );
             memset16(
                 &pal_bg_mem[BLIND_BG_SECONDARY_PID],
-                blind_get_color(current_blind, BLIND_BACKGROUND_SECONDARY_COLOR_INDEX),
+                blind_get_color(g_game_vars.current_blind, BLIND_BACKGROUND_SECONDARY_COLOR_INDEX),
                 1
             );
             memset16(
                 &pal_bg_mem[BLIND_BG_SHADOW_PID],
-                blind_get_color(current_blind, BLIND_BACKGROUND_SHADOW_COLOR_INDEX),
+                blind_get_color(g_game_vars.current_blind, BLIND_BACKGROUND_SHADOW_COLOR_INDEX),
                 1
             );
 
@@ -1771,7 +1763,7 @@ static void display_score(u32 value)
 static void check_flaming_score(void)
 {
     u32 curr_score = u32_protected_mult(chips, mult);
-    u32 required_score = blind_get_requirement(current_blind, g_game_vars.ante);
+    u32 required_score = blind_get_requirement(g_game_vars.current_blind, g_game_vars.ante);
     if (curr_score >= required_score && !score_flames_active)
     {
         // start flaming score
@@ -1872,23 +1864,23 @@ static int deck_get_max_size(void)
 static void increment_blind(enum BlindState increment_reason)
 {
     // cannot do blind++ anymore, we need to go SMALL->BIG->next_boss->SMALL...
-    switch (current_blind)
+    switch (g_game_vars.current_blind)
     {
         // defeated small blind: go to big
         case BLIND_TYPE_SMALL:
-            current_blind = BLIND_TYPE_BIG;
+            g_game_vars.current_blind = BLIND_TYPE_BIG;
             blinds_states[SMALL_BLIND] = increment_reason;
             blinds_states[BIG_BLIND] = BLIND_STATE_CURRENT;
             break;
         // defeated big blind: go to next boss
         case BLIND_TYPE_BIG:
-            current_blind = next_boss_blind;
+            g_game_vars.current_blind = next_boss_blind;
             blinds_states[BIG_BLIND] = increment_reason;
             blinds_states[BOSS_BLIND] = BLIND_STATE_CURRENT;
             break;
         // defeated a boss: reset everything
         default:
-            current_blind = BLIND_TYPE_SMALL;
+            g_game_vars.current_blind = BLIND_TYPE_SMALL;
             blinds_states[SMALL_BLIND] = BLIND_STATE_CURRENT; // Reset the blinds to the first one
             blinds_states[BIG_BLIND] = BLIND_STATE_UPCOMING;  // Set the next blind to upcoming
             blinds_states[BOSS_BLIND] = BLIND_STATE_UPCOMING; // Set the next blind to upcoming
@@ -1915,7 +1907,7 @@ static void game_round_on_init(void)
 
     sprite_destroy(&playing_blind_token);
     playing_blind_token = blind_token_new(
-        current_blind,
+        g_game_vars.current_blind,
         CUR_BLIND_TOKEN_POS.x,
         CUR_BLIND_TOKEN_POS.y,
         PLAYING_BLIND_TOKEN_LAYER
@@ -1927,7 +1919,7 @@ static void game_round_on_init(void)
     //}
     sprite_destroy(&round_end_blind_token);
     round_end_blind_token = blind_token_new(
-        current_blind,
+        g_game_vars.current_blind,
         81,
         86,
         ROUND_END_BLIND_TOKEN_LAYER
@@ -1939,7 +1931,7 @@ static void game_round_on_init(void)
     }
 
     Rect blind_req_text_rect = BLIND_REQ_TEXT_RECT;
-    u32 blind_requirement = blind_get_requirement(current_blind, g_game_vars.ante);
+    u32 blind_requirement = blind_get_requirement(g_game_vars.current_blind, g_game_vars.ante);
 
     char blind_req_str_buff[UINT_MAX_DIGITS + 1];
 
@@ -1964,7 +1956,7 @@ static void game_round_on_init(void)
         BLIND_REWARD_RECT.left,
         BLIND_REWARD_RECT.top,
         TTE_YELLOW_PB,
-        blind_get_reward(current_blind)
+        blind_get_reward(g_game_vars.current_blind)
     ); // Blind reward
 
     deck_shuffle(); // Shuffle the deck at the start of the round
@@ -2343,9 +2335,9 @@ static inline void game_playing_handle_round_over(void)
 {
     enum GameState next_state = GAME_STATE_ROUND_END;
 
-    if (score >= blind_get_requirement(current_blind, g_game_vars.ante))
+    if (score >= blind_get_requirement(g_game_vars.current_blind, g_game_vars.ante))
     {
-        if (current_blind > BLIND_TYPE_BIG)
+        if (g_game_vars.current_blind > BLIND_TYPE_BIG)
         {
             if (g_game_vars.ante < MAX_ANTE)
             {
@@ -2672,7 +2664,7 @@ static bool check_and_score_joker_for_event(
 
 static inline bool game_round_is_over(void)
 {
-    return hands == 0 || score >= blind_get_requirement(current_blind, g_game_vars.ante);
+    return hands == 0 || score >= blind_get_requirement(g_game_vars.current_blind, g_game_vars.ante);
 }
 
 // Basically a copy of HAND_DISCARD
@@ -3541,7 +3533,7 @@ static void game_round_end_start()
         change_background(BG_ROUND_END); // Change the background to the round end background
         state_info[game_state].substate = START_EXPAND_POPUP; // Change the state to the next one
         g_game_vars.timer = TM_ZERO;                          // Reset the timer
-        blind_reward = blind_get_reward(current_blind);
+        blind_reward = blind_get_reward(g_game_vars.current_blind);
         hand_reward = hands;
         interest_reward = calculate_interest_reward();
         interest_to_count = interest_reward;
@@ -3575,11 +3567,11 @@ static void game_round_end_display_finished_blind()
     int current_ante = g_game_vars.ante;
 
     // Beating the boss blind increases the ante, so we need to display the previous ante value
-    if (current_blind > BLIND_TYPE_BIG)
+    if (g_game_vars.current_blind > BLIND_TYPE_BIG)
         current_ante--;
 
     Rect blind_req_rect = ROUND_END_BLIND_REQ_RECT;
-    u32 blind_req = blind_get_requirement(current_blind, current_ante);
+    u32 blind_req = blind_get_requirement(g_game_vars.current_blind, current_ante);
 
     /* Not bothering to truncate here because there are 8 tiles
      * and the blind requirement will not increase past ante 8
@@ -3653,7 +3645,7 @@ static void game_round_end_update_blind_reward()
             ROUND_END_BLIND_REWARD_RECT.left,
             ROUND_END_BLIND_REWARD_RECT.top,
             TTE_YELLOW_PB,
-            blind_get_reward(current_blind) - blind_reward
+            blind_get_reward(g_game_vars.current_blind) - blind_reward
         );
     }
     else if (g_game_vars.timer > FRAMES(20))
@@ -3820,7 +3812,7 @@ static void game_round_end_display_rewards()
 static inline void game_round_end_cashout(void)
 {
     // Reward the player
-    g_game_vars.money += hands + blind_get_reward(current_blind) + calculate_interest_reward();
+    g_game_vars.money += hands + blind_get_reward(g_game_vars.current_blind) + calculate_interest_reward();
     display_money();
 
     hands = max_hands;          // Reset the hands to the maximum
@@ -3839,7 +3831,7 @@ static void game_round_end_display_cashout()
         // Put the "cash out" button onto the round end panel
         main_bg_se_copy_expand_3x3_rect(CASHOUT_DEST_RECT, CASHOUT_SRC_3X3_RECT_POS);
 
-        int cashout_amount = hands + blind_get_reward(current_blind) + calculate_interest_reward();
+        int cashout_amount = hands + blind_get_reward(g_game_vars.current_blind) + calculate_interest_reward();
 
         bool omit_space = cashout_amount >= 10;
         tte_printf(
@@ -4635,85 +4627,6 @@ static void game_blind_select_print_blinds_reqs_and_rewards(void)
     {
         game_blind_select_print_blind_req(curr_blind);
         game_blind_select_print_blind_reward(curr_blind);
-    }
-}
-
-static void game_blind_select_handle_input()
-{
-    if (g_game_vars.timer == TM_BLIND_SELECT_START && current_blind == BLIND_TYPE_BOSS)
-    {
-        selection_y = 0;
-    }
-
-    // Blind select input logic
-    if (key_hit(KEY_UP))
-    {
-        selection_y = 0;
-    }
-    else if (key_hit(KEY_DOWN) && current_blind <= BLIND_TYPE_BIG)
-    {
-        selection_y = 1;
-    }
-    else if (key_hit(SELECT_CARD))
-    {
-        game_blind_select_erase_blind_reqs_and_rewards();
-
-        if (selection_y == 0) // Blind selected
-        {
-            play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
-            state_info[game_state].substate = BLIND_SELECTED_ANIM_SEQ;
-            g_game_vars.timer = TM_ZERO;
-            ++g_game_vars.round;
-            display_round();
-        }
-        else if (current_blind <= BLIND_TYPE_BIG)
-        {
-            play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
-            increment_blind(BLIND_STATE_SKIPPED);
-
-            selection_y = 0; // Reset selection to first option
-
-            background = UNDEFINED; // Force refresh of the background
-            change_background(BG_BLIND_SELECT);
-
-            // TODO: Create a generic vertical move by any number of tiles to avoid for loops?
-            for (int i = 0; i < 12; i++)
-            {
-                main_bg_se_copy_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
-            }
-
-            for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
-            {
-                sprite_position(
-                    blind_select_tokens[i],
-                    blind_select_tokens[i]->pos.x,
-                    blind_select_tokens[i]->pos.y - (TILE_SIZE * 12)
-                );
-            }
-
-            game_blind_select_print_blinds_reqs_and_rewards();
-
-            g_game_vars.timer = TM_ZERO;
-        }
-    }
-
-    if (selection_y == 0)
-    {
-        memset16(&pal_bg_mem[BLIND_SELECT_BTN_SELECTED_BORDER_PID], 0xFFFF, 1);
-        memcpy16(
-            &pal_bg_mem[BLIND_SKIP_BTN_SELECTED_BORDER_PID],
-            &pal_bg_mem[BLIND_SKIP_BTN_PID],
-            1
-        );
-    }
-    else
-    {
-        memcpy16(
-            &pal_bg_mem[BLIND_SELECT_BTN_SELECTED_BORDER_PID],
-            &pal_bg_mem[BLIND_SELECT_BTN_PID],
-            1
-        );
-        memset16(&pal_bg_mem[BLIND_SKIP_BTN_SELECTED_BORDER_PID], 0xFFFF, 1);
     }
 }
 

@@ -8,6 +8,8 @@
 
 #include <tonc.h>
 
+#include "blind.h"
+
 #define GAME_SPEED_MIN 1
 #define GAME_SPEED_MAX 4
 
@@ -40,6 +42,10 @@ typedef struct
     int round;
     int ante;
     int money;
+
+    // Blind variables
+
+    enum BlindType current_blind;
 
     // Options variables
 
