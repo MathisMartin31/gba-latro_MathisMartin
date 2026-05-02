@@ -3,7 +3,6 @@
 #include "affine_background.h"
 #include "affine_background_gfx.h"
 #include "audio_utils.h"
-#include "background_blind_select_gfx.h"
 #include "background_gfx.h"
 #include "background_main_menu_gfx.h"
 #include "background_shop_gfx.h"
@@ -303,8 +302,6 @@ static bool can_discard_hand(void);
 // This is because when popping, the target position is blank so we just animate 
 // the whole rect so we don't have to track its position
 
-static const Rect BLIND_SKIP_BTN_GRAY_RECT  = {0,       24,     4,      27 };
-static const Rect BLIND_SKIP_BTN_PREANIM_DEST_RECT = {9,29,     19,     31 };
 // preanim - pre-animation rects for before the pop-up animation
 
 static const Rect HAND_BG_RECT_SELECTING    = {9,       11,     24,     17 };
@@ -379,7 +376,6 @@ static const Rect GAME_WIN_MSG_TEXT_RECT    = {112,      72,     UNDEFINED, UNDE
 static const BG_POINT HELD_JOKERS_POS       = {108,     10};
 static const BG_POINT JOKER_DISCARD_TARGET  = {240,     30};
 static const BG_POINT CARD_DRAW_POS         = {208,     110};
-static const BG_POINT CUR_BLIND_TOKEN_POS   = {8,       18};
 static const BG_POINT CARD_DISCARD_PNT      = {240,     70};
 static const BG_POINT HAND_START_POS        = {120,     90};
 static const BG_POINT HAND_PLAY_POS         = {120,     70};
@@ -519,7 +515,6 @@ static Sprite* playing_blind_token = NULL;
 // The sprite that displays the blind when in "GAME_ROUND_END" state
 static Sprite* round_end_blind_token = NULL;
 
-static bool boss_rolled_this_ante = false;
 // Will be rolled later, just giving it a valid value
 
 static int blind_reward = 0;
@@ -698,7 +693,7 @@ void game_init()
     // Initialize/reset unbeaten Boss/Showdown Blinds so they are all available
     init_unbeaten_blinds_list(false);
     init_unbeaten_blinds_list(true);
-    boss_rolled_this_ante = false;
+    g_game_vars.boss_rolled_this_ante = false;
 
 }
 
@@ -2073,7 +2068,7 @@ static inline void game_playing_handle_round_over(void)
 
                 // mark current boss blind as beaten and allow for reroll
                 set_blind_beaten(g_game_vars.next_boss_blind);
-                boss_rolled_this_ante = false;
+                g_game_vars.boss_rolled_this_ante = false;
             }
             else
             {
@@ -4268,7 +4263,7 @@ void game_start(void)
         }
     }
 
-    change_background(BG_BLIND_SELECT);
+    change_background(BG_BLIND_SELECT, false);
 
     // Deck size/max size
     tte_erase_rect_wrapper(DECK_SIZE_RECT);
@@ -4357,9 +4352,9 @@ static void game_over_on_exit(void)
     // show up on the next run.
     sprite_destroy(&playing_blind_token);
     sprite_destroy(&round_end_blind_token);
-    sprite_destroy(&blind_select_tokens[SMALL_BLIND]);
-    sprite_destroy(&blind_select_tokens[BIG_BLIND]);
-    sprite_destroy(&blind_select_tokens[BOSS_BLIND]);
+    sprite_destroy(&g_game_vars.blind_select_tokens[SMALL_BLIND]);
+    sprite_destroy(&g_game_vars.blind_select_tokens[BIG_BLIND]);
+    sprite_destroy(&g_game_vars.blind_select_tokens[BOSS_BLIND]);
 
     list_clear(&_owned_jokers_list);
     list_clear(&_discarded_jokers_list);

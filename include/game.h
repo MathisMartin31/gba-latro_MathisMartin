@@ -11,6 +11,7 @@ const Rect POP_MENU_ANIM_RECT        = {9,       7,      24,     31 };
 static const Rect SINGLE_BLIND_SELECT_RECT  = {9,       7,      13,     31 };
 static const Rect ROUND_END_MENU_RECT       = {9,       7,      24,     20 }; 
 static const Rect TOP_LEFT_PANEL_ANIM_RECT  = {0,       0,      8,      4  };
+static const BG_POINT CUR_BLIND_TOKEN_POS   = {8,       18};
 
 // TODO: these are spaghetti, probably can be encapsulated with some thought
 #define MENU_POP_OUT_ANIM_FRAMES 20

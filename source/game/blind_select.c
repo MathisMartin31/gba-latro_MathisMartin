@@ -1,6 +1,7 @@
 #include "blind_select.h"
 
 #include "audio_utils.h"
+#include "background_blind_select_gfx.h"
 #include "blind.h"
 #include "button.h"
 #include "game.h"
@@ -8,6 +9,7 @@
 #include "graphic_utils.h"
 #include "sprite.h"
 #include "timer.h"
+#include "soundbank.h"
 #include "util.h"
 
 #include <maxmod.h>
@@ -44,8 +46,10 @@ static const SubStateActionFn blind_select_state_actions[] = {
 
 static const u32 TM_END_ANIM_SEQ = 12;
 static const u32 TM_BLIND_SELECT_START = 1;
-static const Rect SINGLE_BLIND_SEL_REQ_SCORE_RECT = {80, 120, 104, 128 };
-static const BG_POINT TOP_LEFT_PANEL_EMPTY_3W_ROW_POS = {29, 31};
+static const Rect BLIND_SKIP_BTN_GRAY_RECT = { 0, 24, 4, 27 };
+static const Rect BLIND_SKIP_BTN_PREANIM_DEST_RECT = { 9, 29, 19, 31 };
+static const Rect SINGLE_BLIND_SEL_REQ_SCORE_RECT = { 80, 120, 104, 128 };
+static const BG_POINT TOP_LEFT_PANEL_EMPTY_3W_ROW_POS = { 29, 31};
 
 static int selection_x = 0;
 static int selection_y = 0;
@@ -147,7 +151,7 @@ static void game_blind_select_handle_input()
 
         if (selection_y == 0) // Blind selected
         {
-            //play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
+            play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
             substate = BLIND_SELECTED_ANIM_SEQ;
             g_game_vars.timer = TM_ZERO;
             ++g_game_vars.round;
@@ -156,7 +160,7 @@ static void game_blind_select_handle_input()
         // TODO: the else if is funky here
         else if (g_game_vars.current_blind <= BLIND_TYPE_BIG)
         {
-            //play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
+            play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
             increment_blind(BLIND_STATE_SKIPPED);
 
             selection_y = 0; // Reset selection to first option
@@ -391,7 +395,7 @@ static void blind_tokens_init()
         BIG_BLIND_TOKEN_LAYER
     );
     blind_select_tokens[BOSS_BLIND] = blind_token_new(
-        next_boss_blind,
+        g_game_vars.next_boss_blind,
         CUR_BLIND_TOKEN_POS.x,
         CUR_BLIND_TOKEN_POS.y,
         BOSS_BLIND_TOKEN_LAYER
@@ -405,7 +409,7 @@ static void blind_tokens_init()
 
 void game_blind_select_on_init(void)
 {
-    //change_background(BG_BLIND_SELECT);
+    change_background(BG_BLIND_SELECT, false);
     selection_x = 0;
     selection_y = 0;
 
@@ -428,7 +432,6 @@ void game_blind_select_on_update(void)
 void game_blind_select_on_exit(void)
 {
     selection_y = 0;
-    background = UNDEFINED;
 }
 
 void game_blind_select_change_background(void)
@@ -436,9 +439,9 @@ void game_blind_select_change_background(void)
     // If this is the first time we see this menu this Ante, roll a boss blind
     // This check is there for future safety, if we have any kind of pause menu
     // so we don't reroll the boss blind every time this menu is opened
-    if (!boss_rolled_this_ante)
+    if (!g_game_vars.boss_rolled_this_ante)
     {
-        boss_rolled_this_ante = true;
+        g_game_vars.boss_rolled_this_ante = true;
         reroll_boss_blind(false);
     }
 
@@ -514,7 +517,7 @@ void game_blind_select_change_background(void)
             main_bg_se_copy_rect(skip_blind_btn_rect_src, skip_blind_btn_pos_dest);
         }
 
-        switch (blinds_states[i])
+        switch (g_game_vars.blinds_states[i])
         {
             case BLIND_STATE_CURRENT: // Raise the blind panel up a bit
             {
