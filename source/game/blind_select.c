@@ -34,6 +34,7 @@ enum BlindTokens
 };
 
 
+// TODO: this will be refactored into common state machine 
 static const SubStateActionFn blind_select_state_actions[] = {
     game_blind_select_start_anim_seq,
     game_blind_select_handle_input,
@@ -71,6 +72,56 @@ static void game_blind_select_start_anim_seq()
     }
 }
 
+static inline void game_blind_select_erase_blind_reqs_and_rewards()
+{
+    for (enum BlindTokens curr_blind = SMALL_BLIND; curr_blind < NUM_BLINDS_PER_ANTE; curr_blind++)
+    {
+        Rect blind_req_and_reward_rect = SINGLE_BLIND_SEL_REQ_SCORE_RECT;
+
+        // To account for both raised blind and reward
+        blind_req_and_reward_rect.top -= TILE_SIZE;
+        blind_req_and_reward_rect.bottom += TILE_SIZE;
+
+        // To account for overflow
+        blind_req_and_reward_rect.right += TILE_SIZE;
+
+        blind_req_and_reward_rect.left +=
+            curr_blind * rect_width(&SINGLE_BLIND_SELECT_RECT) * TILE_SIZE;
+        blind_req_and_reward_rect.right +=
+            curr_blind * rect_width(&SINGLE_BLIND_SELECT_RECT) * TILE_SIZE;
+
+        tte_erase_rect_wrapper(blind_req_and_reward_rect);
+    }
+}
+
+// TODO: Clean this up
+static void increment_blind(enum BlindState increment_reason)
+{
+    // cannot do blind++ anymore, we need to go SMALL->BIG->next_boss->SMALL...
+    switch (g_game_vars.current_blind)
+    {
+        // defeated small blind: go to big
+        case BLIND_TYPE_SMALL:
+            g_game_vars.current_blind = BLIND_TYPE_BIG;
+            blinds_states[SMALL_BLIND] = increment_reason;
+            blinds_states[BIG_BLIND] = BLIND_STATE_CURRENT;
+            break;
+        // defeated big blind: go to next boss
+        case BLIND_TYPE_BIG:
+            g_game_vars.current_blind = next_boss_blind;
+            blinds_states[BIG_BLIND] = increment_reason;
+            blinds_states[BOSS_BLIND] = BLIND_STATE_CURRENT;
+            break;
+        // defeated a boss: reset everything
+        default:
+            g_game_vars.current_blind = BLIND_TYPE_SMALL;
+            blinds_states[SMALL_BLIND] = BLIND_STATE_CURRENT; // Reset the blinds to the first one
+            blinds_states[BIG_BLIND] = BLIND_STATE_UPCOMING;  // Set the next blind to upcoming
+            blinds_states[BOSS_BLIND] = BLIND_STATE_UPCOMING; // Set the next blind to upcoming
+            break;
+    }
+}
+
 static void game_blind_select_handle_input()
 {
     if (g_game_vars.timer == TM_BLIND_SELECT_START && g_game_vars.current_blind == BLIND_TYPE_BOSS)
@@ -94,11 +145,12 @@ static void game_blind_select_handle_input()
         if (selection_y == 0) // Blind selected
         {
             play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
-            state_info[game_state].substate = BLIND_SELECTED_ANIM_SEQ;
+            substate = BLIND_SELECTED_ANIM_SEQ;
             g_game_vars.timer = TM_ZERO;
             ++g_game_vars.round;
             display_round();
         }
+        // TODO: the else if is funky here
         else if (g_game_vars.current_blind <= BLIND_TYPE_BIG)
         {
             play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
@@ -150,6 +202,35 @@ static void game_blind_select_handle_input()
     }
 }
 
+static void game_blind_select_selected_anim_seq()
+{
+    if (g_game_vars.timer < 15)
+    {
+        Rect blinds_rect = POP_MENU_ANIM_RECT;
+        blinds_rect.top -= 1; // Because of the raised blind
+        main_bg_se_move_rect_1_tile_vert(blinds_rect, SCREEN_DOWN);
+
+        for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
+        {
+            sprite_position(
+                blind_select_tokens[i],
+                blind_select_tokens[i]->pos.x,
+                blind_select_tokens[i]->pos.y + TILE_SIZE
+            );
+        }
+    }
+    else if (g_game_vars.timer >= MENU_POP_OUT_ANIM_FRAMES)
+    {
+        for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
+        {
+            obj_hide(blind_select_tokens[i]->obj);
+        }
+
+        substate = DISPLAY_BLIND_PANEL; // Reset the state
+        g_game_vars.timer = TM_ZERO;                           // Reset the timer
+    }
+}
+
 void game_blind_select_on_init(void)
 {
     //change_background(BG_BLIND_SELECT);
@@ -159,7 +240,7 @@ void game_blind_select_on_init(void)
     play_sfx(SFX_POP, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
 }
 
-static void game_blind_select_on_update(void)
+void game_blind_select_on_update(void)
 {
     if (substate == BLIND_SELECT_MAX)
     {

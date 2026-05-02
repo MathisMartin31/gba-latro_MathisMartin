@@ -181,4 +181,5 @@ void game_start(void);
 // old system incrementally and without losing functionality.
 void change_background_legacy(enum BackgroundId id);
 
+void display_round(void);
 #endif // GAME_H
