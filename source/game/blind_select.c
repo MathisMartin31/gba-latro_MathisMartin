@@ -37,9 +37,10 @@ static int selection_y = 0;
 
 enum BlindSelectState substate;
 
-static const Rect POP_MENU_ANIM_RECT        = {9,       7,      24,     31 };
 static const u32 TM_END_ANIM_SEQ = 12;
 static const u32 TM_BLIND_SELECT_START = 1;
+
+static Sprite* blind_select_tokens[NUM_BLINDS_PER_ANTE] = {NULL};
 
 static void game_blind_select_start_anim_seq()
 {

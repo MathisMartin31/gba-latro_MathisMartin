@@ -3,9 +3,11 @@
 
 #include "blind.h"
 #include "game/common_ui.h"
-#include "game_variables.h"
+#include "graphic_utils.h"
 
 #include <tonc.h>
+
+const Rect POP_MENU_ANIM_RECT        = {9,       7,      24,     31 };
 
 #define MAX_HAND_SIZE        16
 #define MAX_DECK_SIZE        52

@@ -530,8 +530,6 @@ static Sprite* playing_blind_token = NULL;
 // The sprite that displays the blind when in "GAME_ROUND_END" state
 static Sprite* round_end_blind_token = NULL;
 
-static Sprite* blind_select_tokens[NUM_BLINDS_PER_ANTE] = {NULL};
-
 static bool boss_rolled_this_ante = false;
 // Will be rolled later, just giving it a valid value
 static enum BlindType next_boss_blind = BLIND_TYPE_HOOK;
