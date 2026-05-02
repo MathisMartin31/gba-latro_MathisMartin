@@ -47,6 +47,7 @@ typedef struct
 
     enum BlindType current_blind;
     enum BlindType next_boss_blind;
+    enum BlindState blinds_states[NUM_BLINDS_PER_ANTE];
 
     // Options variables
 

@@ -1,5 +1,6 @@
 #include "game/common_ui.h"
 
+#include "blind_select.h"
 #include "game.h"
 #include "game/main_menu.h"
 #include "game/options_menu.h"
@@ -15,7 +16,7 @@ static const BackgroundRenderCallback bgCallbacks[] = {
     [BG_CARD_PLAYING] = NULL,
     [BG_ROUND_END] = NULL,
     [BG_SHOP] = NULL,
-    [BG_BLIND_SELECT] = NULL,
+    [BG_BLIND_SELECT] = game_blind_select_change_background,
     [BG_OPTIONS_MENU] = game_options_menu_change_background,
     [BG_MAIN_MENU] = game_main_menu_change_background,
 };

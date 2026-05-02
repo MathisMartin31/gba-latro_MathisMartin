@@ -1,7 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "blind.h"
 #include "game/common_ui.h"
 #include "graphic_utils.h"
 
@@ -10,6 +9,14 @@
 // TODO: fix, wtf
 const Rect POP_MENU_ANIM_RECT        = {9,       7,      24,     31 };
 static const Rect SINGLE_BLIND_SELECT_RECT  = {9,       7,      13,     31 };
+static const Rect ROUND_END_MENU_RECT       = {9,       7,      24,     20 }; 
+static const Rect TOP_LEFT_PANEL_ANIM_RECT  = {0,       0,      8,      4  };
+
+// TODO: these are spaghetti, probably can be encapsulated with some thought
+#define MENU_POP_OUT_ANIM_FRAMES 20
+#define BLIND_SKIP_BTN_PID                   5
+#define BLIND_SKIP_BTN_SELECTED_BORDER_PID   10
+#define BLIND_SELECT_BTN_SELECTED_BORDER_PID 18
 
 #define MAX_HAND_SIZE        16
 #define MAX_DECK_SIZE        52
@@ -183,4 +190,6 @@ void game_start(void);
 void change_background_legacy(enum BackgroundId id);
 
 void display_round(void);
+void reset_top_left_panel_bottom_row(void);
+
 #endif // GAME_H
