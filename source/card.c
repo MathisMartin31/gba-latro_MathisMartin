@@ -2,6 +2,7 @@
 
 #include "deck_gfx.h"
 #include "graphic_utils.h"
+#include "high_contrast_deck_pal_gfx.h"
 
 #include <maxmod.h>
 #include <stdlib.h>
@@ -21,7 +22,19 @@ const static u16 _card_sprite_lut[NUM_SUITS][NUM_RANKS] = {
 
 void card_init()
 {
-    GRIT_CPY(&pal_obj_mem[CARD_PB], deck_gfxPal);
+    toggle_high_contrast_cards(false);
+}
+
+void toggle_high_contrast_cards(bool enable)
+{
+    if (enable)
+    {
+        GRIT_CPY(&pal_obj_mem[CARD_PB], high_contrast_deck_pal_gfxPal);
+    }
+    else
+    {
+        GRIT_CPY(&pal_obj_mem[CARD_PB], deck_gfxPal);
+    }
 }
 
 // Card methods

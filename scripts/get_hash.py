@@ -20,7 +20,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     file_path = sys.argv[1]
-    pattern   = "GBALATRO_VERSION"
+    pattern   = "GBALATRO[_,-]VERSION"
 
     for offset, text in grep_binary_offsets(file_path, pattern):
         version = text.split(":")[1]

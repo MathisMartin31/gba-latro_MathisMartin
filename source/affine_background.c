@@ -13,7 +13,7 @@ static IWRAM_CODE void s_affine_background_prep_bgaff_arr();
 
 static BG_AFFINE _bgaff_arr[SCREEN_HEIGHT + 1];
 static AFF_SRC_EX _asx = {0};
-static enum AffineBackgroundID _background = AFFINE_BG_MAIN_MENU;
+static enum AffineBackgroundID _background = AFFINE_BG_NONE;
 static uint _timer = 0;
 
 void affine_background_init()
@@ -78,6 +78,11 @@ void affine_background_load_palette(const u16* src)
 
 void affine_background_change_background(enum AffineBackgroundID new_bg)
 {
+    if (_background == new_bg)
+    {
+        return;
+    }
+
     _background = new_bg;
 
     switch (_background)
@@ -109,6 +114,8 @@ void affine_background_change_background(enum AffineBackgroundID new_bg)
             );
             GRIT_CPY(&se_mem[AFFINE_BG_SBB], affine_background_gfxMap);
             affine_background_load_palette(affine_background_gfxPal);
+            break;
+        default:
             break;
     }
 }

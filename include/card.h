@@ -56,6 +56,7 @@ typedef struct CardObject
 
 // Card functions
 void card_init();
+void toggle_high_contrast_cards(bool enable);
 
 // Card methods
 Card* card_new(u8 suit, u8 rank);

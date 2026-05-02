@@ -34,6 +34,13 @@
 enum AffineBackgroundID
 {
     /**
+     * @brief Display background for the initial splash screen.
+     *
+     * Signifies that no background is currently in use.
+     */
+    AFFINE_BG_NONE,
+
+    /**
      * @brief Display background for main menu.
      *
      * Signifies which background to use and provides a higher quality affine

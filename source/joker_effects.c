@@ -562,7 +562,7 @@ static u32 misprint_joker_effect(
 
     *joker_effect = &shared_joker_effect;
 
-    (*joker_effect)->mult = random() % (MISPRINT_MAX_MULT + 1);
+    (*joker_effect)->mult = get_rand() % (MISPRINT_MAX_MULT + 1);
 
     return JOKER_EFFECT_FLAG_MULT;
 }
@@ -775,7 +775,7 @@ static u32 reserved_parking_joker_effect(
 
     u32 effect_flags_ret = JOKER_EFFECT_FLAG_NONE;
 
-    if ((random() % 2 == 0) && card_is_face(scored_card))
+    if ((get_rand() % 2 == 0) && card_is_face(scored_card))
     {
         *joker_effect = &shared_joker_effect;
 
@@ -797,7 +797,7 @@ static u32 business_card_joker_effect(
 
     u32 effect_flags_ret = JOKER_EFFECT_FLAG_NONE;
 
-    if ((random() % 2 == 0) && card_is_face(scored_card))
+    if ((get_rand() % 2 == 0) && card_is_face(scored_card))
     {
         *joker_effect = &shared_joker_effect;
 
@@ -885,11 +885,11 @@ static u32 bull_joker_effect(
 
     // The wiki says it does nothing if money is 0 or below
     // This allows us to avoid scoring negative Chips
-    if (get_money() > 0)
+    if (g_game_vars.money > 0)
     {
         *joker_effect = &shared_joker_effect;
 
-        (*joker_effect)->chips = get_money() * 2;
+        (*joker_effect)->chips = g_game_vars.money * 2;
         effect_flags_ret = JOKER_EFFECT_FLAG_CHIPS;
     }
 
@@ -1154,11 +1154,11 @@ static u32 bootstraps_joker_effect(
     u32 effect_flags_ret = JOKER_EFFECT_FLAG_NONE;
 
     // Same protection as the Bull Joker
-    if (get_money() > 0)
+    if (g_game_vars.money > 0)
     {
         *joker_effect = &shared_joker_effect;
 
-        (*joker_effect)->mult = (get_money() / 5) * 2;
+        (*joker_effect)->mult = (g_game_vars.money / 5) * 2;
         effect_flags_ret = JOKER_EFFECT_FLAG_MULT;
     }
 

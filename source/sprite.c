@@ -2,6 +2,7 @@
 
 #include "audio_utils.h"
 #include "game.h"
+#include "game_variables.h"
 #include "pool.h"
 #include "soundbank.h"
 #include "util.h"
@@ -209,8 +210,8 @@ void sprite_object_reset_transform(SpriteObject* sprite_object)
 
 void sprite_object_update(SpriteObject* sprite_object)
 {
-    sprite_object->vx += ((sprite_object->tx - sprite_object->x) * get_game_speed()) / 8;
-    sprite_object->vy += ((sprite_object->ty - sprite_object->y) * get_game_speed()) / 8;
+    sprite_object->vx += ((sprite_object->tx - sprite_object->x) * g_game_vars.game_speed) / 8;
+    sprite_object->vy += ((sprite_object->ty - sprite_object->y) * g_game_vars.game_speed) / 8;
 
     // Scale up the card when it's played
     sprite_object->vscale += (sprite_object->tscale - sprite_object->scale) / 8;
@@ -310,7 +311,7 @@ void sprite_object_set_focus(SpriteObject* sprite_object, bool focus)
 
     play_sfx(
         SFX_CARD_FOCUS,
-        MM_BASE_PITCH_RATE + rand() % CARD_FOCUS_SFX_PITCH_OFFSET_RANGE,
+        MM_BASE_PITCH_RATE + get_rand() % CARD_FOCUS_SFX_PITCH_OFFSET_RANGE,
         SFX_DEFAULT_VOLUME
     );
     sprite_object->ty = sprite_object->ty + int2fx((focus ? -1 : 1) * SPRITE_FOCUS_RAISE_PX);

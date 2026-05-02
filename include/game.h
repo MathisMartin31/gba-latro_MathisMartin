@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "blind.h"
 #include "game/common_ui.h"
 #include "game_variables.h"
 
@@ -13,7 +14,7 @@ extern GameVariables g_game_vars;
 #define MAX_JOKERS_HELD_SIZE 5 // This doesn't account for negatives right now.
 #define MAX_SHOP_JOKERS      2 // TODO: Make this dynamic and allow for other items besides jokers
 #define MAX_SELECTION_SIZE   5
-#define FRAMES(x)            (((x) + game_speed - 1) / game_speed)
+#define FRAMES(x)            (((x) + (g_game_vars.game_speed) - 1) / (g_game_vars.game_speed))
 
 // TODO: Can make these dynamic to support interest-related jokers and vouchers
 #define MAX_INTEREST   5
@@ -123,7 +124,7 @@ typedef struct ContainedHandTypes
 } ContainedHandTypes;
 // clang-format on
 
-typedef void (*GameStateCallback)();
+typedef void (*GameStateCallback)(void);
 
 typedef struct
 {
@@ -158,17 +159,16 @@ int get_num_hands_remaining(void);
 
 u32 get_chips(void);
 void set_chips(u32 new_chips);
-void display_chips();
+void display_chips(void);
 u32 get_mult(void);
 void set_mult(u32 new_mult);
-void display_mult();
-int get_money(void);
-void set_money(int new_money);
-void display_money();
+void display_mult(void);
+void display_money(void);
 void set_retrigger(bool new_retrigger);
+enum BlindType get_current_blind(void);
+enum BlindType get_next_boss_blind(void);
 
-int get_game_speed(void);
-void set_game_speed(int new_game_speed);
+u32 get_rand(void);
 
 // joker specific functions
 bool is_shortcut_joker_active(void);

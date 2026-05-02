@@ -125,6 +125,9 @@ void selection_grid_process_input(SelectionGrid* selection_grid)
     {
         // To make the next line shorter and more readable
         Selection* selection = &selection_grid->selection;
-        selection_grid->rows[selection->y].on_key_transit(selection_grid, selection);
+        if (selection_grid->rows[selection->y].on_key_transit != NULL)
+        {
+            selection_grid->rows[selection->y].on_key_transit(selection_grid, selection);
+        }
     }
 }

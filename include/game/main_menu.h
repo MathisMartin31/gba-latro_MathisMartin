@@ -15,22 +15,16 @@ void game_main_menu_change_background(void);
 
 /**
  * @brief Main menu state initialization
- *
- * @param vars passed @ref GameVariables struct
  */
 void game_main_menu_on_init(void);
 
 /**
  * @brief Main menu state update
- *
- * @param vars passed @ref GameVariables struct
  */
 void game_main_menu_on_update(void);
 
 /**
  * @brief Main menu cleanup (called when transitioning to game start)
- *
- * @param vars passed @ref GameVariables struct
  */
 void game_main_menu_on_exit(void);
 
