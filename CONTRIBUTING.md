@@ -101,3 +101,155 @@ In the repo we use custom scripts located in the [`scripts`](https://github.com/
 
 ## Debugging
 It's recommended to use [mGBA](https://mgba.io/) for ROM testing and debugging. As it provides a [`gdbserver`](https://en.wikipedia.org/wiki/Gdbserver) via the `-g` flag `mgba -g build/balatro-gba.gba`. You can connect via `gdb` or here is a [great guide for vscode](https://felixjones.co.uk/mgba_gdb/vscode.html).
+
+## **Build Instructions**
+
+<details>
+  <summary><b>Docker</b></summary>
+
+### Docker
+A docker compose file is provided to build this project. It provides a standard build environment for this projects CI/CD and can also be used to build the ROM locally.
+
+_Some users may find this option to be the easiest way to build locally._
+- _This option **avoids** setting up the development environment as described below._
+- _No additional software besides **docker desktop** is required._
+
+#### Step-by-Step
+
+1.) Install [docker desktop](https://docs.docker.com/desktop/) for your operating system.
+
+2.) Open a terminal to this project's directory:
+- On **Linux** run `UID=$(id -u) GID=$(id -g) docker compose up`
+- On **Windows** run `docker compose up`
+
+<details>
+  <summary><i>How do I open a terminal in windows?</i></summary>
+
+---
+
+From the file explorer, you can open a folder in **powershell** (_a modern windows terminal_):
+
+- **hold 'Shift'** and **Right Click** on the folder. 
+
+- Select **"Open PowerShell window here"** from the popup menu.
+
+---
+
+</details>
+
+3.) Docker will build the project and the ROM will be in the same location as step 8 describes below.
+
+</details>
+
+<details>
+  <summary><b>Windows</b></summary>
+
+### Windows
+Video Tutorial: https://youtu.be/72Zzo1VDYzQ?si=UDmEdbST1Cx1zZV2
+### With `Git` (not required)
+1.) Install `devkitPro` from https://github.com/devkitPro/installer by downloading the latest release, unzipping the archive, and then running the installer. You only need to install the tools for the GBA development so ensure you have it selected and install it to the default directory. You may need to create a temp folder for the project.
+
+2.) Search for `MSys2` in the Start Menu and open it.
+
+3.) Install `python-pillow` from the `mingw64` repo by copying the following script into your `MSys2` terminal and hitting **Enter** to run:
+
+> ```sh
+> pacman-key --populate devkitpro
+> echo -e "[mingw64]\nServer = https://mirror.msys2.org/mingw/mingw64" >> /etc/pacman.conf
+> pacman -Syu --noconfirm
+> pacman -S --noconfirm mingw-w64-x86_64-python-pillow
+> echo "export PATH="/mingw64/bin:$PATH"" >> /etc/bash.bashrc
+> source /etc/bash.bashrc 
+> ```
+
+4.) Install `Git` by typing this command: `pacman -S git` if you don't have it already installed
+
+5.) Clone the project by putting `git clone https://github.com/GBALATRO/balatro-gba.git` in the MSys2 window.
+
+6.) Use `cd` and drag the new folder into the window to add the file path and press Enter.
+
+7.) Type `make` into the window and press Enter to start building the rom.
+
+8.) After it completes, navigate through the `build` directory in the project folder and look for `balatro-gba.gba` and load it on an emulator or flashcart.
+#### Without `Git`
+Disregard Steps 4-5 and instead click the green code button on the main repository page and press `Download Zip`. Unzip the folder and place it wherever you like. Then continue from Step 6.
+
+</details>
+
+<details>
+  <summary><b>Linux</b></summary>
+
+### Linux (Debian/Arch)
+
+These instructions will be only for Debian (**Ubuntu**) and Arch based systems. 
+
+1.) Follow the devkitPro Pacman installation guide for distro:   https://devkitpro.org/wiki/devkitPro_pacman
+- On **Debian** systems it will be installed as **`dkp-pacman`**.
+- On **Arch** systems you will use regular **`pacman`**.
+
+2.) Install devkitPro by running 
+> ```sh
+> sudo (dkp-)pacman -S --noconfirm gba-dev
+> ```
+
+3.) Activate the devkitPro environment by running 
+> ```sh
+> source /etc/profile.d/devkit-env.sh
+> ```
+
+4.) Install `git`
+- On **Debian**: **`sudo apt install -y git`**.
+- On **Arch**: **`sudo pacman -S --noconfirm git`**.
+
+5.) Clone this repository
+> ```sh
+> git clone https://github.com/GBALATRO/balatro-gba.git ~/balatro-gba
+> ```
+
+6.) Build the project
+> ```sh
+> cd ~/balatro-gba && make
+> ```
+
+</details>
+
+<details>
+  <summary><b>MacOS</b></summary>
+
+### MacOS
+
+🔴 **Requires python-pillow to be installed. Currently, no maintainer has a macOS machine to test on. If you have python and python-pillow tested installation instructions for MacOS, please let us know and we will add it here.** 🔴
+
+1.) Install devkitPro installer using: https://github.com/devkitPro/installer and following https://devkitpro.org/wiki/devkitPro_pacman#macOS.
+> Note: You may have to install the installers directly from their url in a browser, as the installer script may not install correctly due to Cloudflare checks on their server. You can use one of the following urls: 
+
+> Apple Silicon: https://pkg.devkitpro.org/packages/macos-installers/devkitpro-pacman-installer.arm64.pkg
+
+> Intel: https://pkg.devkitpro.org/packages/macos-installers/devkitpro-pacman-installer.x86_64.pkg
+
+2.) Run `sudo dkp-pacman -S gba-dev`
+
+3.) Verify that devkitPro is installed in '/opt/devkitpro'
+
+4.) Add the following to your .bashrc or .zshrc (or export the variables in your shell session): 
+- export DEVKITPRO=/opt/devkitpro
+- export DEVKITARM=$DEVKITPRO/devkitARM
+- export PATH=$PATH:$DEVKITPRO/tools/bin:$DEVKITPRO/pacman/bin
+
+5.) Follow instructions from Windows tutorial step 5
+
+</details>
+
+### Common Issues:
+
+#### 1. When I run `make` it errors out and won't compile!
+- Move the project folder to your desktop and then `cd` to it by dragging the folder into the terminal window. This error could be caused by a bad file path, placing the folder on the desktop is a failsafe.
+
+#### 2. I can't find the compiled rom!
+- Look for a folder called `build` inside the project folder and then find `balatro-gba.gba`.
+
+#### 3. The Game won't start!
+- Try a different emulator or if you are using original hardware, make sure the rom is not corrupted and try a different flashcart or SD Card. If this does not work, open an issue on the Github page because a recent commit may have broke the game.
+
+#### 4. It says I don't have `Git` or `Make` installed!
+- Please verify you ran all the instructions required for your operating system. They will have the commands to install all required commands.
