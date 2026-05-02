@@ -311,7 +311,6 @@ static const Rect ROUND_END_MENU_RECT       = {9,       7,      24,     20 };
 // This is because when popping, the target position is blank so we just animate 
 // the whole rect so we don't have to track its position
 
-static const Rect SINGLE_BLIND_SELECT_RECT  = {9,       7,      13,     31 };
 static const Rect BLIND_SKIP_BTN_GRAY_RECT  = {0,       24,     4,      27 };
 static const Rect BLIND_SKIP_BTN_PREANIM_DEST_RECT = {9,29,     19,     31 };
 // preanim - pre-animation rects for before the pop-up animation
@@ -371,8 +370,6 @@ static const Rect MULT_TEXT_RECT            = {40,      80,     64,     88  };
 static const Rect BLIND_REWARD_RECT         = {40,      32,     64,     40  };
 static const Rect BLIND_REQ_TEXT_RECT       = {32,      24,     64,     32  };
 static const Rect SHOP_PRICES_TEXT_RECT     = {72,      56,     192,    160 };
-
-static const Rect SINGLE_BLIND_SEL_REQ_SCORE_RECT = {80, 120,    104,     128  };
 
 // Rects with UNDEFINED are only used in tte_printf, they need to be fully defined
 // to be used with tte_erase_rect_wrapper()
@@ -532,15 +529,6 @@ static Sprite* round_end_blind_token = NULL;
 
 static bool boss_rolled_this_ante = false;
 // Will be rolled later, just giving it a valid value
-static enum BlindType next_boss_blind = BLIND_TYPE_HOOK;
-
-// The current state of the blinds, this is used to determine what the game is doing at any given
-// time
-static enum BlindState blinds_states[NUM_BLINDS_PER_ANTE] = {
-    BLIND_STATE_CURRENT,
-    BLIND_STATE_UPCOMING,
-    BLIND_STATE_UPCOMING
-};
 
 static int blind_reward = 0;
 static int hand_reward = 0;
@@ -699,39 +687,6 @@ static void reroll_boss_blind(bool no_tiles)
     }
 }
 
-static void blind_tokens_init()
-{
-    reroll_boss_blind(true);
-
-    sprite_destroy(&blind_select_tokens[SMALL_BLIND]);
-    sprite_destroy(&blind_select_tokens[BIG_BLIND]);
-    sprite_destroy(&blind_select_tokens[BOSS_BLIND]);
-
-    blind_select_tokens[SMALL_BLIND] = blind_token_new(
-        BLIND_TYPE_SMALL,
-        CUR_BLIND_TOKEN_POS.x,
-        CUR_BLIND_TOKEN_POS.y,
-        SMALL_BLIND_TOKEN_LAYER
-    );
-    blind_select_tokens[BIG_BLIND] = blind_token_new(
-        BLIND_TYPE_BIG,
-        CUR_BLIND_TOKEN_POS.x,
-        CUR_BLIND_TOKEN_POS.y,
-        BIG_BLIND_TOKEN_LAYER
-    );
-    blind_select_tokens[BOSS_BLIND] = blind_token_new(
-        next_boss_blind,
-        CUR_BLIND_TOKEN_POS.x,
-        CUR_BLIND_TOKEN_POS.y,
-        BOSS_BLIND_TOKEN_LAYER
-    );
-
-    for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
-    {
-        obj_hide(blind_select_tokens[i]->obj);
-    }
-}
-
 void game_init()
 {
     // Initialize all jokers list once
@@ -763,7 +718,6 @@ void game_init()
     init_unbeaten_blinds_list(true);
     boss_rolled_this_ante = false;
 
-    blind_tokens_init();
 }
 
 static inline void discarded_jokers_update_loop(void)

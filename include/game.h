@@ -7,7 +7,9 @@
 
 #include <tonc.h>
 
+// TODO: fix, wtf
 const Rect POP_MENU_ANIM_RECT        = {9,       7,      24,     31 };
+static const Rect SINGLE_BLIND_SELECT_RECT  = {9,       7,      13,     31 };
 
 #define MAX_HAND_SIZE        16
 #define MAX_DECK_SIZE        52

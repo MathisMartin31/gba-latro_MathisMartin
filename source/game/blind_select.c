@@ -2,10 +2,14 @@
 
 #include "audio_utils.h"
 #include "blind.h"
+#include "button.h"
 #include "game.h"
 #include "game_variables.h"
 #include "graphic_utils.h"
 #include "sprite.h"
+#include "timer.h"
+
+#include <maxmod.h>
 
 static void game_blind_select_start_anim_seq(void);
 static void game_blind_select_handle_input(void);
@@ -13,6 +17,7 @@ static void game_blind_select_selected_anim_seq(void);
 static void game_blind_select_display_blind_panel(void);
 static Rect game_blind_select_get_req_score_rect(enum BlindTokens blind);
 static void game_blind_select_print_blinds_reqs_and_rewards(void);
+static void blind_tokens_init(void);
 
 enum BlindSelectState
 {
@@ -23,7 +28,6 @@ enum BlindSelectState
     BLIND_SELECT_MAX
 };
 
-
 // TODO: this will be refactored into common state machine 
 static const SubStateActionFn blind_select_state_actions[] = {
     game_blind_select_start_anim_seq,
@@ -32,13 +36,23 @@ static const SubStateActionFn blind_select_state_actions[] = {
     game_blind_select_display_blind_panel
 };
 
+static const u32 TM_END_ANIM_SEQ = 12;
+static const u32 TM_BLIND_SELECT_START = 1;
+static const Rect SINGLE_BLIND_SEL_REQ_SCORE_RECT = {80, 120, 104, 128 };
+
 static int selection_x = 0;
 static int selection_y = 0;
 
-enum BlindSelectState substate;
+static enum BlindType next_boss_blind = BLIND_TYPE_HOOK;
+static enum BlindSelectState substate;
 
-static const u32 TM_END_ANIM_SEQ = 12;
-static const u32 TM_BLIND_SELECT_START = 1;
+// The current state of the blinds, this is used to determine what the game is doing at any given
+// time
+static enum BlindState blinds_states[NUM_BLINDS_PER_ANTE] = {
+    BLIND_STATE_CURRENT,
+    BLIND_STATE_UPCOMING,
+    BLIND_STATE_UPCOMING
+};
 
 static Sprite* blind_select_tokens[NUM_BLINDS_PER_ANTE] = {NULL};
 
@@ -135,7 +149,7 @@ static void game_blind_select_handle_input()
 
         if (selection_y == 0) // Blind selected
         {
-            play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
+            //play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
             substate = BLIND_SELECTED_ANIM_SEQ;
             g_game_vars.timer = TM_ZERO;
             ++g_game_vars.round;
@@ -144,7 +158,7 @@ static void game_blind_select_handle_input()
         // TODO: the else if is funky here
         else if (g_game_vars.current_blind <= BLIND_TYPE_BIG)
         {
-            play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
+            //play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
             increment_blind(BLIND_STATE_SKIPPED);
 
             selection_y = 0; // Reset selection to first option
@@ -329,11 +343,46 @@ static void game_blind_select_print_blinds_reqs_and_rewards(void)
     }
 }
 
+static void blind_tokens_init()
+{
+    reroll_boss_blind(true);
+
+    sprite_destroy(&blind_select_tokens[SMALL_BLIND]);
+    sprite_destroy(&blind_select_tokens[BIG_BLIND]);
+    sprite_destroy(&blind_select_tokens[BOSS_BLIND]);
+
+    blind_select_tokens[SMALL_BLIND] = blind_token_new(
+        BLIND_TYPE_SMALL,
+        CUR_BLIND_TOKEN_POS.x,
+        CUR_BLIND_TOKEN_POS.y,
+        SMALL_BLIND_TOKEN_LAYER
+    );
+    blind_select_tokens[BIG_BLIND] = blind_token_new(
+        BLIND_TYPE_BIG,
+        CUR_BLIND_TOKEN_POS.x,
+        CUR_BLIND_TOKEN_POS.y,
+        BIG_BLIND_TOKEN_LAYER
+    );
+    blind_select_tokens[BOSS_BLIND] = blind_token_new(
+        next_boss_blind,
+        CUR_BLIND_TOKEN_POS.x,
+        CUR_BLIND_TOKEN_POS.y,
+        BOSS_BLIND_TOKEN_LAYER
+    );
+
+    for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
+    {
+        obj_hide(blind_select_tokens[i]->obj);
+    }
+}
+
 void game_blind_select_on_init(void)
 {
     //change_background(BG_BLIND_SELECT);
     selection_x = 0;
     selection_y = 0;
+
+    blind_tokens_init();
 
     play_sfx(SFX_POP, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
 }
