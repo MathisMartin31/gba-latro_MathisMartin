@@ -163,25 +163,6 @@ enum GameRoundEndStates
     ROUND_END_EXIT
 };
 
-enum BlindSelectStates
-{
-    START_ANIM_SEQ,
-    BLIND_SELECT,
-    BLIND_SELECTED_ANIM_SEQ,
-    DISPLAY_BLIND_PANEL,
-    BLIND_SELECT_MAX
-};
-
-// The sprites that display the blinds when in "GAME_BLIND_SELECT" state
-// There are only 3 blinds per Ante, so we don't need more sprites than that
-enum BlindTokens
-{
-    SMALL_BLIND,
-    BIG_BLIND,
-    BOSS_BLIND,
-    NUM_BLINDS_PER_ANTE
-};
-
 typedef struct
 {
     u32 chips;
@@ -210,9 +191,6 @@ static void game_round_end_on_update(void);
 static void game_round_end_on_exit(void);
 static void game_shop_on_update(void);
 static void game_shop_on_exit(void);
-static void game_blind_select_on_init(void);
-static void game_blind_select_on_update(void);
-static void game_blind_select_on_exit(void);
 static void game_lose_on_init(void);
 static void game_lose_on_update(void);
 static void game_over_on_exit(void);
@@ -221,12 +199,6 @@ static void game_win_on_update(void);
 static void game_shop_intro(void);
 static void game_shop_process_user_input(void);
 static void game_shop_outro(void);
-static void game_blind_select_start_anim_seq(void);
-static void game_blind_select_handle_input(void);
-static void game_blind_select_selected_anim_seq(void);
-static void game_blind_select_display_blind_panel(void);
-static Rect game_blind_select_get_req_score_rect(enum BlindTokens blind);
-static void game_blind_select_print_blinds_reqs_and_rewards(void);
 static void game_round_end_start(void);
 static void game_round_end_start_expand_popup(void);
 static void game_round_end_display_finished_blind(void);
@@ -335,7 +307,6 @@ static bool can_discard_hand(void);
 // Screenblock rects
 static const Rect ROUND_END_MENU_RECT       = {9,       7,      24,     20 }; 
 
-static const Rect POP_MENU_ANIM_RECT        = {9,       7,      24,     31 };
 // The rect for popping menu animations (round end, shop, blinds) 
 // - extends beyond the visible screen to the end of the screenblock
 // It includes both the target and source position rects. 
@@ -429,8 +400,6 @@ static const BG_POINT HAND_START_POS        = {120,     90};
 static const BG_POINT HAND_PLAY_POS         = {120,     70};
 // clang-format on
 
-typedef void (*SubStateActionFn)(void);
-
 static enum BackgroundId background = BG_NONE;
 
 static StateInfo state_info[] = {
@@ -521,13 +490,6 @@ static const SubStateActionFn shop_state_actions[] = {
     game_shop_intro,
     game_shop_process_user_input,
     game_shop_outro
-};
-
-static const SubStateActionFn blind_select_state_actions[] = {
-    game_blind_select_start_anim_seq,
-    game_blind_select_handle_input,
-    game_blind_select_selected_anim_seq,
-    game_blind_select_display_blind_panel
 };
 
 static const SubStateActionFn round_end_state_actions[] = {
@@ -4562,26 +4524,6 @@ static void game_shop_on_exit(void)
     save_game();
 }
 
-static void game_blind_select_on_init(void)
-{
-    change_background(BG_BLIND_SELECT);
-    selection_x = 0;
-    selection_y = 0;
-
-    play_sfx(SFX_POP, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
-}
-
-static void game_blind_select_on_update(void)
-{
-    if (state_info[game_state].substate == BLIND_SELECT_MAX)
-    {
-        game_change_state(GAME_STATE_PLAYING);
-        return;
-    }
-
-    int substate = state_info[game_state].substate;
-    blind_select_state_actions[substate]();
-}
 
 static inline void game_blind_select_erase_blind_reqs_and_rewards()
 {
@@ -4693,27 +4635,6 @@ static void game_blind_select_print_blinds_reqs_and_rewards(void)
     {
         game_blind_select_print_blind_req(curr_blind);
         game_blind_select_print_blind_reward(curr_blind);
-    }
-}
-
-static void game_blind_select_start_anim_seq()
-{
-    main_bg_se_copy_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
-
-    for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
-    {
-        sprite_position(
-            blind_select_tokens[i],
-            blind_select_tokens[i]->pos.x,
-            blind_select_tokens[i]->pos.y - TILE_SIZE
-        );
-    }
-
-    if (g_game_vars.timer == TM_END_ANIM_SEQ)
-    {
-        game_blind_select_print_blinds_reqs_and_rewards();
-        state_info[game_state].substate = BLIND_SELECT;
-        g_game_vars.timer = TM_ZERO; // Reset the timer
     }
 }
 

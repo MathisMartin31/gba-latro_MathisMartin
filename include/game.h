@@ -125,6 +125,7 @@ typedef struct ContainedHandTypes
 // clang-format on
 
 typedef void (*GameStateCallback)(void);
+typedef void (*SubStateActionFn)(void);
 
 typedef struct
 {
