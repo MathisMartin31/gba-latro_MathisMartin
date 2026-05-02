@@ -209,7 +209,6 @@ static void display_discards(int value);
 static void set_hand(void);
 static int deck_get_size(void);
 static int deck_get_max_size(void);
-static void increment_blind(enum BlindState increment_reason);
 static void game_over_init(void);
 static bool check_and_score_joker_for_event(
     ListItr* starting_joker_itr,
@@ -497,6 +496,7 @@ static ContainedHandTypes _contained_hands = {0};
 
 // Initialization of the global var
 // clang-format off
+GameVariables g_game_vars;
 /*
 GameVariables g_game_vars = {
     0, 0, 0,
@@ -555,9 +555,6 @@ static bool discarded_card = false;
 static ListItr _joker_scored_itr;
 static ListItr _joker_card_scored_end_itr;
 static ListItr _joker_round_end_itr;
-
-static int selection_x = 0;
-static int selection_y = 0;
 
 static bool sort_by_suit = false;
 
@@ -4352,9 +4349,6 @@ static void game_over_on_exit(void)
     // show up on the next run.
     sprite_destroy(&playing_blind_token);
     sprite_destroy(&round_end_blind_token);
-    sprite_destroy(&g_game_vars.blind_select_tokens[SMALL_BLIND]);
-    sprite_destroy(&g_game_vars.blind_select_tokens[BIG_BLIND]);
-    sprite_destroy(&g_game_vars.blind_select_tokens[BOSS_BLIND]);
 
     list_clear(&_owned_jokers_list);
     list_clear(&_discarded_jokers_list);

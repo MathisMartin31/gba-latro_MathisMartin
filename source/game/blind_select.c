@@ -101,8 +101,8 @@ static inline void game_blind_select_erase_blind_reqs_and_rewards()
     }
 }
 
-// TODO: Clean this up
-static void increment_blind(enum BlindState increment_reason)
+// TODO: Clean this up, maybe move to map and move to blind.h
+void increment_blind(enum BlindState increment_reason)
 {
     // cannot do blind++ anymore, we need to go SMALL->BIG->next_boss->SMALL...
     switch (g_game_vars.current_blind)
@@ -431,6 +431,13 @@ void game_blind_select_on_update(void)
 
 void game_blind_select_on_exit(void)
 {
+    // For some reason that I haven't figured out yet,
+    // if I don't destroy the blind tokens they won't
+    // show up on the next run.
+    sprite_destroy(&blind_select_tokens[SMALL_BLIND]);
+    sprite_destroy(&blind_select_tokens[BIG_BLIND]);
+    sprite_destroy(&blind_select_tokens[BOSS_BLIND]);
+
     selection_y = 0;
 }
 

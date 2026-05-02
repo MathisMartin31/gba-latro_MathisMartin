@@ -7,7 +7,7 @@
 #include <tonc.h>
 
 // TODO: fix, wtf
-const Rect POP_MENU_ANIM_RECT        = {9,       7,      24,     31 };
+static const Rect POP_MENU_ANIM_RECT        = {9,       7,      24,     31 };
 static const Rect SINGLE_BLIND_SELECT_RECT  = {9,       7,      13,     31 };
 static const Rect ROUND_END_MENU_RECT       = {9,       7,      24,     20 }; 
 static const Rect TOP_LEFT_PANEL_ANIM_RECT  = {0,       0,      8,      4  };
