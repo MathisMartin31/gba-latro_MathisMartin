@@ -225,14 +225,6 @@ static void game_blind_select_handle_input()
                 break;
         }
     }
-
-
-    if (selection_y == BLIND_ROW)
-    {
-    }
-    else
-    {
-    }
 }
 
 static void game_blind_select_selected_anim_seq()
