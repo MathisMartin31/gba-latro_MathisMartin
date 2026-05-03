@@ -376,7 +376,8 @@ static inline void reroll_boss_blind(bool no_tiles)
 
 static void blind_tokens_init()
 {
-    reroll_boss_blind(true);
+    if(g_game_vars.current_blind == BLIND_TYPE_SMALL)
+        reroll_boss_blind(true);
 
     sprite_destroy(&blind_select_tokens[SMALL_BLIND]);
     sprite_destroy(&blind_select_tokens[BIG_BLIND]);
@@ -451,9 +452,6 @@ void game_blind_select_on_exit(void)
     selection_y = 0;
 
     g_game_vars.timer = TM_ZERO;
-    
-    if(g_game_vars.current_blind == BLIND_TYPE_SMALL)
-        reroll_boss_blind(false);
 }
 
 void game_blind_select_change_background(void)
