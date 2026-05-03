@@ -53,6 +53,13 @@ static const Rect BLIND_SKIP_BTN_PREANIM_DEST_RECT = {9, 29, 19, 31};
 static const Rect SINGLE_BLIND_SEL_REQ_SCORE_RECT = {80, 120, 104, 128};
 static const BG_POINT TOP_LEFT_PANEL_EMPTY_3W_ROW_POS = {29, 31};
 
+static const u32 BLIND_LEFT_X = 80;
+static const u32 BLIND_CENTER_X = 120;
+static const u32 BLIND_RIGHT_X = 160;
+
+static const u32 BLIND_ROW = 0;
+static const u32 SKIP_ROW = 1;
+
 static int selection_x = 0;
 static int selection_y = 0;
 
@@ -128,9 +135,6 @@ void increment_blind(enum BlindState increment_reason)
             break;
     }
 }
-
-static const u32 BLIND_ROW = 0;
-static const u32 SKIP_ROW = 1;
 
 // TODO: convert these to proper buttons.
 static inline void highlight_select_button(void)
@@ -474,10 +478,6 @@ void game_blind_select_on_exit(void)
 
     g_game_vars.timer = TM_ZERO;
 }
-
-static const u32 BLIND_LEFT_X = 80;
-static const u32 BLIND_CENTER_X = 120;
-static const u32 BLIND_RIGHT_X = 160;
 
 void game_blind_select_change_background(void)
 {
