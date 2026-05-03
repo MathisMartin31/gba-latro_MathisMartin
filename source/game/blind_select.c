@@ -7,6 +7,7 @@
 #include "game.h"
 #include "game_variables.h"
 #include "graphic_utils.h"
+#include "layout.h"
 #include "soundbank.h"
 #include "sprite.h"
 #include "timer.h"
@@ -51,6 +52,7 @@ static const u32 TM_BLIND_SELECT_START = 1;
 static const Rect BLIND_SKIP_BTN_GRAY_RECT = {0, 24, 4, 27};
 static const Rect BLIND_SKIP_BTN_PREANIM_DEST_RECT = {9, 29, 19, 31};
 static const Rect SINGLE_BLIND_SEL_REQ_SCORE_RECT = {80, 120, 104, 128};
+static const Rect SINGLE_BLIND_SELECT_RECT  = {9,       7,      13,     31 };
 static const BG_POINT TOP_LEFT_PANEL_EMPTY_3W_ROW_POS = {29, 31};
 
 static const u32 BLIND_LEFT_X = 80;
@@ -69,6 +71,7 @@ static Sprite* blind_select_tokens[NUM_BLINDS_PER_ANTE] = {NULL};
 
 static void game_blind_select_start_anim_seq()
 {
+    //main_bg_se_copy_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
     main_bg_se_copy_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
 
     for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
@@ -273,8 +276,6 @@ static void game_blind_select_display_blind_panel()
     if (timer == TM_DISP_BLIND_PANEL_START)
     {
         change_background(BG_CARD_SELECTING, false);
-
-        main_bg_se_clear_rect(ROUND_END_MENU_RECT);
 
         // Need to clear the top left panel as a side effect of change_background()
         main_bg_se_copy_expand_3w_row(TOP_LEFT_PANEL_ANIM_RECT, TOP_LEFT_PANEL_EMPTY_3W_ROW_POS);

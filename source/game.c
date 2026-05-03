@@ -1,5 +1,7 @@
 #include "game.h"
 
+#include "layout.h"
+
 #include "affine_background.h"
 #include "affine_background_gfx.h"
 #include "audio_utils.h"
@@ -302,11 +304,9 @@ static bool can_discard_hand(void);
 // This is because when popping, the target position is blank so we just animate 
 // the whole rect so we don't have to track its position
 
-// preanim - pre-animation rects for before the pop-up animation
+static const Rect ROUND_END_MENU_RECT       = {9,       7,      24,     20 }; 
 
 static const Rect HAND_BG_RECT_SELECTING    = {9,       11,     24,     17 };
-// TODO: Currently unused, remove?
-//static const Rect HAND_BG_RECT_PLAYING      = {9,       14,     24,     18 };
 
 static const Rect TOP_LEFT_ITEM_SRC_RECT    = {0,       20,     8,      25 };
 static const BG_POINT TOP_LEFT_PANEL_POINT  = {0,       0, };
