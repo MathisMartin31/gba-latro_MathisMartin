@@ -105,7 +105,6 @@ static inline void game_blind_select_erase_blind_reqs_and_rewards()
 
 void increment_blind(enum BlindState increment_reason)
 {
-    // cannot do blind++ anymore, we need to go SMALL->BIG->next_boss->SMALL...
     switch (g_game_vars.current_blind)
     {
         // defeated small blind: go to big
@@ -123,92 +122,109 @@ void increment_blind(enum BlindState increment_reason)
         // defeated a boss: reset everything
         default:
             g_game_vars.current_blind = BLIND_TYPE_SMALL;
-            g_game_vars.blinds_states[SMALL_BLIND] =
-                BLIND_STATE_CURRENT; // Reset the blinds to the first one
-            g_game_vars.blinds_states[BIG_BLIND] =
-                BLIND_STATE_UPCOMING; // Set the next blind to upcoming
-            g_game_vars.blinds_states[BOSS_BLIND] =
-                BLIND_STATE_UPCOMING; // Set the next blind to upcoming
+            g_game_vars.blinds_states[SMALL_BLIND] = BLIND_STATE_CURRENT;
+            g_game_vars.blinds_states[BIG_BLIND] = BLIND_STATE_UPCOMING;
+            g_game_vars.blinds_states[BOSS_BLIND] = BLIND_STATE_UPCOMING;
             break;
     }
+}
+
+static const u32 BLIND_ROW = 0;
+static const u32 SKIP_ROW = 1;
+
+// TODO: convert these to proper buttons.
+static inline void highlight_select_button(void)
+{
+    memset16(&pal_bg_mem[BLIND_SELECT_BTN_SELECTED_BORDER_PID], 0xFFFF, 1);
+    memcpy16(
+        &pal_bg_mem[BLIND_SKIP_BTN_SELECTED_BORDER_PID],
+        &pal_bg_mem[BLIND_SKIP_BTN_PID],
+        1
+    );
+}
+
+static inline void highlight_skip_button(void)
+{
+    memcpy16(
+        &pal_bg_mem[BLIND_SELECT_BTN_SELECTED_BORDER_PID],
+        &pal_bg_mem[BLIND_SELECT_BTN_PID],
+        1
+    );
+    memset16(&pal_bg_mem[BLIND_SKIP_BTN_SELECTED_BORDER_PID], 0xFFFF, 1);
 }
 
 static void game_blind_select_handle_input()
 {
     if (timer == TM_BLIND_SELECT_START && g_game_vars.current_blind == BLIND_TYPE_BOSS)
     {
-        selection_y = 0;
+        selection_y = BLIND_ROW;
     }
 
     // Blind select input logic
     if (key_hit(KEY_UP))
     {
-        selection_y = 0;
+        selection_y = BLIND_ROW;
+        highlight_select_button();
     }
     else if (key_hit(KEY_DOWN) && g_game_vars.current_blind <= BLIND_TYPE_BIG)
     {
-        selection_y = 1;
+        selection_y = SKIP_ROW;
+        highlight_skip_button();
     }
     else if (key_hit(SELECT_CARD))
     {
         game_blind_select_erase_blind_reqs_and_rewards();
 
-        if (selection_y == 0) // Blind selected
+        switch(selection_y)
         {
-            play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
-            substate = BLIND_SELECTED_ANIM_SEQ;
-            timer = TM_ZERO;
-            ++g_game_vars.round;
-            display_round();
-        }
-        // TODO: the else if is funky here
-        else if (g_game_vars.current_blind <= BLIND_TYPE_BIG)
-        {
-            play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
-            increment_blind(BLIND_STATE_SKIPPED);
+            case BLIND_ROW:
+                play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
+                substate = BLIND_SELECTED_ANIM_SEQ;
+                timer = TM_ZERO;
+                ++g_game_vars.round;
+                display_round();
+                break;
+            case SKIP_ROW:
+                if (g_game_vars.current_blind <= BLIND_TYPE_BIG)
+                {
+                    play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
+                    increment_blind(BLIND_STATE_SKIPPED);
 
-            selection_y = 0; // Reset selection to first option
+                    selection_y = BLIND_ROW; // Reset selection to first option
 
-            change_background(BG_BLIND_SELECT, true);
+                    change_background(BG_BLIND_SELECT, true);
 
-            // TODO: Create a generic vertical move by any number of tiles to avoid for loops?
-            for (int i = 0; i < 12; i++)
-            {
-                main_bg_se_copy_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
-            }
+                    // TODO: Create a generic vertical move by any number of tiles to avoid for loops?
+                    for (int i = 0; i < 12; i++)
+                    {
+                        main_bg_se_copy_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
+                    }
 
-            for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
-            {
-                sprite_position(
-                    blind_select_tokens[i],
-                    blind_select_tokens[i]->pos.x,
-                    blind_select_tokens[i]->pos.y - (TILE_SIZE * 12)
-                );
-            }
+                    for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
+                    {
+                        sprite_position(
+                            blind_select_tokens[i],
+                            blind_select_tokens[i]->pos.x,
+                            blind_select_tokens[i]->pos.y - (TILE_SIZE * 12)
+                        );
+                    }
 
-            game_blind_select_print_blinds_reqs_and_rewards();
+                    game_blind_select_print_blinds_reqs_and_rewards();
 
-            timer = TM_ZERO;
+                    timer = TM_ZERO;
+                }
+                break;
+            default:
+                break;
         }
     }
 
-    if (selection_y == 0)
+
+    if (selection_y == BLIND_ROW)
     {
-        memset16(&pal_bg_mem[BLIND_SELECT_BTN_SELECTED_BORDER_PID], 0xFFFF, 1);
-        memcpy16(
-            &pal_bg_mem[BLIND_SKIP_BTN_SELECTED_BORDER_PID],
-            &pal_bg_mem[BLIND_SKIP_BTN_PID],
-            1
-        );
     }
     else
     {
-        memcpy16(
-            &pal_bg_mem[BLIND_SELECT_BTN_SELECTED_BORDER_PID],
-            &pal_bg_mem[BLIND_SELECT_BTN_PID],
-            1
-        );
-        memset16(&pal_bg_mem[BLIND_SKIP_BTN_SELECTED_BORDER_PID], 0xFFFF, 1);
     }
 }
 
@@ -425,6 +441,8 @@ void game_blind_select_on_init(void)
     // this probably shouldn't be here. also need to force redraw or the callback
     // doesn't run that moves the tokens. that should probably happen here.
     change_background(BG_BLIND_SELECT, true);
+
+    highlight_select_button();
 
     play_sfx(SFX_POP, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
 }
