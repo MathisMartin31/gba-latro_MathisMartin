@@ -34,7 +34,6 @@ enum BlindTokens
     NUM_BLINDS_PER_ANTE
 };
 
-
 // Order of the Blind sprites' colors as encoded in the files' palettes with Aseprite
 enum BlindColorIndex
 {
