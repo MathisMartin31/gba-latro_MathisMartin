@@ -23,7 +23,7 @@ static const BackgroundRenderCallback bgCallbacks[] = {
 
 void change_background(enum BackgroundId id, bool force_redraw)
 {
-    if(force_redraw)
+    if (force_redraw)
     {
         background = BG_NONE;
         reset_background();

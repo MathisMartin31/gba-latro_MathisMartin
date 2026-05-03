@@ -6,9 +6,9 @@
 #ifndef GAME_VARIABLES_H
 #define GAME_VARIABLES_H
 
-#include <tonc.h>
-
 #include "blind.h"
+
+#include <tonc.h>
 
 #define GAME_SPEED_MIN 1
 #define GAME_SPEED_MAX 4

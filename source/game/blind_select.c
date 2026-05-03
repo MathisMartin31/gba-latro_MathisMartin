@@ -52,7 +52,7 @@ static const u32 TM_BLIND_SELECT_START = 1;
 static const Rect BLIND_SKIP_BTN_GRAY_RECT = {0, 24, 4, 27};
 static const Rect BLIND_SKIP_BTN_PREANIM_DEST_RECT = {9, 29, 19, 31};
 static const Rect SINGLE_BLIND_SEL_REQ_SCORE_RECT = {80, 120, 104, 128};
-static const Rect SINGLE_BLIND_SELECT_RECT  = {9,       7,      13,     31 };
+static const Rect SINGLE_BLIND_SELECT_RECT = {9, 7, 13, 31};
 static const BG_POINT TOP_LEFT_PANEL_EMPTY_3W_ROW_POS = {29, 31};
 
 static const u32 BLIND_LEFT_X = 80;
@@ -71,7 +71,7 @@ static Sprite* blind_select_tokens[NUM_BLINDS_PER_ANTE] = {NULL};
 
 static void game_blind_select_start_anim_seq()
 {
-    //main_bg_se_copy_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
+    // main_bg_se_copy_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
     main_bg_se_copy_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
 
     for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
@@ -143,11 +143,7 @@ void increment_blind(enum BlindState increment_reason)
 static inline void highlight_select_button(void)
 {
     memset16(&pal_bg_mem[BLIND_SELECT_BTN_SELECTED_BORDER_PID], 0xFFFF, 1);
-    memcpy16(
-        &pal_bg_mem[BLIND_SKIP_BTN_SELECTED_BORDER_PID],
-        &pal_bg_mem[BLIND_SKIP_BTN_PID],
-        1
-    );
+    memcpy16(&pal_bg_mem[BLIND_SKIP_BTN_SELECTED_BORDER_PID], &pal_bg_mem[BLIND_SKIP_BTN_PID], 1);
 }
 
 static inline void highlight_skip_button(void)
@@ -182,7 +178,7 @@ static void game_blind_select_handle_input()
     {
         game_blind_select_erase_blind_reqs_and_rewards();
 
-        switch(selection_y)
+        switch (selection_y)
         {
             case BLIND_ROW:
                 play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
@@ -201,7 +197,8 @@ static void game_blind_select_handle_input()
 
                     change_background(BG_BLIND_SELECT, true);
 
-                    // TODO: Create a generic vertical move by any number of tiles to avoid for loops?
+                    // TODO: Create a generic vertical move by any number of tiles to avoid for
+                    // loops?
                     for (int i = 0; i < 12; i++)
                     {
                         main_bg_se_copy_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
