@@ -18,7 +18,7 @@
 #define TM_DISP_BLIND_PANEL_FINISH      7
 #define TM_DISP_BLIND_PANEL_START       1
 
-int timer;
+static int timer;
 
 static void game_blind_select_start_anim_seq(void);
 static void game_blind_select_handle_input(void);
@@ -166,8 +166,7 @@ static void game_blind_select_handle_input()
 
             selection_y = 0; // Reset selection to first option
 
-            //background = UNDEFINED; // Force refresh of the background
-            change_background(BG_BLIND_SELECT, true);
+            change_background(BG_BLIND_SELECT, false);
 
             // TODO: Create a generic vertical move by any number of tiles to avoid for loops?
             for (int i = 0; i < 12; i++)
@@ -450,19 +449,13 @@ void game_blind_select_on_exit(void)
     selection_y = 0;
 
     g_game_vars.timer = TM_ZERO;
+    
+    if(g_game_vars.current_blind == BLIND_TYPE_SMALL)
+        reroll_boss_blind(false);
 }
 
 void game_blind_select_change_background(void)
 {
-    // If this is the first time we see this menu this Ante, roll a boss blind
-    // This check is there for future safety, if we have any kind of pause menu
-    // so we don't reroll the boss blind every time this menu is opened
-    if (!g_game_vars.boss_rolled_this_ante)
-    {
-        g_game_vars.boss_rolled_this_ante = true;
-        reroll_boss_blind(false);
-    }
-
     for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
     {
         obj_unhide(blind_select_tokens[i]->obj, 0);

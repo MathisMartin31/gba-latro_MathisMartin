@@ -692,8 +692,6 @@ void game_init()
     // Initialize/reset unbeaten Boss/Showdown Blinds so they are all available
     init_unbeaten_blinds_list(false);
     init_unbeaten_blinds_list(true);
-    g_game_vars.boss_rolled_this_ante = false;
-
 }
 
 static inline void discarded_jokers_update_loop(void)
@@ -2067,7 +2065,6 @@ static inline void game_playing_handle_round_over(void)
 
                 // mark current boss blind as beaten and allow for reroll
                 set_blind_beaten(g_game_vars.next_boss_blind);
-                g_game_vars.boss_rolled_this_ante = false;
             }
             else
             {
@@ -3189,11 +3186,11 @@ static void game_playing_on_update(void)
     // Background logic (thissss might be moved to the card'ssss logic later. I'm a sssssnake)
     if (hand_state == HAND_DRAW || hand_state == HAND_DISCARD || hand_state == HAND_SELECT)
     {
-        change_background(BG_CARD_SELECTING, true);
+        change_background(BG_CARD_SELECTING, false);
     }
     else if (hand_state != HAND_SHUFFLING)
     {
-        change_background(BG_CARD_PLAYING, true);
+        change_background(BG_CARD_PLAYING, false);
     }
 
     game_playing_process_input_and_state();
