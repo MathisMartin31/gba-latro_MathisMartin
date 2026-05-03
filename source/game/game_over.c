@@ -1,9 +1,10 @@
-#include "game/main_menu.h"
+#include "game/game_over.h"
 
 #include "affine_background.h"
 #include "audio_utils.h"
 #include "button.h"
 #include "game.h"
+#include "game/main_menu.h"
 #include "graphic_utils.h"
 #include "layout.h"
 #include "soundbank.h"
