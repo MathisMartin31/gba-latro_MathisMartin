@@ -103,7 +103,6 @@ static inline void game_blind_select_erase_blind_reqs_and_rewards()
     }
 }
 
-// TODO: Clean this up, maybe move to map and move to blind.h
 void increment_blind(enum BlindState increment_reason)
 {
     // cannot do blind++ anymore, we need to go SMALL->BIG->next_boss->SMALL...
