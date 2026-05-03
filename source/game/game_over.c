@@ -11,11 +11,6 @@
 
 #include <tonc.h>
 
-enum GameOverButtons
-{
-    RETRY_BTN_IDX
-};
-
 #define GAME_OVER_ANIM_FRAMES 15
 
 // clang-format off
