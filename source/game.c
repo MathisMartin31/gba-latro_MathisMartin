@@ -4396,3 +4396,8 @@ static void game_win_on_update(void)
 
     game_over_process_user_input();
 }
+
+void reset_background(void)
+{
+    background = BG_NONE;
+}

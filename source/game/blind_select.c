@@ -378,9 +378,9 @@ static void blind_tokens_init()
 {
     reroll_boss_blind(true);
 
-    sprite_destroy(&blind_select_tokens[SMALL_BLIND]);
-    sprite_destroy(&blind_select_tokens[BIG_BLIND]);
-    sprite_destroy(&blind_select_tokens[BOSS_BLIND]);
+    //sprite_destroy(&blind_select_tokens[SMALL_BLIND]);
+    //sprite_destroy(&blind_select_tokens[BIG_BLIND]);
+    //sprite_destroy(&blind_select_tokens[BOSS_BLIND]);
 
     blind_select_tokens[SMALL_BLIND] = blind_token_new(
         BLIND_TYPE_SMALL,
@@ -403,17 +403,21 @@ static void blind_tokens_init()
 
     for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
     {
-        obj_hide(blind_select_tokens[i]->obj);
+        //obj_hide(blind_select_tokens[i]->obj);
     }
 }
 
 void game_blind_select_on_init(void)
 {
-    change_background(BG_BLIND_SELECT, false);
     selection_x = 0;
     selection_y = 0;
 
     blind_tokens_init();
+
+    // TODO: silly bug rn, the sprite tokens are unhidden on a background change.
+    // this probably shouldn't be here
+    change_background(BG_BLIND_SELECT, true);
+    //game_blind_select_change_background();
 
     play_sfx(SFX_POP, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
 }
@@ -434,10 +438,11 @@ void game_blind_select_on_exit(void)
     // For some reason that I haven't figured out yet,
     // if I don't destroy the blind tokens they won't
     // show up on the next run.
-    sprite_destroy(&blind_select_tokens[SMALL_BLIND]);
-    sprite_destroy(&blind_select_tokens[BIG_BLIND]);
-    sprite_destroy(&blind_select_tokens[BOSS_BLIND]);
+    //sprite_destroy(&blind_select_tokens[SMALL_BLIND]);
+    //sprite_destroy(&blind_select_tokens[BIG_BLIND]);
+    //sprite_destroy(&blind_select_tokens[BOSS_BLIND]);
 
+    reset_background();
     selection_y = 0;
 }
 

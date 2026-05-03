@@ -193,4 +193,6 @@ void change_background_legacy(enum BackgroundId id);
 void display_round(void);
 void reset_top_left_panel_bottom_row(void);
 
+void reset_background(void);
+
 #endif // GAME_H
