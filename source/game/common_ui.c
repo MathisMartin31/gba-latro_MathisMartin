@@ -23,8 +23,12 @@ static const BackgroundRenderCallback bgCallbacks[] = {
 
 void change_background(enum BackgroundId id, bool force_redraw)
 {
-    if(force_redraw) reset_background();
-    if ((force_redraw || id != background) && bgCallbacks[id] != NULL)
+    if(force_redraw)
+    {
+        background = BG_NONE;
+        reset_background();
+    }
+    if (id != background && bgCallbacks[id] != NULL)
     {
         bgCallbacks[id]();
     }

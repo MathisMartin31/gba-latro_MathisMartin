@@ -18,6 +18,8 @@
 #define TM_DISP_BLIND_PANEL_FINISH      7
 #define TM_DISP_BLIND_PANEL_START       1
 
+int timer;
+
 static void game_blind_select_start_anim_seq(void);
 static void game_blind_select_handle_input(void);
 static void game_blind_select_selected_anim_seq(void);
@@ -71,11 +73,11 @@ static void game_blind_select_start_anim_seq()
         );
     }
 
-    if (g_game_vars.timer == TM_END_ANIM_SEQ)
+    if (timer == TM_END_ANIM_SEQ)
     {
         game_blind_select_print_blinds_reqs_and_rewards();
         substate = BLIND_SELECT;
-        g_game_vars.timer = TM_ZERO; // Reset the timer
+        timer = TM_ZERO; // Reset the timer
     }
 }
 
@@ -131,7 +133,7 @@ void increment_blind(enum BlindState increment_reason)
 
 static void game_blind_select_handle_input()
 {
-    if (g_game_vars.timer == TM_BLIND_SELECT_START && g_game_vars.current_blind == BLIND_TYPE_BOSS)
+    if (timer == TM_BLIND_SELECT_START && g_game_vars.current_blind == BLIND_TYPE_BOSS)
     {
         selection_y = 0;
     }
@@ -153,7 +155,7 @@ static void game_blind_select_handle_input()
         {
             play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
             substate = BLIND_SELECTED_ANIM_SEQ;
-            g_game_vars.timer = TM_ZERO;
+            timer = TM_ZERO;
             ++g_game_vars.round;
             display_round();
         }
@@ -185,7 +187,7 @@ static void game_blind_select_handle_input()
 
             game_blind_select_print_blinds_reqs_and_rewards();
 
-            g_game_vars.timer = TM_ZERO;
+            timer = TM_ZERO;
         }
     }
 
@@ -211,7 +213,7 @@ static void game_blind_select_handle_input()
 
 static void game_blind_select_selected_anim_seq()
 {
-    if (g_game_vars.timer < 15)
+    if (timer < 15)
     {
         Rect blinds_rect = POP_MENU_ANIM_RECT;
         blinds_rect.top -= 1; // Because of the raised blind
@@ -226,7 +228,7 @@ static void game_blind_select_selected_anim_seq()
             );
         }
     }
-    else if (g_game_vars.timer >= MENU_POP_OUT_ANIM_FRAMES)
+    else if (timer >= MENU_POP_OUT_ANIM_FRAMES)
     {
         for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
         {
@@ -234,20 +236,20 @@ static void game_blind_select_selected_anim_seq()
         }
 
         substate = DISPLAY_BLIND_PANEL; // Reset the state
-        g_game_vars.timer = TM_ZERO;                           // Reset the timer
+        timer = TM_ZERO;                           // Reset the timer
     }
 }
 
 static void game_blind_select_display_blind_panel()
 {
-    if (g_game_vars.timer >= TM_DISP_BLIND_PANEL_FINISH)
+    if (timer >= TM_DISP_BLIND_PANEL_FINISH)
     {
         substate = BLIND_SELECT_MAX;
         return;
     }
 
     // Switches to the selecting background and clears the blind panel area
-    if (g_game_vars.timer == TM_DISP_BLIND_PANEL_START)
+    if (timer == TM_DISP_BLIND_PANEL_START)
     {
         change_background(BG_CARD_SELECTING, false);
 
@@ -260,9 +262,9 @@ static void game_blind_select_display_blind_panel()
     }
 
     // Shift the blind panel down onto screen
-    for (int y = 0; y < g_game_vars.timer; y++)
+    for (int y = 0; y < timer; y++)
     {
-        int y_from = 26 + y - g_game_vars.timer;
+        int y_from = 26 + y - timer;
         int y_to = 0 + y;
 
         Rect from = {0, y_from, 8, y_from};
@@ -409,6 +411,7 @@ static void blind_tokens_init()
 
 void game_blind_select_on_init(void)
 {
+    timer = TM_ZERO;
     selection_x = 0;
     selection_y = 0;
 
@@ -424,8 +427,10 @@ void game_blind_select_on_init(void)
 
 void game_blind_select_on_update(void)
 {
+    timer++;
     if (substate == BLIND_SELECT_MAX)
     {
+        reset_background();
         game_change_state(GAME_STATE_PLAYING);
         return;
     }
@@ -444,6 +449,8 @@ void game_blind_select_on_exit(void)
 
     reset_background();
     selection_y = 0;
+
+    g_game_vars.timer = TM_ZERO;
 }
 
 void game_blind_select_change_background(void)

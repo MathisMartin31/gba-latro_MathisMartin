@@ -7,6 +7,7 @@
 #include "background_main_menu_gfx.h"
 #include "background_shop_gfx.h"
 #include "bitset.h"
+#include "blind.h"
 #include "button.h"
 #include "card.h"
 #include "game/common_ui.h"
@@ -496,17 +497,18 @@ static ContainedHandTypes _contained_hands = {0};
 
 // Initialization of the global var
 // clang-format off
-GameVariables g_game_vars;
-/*
 GameVariables g_game_vars = {
     0, 0, 0,
     0, 0, 0,
+    BLIND_TYPE_SMALL,
+    BLIND_TYPE_BIG,
+    { BLIND_STATE_CURRENT, BLIND_STATE_UPCOMING, BLIND_STATE_UPCOMING },
+    false,
     DEFAULT_GAME_SPEED,
     DEFAULT_HIGH_CONTRAST,
     DEFAULT_MUSIC_VOLUME,
     DEFAULT_SOUND_VOLUME
 };
-*/
 // clang-format on
 
 // The sprite that displays the blind when in "GAME_PLAYING/GAME_ROUND_END" state
@@ -3187,11 +3189,11 @@ static void game_playing_on_update(void)
     // Background logic (thissss might be moved to the card'ssss logic later. I'm a sssssnake)
     if (hand_state == HAND_DRAW || hand_state == HAND_DISCARD || hand_state == HAND_SELECT)
     {
-        change_background(BG_CARD_SELECTING, false);
+        change_background(BG_CARD_SELECTING, true);
     }
     else if (hand_state != HAND_SHUFFLING)
     {
-        change_background(BG_CARD_PLAYING, false);
+        change_background(BG_CARD_PLAYING, true);
     }
 
     game_playing_process_input_and_state();
