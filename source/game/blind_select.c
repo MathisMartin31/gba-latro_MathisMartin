@@ -7,16 +7,16 @@
 #include "game.h"
 #include "game_variables.h"
 #include "graphic_utils.h"
+#include "soundbank.h"
 #include "sprite.h"
 #include "timer.h"
-#include "soundbank.h"
 #include "util.h"
 
 #include <maxmod.h>
 
-#define BLIND_SELECT_BTN_PID                 15
-#define TM_DISP_BLIND_PANEL_FINISH      7
-#define TM_DISP_BLIND_PANEL_START       1
+#define BLIND_SELECT_BTN_PID       15
+#define TM_DISP_BLIND_PANEL_FINISH 7
+#define TM_DISP_BLIND_PANEL_START  1
 
 static int timer;
 
@@ -38,7 +38,7 @@ enum BlindSelectState
     BLIND_SELECT_MAX
 };
 
-// TODO: this will be refactored into common state machine 
+// TODO: this will be refactored into common state machine
 static const SubStateActionFn blind_select_state_actions[] = {
     game_blind_select_start_anim_seq,
     game_blind_select_handle_input,
@@ -48,10 +48,10 @@ static const SubStateActionFn blind_select_state_actions[] = {
 
 static const u32 TM_END_ANIM_SEQ = 12;
 static const u32 TM_BLIND_SELECT_START = 1;
-static const Rect BLIND_SKIP_BTN_GRAY_RECT = { 0, 24, 4, 27 };
-static const Rect BLIND_SKIP_BTN_PREANIM_DEST_RECT = { 9, 29, 19, 31 };
-static const Rect SINGLE_BLIND_SEL_REQ_SCORE_RECT = { 80, 120, 104, 128 };
-static const BG_POINT TOP_LEFT_PANEL_EMPTY_3W_ROW_POS = { 29, 31};
+static const Rect BLIND_SKIP_BTN_GRAY_RECT = {0, 24, 4, 27};
+static const Rect BLIND_SKIP_BTN_PREANIM_DEST_RECT = {9, 29, 19, 31};
+static const Rect SINGLE_BLIND_SEL_REQ_SCORE_RECT = {80, 120, 104, 128};
+static const BG_POINT TOP_LEFT_PANEL_EMPTY_3W_ROW_POS = {29, 31};
 
 static int selection_x = 0;
 static int selection_y = 0;
@@ -123,9 +123,12 @@ void increment_blind(enum BlindState increment_reason)
         // defeated a boss: reset everything
         default:
             g_game_vars.current_blind = BLIND_TYPE_SMALL;
-            g_game_vars.blinds_states[SMALL_BLIND] = BLIND_STATE_CURRENT; // Reset the blinds to the first one
-            g_game_vars.blinds_states[BIG_BLIND] = BLIND_STATE_UPCOMING;  // Set the next blind to upcoming
-            g_game_vars.blinds_states[BOSS_BLIND] = BLIND_STATE_UPCOMING; // Set the next blind to upcoming
+            g_game_vars.blinds_states[SMALL_BLIND] =
+                BLIND_STATE_CURRENT; // Reset the blinds to the first one
+            g_game_vars.blinds_states[BIG_BLIND] =
+                BLIND_STATE_UPCOMING; // Set the next blind to upcoming
+            g_game_vars.blinds_states[BOSS_BLIND] =
+                BLIND_STATE_UPCOMING; // Set the next blind to upcoming
             break;
     }
 }
@@ -234,7 +237,7 @@ static void game_blind_select_selected_anim_seq()
         }
 
         substate = DISPLAY_BLIND_PANEL; // Reset the state
-        timer = TM_ZERO;                           // Reset the timer
+        timer = TM_ZERO;                // Reset the timer
     }
 }
 
@@ -366,17 +369,17 @@ static void game_blind_select_print_blinds_reqs_and_rewards(void)
 static inline void reroll_boss_blind(bool no_tiles)
 {
     // Showdown blinds only show up on ante 8, 16, etc...
-    g_game_vars.next_boss_blind = roll_blind_type((g_game_vars.ante % 8 == 0) && (g_game_vars.ante > 0));
+    g_game_vars.next_boss_blind =
+        roll_blind_type((g_game_vars.ante % 8 == 0) && (g_game_vars.ante > 0));
     if (!no_tiles)
     {
         apply_blind_tiles(g_game_vars.next_boss_blind, BOSS_BLIND_TOKEN_LAYER);
     }
 }
 
-
 static void blind_tokens_init()
 {
-    if(g_game_vars.current_blind == BLIND_TYPE_SMALL)
+    if (g_game_vars.current_blind == BLIND_TYPE_SMALL)
         reroll_boss_blind(true);
 
     sprite_destroy(&blind_select_tokens[SMALL_BLIND]);
@@ -502,11 +505,7 @@ void game_blind_select_change_background(void)
     // actually 5, not 10. 10 is the selected border color
     // Setting this palette value though doesn't seem to have an
     // effect.
-    memcpy16(
-        &pal_bg_mem[BLIND_SKIP_BTN_SELECTED_BORDER_PID],
-        &pal_bg_mem[BLIND_SKIP_BTN_PID],
-        1
-    );
+    memcpy16(&pal_bg_mem[BLIND_SKIP_BTN_SELECTED_BORDER_PID], &pal_bg_mem[BLIND_SKIP_BTN_PID], 1);
 
     for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
     {
@@ -557,12 +556,8 @@ void game_blind_select_change_background(void)
 
                 // Copy plain tiles onto the bottom of the raised blind panel to fill the gap
                 // created by the raise
-                Rect gap_fill_rect = {
-                    x_from,
-                    y_from,
-                    x_from + rect_width(&SINGLE_BLIND_SELECT_RECT) - 1,
-                    y_from
-                };
+                Rect gap_fill_rect =
+                    {x_from, y_from, x_from + rect_width(&SINGLE_BLIND_SELECT_RECT) - 1, y_from};
                 BG_POINT gap_fill_point = {x_to, y_to};
                 main_bg_se_copy_rect(gap_fill_rect, gap_fill_point);
 
