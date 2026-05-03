@@ -3,6 +3,7 @@
 #include "game.h"
 #include "game/main_menu.h"
 #include "game/options_menu.h"
+#include "game/shop.h"
 
 typedef void (*BackgroundRenderCallback)(void);
 
@@ -14,7 +15,7 @@ static const BackgroundRenderCallback bgCallbacks[] = {
     [BG_CARD_SELECTING] = NULL,
     [BG_CARD_PLAYING] = NULL,
     [BG_ROUND_END] = NULL,
-    [BG_SHOP] = NULL,
+    [BG_SHOP] = game_shop_change_background,
     [BG_BLIND_SELECT] = NULL,
     [BG_OPTIONS_MENU] = game_options_menu_change_background,
     [BG_MAIN_MENU] = game_main_menu_change_background,

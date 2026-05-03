@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "bitset.h"
 #include "blind.h"
 #include "game/common_ui.h"
 #include "game_variables.h"
@@ -123,6 +124,7 @@ typedef struct ContainedHandTypes
 // clang-format on
 
 typedef void (*GameStateCallback)(void);
+typedef void (*SubStateActionFn)(void);
 
 typedef struct
 {
@@ -145,8 +147,13 @@ int get_played_top(void);
 int get_scored_card_index(void);
 bool is_joker_owned(int joker_id);
 bool card_is_face(Card* card);
+void remove_owned_joker(int owned_joker_idx);
 List* get_jokers_list(void);
 List* get_expired_jokers_list(void);
+List* get_discarded_jokers_list(void);
+List* get_shop_jokers_list(void);
+Bitset* get_avail_jokers_bitset(void);
+void set_shop_joker_avail(int joker_id, bool avail);
 
 ContainedHandTypes* get_contained_hands(void);
 enum HandType* get_hand_type(void);
