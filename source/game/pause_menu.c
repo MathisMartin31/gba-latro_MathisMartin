@@ -60,22 +60,22 @@ static void construct_hand_levels_background(void)
 
 }
 
-void game_pause_menu_change_background(void)
-{
-
-}
-
-void game_pause_menu_on_init(void)
-{
-
-}
-
-void game_pause_menu_on_update(void)
-{
-
-}
-
-void game_pause_menu_on_exit(void)
-{
-
-}
+//void game_pause_menu_change_background(void)
+//{
+//
+//}
+//
+//void game_pause_menu_on_init(void)
+//{
+//
+//}
+//
+//void game_pause_menu_on_update(void)
+//{
+//
+//}
+//
+//void game_pause_menu_on_exit(void)
+//{
+//
+//}
