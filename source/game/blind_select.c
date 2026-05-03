@@ -454,6 +454,10 @@ void game_blind_select_on_exit(void)
     g_game_vars.timer = TM_ZERO;
 }
 
+static const u32 BLIND_LEFT_X = 80;
+static const u32 BLIND_CENTER_X = 120;
+static const u32 BLIND_RIGHT_X = 160;
+
 void game_blind_select_change_background(void)
 {
     for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
@@ -465,9 +469,9 @@ void game_blind_select_change_background(void)
     // is shifted down by
     const int default_y = 89 + (TILE_SIZE * 12);
     // TODO refactor magic numbers '80/120/160' into a map to loop with
-    sprite_position(blind_select_tokens[SMALL_BLIND], 80, default_y);
-    sprite_position(blind_select_tokens[BIG_BLIND], 120, default_y);
-    sprite_position(blind_select_tokens[BOSS_BLIND], 160, default_y);
+    sprite_position(blind_select_tokens[SMALL_BLIND], BLIND_LEFT_X, default_y);
+    sprite_position(blind_select_tokens[BIG_BLIND], BLIND_CENTER_X, default_y);
+    sprite_position(blind_select_tokens[BOSS_BLIND], BLIND_RIGHT_X, default_y);
 
     toggle_windows(false, true);
 
