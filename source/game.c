@@ -10,7 +10,7 @@
 #include "game/blind_select.h"
 #include "game/common_ui.h"
 #include "game/game_over.h"
-#include "game/joker_selection.h"
+#include "game/joker_row.h"
 #include "game/main_menu.h"
 #include "game/options_menu.h"
 #include "game/round_end.h"

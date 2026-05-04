@@ -2,7 +2,7 @@
 
 #include "background_shop_gfx.h"
 #include "bitset.h"
-#include "game/joker_selection.h"
+#include "game/joker_row.h"
 #include "game_variables.h"
 #include "joker.h"
 #include "layout.h"

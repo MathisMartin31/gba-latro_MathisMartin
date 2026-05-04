@@ -1,11 +1,11 @@
 /**
- * @file joker_selection.h
+ * @file joker_row.h
  *
  * @brief All the functions use specifically to interact with Jokers.
  *         This includes browsing, swapping, selling, etc.
  */
-#ifndef GAME_JOKER_SEL_H
-#define GAME_JOKER_SEL_H
+#ifndef GAME_JOKER_ROW_H
+#define GAME_JOKER_ROW_H
 
 #include "selection_grid.h"
 #include "sprite.h"
