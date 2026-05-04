@@ -44,8 +44,7 @@
 #define ROUND_END_BLACK_PANEL_INIT_BOTTOM_SE 12
 
 // TODO: Properly define and use
-#define MENU_POP_OUT_ANIM_FRAMES 20
-#define GAME_OVER_ANIM_FRAMES    15
+#define GAME_OVER_ANIM_FRAMES 15
 
 #define PITCH_STEP_DISCARD_SFX   (-64)
 #define PITCH_STEP_DRAW_SFX      24
@@ -108,17 +107,9 @@
 #define NUM_SCORE_LERP_STEPS   16
 #define TM_SCORE_LERP_INTERVAL 2
 
-// Shop
-#define REROLL_BASE_COST 5 // Base cost for rerolling the shop items
-
-#define NEXT_ROUND_BTN_SEL_X 0
-
 #define GAME_PLAYING_HAND_SEL_Y      1
 #define GAME_PLAYING_BUTTONS_SEL_Y   2
 #define GAME_PLAYING_NUM_BOTTOM_BTNS 2
-
-#define REROLL_BTN_FRAME_PAL_IDX 7
-#define REROLL_BTN_PAL_IDX       3
 
 #define EXPIRE_ANIMATION_FRAME_COUNT 3
 
@@ -215,7 +206,6 @@ static void display_discards(int value);
 static void set_hand(void);
 static int deck_get_size(void);
 static int deck_get_max_size(void);
-static void increment_blind(enum BlindState increment_reason);
 static void game_over_init(void);
 static bool check_and_score_joker_for_event(
     ListItr* starting_joker_itr,
@@ -290,7 +280,6 @@ static const Rect HAND_BG_RECT_SELECTING    = {9,       11,     24,     17 };
 
 static const Rect TOP_LEFT_ITEM_SRC_RECT    = {0,       20,     8,      25 };
 static const BG_POINT TOP_LEFT_PANEL_POINT  = {0,       0, };
-static const Rect TOP_LEFT_PANEL_ANIM_RECT  = {0,       0,      8,      4  };
 /* Contains the shop icon/current blind etc. 
  * The difference between TOP_LEFT_PANEL_ANIM_RECT and TOP_LEFT_PANEL_RECT 
  * is due to an overlap between the bottom of the top left panel
@@ -351,7 +340,6 @@ static const Rect ANTE_TEXT_RECT            = {8,       144,    UNDEFINED, UNDEF
 static const Rect ROUND_END_BLIND_REQ_RECT  = {104,     96,     136,       UNDEFINED };
 static const Rect ROUND_END_BLIND_REWARD_RECT = { 168,  96,     UNDEFINED, UNDEFINED };
 static const Rect CASHOUT_TEXT_RECT         = {88,      72,     UNDEFINED, UNDEFINED };
-static const Rect SHOP_REROLL_RECT          = {88,      96,     UNDEFINED, UNDEFINED };
 static const Rect GAME_LOSE_MSG_TEXT_RECT   = {104,     72,     UNDEFINED, UNDEFINED};
 // 1 character to the right of GAME_LOSE
 static const Rect GAME_WIN_MSG_TEXT_RECT    = {112,      72,     UNDEFINED, UNDEFINED};
@@ -364,13 +352,6 @@ static const BG_POINT HAND_PLAY_POS         = {120,     70};
 // clang-format on
 
 static enum BackgroundId background = BG_NONE;
-
-static StateInfo state_info[] = {
-#define DEF_STATE_INFO(stateEnum, init_fn, update_fn, exit_fn) \
-    {.on_init = init_fn, .on_update = update_fn, .on_exit = exit_fn, .substate = 0},
-#include "../include/def_state_info_table.h"
-#undef DEF_STATE_INFO
-};
 
 // clang-format off
 SelectionGridRow game_playing_selection_rows[] = {
@@ -454,17 +435,10 @@ static const SubStateActionFn round_end_state_actions[] = {
     game_round_end_dismiss_round_end_panel
 };
 
-static int reroll_cost = REROLL_BASE_COST;
-
-// The current game state, this is used to determine what the game is doing at any given time
-static enum GameState game_state = GAME_STATE_UNDEFINED;
-static enum HandState hand_state = HAND_DRAW;
-static enum PlayState play_state = PLAY_STARTING;
-
 static enum HandType hand_type = NONE;
 static ContainedHandTypes _contained_hands = {0};
 
-// Initialization of the global var
+// Initialization of the global vars
 // clang-format off
 GameVariables g_game_vars = {
     0, 0, 0,
@@ -474,6 +448,18 @@ GameVariables g_game_vars = {
     DEFAULT_MUSIC_VOLUME,
     DEFAULT_SOUND_VOLUME
 };
+
+StateInfo state_info[] = {
+#define DEF_STATE_INFO(stateEnum, init_fn, update_fn, exit_fn) \
+    {.on_init = init_fn, .on_update = update_fn, .on_exit = exit_fn, .substate = 0},
+#include "../include/def_state_info_table.h"
+#undef DEF_STATE_INFO
+};
+
+// The current game state, this is used to determine what the game is doing at any given time
+enum GameState game_state = GAME_STATE_UNDEFINED;
+enum HandState hand_state = HAND_DRAW;
+enum PlayState play_state = PLAY_STARTING;
 // clang-format on
 
 // The sprite that displays the blind when in "GAME_PLAYING/GAME_ROUND_END" state
@@ -915,7 +901,7 @@ int get_straight_and_flush_size(void)
                                         : STRAIGHT_AND_FLUSH_SIZE_DEFAULT;
 }
 
-static void add_joker(JokerObject* joker_object)
+void add_joker(JokerObject* joker_object)
 {
     list_push_back(&_owned_jokers_list, joker_object);
 
@@ -1359,7 +1345,7 @@ static void bg_copy_current_item_to_top_left_panel(void)
 
 // Resets bottom row bg tiles of the top left panel (shop/blind) after
 // it is dismissed to match the rest of the game panel background.
-static inline void reset_top_left_panel_bottom_row()
+void reset_top_left_panel_bottom_row()
 {
     BG_POINT top_left_panel_bottom_row_pos = TOP_LEFT_PANEL_POINT;
     // Use the source rect height to offset to the bottom row point
@@ -1801,7 +1787,7 @@ static int deck_get_max_size(void)
     return hand_top + played_top + deck_top + discard_top + 4;
 }
 
-static void increment_blind(enum BlindState increment_reason)
+void increment_blind(enum BlindState increment_reason)
 {
     // cannot do blind++ anymore, we need to go SMALL->BIG->next_boss->SMALL...
     switch (current_blind)

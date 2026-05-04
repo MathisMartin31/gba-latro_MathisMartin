@@ -1,6 +1,7 @@
 #include "blind.h"
 
 #include "blind_gfx.h"
+#include "game.h"
 #include "graphic_utils.h"
 #include "list.h"
 #include "stdbool.h"
