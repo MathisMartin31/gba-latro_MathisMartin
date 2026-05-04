@@ -1,4 +1,4 @@
-#include "game/joker_selection.h"
+#include "game/joker_row.h"
 
 #include "game.h"
 #include "game_variables.h"

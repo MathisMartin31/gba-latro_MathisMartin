@@ -9,7 +9,7 @@
 #include "button.h"
 #include "card.h"
 #include "game/common_ui.h"
-#include "game/joker_selection.h"
+#include "game/joker_row.h"
 #include "game/main_menu.h"
 #include "game/options_menu.h"
 #include "game/shop.h"
