@@ -4,6 +4,8 @@
 #include "bitset.h"
 #include "blind.h"
 #include "game/common_ui.h"
+#include "game_state_machine.h"
+#include "game_variables.h"
 #include "graphic_utils.h"
 
 #include <tonc.h>
@@ -40,16 +42,6 @@ typedef struct List List;
 typedef struct CardObject CardObject;
 typedef struct Card Card;
 typedef struct JokerObject JokerObject;
-
-// Enum value names in ../include/def_state_info_table.h
-enum GameState
-{
-#define DEF_STATE_INFO(stateEnum, on_init, on_update, on_exit) stateEnum,
-#include "def_state_info_table.h"
-#undef DEF_STATE_INFO
-    GAME_STATE_MAX,
-    GAME_STATE_UNDEFINED
-};
 
 enum HandState
 {
@@ -123,17 +115,6 @@ typedef struct ContainedHandTypes
 } ContainedHandTypes;
 // clang-format on
 
-typedef void (*GameStateCallback)(void);
-typedef void (*SubStateActionFn)(void);
-
-typedef struct
-{
-    int substate;
-    GameStateCallback on_init;
-    GameStateCallback on_update;
-    GameStateCallback on_exit;
-} StateInfo;
-
 // Game functions
 void game_init();
 
@@ -158,6 +139,7 @@ int get_played_top(void);
 int get_scored_card_index(void);
 bool is_joker_owned(int joker_id);
 bool card_is_face(Card* card);
+void add_joker(JokerObject* joker_object);
 void remove_owned_joker(int owned_joker_idx);
 List* get_jokers_list(void);
 List* get_expired_jokers_list(void);
@@ -189,6 +171,8 @@ bool is_shortcut_joker_active(void);
 int get_straight_and_flush_size(void);
 
 void game_start(void);
+
+void reset_top_left_panel_bottom_row();
 
 // Temporary change for Refactor. Currently this compatibility binder is to allow
 // simultaneous integration of the new system in `common_ui` with the the existing

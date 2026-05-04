@@ -74,17 +74,9 @@
 #define NUM_SCORE_LERP_STEPS   16
 #define TM_SCORE_LERP_INTERVAL 2
 
-// Shop
-#define REROLL_BASE_COST 5 // Base cost for rerolling the shop items
-
-#define NEXT_ROUND_BTN_SEL_X 0
-
 #define GAME_PLAYING_HAND_SEL_Y      1
 #define GAME_PLAYING_BUTTONS_SEL_Y   2
 #define GAME_PLAYING_NUM_BOTTOM_BTNS 2
-
-#define REROLL_BTN_FRAME_PAL_IDX 7
-#define REROLL_BTN_PAL_IDX       3
 
 #define EXPIRE_ANIMATION_FRAME_COUNT 3
 
@@ -217,7 +209,6 @@ static const Rect DISCARDS_TEXT_RECT        = {48,      104,    UNDEFINED, UNDEF
 static const Rect DECK_SIZE_RECT            = {200,     152,    240,       160       };
 static const Rect ROUND_TEXT_RECT           = {48,      144,    UNDEFINED, UNDEFINED };
 static const Rect ANTE_TEXT_RECT            = {8,       144,    UNDEFINED, UNDEFINED };
-static const Rect SHOP_REROLL_RECT          = {88,      96,     UNDEFINED, UNDEFINED };
 
 static const BG_POINT CARD_DRAW_POS         = {208,     110};
 static const BG_POINT CARD_DISCARD_PNT      = {240,     70};
@@ -228,13 +219,6 @@ static const BG_POINT HAND_PLAY_POS         = {120,     70};
 // NOTE: This is going to be removed in favor of the background
 // variable and handling in common.c once the related refactor is finished
 static enum BackgroundId background_legacy = BG_NONE;
-
-static StateInfo state_info[] = {
-#define DEF_STATE_INFO(stateEnum, init_fn, update_fn, exit_fn) \
-    {.on_init = init_fn, .on_update = update_fn, .on_exit = exit_fn, .substate = 0},
-#include "../include/def_state_info_table.h"
-#undef DEF_STATE_INFO
-};
 
 // clang-format off
 SelectionGridRow game_playing_selection_rows[] = {
@@ -299,9 +283,6 @@ static const HandValues hand_base_values[] = {
     {.chips = 160, .mult = 16, .display_name = "Flush 5"}  // FLUSH_FIVE
 };
 
-static int reroll_cost = REROLL_BASE_COST;
-
-// The current game state, this is used to determine what the game is doing at any given time
 static enum GameState game_state = GAME_STATE_UNDEFINED;
 static enum HandState hand_state = HAND_DRAW;
 static enum PlayState play_state = PLAY_STARTING;
@@ -309,7 +290,7 @@ static enum PlayState play_state = PLAY_STARTING;
 static enum HandType hand_type = NONE;
 static ContainedHandTypes _contained_hands = {0};
 
-// Initialization of the global var
+// Initialization of the global vars
 // clang-format off
 GameVariables g_game_vars = {
     .timer = 0, .rng_seed = 0, .rng_step = 0,
@@ -337,6 +318,18 @@ GameVariables g_game_vars = {
     .music_volume = DEFAULT_MUSIC_VOLUME,
     .sound_volume = DEFAULT_SOUND_VOLUME,
 };
+
+StateInfo state_info[] = {
+#define DEF_STATE_INFO(stateEnum, init_fn, update_fn, exit_fn) \
+    {.on_init = init_fn, .on_update = update_fn, .on_exit = exit_fn, .substate = 0},
+#include "../include/def_state_info_table.h"
+#undef DEF_STATE_INFO
+};
+
+// The current game state, this is used to determine what the game is doing at any given time
+enum GameState game_state = GAME_STATE_UNDEFINED;
+enum HandState hand_state = HAND_DRAW;
+enum PlayState play_state = PLAY_STARTING;
 // clang-format on
 
 // The sprite that displays the blind when in "GAME_PLAYING/GAME_ROUND_END" state
@@ -744,7 +737,7 @@ int get_straight_and_flush_size(void)
                                         : STRAIGHT_AND_FLUSH_SIZE_DEFAULT;
 }
 
-static void add_joker(JokerObject* joker_object)
+void add_joker(JokerObject* joker_object)
 {
     list_push_back(&_owned_jokers_list, joker_object);
 

@@ -8,6 +8,8 @@
 
 #include "graphic_utils.h"
 
+#define MENU_POP_OUT_ANIM_FRAMES 20
+
 // clang-format off
 // Points                                               x        y
 static const BG_POINT CUR_BLIND_TOKEN_POS            = {8,       18};

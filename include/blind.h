@@ -1,7 +1,6 @@
 #ifndef BLIND_H
 #define BLIND_H
 
-#include "game.h"
 #include "sprite.h"
 
 // The GBA's max uint value is around 4 billion, so we're going to not add endless mode for
