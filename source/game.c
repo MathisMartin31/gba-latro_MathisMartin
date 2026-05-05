@@ -683,7 +683,8 @@ void game_init()
 // This function isn't set in stone. This is just a placeholder
 // allowing the player to restart the game. Thought it would be nice to have
 // util we decide what we want to do after a game over.
-void game_clear()
+// Warning: do NOT call outside of the "GAME OVER" state, some data will not be reset here.
+void game_reset()
 {
     while (list_get_len(&_owned_jokers_list) > 0)
     {

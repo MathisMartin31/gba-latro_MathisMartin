@@ -134,7 +134,7 @@ typedef struct
 
 // Game functions
 void game_init();
-void game_clear();
+void game_reset();
 void game_update();
 void game_change_state(enum GameState new_game_state);
 
