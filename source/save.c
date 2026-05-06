@@ -21,11 +21,12 @@
 
 #define CHECK_BASE 0x0000
 #define GAME_BASE  0x0010
-#define LISTS_BASE 0x0060
 
 #define CHECK_MAGIC     0x4C414247 // Spells GBAL, used to determine if the save data is junk
 #define CHECK_HASH_SIZE 7
 #define GIT_HASH_START  17 // starts after "GBALATRO-VERSION:" in the gbalatro_version var
+
+#define SAVE_LABEL_SIZE 4
 
 // clang-format off
 /**
@@ -46,6 +47,90 @@ typedef struct SaveHeader
     bool dirty;
     char githash[CHECK_HASH_SIZE];
 } SaveHeader;
+
+/**
+ * @brief SaveData will contain the data to be saved to SRAM.
+ *
+ * GameVariables was used for this purpose at first, but some data needed to be shared but
+ * not saved, so it couldn't be dumped "as is" anymore and this struct had to be created.
+ *
+ * Some data will be taken directly from GameVariables like the RNG seed/step and timers, some
+ * will be encoded/decoded to/from minimal necessary data like the Jokers.
+ *
+ * Some magic numbers will also be mixed in, these are there only to make sections more
+ * obvious to the eye when opening the data in an hex viewer/editor.
+ * I recommend using `xxd -l 512 -e -g 4 <gbalatro.sav>`
+ */
+typedef struct SaveData
+{
+    u32 tag_internal[SAVE_LABEL_SIZE];
+
+    s32 timer;
+    u32 rng_seed;
+    u32 rng_step;
+    int round;
+    int ante;
+    int money;
+    u32 padding0[2];
+
+    u32 tag_options[SAVE_LABEL_SIZE];
+
+    u8 game_speed;
+    bool high_contrast;
+    u8 music_volume;
+    u8 sound_volume;
+    u32 padding1[3];
+
+    u32 tag_jokers[SAVE_LABEL_SIZE];
+
+    u32 jokers_data[2 * MAX_JOKERS_HELD_SIZE];
+
+    u32 tag_end;
+} SaveData;
+
+// clang-format off
+static const SaveData SaveData_default = {
+    // Spells "INTERNAL DATA"
+    .tag_internal = {
+        0x544E492D,
+        0x414E5245,
+        0x4144204C,
+        0x2D204154
+    },
+
+    .timer = 0,
+    .rng_seed = 0,
+    .rng_step = 0,
+    .round = 0,
+    .ante = 0,
+    .money = 0,
+    .padding0 = {UNDEFINED, UNDEFINED},
+
+    // Spells "GAME OPTIONS"
+    .tag_options = {
+        0x4147202D, 
+        0x4F20454D, 
+        0x4F495450, 
+        0x2D20534E
+    },
+    .game_speed = 0,
+    .high_contrast = false,
+    .music_volume = 0,
+    .sound_volume = 0,
+    .padding1 = {UNDEFINED, UNDEFINED, UNDEFINED},
+
+    .tag_jokers = {
+        0x574F202D,
+        0x2044454E,
+        0x454B4F4A,
+        0x2D205352,
+    },
+
+    .jokers_data = {},
+
+    .tag_end = 0x444E455F
+};
+// clang-format on
 
 /**
  * @brief Write raw binary data to SRAM
@@ -146,7 +231,42 @@ static inline bool check_save_header()
 void save_game(void)
 {
     set_save_header();
-    write_sram(GAME_BASE, (const u8*)&g_game_vars, sizeof(g_game_vars));
+
+    SaveData save_data = SaveData_default;
+
+    // Fixed data
+
+    save_data.timer = g_game_vars.timer;
+    save_data.rng_seed = g_game_vars.rng_seed;
+    save_data.rng_step = g_game_vars.rng_step;
+    save_data.round = g_game_vars.round;
+    save_data.ante = g_game_vars.ante;
+    save_data.money = g_game_vars.money;
+
+    save_data.game_speed = g_game_vars.game_speed;
+    save_data.high_contrast = g_game_vars.high_contrast;
+    save_data.music_volume = g_game_vars.music_volume;
+    save_data.sound_volume = g_game_vars.sound_volume;
+
+    // Lists
+
+    List* jokers_list = get_jokers_list();
+    u32 nb_jokers = list_get_len(jokers_list);
+
+    int i = 0;
+    for (; i < nb_jokers; i++)
+    {
+        JokerObject* joker_object = list_get_at_idx(jokers_list, i);
+        save_data.jokers_data[2 * i] = (u32)joker_object->joker->id;
+        save_data.jokers_data[2 * i + 1] = joker_object->joker->persistent_state;
+    }
+    for (; i < MAX_JOKERS_HELD_SIZE; i++)
+    {
+        save_data.jokers_data[2 * i] = UNDEFINED;
+        save_data.jokers_data[2 * i + 1] = UNDEFINED;
+    }
+
+    write_sram(GAME_BASE, (const u8*)&save_data, sizeof(save_data));
 }
 
 void load_game(void)
@@ -154,7 +274,22 @@ void load_game(void)
     if (!check_save_header())
         return;
 
-    read_sram(GAME_BASE, (u8*)&g_game_vars, sizeof(g_game_vars));
+    SaveData save_data = SaveData_default;
+    read_sram(GAME_BASE, (u8*)&save_data, sizeof(save_data));
+
+    g_game_vars.timer = save_data.timer;
+    g_game_vars.rng_seed = save_data.rng_seed;
+    g_game_vars.rng_step = save_data.rng_step;
+    g_game_vars.round = save_data.round;
+    g_game_vars.ante = save_data.ante;
+    g_game_vars.money = save_data.money;
+
+    g_game_vars.game_speed = save_data.game_speed;
+    g_game_vars.high_contrast = save_data.high_contrast;
+    g_game_vars.music_volume = save_data.music_volume;
+    g_game_vars.sound_volume = save_data.sound_volume;
+
+    // TODO: load Jokers from stored minimal data
 
     // return to where we were in the random sequence so that the run stays reproducible
     for (u32 i = 0; i < g_game_vars.rng_step; i++)
