@@ -26,7 +26,7 @@
 #define CHECK_HASH_SIZE 7
 #define GIT_HASH_START  17 // starts after "GBALATRO-VERSION:" in the gbalatro_version var
 
-#define SAVE_LABEL_SIZE 4
+#define SAVE_LABEL_SIZE 16
 
 // clang-format off
 /**
@@ -63,7 +63,7 @@ typedef struct SaveHeader
  */
 typedef struct SaveData
 {
-    u32 tag_internal[SAVE_LABEL_SIZE];
+    char tag_internal[SAVE_LABEL_SIZE];
 
     s32 timer;
     u32 rng_seed;
@@ -73,7 +73,7 @@ typedef struct SaveData
     int money;
     u32 padding0[2];
 
-    u32 tag_options[SAVE_LABEL_SIZE];
+    char tag_options[SAVE_LABEL_SIZE];
 
     u8 game_speed;
     bool high_contrast;
@@ -81,23 +81,17 @@ typedef struct SaveData
     u8 sound_volume;
     u32 padding1[3];
 
-    u32 tag_jokers[SAVE_LABEL_SIZE];
+    char tag_jokers[SAVE_LABEL_SIZE];
 
     u32 jokers_data[2 * MAX_JOKERS_HELD_SIZE];
 
-    u32 tag_end;
+    char tag_end[4];
 } SaveData;
 
 // clang-format off
-static const SaveData SaveData_default = {
-    // Spells "INTERNAL DATA"
-    .tag_internal = {
-        0x544E492D,
-        0x414E5245,
-        0x4144204C,
-        0x2D204154
-    },
-
+static const SaveData SaveData_default =
+{
+    .tag_internal = "-INTERNAL DATA -",
     .timer = 0,
     .rng_seed = 0,
     .rng_step = 0,
@@ -106,29 +100,17 @@ static const SaveData SaveData_default = {
     .money = 0,
     .padding0 = {UNDEFINED, UNDEFINED},
 
-    // Spells "GAME OPTIONS"
-    .tag_options = {
-        0x4147202D, 
-        0x4F20454D, 
-        0x4F495450, 
-        0x2D20534E
-    },
+    .tag_options = "- OPTIONS DATA -",
     .game_speed = 0,
     .high_contrast = false,
     .music_volume = 0,
     .sound_volume = 0,
     .padding1 = {UNDEFINED, UNDEFINED, UNDEFINED},
 
-    .tag_jokers = {
-        0x574F202D,
-        0x2044454E,
-        0x454B4F4A,
-        0x2D205352,
-    },
-
+    .tag_jokers = "- OWNED JOKERS -",
     .jokers_data = {},
 
-    .tag_end = 0x444E455F
+    .tag_end = "_END"
 };
 // clang-format on
 
