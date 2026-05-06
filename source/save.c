@@ -141,34 +141,6 @@ static const SaveOptions SaveOptions_default = {
     .padding = {UNDEFINED, UNDEFINED, UNDEFINED},
 };
 
-GBAL_UNUSED
-static inline u32 get_header_size()
-{
-    static u32 SaveHeader_size = 0;
-    static bool SaveHeader_size_known = false;
-    if (!SaveHeader_size_known)
-    {
-        SaveHeader header;
-        SaveHeader_size = sizeof(header);
-        SaveHeader_size_known = true;
-    }
-    return SaveHeader_size;
-}
-
-GBAL_UNUSED
-static inline u32 get_options_size()
-{
-    static u32 SaveOptions_size = 0;
-    static bool SaveOptions_size_known = false;
-    if (!SaveOptions_size_known)
-    {
-        SaveOptions options;
-        SaveOptions_size = sizeof(options);
-        SaveOptions_size_known = true;
-    }
-    return SaveOptions_size;
-}
-
 /**
  * @brief Write raw binary data to SRAM
  *
