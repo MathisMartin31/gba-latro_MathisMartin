@@ -4,6 +4,7 @@
 #include "save.h"
 
 #include "audio_utils.h"
+#include "bitset.h"
 #include "game.h"
 #include "joker.h"
 #include "list.h"
@@ -19,8 +20,14 @@
 //   - Memory is filled with 1s by default
 //     (at least in mgba, not sure about real HW)
 
-#define CHECK_BASE 0x0000
-#define GAME_BASE  0x0010
+// For some reason writing to SRAM only works if the address is given as a define
+#define HEADER_ADDRESS  0x0
+#define OPTIONS_ADDRESS 0x10
+#define GAME_ADDRESS    0x30
+
+#define SAVE_SECTION_FLAG_NONE    0
+#define SAVE_SECTION_FLAG_OPTIONS (1 << 0)
+#define SAVE_SECTION_FLAG_GAME    (1 << 1)
 
 #define CHECK_MAGIC     0x4C414247 // Spells GBAL, used to determine if the save data is junk
 #define CHECK_HASH_SIZE 7
@@ -39,6 +46,7 @@
  * 0    | 0x47   | 0x42   | 0x41   | 0x4C   | MAGIC        | Identify if proceeding data is valid and not junk, spells "GBAL"
  * 1    | Dirty  | H[0]   | H[1]   | H[2]   | GITHASH_LOW  | Dirty flag, followed by the first 3 bytes of shortened git hash H
  * 2    | H[3]   | H[4]   | H[5]   | H[6]   | GITHASH_HIGH | Last 4 bytes of shortened git hash H, with a dirty flag
+ * 3    | SEC[0] | SEC[1] | SEC[2] | SEC[3] | VALID_SCTNS  | Identifies whether each section of the save data is valid or not 
  */
 // clang-format on
 typedef struct SaveHeader
@@ -46,10 +54,11 @@ typedef struct SaveHeader
     u32 magic;
     bool dirty;
     char githash[CHECK_HASH_SIZE];
+    u32 valid_sections;
 } SaveHeader;
 
 /**
- * @brief SaveData will contain the data to be saved to SRAM.
+ * @brief SaveGame will contain the data about the current run to be saved to SRAM.
  *
  * GameVariables was used for this purpose at first, but some data needed to be shared but
  * not saved, so it couldn't be dumped "as is" anymore and this struct had to be created.
@@ -61,36 +70,50 @@ typedef struct SaveHeader
  * obvious to the eye when opening the data in an hex viewer/editor.
  * I recommend using `xxd -l 512 -e -g 4 <gbalatro.sav>`
  */
-typedef struct SaveData
+typedef struct SaveGame
 {
     char tag_internal[SAVE_LABEL_SIZE];
-
     s32 timer;
     u32 rng_seed;
     u32 rng_step;
     int round;
     int ante;
     int money;
-    u32 padding0[2];
+    u32 padding[2];
 
+    char tag_jokers[SAVE_LABEL_SIZE];
+    u32 jokers_data[2 * MAX_JOKERS_HELD_SIZE];
+
+    char tag_end[4];
+} SaveGame;
+
+/**
+ * @brief SaveOptions will only contain options data set in the Options Menu.
+ */
+typedef struct SaveOptions
+{
     char tag_options[SAVE_LABEL_SIZE];
-
     u8 game_speed;
     bool high_contrast;
     u8 music_volume;
     u8 sound_volume;
-    u32 padding1[3];
+    u32 padding[3];
+} SaveOptions;
 
-    char tag_jokers[SAVE_LABEL_SIZE];
+/**
+ * @brief Default value for the SaveHeader struct.
+ */
+static const SaveHeader SaveHeader_default = {
+    .magic = CHECK_MAGIC,
+    .dirty = false,
+    .githash = "fffffff",
+    .valid_sections = SAVE_SECTION_FLAG_NONE
+};
 
-    u32 jokers_data[2 * MAX_JOKERS_HELD_SIZE];
-
-    char tag_end[4];
-} SaveData;
-
-// clang-format off
-static const SaveData SaveData_default =
-{
+/**
+ * @brief Default value for the SaveGame struct, with tags already set.
+ */
+static const SaveGame SaveGame_default = {
     .tag_internal = "-INTERNAL DATA -",
     .timer = 0,
     .rng_seed = 0,
@@ -98,21 +121,53 @@ static const SaveData SaveData_default =
     .round = 0,
     .ante = 0,
     .money = 0,
-    .padding0 = {UNDEFINED, UNDEFINED},
-
-    .tag_options = "- OPTIONS DATA -",
-    .game_speed = 0,
-    .high_contrast = false,
-    .music_volume = 0,
-    .sound_volume = 0,
-    .padding1 = {UNDEFINED, UNDEFINED, UNDEFINED},
+    .padding = {UNDEFINED, UNDEFINED},
 
     .tag_jokers = "- OWNED JOKERS -",
     .jokers_data = {},
 
     .tag_end = "_END"
 };
-// clang-format on
+
+/**
+ * @brief Default value for the SaveOptions struct, with tags already set.
+ */
+static const SaveOptions SaveOptions_default = {
+    .tag_options = "- OPTIONS DATA -",
+    .game_speed = 0,
+    .high_contrast = false,
+    .music_volume = 0,
+    .sound_volume = 0,
+    .padding = {UNDEFINED, UNDEFINED, UNDEFINED},
+};
+
+GBAL_UNUSED
+static inline u32 get_header_size()
+{
+    static u32 SaveHeader_size = 0;
+    static bool SaveHeader_size_known = false;
+    if (!SaveHeader_size_known)
+    {
+        SaveHeader header;
+        SaveHeader_size = sizeof(header);
+        SaveHeader_size_known = true;
+    }
+    return SaveHeader_size;
+}
+
+GBAL_UNUSED
+static inline u32 get_options_size()
+{
+    static u32 SaveOptions_size = 0;
+    static bool SaveOptions_size_known = false;
+    if (!SaveOptions_size_known)
+    {
+        SaveOptions options;
+        SaveOptions_size = sizeof(options);
+        SaveOptions_size_known = true;
+    }
+    return SaveOptions_size;
+}
 
 /**
  * @brief Write raw binary data to SRAM
@@ -181,54 +236,94 @@ static inline bool is_version_dirty()
 }
 
 /**
- * @brief Writes a magic number and ROM version info to SRAM to signal that the
- *         save data exists and allow the game to determine if it is compatible.
+ * @brief Reads whether the save data exists and is valid.
+ *
+ * @param header pointer to the SaveHeader struct to fill
+ * @returns true if the save data is valid, false if not
  */
-static inline void set_save_header()
+static inline bool get_save_header(SaveHeader* header)
 {
-    SaveHeader check = {};
-    check.magic = CHECK_MAGIC;
-    check.dirty = is_version_dirty();
-    memcpy(&(check.githash), gbalatro_version + GIT_HASH_START, CHECK_HASH_SIZE);
-
-    write_sram(CHECK_BASE, (const u8*)&check, sizeof(check));
+    read_sram(HEADER_ADDRESS, (u8*)header, sizeof(*header));
+    return (header->magic == CHECK_MAGIC) && header->dirty == is_version_dirty() &&
+           check_hash(header->githash);
 }
 
 /**
- * @brief Reads whether the save data exists and is valid.
+ * @brief Writes a magic number and ROM version info to SRAM to signal that the
+ *         save data exists and allow the game to determine if it is compatible.
  *
- * @sa set_save_valid
+ * This will read the SaveHeader first and check if the data is valid. If yes, the
+ * `valid_sections` will be updated, if not, it will be overwritten and start from
+ * `SAVE_SECTION_FLAG_NONE`.
+ *
+ * @param section_flag The section flag to be set to 1, corresponds to the
+ *                      section we're writing to SRAM.
  */
-static inline bool check_save_header()
+static inline void set_save_header(u32 section_flag)
 {
-    SaveHeader check;
-    read_sram(CHECK_BASE, (u8*)&check, sizeof(check));
+    SaveHeader header;
 
-    bool is_valid = (check.magic == CHECK_MAGIC) && check.dirty == is_version_dirty() &&
-                    check_hash(check.githash);
+    // Check for valid data. If it's junk, set all sections as invalid, else keep the flags.
+    // Then add the requested flag.
+    if (!get_save_header(&header))
+    {
+        memcpy(&header, &SaveHeader_default, sizeof(SaveHeader_default));
+    }
 
-    return is_valid;
+    header.valid_sections |= section_flag;
+
+    header.dirty = is_version_dirty();
+    memcpy(&(header.githash), gbalatro_version + GIT_HASH_START, CHECK_HASH_SIZE);
+
+    write_sram(HEADER_ADDRESS, (const u8*)&header, sizeof(header));
+}
+
+void save_options(void)
+{
+    set_save_header(SAVE_SECTION_FLAG_OPTIONS);
+
+    SaveOptions options = SaveOptions_default;
+
+    options.game_speed = g_game_vars.game_speed;
+    options.high_contrast = g_game_vars.high_contrast;
+    options.music_volume = g_game_vars.music_volume;
+    options.sound_volume = g_game_vars.sound_volume;
+
+    write_sram(OPTIONS_ADDRESS, (const u8*)&options, sizeof(options));
+}
+
+void load_options(void)
+{
+    SaveHeader header;
+    if (!get_save_header(&header) || !(header.valid_sections & SAVE_SECTION_FLAG_OPTIONS))
+        return;
+
+    SaveOptions options = SaveOptions_default;
+
+    read_sram(OPTIONS_ADDRESS, (u8*)&options, sizeof(options));
+
+    g_game_vars.game_speed = options.game_speed;
+    g_game_vars.high_contrast = options.high_contrast;
+    g_game_vars.music_volume = options.music_volume;
+    g_game_vars.sound_volume = options.sound_volume;
+
+    mmSetModuleVolume(MM_MODULE_FULL_VOLUME * g_game_vars.music_volume / VOLUME_OPTION_MAX);
 }
 
 void save_game(void)
 {
-    set_save_header();
+    set_save_header(SAVE_SECTION_FLAG_GAME);
 
-    SaveData save_data = SaveData_default;
+    SaveGame game = SaveGame_default;
 
     // Fixed data
 
-    save_data.timer = g_game_vars.timer;
-    save_data.rng_seed = g_game_vars.rng_seed;
-    save_data.rng_step = g_game_vars.rng_step;
-    save_data.round = g_game_vars.round;
-    save_data.ante = g_game_vars.ante;
-    save_data.money = g_game_vars.money;
-
-    save_data.game_speed = g_game_vars.game_speed;
-    save_data.high_contrast = g_game_vars.high_contrast;
-    save_data.music_volume = g_game_vars.music_volume;
-    save_data.sound_volume = g_game_vars.sound_volume;
+    game.timer = g_game_vars.timer;
+    game.rng_seed = g_game_vars.rng_seed;
+    game.rng_step = g_game_vars.rng_step;
+    game.round = g_game_vars.round;
+    game.ante = g_game_vars.ante;
+    game.money = g_game_vars.money;
 
     // Lists
 
@@ -239,37 +334,34 @@ void save_game(void)
     for (; i < nb_jokers; i++)
     {
         JokerObject* joker_object = list_get_at_idx(jokers_list, i);
-        save_data.jokers_data[2 * i] = (u32)joker_object->joker->id;
-        save_data.jokers_data[2 * i + 1] = joker_object->joker->persistent_state;
+        game.jokers_data[2 * i] = (u32)joker_object->joker->id;
+        game.jokers_data[2 * i + 1] = joker_object->joker->persistent_state;
     }
     for (; i < MAX_JOKERS_HELD_SIZE; i++)
     {
-        save_data.jokers_data[2 * i] = UNDEFINED;
-        save_data.jokers_data[2 * i + 1] = UNDEFINED;
+        game.jokers_data[2 * i] = UNDEFINED;
+        game.jokers_data[2 * i + 1] = UNDEFINED;
     }
 
-    write_sram(GAME_BASE, (const u8*)&save_data, sizeof(save_data));
+    write_sram(GAME_ADDRESS, (const u8*)&game, sizeof(game));
 }
 
 void load_game(void)
 {
-    if (!check_save_header())
+    SaveHeader header;
+    if (!get_save_header(&header) || !(header.valid_sections & SAVE_SECTION_FLAG_GAME))
         return;
 
-    SaveData save_data = SaveData_default;
-    read_sram(GAME_BASE, (u8*)&save_data, sizeof(save_data));
+    SaveGame game = SaveGame_default;
 
-    g_game_vars.timer = save_data.timer;
-    g_game_vars.rng_seed = save_data.rng_seed;
-    g_game_vars.rng_step = save_data.rng_step;
-    g_game_vars.round = save_data.round;
-    g_game_vars.ante = save_data.ante;
-    g_game_vars.money = save_data.money;
+    read_sram(GAME_ADDRESS, (u8*)&game, sizeof(game));
 
-    g_game_vars.game_speed = save_data.game_speed;
-    g_game_vars.high_contrast = save_data.high_contrast;
-    g_game_vars.music_volume = save_data.music_volume;
-    g_game_vars.sound_volume = save_data.sound_volume;
+    g_game_vars.timer = game.timer;
+    g_game_vars.rng_seed = game.rng_seed;
+    g_game_vars.rng_step = game.rng_step;
+    g_game_vars.round = game.round;
+    g_game_vars.ante = game.ante;
+    g_game_vars.money = game.money;
 
     // TODO: load Jokers from stored minimal data
 
@@ -278,6 +370,4 @@ void load_game(void)
     {
         (void)rand();
     }
-
-    mmSetModuleVolume(MM_MODULE_FULL_VOLUME * g_game_vars.music_volume / VOLUME_OPTION_MAX);
 }
