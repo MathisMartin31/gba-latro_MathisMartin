@@ -58,19 +58,18 @@
 // TODO: Rename "PID" to "PAL_IDX"
 // Palette IDs
 
+#define BLIND_BG_SHADOW_PAL_IDX     5
+#define BLIND_BG_SECONDARY_PAL_IDX  18
+#define BLIND_BG_PRIMARY_PAL_IDX    19
+#define REWARD_PANEL_BORDER_PAL_IDX 19
 
-#define BLIND_BG_SHADOW_PID     5
-#define BLIND_BG_SECONDARY_PID  18
-#define BLIND_BG_PRIMARY_PID    19
-#define REWARD_PANEL_BORDER_PID 19
-
-#define PLAY_HAND_BTN_PID           6
-#define PLAY_HAND_BTN_BORDER_PID    7
-#define DISCARD_BTN_PID             13
-#define DISCARD_BTN_BORDER_PID      8
-#define SORT_BTNS_PID               9
-#define SORT_BY_RANK_BTN_BORDER_PID 22
-#define SORT_BY_SUIT_BTN_BORDER_PID 23
+#define PLAY_HAND_BTN_PAL_IDX           6
+#define PLAY_HAND_BTN_BORDER_PAL_IDX    7
+#define DISCARD_BTN_PAL_IDX             13
+#define DISCARD_BTN_BORDER_PAL_IDX      8
+#define SORT_BTNS_PAL_IDX               9
+#define SORT_BY_RANK_BTN_BORDER_PAL_IDX 22
+#define SORT_BY_SUIT_BTN_BORDER_PAL_IDX 23
 
 // Naming the stage where cards return from the discard pile to the deck "undiscard"
 
@@ -262,10 +261,10 @@ SelectionGrid game_playing_selection_grid = {
 
 // Array of buttons by horizontal selection index (x)
 Button game_playing_buttons[] = {
-    {PLAY_HAND_BTN_BORDER_PID,    PLAY_HAND_BTN_PID, game_playing_play_hand_on_pressed,    can_play_hand   },
-    {SORT_BY_RANK_BTN_BORDER_PID, SORT_BTNS_PID,     game_playing_sort_by_rank_on_pressed, NULL            },
-    {SORT_BY_SUIT_BTN_BORDER_PID, SORT_BTNS_PID,     game_playing_sort_by_suit_on_pressed, NULL            },
-    {DISCARD_BTN_BORDER_PID,      DISCARD_BTN_PID,   game_playing_discard_on_pressed,      can_discard_hand},
+    {PLAY_HAND_BTN_BORDER_PAL_IDX,    PLAY_HAND_BTN_PAL_IDX, game_playing_play_hand_on_pressed,    can_play_hand   },
+    {SORT_BY_RANK_BTN_BORDER_PAL_IDX, SORT_BTNS_PAL_IDX,     game_playing_sort_by_rank_on_pressed, NULL            },
+    {SORT_BY_SUIT_BTN_BORDER_PAL_IDX, SORT_BTNS_PAL_IDX,     game_playing_sort_by_suit_on_pressed, NULL            },
+    {DISCARD_BTN_BORDER_PAL_IDX,      DISCARD_BTN_PAL_IDX,   game_playing_discard_on_pressed,      can_discard_hand},
 };
 
 // This is a stupid way to do this but I don't care
@@ -1236,17 +1235,17 @@ void change_background_legacy(enum BackgroundId id)
             // This would change the palette of the background to match the blind, but the backgroun
             // doesn't use the blind token's exact colors so a different approach is required
             memset16(
-                &pal_bg_mem[BLIND_BG_PRIMARY_PID],
+                &pal_bg_mem[BLIND_BG_PRIMARY_PAL_IDX],
                 blind_get_color(g_game_vars.current_blind, BLIND_BACKGROUND_MAIN_COLOR_INDEX),
                 1
             );
             memset16(
-                &pal_bg_mem[BLIND_BG_SECONDARY_PID],
+                &pal_bg_mem[BLIND_BG_SECONDARY_PAL_IDX],
                 blind_get_color(g_game_vars.current_blind, BLIND_BACKGROUND_SECONDARY_COLOR_INDEX),
                 1
             );
             memset16(
-                &pal_bg_mem[BLIND_BG_SHADOW_PID],
+                &pal_bg_mem[BLIND_BG_SHADOW_PAL_IDX],
                 blind_get_color(g_game_vars.current_blind, BLIND_BACKGROUND_SHADOW_COLOR_INDEX),
                 1
             );

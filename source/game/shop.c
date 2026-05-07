@@ -468,7 +468,11 @@ static bool shop_reroll_row_on_selection_changed(
     if (row_idx == prev_selection->y)
     {
         // Remove highlight
-        memcpy16(&pal_bg_mem[REROLL_BTN_SELECTED_BORDER_PAL_IDX], &pal_bg_mem[REROLL_BTN_PAL_IDX], 1);
+        memcpy16(
+            &pal_bg_mem[REROLL_BTN_SELECTED_BORDER_PAL_IDX],
+            &pal_bg_mem[REROLL_BTN_PAL_IDX],
+            1
+        );
 
         if (new_selection->x != NEXT_ROUND_BTN_SEL_X)
         {
