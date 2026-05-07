@@ -4,6 +4,7 @@
 #include "joker.h"
 #include "list.h"
 #include "pool.h"
+#include "random.h"
 #include "util.h"
 
 #include <stdlib.h>

@@ -5,6 +5,7 @@
 #include "graphic_utils.h"
 #include "joker_gfx.h"
 #include "pool.h"
+#include "random.h"
 #include "soundbank.h"
 #include "util.h"
 

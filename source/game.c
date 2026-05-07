@@ -21,6 +21,7 @@
 #include "joker.h"
 #include "layout.h"
 #include "list.h"
+#include "random.h"
 #include "save.h"
 #include "selection_grid.h"
 #include "soundbank.h"
@@ -652,12 +653,6 @@ void game_change_state(enum GameState new_game_state)
 
         game_state = new_game_state;
     }
-}
-
-u32 get_rand()
-{
-    g_game_vars.rng_step++;
-    return rand();
 }
 
 CardObject** get_hand_array(void)
