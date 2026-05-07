@@ -20,7 +20,6 @@
 #define TM_END_GAME_SHOP_INTRO    12
 #define TM_CREATE_SHOP_ITEMS_WAIT 1
 #define TM_SHIFT_SHOP_ICON_WAIT   7
-#define TM_SHOP_PRC_INPUT_START   1
 
 // Pixel sized
 #define ITEM_SHOP_Y 71
@@ -139,14 +138,31 @@ void game_shop_on_init(void)
     timer = TM_ZERO;
     substate = GAME_SHOP_INTRO;
 
+    // The selection grid is initialized outside of bounds and moved
+    // to trigger the selection change so the initial selection is visible
     shop_selection_grid.selection = SHOP_INIT_SEL;
+    selection_grid_move_selection_horz(&shop_selection_grid, 1);
+    tte_printf(
+        "#{P:%d,%d; cx:0x%X000}$%d",
+        SHOP_REROLL_RECT.left,
+        SHOP_REROLL_RECT.top,
+        TTE_WHITE_PB,
+        reroll_cost
+    );
 }
 
+/**
+ * @brief Computes the number of Jokers we can currently roll in the Shop.
+ *         The Jokers we own is taken into account and can't be rolled again.
+ */
 static inline int get_num_shop_jokers_avail(void)
 {
     return bitset_num_set_bits(get_avail_jokers_bitset());
 }
 
+/**
+ * @brief Rolls a random Joker among the available ones
+ */
 static inline int game_shop_get_rand_available_joker_id(void)
 {
     // Roll for what rarity the joker will be
@@ -184,11 +200,19 @@ static inline int game_shop_get_rand_available_joker_id(void)
     return selected_joker_id;
 }
 
+/**
+ * @brief Returns true if we can't roll any Joker
+ */
 static inline bool no_avail_jokers(void)
 {
     return bitset_is_empty(get_avail_jokers_bitset());
 }
 
+/**
+ * @brief Setup for the lists of items we can purchase in the Shop.
+ *         Only Jokers are available for now, but this is where consumables and
+ *         booster packs will be rolled when they aare implemented.
+ */
 static void game_shop_create_items(void)
 {
     tte_erase_rect_wrapper(SHOP_PRICES_TEXT_RECT);
@@ -247,7 +271,9 @@ static void game_shop_create_items(void)
     }
 }
 
-// Intro sequence (menu and shop icon coming into frame)
+/**
+ * @brief Intro sequence (menu and shop icon coming into frame)
+ */
 static void game_shop_intro()
 {
     main_bg_se_copy_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
@@ -281,19 +307,28 @@ static void game_shop_intro()
     }
 }
 
-// Shop input
+/**
+ * @brief Computes the number of Jokers up for sale, aka the number of
+ *         "buttons" there are on the top row of the Shop.
+ */
 static int shop_top_row_get_size(void)
 {
     // + 1 to account for next round button
     return list_get_len(get_shop_jokers_list()) + 1;
 }
 
+/**
+ * @brief Add a newly purchased Joker to the list of owned Jokers.
+ */
 static inline void add_to_held_jokers(JokerObject* joker_object)
 {
     joker_object->sprite_object->ty = int2fx(HELD_JOKERS_POS.y);
     add_joker(joker_object);
 }
 
+/**
+ * @brief Called when pressing A on a Shop Joker to buy it.
+ */
 static inline void game_shop_buy_joker(int shop_joker_idx)
 {
     List* shop_jokers_list = get_shop_jokers_list();
@@ -307,6 +342,9 @@ static inline void game_shop_buy_joker(int shop_joker_idx)
     list_remove_at_idx(shop_jokers_list, shop_joker_idx); // Remove the joker from the shop
 }
 
+/**
+ * @brief Handle button inputs for the "Next Round" button and shop Jokers.
+ */
 static void shop_top_row_on_key_transit(SelectionGrid* selection_grid, Selection* selection)
 {
     if (!key_hit(SELECT_CARD))
@@ -318,7 +356,7 @@ static void shop_top_row_on_key_transit(SelectionGrid* selection_grid, Selection
 
         // Go to next blind selection game state
         substate = GAME_SHOP_EXIT; // Go to the outro sequence state
-        timer = TM_ZERO;                      // Reset the timer
+        timer = TM_ZERO;
         reroll_cost = REROLL_BASE_COST;
 
         memcpy16(
@@ -351,6 +389,9 @@ static void shop_top_row_on_key_transit(SelectionGrid* selection_grid, Selection
     }
 }
 
+/**
+ * @brief Handle d-pad inputs for the "Next Round" button and shop Jokers' row.
+ */
 static bool shop_top_row_on_selection_changed(
     SelectionGrid* selection_grid,
     int row_idx,
@@ -404,11 +445,19 @@ static bool shop_top_row_on_selection_changed(
     return true;
 }
 
+/**
+ * @brief Get size of the row with the "Reroll" button
+ *
+ * @returns Always 1, because there is only the "Reroll" button on that row.
+ */
 static int shop_reroll_row_get_size()
 {
-    return 1; // Only the reroll button
+    return 1;
 }
 
+/**
+ * @brief Handle d-pad inputs for the "Reroll" button's row.
+ */
 static bool shop_reroll_row_on_selection_changed(
     SelectionGrid* selection_grid,
     int row_idx,
@@ -436,6 +485,10 @@ static bool shop_reroll_row_on_selection_changed(
     return true;
 }
 
+/**
+ * @brief Reroll items up for sale in the Shop.
+ *         Reroll cost will go up by a rate that increases by 1 each reroll.
+ */
 static inline void game_shop_reroll(int* reroll_cost)
 {
     g_game_vars.money -= *reroll_cost;
@@ -483,6 +536,9 @@ static inline void game_shop_reroll(int* reroll_cost)
     );
 }
 
+/**
+ * @brief Handle button inputs for the "Reroll" button's row.
+ */
 static void shop_reroll_row_on_key_transit(SelectionGrid* selection_grid, Selection* selection)
 {
     if (!key_hit(SELECT_CARD))
@@ -498,30 +554,18 @@ static void shop_reroll_row_on_key_transit(SelectionGrid* selection_grid, Select
     }
 }
 
-// Shop menu input and selection
+/**
+ * @brief Handle user inputs logic in the Shop though a SelectionGrid.
+ */
 static void game_shop_process_user_input()
 {
-    if (timer == TM_SHOP_PRC_INPUT_START)
-    {
-        // TODO: Move to on_init?
-        // The selection grid is initialized outside of bounds and moved
-        // to trigger the selection change so the initial selection is visible
-        shop_selection_grid.selection = SHOP_INIT_SEL;
-        selection_grid_move_selection_horz(&shop_selection_grid, 1);
-        tte_printf(
-            "#{P:%d,%d; cx:0x%X000}$%d",
-            SHOP_REROLL_RECT.left,
-            SHOP_REROLL_RECT.top,
-            TTE_WHITE_PB,
-            reroll_cost
-        );
-    }
-
-    // Shop input logic
     selection_grid_process_input(&shop_selection_grid);
 }
 
-// Outro sequence (menu and shop icon going out of frame)
+/**
+ * @brief Outro sequence substate update.
+ *         This makes the menu and shop icon go out of frame.
+ */
 static void game_shop_outro()
 {
     // Shift the shop panel
@@ -562,6 +606,9 @@ static void game_shop_outro()
     }
 }
 
+/**
+ * @brief Cycling shop lights animation substate update.
+ */
 static inline void game_shop_lights_anim_frame(void)
 {
     // Shift palette around the border of the shop icon
