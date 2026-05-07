@@ -7,6 +7,7 @@
 #define GAME_SHOP_H
 
 void game_shop_change_background(void);
+void game_shop_on_init(void);
 void game_shop_on_update(void);
 void game_shop_on_exit(void);
 

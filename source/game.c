@@ -58,6 +58,12 @@
 // TODO: Rename "PID" to "PAL_IDX"
 // Palette IDs
 
+
+#define BLIND_BG_SHADOW_PID     5
+#define BLIND_BG_SECONDARY_PID  18
+#define BLIND_BG_PRIMARY_PID    19
+#define REWARD_PANEL_BORDER_PID 19
+
 #define PLAY_HAND_BTN_PID           6
 #define PLAY_HAND_BTN_BORDER_PID    7
 #define DISCARD_BTN_PID             13

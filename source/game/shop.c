@@ -5,6 +5,7 @@
 #include "bitset.h"
 #include "button.h"
 #include "game.h"
+#include "game/blind_select.h"
 #include "game/joker_row.h"
 #include "game_variables.h"
 #include "joker.h"
@@ -98,9 +99,10 @@ static SelectionGrid shop_selection_grid = {
     SHOP_INIT_SEL
 };
 
+static int timer;
+static enum GameShopStates substate;
 
 static int reroll_cost = REROLL_BASE_COST;
-
 
 void game_shop_change_background(void)
 {
@@ -128,6 +130,16 @@ void game_shop_change_background(void)
         &pal_bg_mem[NEXT_ROUND_BTN_PAL_IDX],
         1
     );
+}
+
+void game_shop_on_init(void)
+{
+    game_shop_change_background();
+
+    timer = TM_ZERO;
+    substate = GAME_SHOP_INTRO;
+
+    shop_selection_grid.selection = SHOP_INIT_SEL;
 }
 
 static inline int get_num_shop_jokers_avail(void)
@@ -240,14 +252,14 @@ static void game_shop_intro()
 {
     main_bg_se_copy_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
 
-    if (g_game_vars.timer == TM_CREATE_SHOP_ITEMS_WAIT)
+    if (timer == TM_CREATE_SHOP_ITEMS_WAIT)
     {
         game_shop_create_items();
     }
 
-    if (g_game_vars.timer >= TM_SHIFT_SHOP_ICON_WAIT) // Shift the shop icon
+    if (timer >= TM_SHIFT_SHOP_ICON_WAIT) // Shift the shop icon
     {
-        int timer_offset = g_game_vars.timer - 6;
+        int timer_offset = timer - 6;
 
         // TODO: Extract to generic function?
         for (int y = 0; y < timer_offset; y++)
@@ -262,10 +274,10 @@ static void game_shop_intro()
         }
     }
 
-    if (g_game_vars.timer == TM_END_GAME_SHOP_INTRO)
+    if (timer == TM_END_GAME_SHOP_INTRO)
     {
         state_info[game_state].substate = GAME_SHOP_ACTIVE;
-        g_game_vars.timer = TM_ZERO; // Reset the timer
+        timer = TM_ZERO; // Reset the timer
     }
 }
 
@@ -306,7 +318,7 @@ static void shop_top_row_on_key_transit(SelectionGrid* selection_grid, Selection
 
         // Go to next blind selection game state
         state_info[game_state].substate = GAME_SHOP_EXIT; // Go to the outro sequence state
-        g_game_vars.timer = TM_ZERO;                      // Reset the timer
+        timer = TM_ZERO;                      // Reset the timer
         reroll_cost = REROLL_BASE_COST;
 
         memcpy16(
@@ -489,7 +501,7 @@ static void shop_reroll_row_on_key_transit(SelectionGrid* selection_grid, Select
 // Shop menu input and selection
 static void game_shop_process_user_input()
 {
-    if (g_game_vars.timer == TM_SHOP_PRC_INPUT_START)
+    if (timer == TM_SHOP_PRC_INPUT_START)
     {
         // TODO: Move to on_init?
         // The selection grid is initialized outside of bounds and moved
@@ -519,7 +531,7 @@ static void game_shop_outro()
 
     // TODO: make heads or tails of what's going on here and replace
     // magic numbers.
-    if (g_game_vars.timer == 1)
+    if (timer == 1)
     {
         tte_erase_rect_wrapper(SHOP_PRICES_TEXT_RECT); // Erase the shop prices text
 
@@ -535,7 +547,7 @@ static void game_shop_outro()
 
         reset_top_left_panel_bottom_row();
     }
-    else if (g_game_vars.timer == 2)
+    else if (timer == 2)
     {
         int y = 5;
         memset16(&se_mat[MAIN_BG_SBB][y - 1][0], 0x0001, 1);
@@ -543,10 +555,10 @@ static void game_shop_outro()
         memset16(&se_mat[MAIN_BG_SBB][y - 1][8], SE_HFLIP | 0x0001, 1);
     }
 
-    if (g_game_vars.timer >= MENU_POP_OUT_ANIM_FRAMES)
+    if (timer >= MENU_POP_OUT_ANIM_FRAMES)
     {
         state_info[game_state].substate = GAME_SHOP_MAX; // Go to the next state
-        g_game_vars.timer = TM_ZERO;                     // Reset the timer
+        timer = TM_ZERO;                     // Reset the timer
     }
 }
 
@@ -578,7 +590,7 @@ static inline void game_shop_lights_anim_frame(void)
 
 void game_shop_on_update(void)
 {
-    change_background(BG_SHOP);
+    timer++;
 
     List* shop_jokers_list = get_shop_jokers_list();
 
@@ -595,7 +607,7 @@ void game_shop_on_update(void)
         }
     }
 
-    if (g_game_vars.timer % 20 == 0)
+    if (timer % 20 == 0)
     {
         game_shop_lights_anim_frame();
     }
