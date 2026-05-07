@@ -17,7 +17,7 @@ void shuffle_rng_seed(void);
 
 /**
  * @brief Get the next "randomly" generated number in the sequence from the current seed.
- * 
+ *
  * @return u32
  */
 u32 get_rand(void);
