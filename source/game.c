@@ -325,12 +325,25 @@ GameVariables g_game_vars = {
     .sound_volume = DEFAULT_SOUND_VOLUME,
 };
 
+typedef struct
+{
+    int substate;
+    GameStateCallback on_init;
+    GameStateCallback on_update;
+    GameStateCallback on_exit;
+} StateInfo;
+
 StateInfo state_info[] = {
 #define DEF_STATE_INFO(stateEnum, init_fn, update_fn, exit_fn) \
     {.on_init = init_fn, .on_update = update_fn, .on_exit = exit_fn, .substate = 0},
 #include "../include/def_state_info_table.h"
 #undef DEF_STATE_INFO
 };
+
+// The current game state, this is used to determine what the game is doing at any given time
+extern enum GameState game_state;
+extern enum HandState hand_state;
+extern enum PlayState play_state;
 
 // The current game state, this is used to determine what the game is doing at any given time
 enum GameState game_state = GAME_STATE_UNDEFINED;

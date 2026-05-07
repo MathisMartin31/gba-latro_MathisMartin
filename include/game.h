@@ -4,7 +4,6 @@
 #include "bitset.h"
 #include "blind.h"
 #include "game/common_ui.h"
-#include "game_state_machine.h"
 #include "game_variables.h"
 #include "graphic_utils.h"
 
@@ -42,6 +41,19 @@ typedef struct List List;
 typedef struct CardObject CardObject;
 typedef struct Card Card;
 typedef struct JokerObject JokerObject;
+
+typedef void (*GameStateCallback)(void);
+typedef void (*SubStateActionFn)(void);
+
+// Enum value names in ../include/def_state_info_table.h
+enum GameState
+{
+#define DEF_STATE_INFO(stateEnum, on_init, on_update, on_exit) stateEnum,
+#include "def_state_info_table.h"
+#undef DEF_STATE_INFO
+    GAME_STATE_MAX,
+    GAME_STATE_UNDEFINED
+};
 
 enum HandState
 {

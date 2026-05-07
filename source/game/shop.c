@@ -276,7 +276,7 @@ static void game_shop_intro()
 
     if (timer == TM_END_GAME_SHOP_INTRO)
     {
-        state_info[game_state].substate = GAME_SHOP_ACTIVE;
+        substate = GAME_SHOP_ACTIVE;
         timer = TM_ZERO; // Reset the timer
     }
 }
@@ -317,7 +317,7 @@ static void shop_top_row_on_key_transit(SelectionGrid* selection_grid, Selection
         play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
 
         // Go to next blind selection game state
-        state_info[game_state].substate = GAME_SHOP_EXIT; // Go to the outro sequence state
+        substate = GAME_SHOP_EXIT; // Go to the outro sequence state
         timer = TM_ZERO;                      // Reset the timer
         reroll_cost = REROLL_BASE_COST;
 
@@ -557,8 +557,8 @@ static void game_shop_outro()
 
     if (timer >= MENU_POP_OUT_ANIM_FRAMES)
     {
-        state_info[game_state].substate = GAME_SHOP_MAX; // Go to the next state
-        timer = TM_ZERO;                     // Reset the timer
+        substate = GAME_SHOP_MAX; // Go to the next state
+        timer = TM_ZERO;          // Reset the timer
     }
 }
 
@@ -612,13 +612,11 @@ void game_shop_on_update(void)
         game_shop_lights_anim_frame();
     }
 
-    if (state_info[game_state].substate == GAME_SHOP_MAX)
+    if (substate == GAME_SHOP_MAX)
     {
         game_change_state(GAME_STATE_BLIND_SELECT);
         return;
     }
-
-    int substate = state_info[game_state].substate;
 
     shop_state_actions[substate]();
 }
