@@ -155,10 +155,10 @@ static const SaveHeader SaveHeader_default = {
  */
 static const SaveOptions SaveOptions_default = {
     .tag_options = "- OPTIONS DATA -",
-    .game_speed = 0,
+    .game_speed = 1,
     .high_contrast = false,
-    .music_volume = 0,
-    .sound_volume = 0,
+    .music_volume = 5,
+    .sound_volume = 5,
     .padding = {UNDEFINED, UNDEFINED, UNDEFINED},
 };
 
@@ -306,12 +306,12 @@ void save_options(void)
 void load_options(void)
 {
     SaveHeader header;
-    if (!get_save_header(&header) || !(header.valid_sections & SAVE_SECTION_FLAG_OPTIONS))
-        return;
-
     SaveOptions options = SaveOptions_default;
 
-    read_sram(OPTIONS_ADDRESS, (u8*)&options, sizeof(options));
+    // If options data doesn't exist or is invalid, just don't read from
+    // SRAM and apply the default values
+    if (get_save_header(&header) && (header.valid_sections & SAVE_SECTION_FLAG_OPTIONS))
+        read_sram(OPTIONS_ADDRESS, (u8*)&options, sizeof(options));
 
     g_game_vars.game_speed = options.game_speed;
     g_game_vars.high_contrast = options.high_contrast;
@@ -362,11 +362,11 @@ void save_game(void)
 void load_game(void)
 {
     SaveHeader header;
-    if (!get_save_header(&header) || !(header.valid_sections & SAVE_SECTION_FLAG_GAME))
-        return;
+
+    if (get_save_header(&header) && (header.valid_sections & SAVE_SECTION_FLAG_GAME))
+        return;    
 
     SaveGame game = SaveGame_default;
-
     read_sram(GAME_ADDRESS, (u8*)&game, sizeof(game));
 
     g_game_vars.timer = game.timer;
