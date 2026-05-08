@@ -142,13 +142,6 @@ void game_shop_on_init(void)
     // to trigger the selection change so the initial selection is visible
     shop_selection_grid.selection = SHOP_INIT_SEL;
     selection_grid_move_selection_horz(&shop_selection_grid, 1);
-    tte_printf(
-        "#{P:%d,%d; cx:0x%X000}$%d",
-        SHOP_REROLL_RECT.left,
-        SHOP_REROLL_RECT.top,
-        TTE_WHITE_PB,
-        reroll_cost
-    );
 }
 
 /**
@@ -304,6 +297,15 @@ static void game_shop_intro()
     {
         substate = GAME_SHOP_ACTIVE;
         timer = TM_ZERO; // Reset the timer
+
+        // print initial reroll cost only when the panel is in place
+        tte_printf(
+            "#{P:%d,%d; cx:0x%X000}$%d",
+            SHOP_REROLL_RECT.left,
+            SHOP_REROLL_RECT.top,
+            TTE_WHITE_PB,
+            reroll_cost
+        );
     }
 }
 
