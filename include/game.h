@@ -184,15 +184,12 @@ int get_straight_and_flush_size(void);
 
 void game_start(void);
 
-void reset_top_left_panel_bottom_row();
-
 // Temporary change for Refactor. Currently this compatibility binder is to allow
 // simultaneous integration of the new system in `common_ui` with the the existing
 // old system incrementally and without losing functionality.
 void change_background_legacy(enum BackgroundId id);
 
 void display_round(void);
-void reset_top_left_panel_bottom_row(void);
 
 void reset_background(void);
 void display_hands(void);

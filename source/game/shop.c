@@ -204,7 +204,7 @@ static inline bool no_avail_jokers(void)
 /**
  * @brief Setup for the lists of items we can purchase in the Shop.
  *         Only Jokers are available for now, but this is where consumables and
- *         booster packs will be rolled when they aare implemented.
+ *         booster packs will be rolled when they are implemented.
  */
 static void game_shop_create_items(void)
 {
@@ -252,7 +252,10 @@ static void game_shop_create_items(void)
         joker_object->sprite_object->tx = joker_object->sprite_object->x;
         joker_object->sprite_object->ty = int2fx(ITEM_SHOP_Y);
 
-        print_price_under_sprite_object(joker_object->sprite_object, joker_object->joker->value);
+        sprite_object_print_price_under(
+            joker_object->sprite_object,
+            joker_object->joker->value
+        );
 
         sprite_position(
             joker_object_get_sprite(joker_object),
@@ -338,7 +341,7 @@ static inline void game_shop_buy_joker(int shop_joker_idx)
 
     g_game_vars.money -= joker_object->joker->value; // Deduct the money spent on the joker
     display_money();                                 // Update the money display
-    erase_price_under_sprite_object(joker_object->sprite_object);
+    sprite_object_erase_text_under(joker_object->sprite_object);
     sprite_object_set_focus(joker_object->sprite_object, false);
     add_to_held_jokers(joker_object);
     list_remove_at_idx(shop_jokers_list, shop_joker_idx); // Remove the joker from the shop

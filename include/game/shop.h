@@ -17,12 +17,12 @@ void game_shop_change_background(void);
 void game_shop_on_init(void);
 
 /**
- * @brief Show state update
+ * @brief Shop state update
  */
 void game_shop_on_update(void);
 
 /**
- * @brief Show cleanup
+ * @brief Shop cleanup
  */
 void game_shop_on_exit(void);
 
