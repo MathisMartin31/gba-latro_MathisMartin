@@ -15,6 +15,10 @@ var searchData=
   ['game_5foptions_5fmenu_5fon_5fupdate_12',['game_options_menu_on_update',['../options__menu_8h.html#ae9f1c19d3927dad17c2039bb346afa61',1,'options_menu.c']]],
   ['game_5fover_5fon_5fexit_13',['game_over_on_exit',['../game__over_8h.html#a5527e3c05a700b5f1401e58691f5f617',1,'game_over.c']]],
   ['game_5fover_5fon_5fupdate_14',['game_over_on_update',['../game__over_8h.html#a1c056d44b5768ac67209011a9c484adf',1,'game_over.c']]],
-  ['game_5fwin_5fon_5finit_15',['game_win_on_init',['../game__over_8h.html#aaffb8156e7276d62874c7c5db0b8ed02',1,'game_over.c']]],
-  ['get_5ffont_5fpoint_5fstr_16',['get_font_point_str',['../font_8h.html#a0591d220421f2f0094aa80ae39007374',1,'font.c']]]
+  ['game_5fsetup_5frun_5fchange_5fbackground_15',['game_setup_run_change_background',['../run__setup_8h.html#a4e43858fe9b12da3ecd92dd2ef71894c',1,'run_setup.h']]],
+  ['game_5fsetup_5frun_5fon_5fexit_16',['game_setup_run_on_exit',['../run__setup_8h.html#a32845f2cf29df961b52328eafe274803',1,'run_setup.h']]],
+  ['game_5fsetup_5frun_5fon_5finit_17',['game_setup_run_on_init',['../run__setup_8h.html#af9c7960580571785c733cbfc83db07fe',1,'run_setup.h']]],
+  ['game_5fsetup_5frun_5fon_5fupdate_18',['game_setup_run_on_update',['../run__setup_8h.html#a0340f01867f52e34d01d3f3ad8e1265a',1,'run_setup.h']]],
+  ['game_5fwin_5fon_5finit_19',['game_win_on_init',['../game__over_8h.html#aaffb8156e7276d62874c7c5db0b8ed02',1,'game_over.c']]],
+  ['get_5ffont_5fpoint_5fstr_20',['get_font_point_str',['../font_8h.html#a0591d220421f2f0094aa80ae39007374',1,'font.c']]]
 ];

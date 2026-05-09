@@ -14,5 +14,6 @@ var searchData=
   ['rowgetsizefunc_11',['RowGetSizeFunc',['../selection__grid_8h.html#a938a3d885aa43eb87fd72ec99e426b7e',1,'selection_grid.h']]],
   ['rowonkeytransitfunc_12',['RowOnKeyTransitFunc',['../selection__grid_8h.html#ac8a820ea55e1e9bcf88a497834130080',1,'selection_grid.h']]],
   ['rowonselectionchangedfunc_13',['RowOnSelectionChangedFunc',['../selection__grid_8h.html#a30261f1ca72f0d97ad46d54e59c30884',1,'selection_grid.h']]],
-  ['run_20tt_20make_20tt_20it_20errors_20out_20and_20won_20t_20compile_14',['1. When I run &lt;tt&gt;make&lt;/tt&gt; it errors out and won&apos;t compile!',['../index.html#autotoc_md22',1,'']]]
+  ['run_20tt_20make_20tt_20it_20errors_20out_20and_20won_20t_20compile_14',['1. When I run &lt;tt&gt;make&lt;/tt&gt; it errors out and won&apos;t compile!',['../index.html#autotoc_md22',1,'']]],
+  ['run_5fsetup_2eh_15',['run_setup.h',['../run__setup_8h.html',1,'']]]
 ];
