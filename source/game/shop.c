@@ -252,10 +252,7 @@ static void game_shop_create_items(void)
         joker_object->sprite_object->tx = joker_object->sprite_object->x;
         joker_object->sprite_object->ty = int2fx(ITEM_SHOP_Y);
 
-        sprite_object_print_price_under(
-            joker_object->sprite_object,
-            joker_object->joker->value
-        );
+        sprite_object_print_price_under(joker_object->sprite_object, joker_object->joker->value);
 
         sprite_position(
             joker_object_get_sprite(joker_object),
