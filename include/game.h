@@ -2,7 +2,6 @@
 #define GAME_H
 
 #include "bitset.h"
-#include "blind.h"
 #include "game/common_ui.h"
 #include "game_variables.h"
 #include "graphic_utils.h"

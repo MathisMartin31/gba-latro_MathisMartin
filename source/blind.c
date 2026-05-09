@@ -10,6 +10,17 @@
 #include <stdlib.h>
 #include <tonc.h>
 
+#define NORMAL_BLIND_PB 1
+#define BOSS_BLIND_PB   2
+
+#define BLIND_BASE_LAYER (MAX_HAND_SIZE + MAX_SELECTION_SIZE)
+
+#define BLIND_SPRITE_OFFSET    16
+#define BLIND_SPRITE_COPY_SIZE (BLIND_SPRITE_OFFSET * TILE_SIZE)
+
+#define BLIND_TOKENS_PER_SPRITESHEET 2
+#define BLIND_TOKEN_PALETTE_SIZE     8
+
 static const unsigned int* blind_gfxTiles[] = {
 #define DEF_BLIND_GFX(idx) blind_gfx##idx##Tiles,
 #include "../include/def_blind_gfx_table.h"
