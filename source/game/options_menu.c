@@ -357,7 +357,6 @@ static void change_back_save_text(bool is_back)
 void game_options_menu_change_background(void)
 {
     tte_erase_screen();
-    CBB_CLEAR(MAIN_BG_CBB);
 
     GRIT_CPY(pal_bg_mem, background_options_menu_gfxPal);
     GRIT_CPY(&tile_mem[MAIN_BG_CBB], background_options_menu_gfxTiles);
