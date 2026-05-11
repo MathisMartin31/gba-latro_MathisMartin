@@ -20,5 +20,6 @@ var searchData=
   ['game_5frun_5fsetup_5fon_5finit_17',['game_run_setup_on_init',['../run__setup_8h.html#acfad8d64b18066b45f53097cc7a4c09f',1,'run_setup.c']]],
   ['game_5frun_5fsetup_5fon_5fupdate_18',['game_run_setup_on_update',['../run__setup_8h.html#aca2f4d081e3b46eadc1517c073342e2b',1,'run_setup.c']]],
   ['game_5fwin_5fon_5finit_19',['game_win_on_init',['../game__over_8h.html#aaffb8156e7276d62874c7c5db0b8ed02',1,'game_over.c']]],
-  ['get_5ffont_5fpoint_5fstr_20',['get_font_point_str',['../font_8h.html#a0591d220421f2f0094aa80ae39007374',1,'font.c']]]
+  ['get_5ffont_5fpoint_5fstr_20',['get_font_point_str',['../font_8h.html#a0591d220421f2f0094aa80ae39007374',1,'font.c']]],
+  ['get_5fsave_5fheader_21',['get_save_header',['../save_8c.html#aa7c710df5af72243541a55e499e53bd9',1,'save.c']]]
 ];

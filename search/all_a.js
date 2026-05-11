@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['game_20strong_0',['&lt;strong&gt;Game&lt;/strong&gt;',['../md_README.html#autotoc_md37',1,'']]],
-  ['game_20won_20t_20start_1',['3. The Game won&apos;t start!',['../index.html#autotoc_md24',1,'']]],
+  ['game_20strong_0',['&lt;strong&gt;Game&lt;/strong&gt;',['../md_README.html#autotoc_md40',1,'']]],
+  ['game_20won_20t_20start_1',['3. The Game won&apos;t start!',['../index.html#autotoc_md27',1,'']]],
   ['game_5fblind_5fselect_5fchange_5fbackground_2',['game_blind_select_change_background',['../blind__select_8h.html#a75be230022a65f2ec46711abca17ae8c',1,'blind_select.c']]],
   ['game_5fblind_5fselect_5fon_5fexit_3',['game_blind_select_on_exit',['../blind__select_8h.html#a2f3378c3cbf3fe71244d2bd073c14391',1,'blind_select.c']]],
   ['game_5fblind_5fselect_5fon_5finit_4',['game_blind_select_on_init',['../blind__select_8h.html#a658f9305013db2676130834eecc4791a',1,'blind_select.c']]],
@@ -29,8 +29,9 @@ var searchData=
   ['gbal_5fmm_5fnum_5fchannels_26',['GBAL_MM_NUM_CHANNELS',['../audio__utils_8h.html#aba0f1d3ed33ffa7e3349c6fdf8f92ab8',1,'audio_utils.h']]],
   ['gbal_5funused_27',['GBAL_UNUSED',['../util_8h.html#aabfb019556c44576446cc201a0ac5459',1,'util.h']]],
   ['get_5ffont_5fpoint_5fstr_28',['get_font_point_str',['../font_8h.html#a0591d220421f2f0094aa80ae39007374',1,'font.c']]],
-  ['git_20tt_20not_20required_29',['With &lt;tt&gt;Git&lt;/tt&gt; (not required)',['../index.html#autotoc_md19',1,'']]],
-  ['git_20tt_20or_20tt_20make_20tt_20installed_30',['4. It says I don&apos;t have &lt;tt&gt;Git&lt;/tt&gt; or &lt;tt&gt;Make&lt;/tt&gt; installed!',['../index.html#autotoc_md25',1,'']]],
-  ['graphic_5futils_2eh_31',['graphic_utils.h',['../graphic__utils_8h.html',1,'']]],
-  ['guide_32',['Developer Guide',['../index.html',1,'']]]
+  ['get_5fsave_5fheader_29',['get_save_header',['../save_8c.html#aa7c710df5af72243541a55e499e53bd9',1,'save.c']]],
+  ['git_20tt_20not_20required_30',['With &lt;tt&gt;Git&lt;/tt&gt; (not required)',['../index.html#autotoc_md22',1,'']]],
+  ['git_20tt_20or_20tt_20make_20tt_20installed_31',['4. It says I don&apos;t have &lt;tt&gt;Git&lt;/tt&gt; or &lt;tt&gt;Make&lt;/tt&gt; installed!',['../index.html#autotoc_md28',1,'']]],
+  ['graphic_5futils_2eh_32',['graphic_utils.h',['../graphic__utils_8h.html',1,'']]],
+  ['guide_33',['Developer Guide',['../index.html',1,'']]]
 ];

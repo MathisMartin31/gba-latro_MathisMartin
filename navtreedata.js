@@ -27,18 +27,18 @@ var NAVTREE =
   [ "GBAlatro", "index.html", [
     [ "Developer Guide", "index.html", "index" ],
     [ "Balatro-GBA", "md_README.html", [
-      [ "Contributing", "md_README.html#autotoc_md35", null ],
-      [ "<strong>Credits:</strong>", "md_README.html#autotoc_md36", [
-        [ "Disclaimer", "md_README.html#autotoc_md28", null ],
-        [ "Please buy the official full version from these sources below:", "md_README.html#autotoc_md29", null ],
-        [ "Controls:", "md_README.html#autotoc_md32", [
-          [ "When on the hand row during round", "md_README.html#autotoc_md33", null ],
-          [ "When on the joker row in the shop or during round", "md_README.html#autotoc_md34", null ]
+      [ "Contributing", "md_README.html#autotoc_md38", null ],
+      [ "<strong>Credits:</strong>", "md_README.html#autotoc_md39", [
+        [ "Disclaimer", "md_README.html#autotoc_md31", null ],
+        [ "Please buy the official full version from these sources below:", "md_README.html#autotoc_md32", null ],
+        [ "Controls:", "md_README.html#autotoc_md35", [
+          [ "When on the hand row during round", "md_README.html#autotoc_md36", null ],
+          [ "When on the joker row in the shop or during round", "md_README.html#autotoc_md37", null ]
         ] ],
-        [ "<strong>Game</strong>", "md_README.html#autotoc_md37", null ],
-        [ "<strong>Music</strong>", "md_README.html#autotoc_md38", null ],
-        [ "<strong>Imagery</strong>", "md_README.html#autotoc_md39", null ],
-        [ "<strong>Sounds</strong>", "md_README.html#autotoc_md40", null ]
+        [ "<strong>Game</strong>", "md_README.html#autotoc_md40", null ],
+        [ "<strong>Music</strong>", "md_README.html#autotoc_md41", null ],
+        [ "<strong>Imagery</strong>", "md_README.html#autotoc_md42", null ],
+        [ "<strong>Sounds</strong>", "md_README.html#autotoc_md43", null ]
       ] ]
     ] ],
     [ "Data Structures", "annotated.html", [
@@ -54,6 +54,7 @@ var NAVTREE =
       [ "Globals", "globals.html", [
         [ "All", "globals.html", null ],
         [ "Functions", "globals_func.html", null ],
+        [ "Variables", "globals_vars.html", null ],
         [ "Typedefs", "globals_type.html", null ],
         [ "Enumerations", "globals_enum.html", null ],
         [ "Enumerator", "globals_eval.html", null ],
@@ -66,7 +67,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "affine__background_8c_source.html",
-"selection__grid_8h_source.html"
+"save_8h.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
