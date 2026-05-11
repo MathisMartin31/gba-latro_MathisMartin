@@ -321,6 +321,12 @@ void load_options(void)
     mmSetModuleVolume(MM_MODULE_FULL_VOLUME * g_game_vars.music_volume / VOLUME_OPTION_MAX);
 }
 
+bool is_game_data_valid(void)
+{
+    SaveHeader header;
+    return get_save_header(&header) && (header.valid_sections & SAVE_SECTION_FLAG_GAME);
+}
+
 void save_game(void)
 {
     SaveGame game = SaveGame_default;
