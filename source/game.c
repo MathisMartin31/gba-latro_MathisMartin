@@ -1427,7 +1427,7 @@ static inline void deck_shuffle(void)
 {
     for (int i = deck_top; i > 0; i--)
     {
-        int j = get_rand() % (i + 1);
+        int j = rng_get_u32() % (i + 1);
         Card* temp = deck[i];
         deck[i] = deck[j];
         deck[j] = temp;
@@ -1668,7 +1668,7 @@ static bool game_playing_hand_row_on_selection_changed(
              */
             play_sfx(
                 SFX_CARD_FOCUS,
-                MM_BASE_PITCH_RATE + get_rand() % CARD_FOCUS_SFX_PITCH_OFFSET_RANGE,
+                MM_BASE_PITCH_RATE + rng_get_u32() % CARD_FOCUS_SFX_PITCH_OFFSET_RANGE,
                 SFX_DEFAULT_VOLUME
             );
         }
@@ -1688,7 +1688,7 @@ static bool game_playing_hand_row_on_selection_changed(
              */
             play_sfx(
                 SFX_CARD_FOCUS,
-                MM_BASE_PITCH_RATE + get_rand() % CARD_FOCUS_SFX_PITCH_OFFSET_RANGE,
+                MM_BASE_PITCH_RATE + rng_get_u32() % CARD_FOCUS_SFX_PITCH_OFFSET_RANGE,
                 SFX_DEFAULT_VOLUME
             );
         }

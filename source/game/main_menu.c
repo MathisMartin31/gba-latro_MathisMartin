@@ -128,7 +128,7 @@ void game_main_menu_on_update(void)
     main_menu_ace->sprite_object->trotation = lu_sin((g_game_vars.timer << 8) / 2) / 3;
     card_object_update(main_menu_ace);
 
-    shuffle_rng_seed();
+    rng_shuffle_seed();
 
     selection_grid_process_input(&main_menu_selection_grid);
 }
