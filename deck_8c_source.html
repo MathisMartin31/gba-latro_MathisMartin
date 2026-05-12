@@ -200,7 +200,7 @@ $(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizabl
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="comment">//};</span></div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="comment">// clang-format off</span></div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="keyword">const</span> <span class="keywordtype">void</span> print_deck_name(<span class="keyword">enum</span> Deck deck, BG_POINT pos)</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="keyword">const</span> <span class="keywordtype">void</span> print_deck_name(<span class="keyword">enum</span> DeckType deck, BG_POINT pos)</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>{</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    tte_printf(</div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        <span class="stringliteral">&quot;#{P:%d,%d; cx:0x%X000}%s&quot;</span>,</div>
@@ -211,7 +211,7 @@ $(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizabl
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    );</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>}</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="keyword">const</span> <span class="keywordtype">void</span> print_deck_description(<span class="keyword">enum</span> Deck deck, BG_POINT pos)</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="keyword">const</span> <span class="keywordtype">void</span> print_deck_description(<span class="keyword">enum</span> DeckType deck, BG_POINT pos)</div>
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>{</div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="keywordflow">if</span> (deck_description_functions[deck] == NULL)</div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    {</div>
