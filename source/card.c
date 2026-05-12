@@ -21,24 +21,25 @@ const static u16 _card_sprite_lut[NUM_SUITS][NUM_RANKS] = {
     {624, 640, 656, 672, 688, 704, 720, 736, 752, 768, 784, 800, 816}
 };
 // Deck sprites lookup table. Index is the deck Id. The value is the tile index.
-const static u16 _deck_sprite_lut[DECK_MAX] = {
+const static u16 _deck_sprite_lut[DECK_TYPE_MAX] = {
     0,   16,  32,  48,  64,  80
 };
 
 void card_init()
 {
     toggle_high_contrast_cards(false);
+    GRIT_CPY(&pal_obj_mem[DECK_SPRITES_PB * PAL_ROW_LEN], decks_face_down_gfxPal);
 }
 
 void toggle_high_contrast_cards(bool enable)
 {
     if (enable)
     {
-        GRIT_CPY(&pal_obj_mem[CARD_PB], high_contrast_deck_pal_gfxPal);
+        GRIT_CPY(&pal_obj_mem[CARD_PB * PAL_ROW_LEN], high_contrast_deck_pal_gfxPal);
     }
     else
     {
-        GRIT_CPY(&pal_obj_mem[CARD_PB], deck_gfxPal);
+        GRIT_CPY(&pal_obj_mem[CARD_PB * PAL_ROW_LEN], deck_gfxPal);
     }
 }
 
@@ -118,7 +119,7 @@ void card_object_set_sprite(CardObject* card_object, int layer)
         ATTR0_SQUARE | ATTR0_4BPP | ATTR0_AFF,
         ATTR1_SIZE_32,
         tile_index,
-        0,
+        CARD_PB,
         layer + CARD_STARTING_LAYER
     );
     sprite_object_set_sprite(card_object->sprite_object, sprite);
@@ -136,7 +137,7 @@ void card_object_set_sprite_face_down(CardObject* card_object, enum DeckType dec
         ATTR0_SQUARE | ATTR0_4BPP | ATTR0_AFF,
         ATTR1_SIZE_32,
         tile_index,
-        0,
+        DECK_SPRITES_PB,
         layer + CARD_STARTING_LAYER
     );
     sprite_object_set_sprite(card_object->sprite_object, sprite);
