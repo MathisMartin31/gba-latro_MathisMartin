@@ -723,20 +723,18 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Structure to represent arbitrary-sized 9-patches. </p>
-<p>While expanding a 3x3 rect is simple enough and has its purpose, this is an attempt to generalize the idea to a struct representing a 9-patch like this, such that no area shown below has any null or negative dimensions: </p><div class="fragment"><div class="line">margins.left     margins.right</div>
-<div class="line">           ^     ^</div>
-<div class="line">╔══════════╤═════╤═══════╗</div>
-<div class="line">║          │     │       ║</div>
-<div class="line">║    1     │  6  │   2   ║</div>
-<div class="line">║          │     │       ║</div>
-<div class="line">╟──────────┼─────┼───────╢-&gt; margins.top</div>
-<div class="line">║          │     │       ║</div>
-<div class="line">║    5     │  0  │   7   ║</div>
-<div class="line">║          │     │       ║</div>
-<div class="line">╟──────────┼─────┼───────╢-&gt; margins.bottom</div>
-<div class="line">║    4     │  8  │   3   ║</div>
-<div class="line">║          │     │       ║</div>
-<div class="line">╚══════════╧═════╧═══════╝=&gt; patch_rect</div>
+<p>While expanding a 3x3 rect is simple enough and has its purpose, this is an attempt to generalize the idea to a struct representing a 9-patch like this, such that no area shown below has any null or negative dimensions: </p><div class="fragment"><div class="line">margins.left  margins.right</div>
+<div class="line">        ^     ^</div>
+<div class="line">╔═══════╤═════╤═══╗</div>
+<div class="line">║       │     │   ║</div>
+<div class="line">║   1   │  6  │ 2 ║</div>
+<div class="line">║       │     │   ║</div>
+<div class="line">╟───────┼─────┼───╢-&gt; margins.top</div>
+<div class="line">║   5   │  0  │ 7 ║</div>
+<div class="line">║       │     │   ║</div>
+<div class="line">╟───────┼─────┼───╢-&gt; margins.bottom</div>
+<div class="line">║   4   │  8  │ 3 ║</div>
+<div class="line">╚═══════╧═════╧═══╝=&gt; patch_rect</div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -1309,7 +1307,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The height of the rectangle, or 0 if rect-&gt;right &lt; rect-&gt;left </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="graphic__utils_8h_source.html#l00203">203</a> of file <a class="el" href="graphic__utils_8h_source.html">graphic_utils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="graphic__utils_8h_source.html#l00201">201</a> of file <a class="el" href="graphic__utils_8h_source.html">graphic_utils.h</a>.</p>
 
 </div>
 </div>
@@ -1338,7 +1336,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The width of the rectangle. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="graphic__utils_8h_source.html#l00191">191</a> of file <a class="el" href="graphic__utils_8h_source.html">graphic_utils.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="graphic__utils_8h_source.html#l00189">189</a> of file <a class="el" href="graphic__utils_8h_source.html">graphic_utils.h</a>.</p>
 
 </div>
 </div>
