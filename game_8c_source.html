@@ -400,14 +400,14 @@ $(document).ready(function(){initNavTree('game_8c_source.html',''); initResizabl
 <div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>);</div>
 <div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span><span class="keyword">static</span> <span class="keywordtype">void</span> shop_top_row_on_key_transit(<a class="code hl_struct" href="structSelectionGrid.html">SelectionGrid</a>* selection_grid, Selection* selection);</div>
 <div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span><span class="keyword">static</span> <span class="keywordtype">int</span> shop_top_row_get_size(<span class="keywordtype">void</span>);</div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="joker__row_8h.html#aefb4cad181fe6ea916b2be862a9e0432">jokers_sel_row_on_key_transit</a>(<a class="code hl_struct" href="structSelectionGrid.html">SelectionGrid</a>* selection_grid, Selection* selection);</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span><span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="joker__row_8h.html#ae1e1007f3b435d20dcbab230f2cfd1f8">jokers_sel_row_on_selection_changed</a>(</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span><span class="keyword">static</span> <span class="keywordtype">void</span> jokers_sel_row_on_key_transit(<a class="code hl_struct" href="structSelectionGrid.html">SelectionGrid</a>* selection_grid, Selection* selection);</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span><span class="keyword">static</span> <span class="keywordtype">bool</span> jokers_sel_row_on_selection_changed(</div>
 <div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    <a class="code hl_struct" href="structSelectionGrid.html">SelectionGrid</a>* selection_grid,</div>
 <div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>    <span class="keywordtype">int</span> row_idx,</div>
 <div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    <span class="keyword">const</span> Selection* prev_selection,</div>
 <div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    <span class="keyword">const</span> Selection* new_selection</div>
 <div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>);</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span><span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code hl_function" href="joker__row_8h.html#af8672a34787e31ba9ca5ecc5ade389ec">jokers_sel_row_get_size</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span><span class="keyword">static</span> <span class="keywordtype">int</span> jokers_sel_row_get_size(<span class="keywordtype">void</span>);</div>
 <div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span><span class="keyword">static</span> <span class="keywordtype">void</span> game_shop_create_items(<span class="keywordtype">void</span>);</div>
 <div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span> </div>
 <div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span><span class="keyword">static</span> <span class="keywordtype">void</span> erase_price_under_sprite_object(<a class="code hl_struct" href="structSpriteObject.html">SpriteObject</a>* sprite_object);</div>
@@ -516,9 +516,9 @@ $(document).ready(function(){initNavTree('game_8c_source.html',''); initResizabl
 <div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span><a class="code hl_struct" href="structSelectionGridRow.html">SelectionGridRow</a> game_playing_selection_rows[] = {</div>
 <div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>    {</div>
 <div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>        0,</div>
-<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>        <a class="code hl_function" href="joker__row_8h.html#af8672a34787e31ba9ca5ecc5ade389ec">jokers_sel_row_get_size</a>,</div>
-<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span>        <a class="code hl_function" href="joker__row_8h.html#ae1e1007f3b435d20dcbab230f2cfd1f8">jokers_sel_row_on_selection_changed</a>,</div>
-<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span>        <a class="code hl_function" href="joker__row_8h.html#aefb4cad181fe6ea916b2be862a9e0432">jokers_sel_row_on_key_transit</a>,</div>
+<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>        jokers_sel_row_get_size,</div>
+<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span>        jokers_sel_row_on_selection_changed,</div>
+<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span>        jokers_sel_row_on_key_transit,</div>
 <div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>        {.wrap = <span class="keyword">false</span>}</div>
 <div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span>    },</div>
 <div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>    {</div>
@@ -555,7 +555,7 @@ $(document).ready(function(){initNavTree('game_8c_source.html',''); initResizabl
 <div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span>};</div>
 <div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span> </div>
 <div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span><a class="code hl_struct" href="structSelectionGridRow.html">SelectionGridRow</a> shop_selection_rows[] = {</div>
-<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span>    {0, <a class="code hl_function" href="joker__row_8h.html#af8672a34787e31ba9ca5ecc5ade389ec">jokers_sel_row_get_size</a>,  <a class="code hl_function" href="joker__row_8h.html#ae1e1007f3b435d20dcbab230f2cfd1f8">jokers_sel_row_on_selection_changed</a>,  <a class="code hl_function" href="joker__row_8h.html#aefb4cad181fe6ea916b2be862a9e0432">jokers_sel_row_on_key_transit</a>,  {.wrap = <span class="keyword">false</span>, .has_h_exit_idx = <span class="keyword">false</span>, .h_exit_idx = 0}},</div>
+<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span>    {0, jokers_sel_row_get_size,  jokers_sel_row_on_selection_changed,  jokers_sel_row_on_key_transit,  {.wrap = <span class="keyword">false</span>, .has_h_exit_idx = <span class="keyword">false</span>, .h_exit_idx = 0}},</div>
 <div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span>    {1, shop_top_row_get_size,    shop_top_row_on_selection_changed,    shop_top_row_on_key_transit,    {.wrap = <span class="keyword">false</span>, .has_h_exit_idx = <span class="keyword">false</span>, .h_exit_idx = 0}},</div>
 <div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span>    {2, shop_reroll_row_get_size, shop_reroll_row_on_selection_changed, shop_reroll_row_on_key_transit, {.wrap = <span class="keyword">false</span>, .has_h_exit_idx = <span class="keyword">true</span>, .h_exit_idx = 1} },</div>
 <div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span>};</div>
@@ -3904,15 +3904,12 @@ $(document).ready(function(){initNavTree('game_8c_source.html',''); initResizabl
 <div class="line"><a id="l03768" name="l03768"></a><span class="lineno"> 3768</span>    }</div>
 <div class="line"><a id="l03769" name="l03769"></a><span class="lineno"> 3769</span>}</div>
 <div class="line"><a id="l03770" name="l03770"></a><span class="lineno"> 3770</span> </div>
-<div class="foldopen" id="foldopen03771" data-start="{" data-end="}">
-<div class="line"><a id="l03771" name="l03771"></a><span class="lineno"><a class="line" href="joker__row_8h.html#af8672a34787e31ba9ca5ecc5ade389ec"> 3771</a></span><span class="keyword">static</span> <span class="keywordtype">int</span> <a class="code hl_function" href="joker__row_8h.html#af8672a34787e31ba9ca5ecc5ade389ec">jokers_sel_row_get_size</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l03771" name="l03771"></a><span class="lineno"> 3771</span><span class="keyword">static</span> <span class="keywordtype">int</span> jokers_sel_row_get_size(<span class="keywordtype">void</span>)</div>
 <div class="line"><a id="l03772" name="l03772"></a><span class="lineno"> 3772</span>{</div>
 <div class="line"><a id="l03773" name="l03773"></a><span class="lineno"> 3773</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="list_8h.html#a74047e9a2e7b4652b675fa8be6086b13">list_get_len</a>(&amp;_owned_jokers_list);</div>
 <div class="line"><a id="l03774" name="l03774"></a><span class="lineno"> 3774</span>}</div>
-</div>
 <div class="line"><a id="l03775" name="l03775"></a><span class="lineno"> 3775</span> </div>
-<div class="foldopen" id="foldopen03776" data-start="{" data-end="}">
-<div class="line"><a id="l03776" name="l03776"></a><span class="lineno"><a class="line" href="joker__row_8h.html#ae1e1007f3b435d20dcbab230f2cfd1f8"> 3776</a></span><span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="joker__row_8h.html#ae1e1007f3b435d20dcbab230f2cfd1f8">jokers_sel_row_on_selection_changed</a>(</div>
+<div class="line"><a id="l03776" name="l03776"></a><span class="lineno"> 3776</span><span class="keyword">static</span> <span class="keywordtype">bool</span> jokers_sel_row_on_selection_changed(</div>
 <div class="line"><a id="l03777" name="l03777"></a><span class="lineno"> 3777</span>    <a class="code hl_struct" href="structSelectionGrid.html">SelectionGrid</a>* selection_grid,</div>
 <div class="line"><a id="l03778" name="l03778"></a><span class="lineno"> 3778</span>    <span class="keywordtype">int</span> row_idx,</div>
 <div class="line"><a id="l03779" name="l03779"></a><span class="lineno"> 3779</span>    <span class="keyword">const</span> Selection* prev_selection,</div>
@@ -3969,7 +3966,6 @@ $(document).ready(function(){initNavTree('game_8c_source.html',''); initResizabl
 <div class="line"><a id="l03830" name="l03830"></a><span class="lineno"> 3830</span> </div>
 <div class="line"><a id="l03831" name="l03831"></a><span class="lineno"> 3831</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a id="l03832" name="l03832"></a><span class="lineno"> 3832</span>}</div>
-</div>
 <div class="line"><a id="l03833" name="l03833"></a><span class="lineno"> 3833</span> </div>
 <div class="line"><a id="l03834" name="l03834"></a><span class="lineno"> 3834</span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> joker_start_discard_animation(<a class="code hl_struct" href="structJokerObject.html">JokerObject</a>* joker_object)</div>
 <div class="line"><a id="l03835" name="l03835"></a><span class="lineno"> 3835</span>{</div>
@@ -3993,8 +3989,7 @@ $(document).ready(function(){initNavTree('game_8c_source.html',''); initResizabl
 <div class="line"><a id="l03853" name="l03853"></a><span class="lineno"> 3853</span>    joker_start_discard_animation(joker_object);</div>
 <div class="line"><a id="l03854" name="l03854"></a><span class="lineno"> 3854</span>}</div>
 <div class="line"><a id="l03855" name="l03855"></a><span class="lineno"> 3855</span> </div>
-<div class="foldopen" id="foldopen03856" data-start="{" data-end="}">
-<div class="line"><a id="l03856" name="l03856"></a><span class="lineno"><a class="line" href="joker__row_8h.html#aefb4cad181fe6ea916b2be862a9e0432"> 3856</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="joker__row_8h.html#aefb4cad181fe6ea916b2be862a9e0432">jokers_sel_row_on_key_transit</a>(<a class="code hl_struct" href="structSelectionGrid.html">SelectionGrid</a>* selection_grid, Selection* selection)</div>
+<div class="line"><a id="l03856" name="l03856"></a><span class="lineno"> 3856</span><span class="keyword">static</span> <span class="keywordtype">void</span> jokers_sel_row_on_key_transit(<a class="code hl_struct" href="structSelectionGrid.html">SelectionGrid</a>* selection_grid, Selection* selection)</div>
 <div class="line"><a id="l03857" name="l03857"></a><span class="lineno"> 3857</span>{</div>
 <div class="line"><a id="l03858" name="l03858"></a><span class="lineno"> 3858</span>    <a class="code hl_struct" href="structJokerObject.html">JokerObject</a>* joker_object = (<a class="code hl_struct" href="structJokerObject.html">JokerObject</a>*)<a class="code hl_function" href="list_8h.html#a3c604970a7f427ee628ab97749fde17c">list_get_at_idx</a>(&amp;_owned_jokers_list, selection-&gt;x);</div>
 <div class="line"><a id="l03859" name="l03859"></a><span class="lineno"> 3859</span>    <span class="keywordflow">if</span> (joker_object != NULL)</div>
@@ -4023,7 +4018,6 @@ $(document).ready(function(){initNavTree('game_8c_source.html',''); initResizabl
 <div class="line"><a id="l03882" name="l03882"></a><span class="lineno"> 3882</span>        game_sell_joker(sold_joker_idx);</div>
 <div class="line"><a id="l03883" name="l03883"></a><span class="lineno"> 3883</span>    }</div>
 <div class="line"><a id="l03884" name="l03884"></a><span class="lineno"> 3884</span>}</div>
-</div>
 <div class="line"><a id="l03885" name="l03885"></a><span class="lineno"> 3885</span> </div>
 <div class="line"><a id="l03886" name="l03886"></a><span class="lineno"> 3886</span><span class="comment">// Shop input</span></div>
 <div class="line"><a id="l03887" name="l03887"></a><span class="lineno"> 3887</span><span class="keyword">static</span> <span class="keywordtype">int</span> shop_top_row_get_size(<span class="keywordtype">void</span>)</div>
@@ -4484,9 +4478,6 @@ $(document).ready(function(){initNavTree('game_8c_source.html',''); initResizabl
 <div class="ttc" id="agraphic__utils_8h_html_a863b859642d0a74d0765f8c96f972af6"><div class="ttname"><a href="graphic__utils_8h.html#a863b859642d0a74d0765f8c96f972af6">TTE_CHAR_SIZE</a></div><div class="ttdeci">#define TTE_CHAR_SIZE</div><div class="ttdoc">By default TTE characters occupy a single tile.</div><div class="ttdef"><b>Definition</b> <a href="graphic__utils_8h_source.html#l00089">graphic_utils.h:89</a></div></div>
 <div class="ttc" id="agraphic__utils_8h_html_a86fe19f87df82284e96d7e8aacb001d7"><div class="ttname"><a href="graphic__utils_8h.html#a86fe19f87df82284e96d7e8aacb001d7">tte_erase_rect_wrapper</a></div><div class="ttdeci">void tte_erase_rect_wrapper(Rect rect)</div><div class="ttdoc">A wrapper for tte_erase_rect that would use the rect struct.</div><div class="ttdef"><b>Definition</b> <a href="graphic__utils_8c_source.html#l00307">graphic_utils.c:307</a></div></div>
 <div class="ttc" id="agraphic__utils_8h_html_ad687d4e104c181d6d8312e6ffa6c459b"><div class="ttname"><a href="graphic__utils_8h.html#ad687d4e104c181d6d8312e6ffa6c459b">rect_width</a></div><div class="ttdeci">INLINE int rect_width(const Rect *rect)</div><div class="ttdoc">Get the width of a rectangle.</div><div class="ttdef"><b>Definition</b> <a href="graphic__utils_8h_source.html#l00162">graphic_utils.h:162</a></div></div>
-<div class="ttc" id="ajoker__row_8h_html_ae1e1007f3b435d20dcbab230f2cfd1f8"><div class="ttname"><a href="joker__row_8h.html#ae1e1007f3b435d20dcbab230f2cfd1f8">jokers_sel_row_on_selection_changed</a></div><div class="ttdeci">bool jokers_sel_row_on_selection_changed(SelectionGrid *selection_grid, int row_idx, const Selection *prev_selection, const Selection *new_selection)</div><div class="ttdoc">Handle directional inputs on the Jokers' row at the top of the game screen.</div><div class="ttdef"><b>Definition</b> <a href="game_8c_source.html#l03776">game.c:3776</a></div></div>
-<div class="ttc" id="ajoker__row_8h_html_aefb4cad181fe6ea916b2be862a9e0432"><div class="ttname"><a href="joker__row_8h.html#aefb4cad181fe6ea916b2be862a9e0432">jokers_sel_row_on_key_transit</a></div><div class="ttdeci">void jokers_sel_row_on_key_transit(SelectionGrid *selection_grid, Selection *selection)</div><div class="ttdoc">Handle button inputs on the Jokers' row at the top of the game screen.</div><div class="ttdef"><b>Definition</b> <a href="game_8c_source.html#l03856">game.c:3856</a></div></div>
-<div class="ttc" id="ajoker__row_8h_html_af8672a34787e31ba9ca5ecc5ade389ec"><div class="ttname"><a href="joker__row_8h.html#af8672a34787e31ba9ca5ecc5ade389ec">jokers_sel_row_get_size</a></div><div class="ttdeci">int jokers_sel_row_get_size(void)</div><div class="ttdoc">Returns the size of the Jokers' row at the top of the game screen. Is equal to the number of Jokers o...</div><div class="ttdef"><b>Definition</b> <a href="game_8c_source.html#l03771">game.c:3771</a></div></div>
 <div class="ttc" id="alayout_8h_html"><div class="ttname"><a href="layout_8h.html">layout.h</a></div><div class="ttdoc">Header of shared rects and points needed for ui.</div></div>
 <div class="ttc" id="alist_8h_html"><div class="ttname"><a href="list_8h.html">list.h</a></div><div class="ttdoc">A doubly-linked list.</div></div>
 <div class="ttc" id="alist_8h_html_a08ee696c9e3cb8fdbf2f99450635711e"><div class="ttname"><a href="list_8h.html#a08ee696c9e3cb8fdbf2f99450635711e">list_swap</a></div><div class="ttdeci">bool list_swap(List *list, unsigned int idx_a, unsigned int idx_b)</div><div class="ttdef"><b>Definition</b> <a href="list_8c_source.html#l00142">list.c:142</a></div></div>
