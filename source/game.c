@@ -302,7 +302,7 @@ static ContainedHandTypes _contained_hands = {0};
 GameVariables g_game_vars = {
     .timer = 0, .rng_seed = 0, .rng_step = 0,
 
-    .round = 0, .ante = 0, .money = 0,
+    .round = 0, .ante = 0, .money = 0, .deck = DECK_RED,
 
     .current_blind = BLIND_TYPE_SMALL,
     .next_boss_blind = BLIND_TYPE_BIG,
