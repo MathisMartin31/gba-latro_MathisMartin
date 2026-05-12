@@ -1231,61 +1231,60 @@ $(document).ready(function(){initNavTree('run__setup_8c_source.html',''); initRe
 <div class="line"><a id="l01083" name="l01083"></a><span class="lineno"> 1083</span> </div>
 <div class="line"><a id="l01084" name="l01084"></a><span class="lineno"> 1084</span><span class="keyword">static</span> <span class="keywordtype">void</span> change_deck_on_pressed(<span class="keywordtype">void</span>)</div>
 <div class="line"><a id="l01085" name="l01085"></a><span class="lineno"> 1085</span>{</div>
-<div class="line"><a id="l01086" name="l01086"></a><span class="lineno"> 1086</span> </div>
-<div class="line"><a id="l01087" name="l01087"></a><span class="lineno"> 1087</span>}</div>
-<div class="line"><a id="l01088" name="l01088"></a><span class="lineno"> 1088</span> </div>
-<div class="line"><a id="l01089" name="l01089"></a><span class="lineno"> 1089</span><span class="keyword">static</span> <span class="keywordtype">void</span> tab_set_highlight(<span class="keyword">enum</span> RunSetupTab tab_sel)</div>
-<div class="line"><a id="l01090" name="l01090"></a><span class="lineno"> 1090</span>{</div>
-<div class="line"><a id="l01091" name="l01091"></a><span class="lineno"> 1091</span>    <span class="keywordflow">for</span> (<span class="keyword">enum</span> RunSetupTab tab = 0; tab &lt; RUN_SETUP_TAB_MAX; tab++)</div>
-<div class="line"><a id="l01092" name="l01092"></a><span class="lineno"> 1092</span>    {</div>
-<div class="line"><a id="l01093" name="l01093"></a><span class="lineno"> 1093</span>        <a class="code hl_function" href="button_8h.html#ab07bc69b92e6642e2b986debfb152e48">button_set_highlight</a>(&amp;tabs_buttons[tab], tab == tab_sel);</div>
-<div class="line"><a id="l01094" name="l01094"></a><span class="lineno"> 1094</span>    }</div>
-<div class="line"><a id="l01095" name="l01095"></a><span class="lineno"> 1095</span>}</div>
-<div class="line"><a id="l01096" name="l01096"></a><span class="lineno"> 1096</span> </div>
-<div class="line"><a id="l01097" name="l01097"></a><span class="lineno"> 1097</span><span class="keyword">static</span> <span class="keywordtype">void</span> run_setup_tabs_update(<span class="keywordtype">void</span>)</div>
-<div class="line"><a id="l01098" name="l01098"></a><span class="lineno"> 1098</span>{</div>
-<div class="line"><a id="l01099" name="l01099"></a><span class="lineno"> 1099</span>    <span class="keyword">static</span> <span class="keyword">enum</span> RunSetupTab current_tab = RUN_SETUP_TAB_RESUME;</div>
-<div class="line"><a id="l01100" name="l01100"></a><span class="lineno"> 1100</span> </div>
-<div class="line"><a id="l01101" name="l01101"></a><span class="lineno"> 1101</span>    <span class="comment">// If there is no saved data, &quot;Resume&quot; tab is grayed out and only one tab is available</span></div>
-<div class="line"><a id="l01102" name="l01102"></a><span class="lineno"> 1102</span>    <span class="keywordflow">if</span> (!is_saved_game_valid)</div>
-<div class="line"><a id="l01103" name="l01103"></a><span class="lineno"> 1103</span>    {</div>
-<div class="line"><a id="l01104" name="l01104"></a><span class="lineno"> 1104</span>        <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l01105" name="l01105"></a><span class="lineno"> 1105</span>    }</div>
-<div class="line"><a id="l01106" name="l01106"></a><span class="lineno"> 1106</span> </div>
-<div class="line"><a id="l01107" name="l01107"></a><span class="lineno"> 1107</span>    <span class="comment">// Not all the way to the right and pressed R</span></div>
-<div class="line"><a id="l01108" name="l01108"></a><span class="lineno"> 1108</span>    <span class="keywordflow">if</span> (key_hit(TAB_RIGHT) &amp;&amp; current_tab &lt; RUN_SETUP_TAB_MAX - 1)</div>
-<div class="line"><a id="l01109" name="l01109"></a><span class="lineno"> 1109</span>    {</div>
-<div class="line"><a id="l01110" name="l01110"></a><span class="lineno"> 1110</span>        current_tab++;</div>
-<div class="line"><a id="l01111" name="l01111"></a><span class="lineno"> 1111</span>    }</div>
-<div class="line"><a id="l01112" name="l01112"></a><span class="lineno"> 1112</span>    <span class="comment">// Not all the way to the left and pressed L</span></div>
-<div class="line"><a id="l01113" name="l01113"></a><span class="lineno"> 1113</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (key_hit(TAB_LEFT) &amp;&amp; current_tab &gt; 0)</div>
-<div class="line"><a id="l01114" name="l01114"></a><span class="lineno"> 1114</span>    {</div>
-<div class="line"><a id="l01115" name="l01115"></a><span class="lineno"> 1115</span>        current_tab--;</div>
-<div class="line"><a id="l01116" name="l01116"></a><span class="lineno"> 1116</span>    }</div>
-<div class="line"><a id="l01117" name="l01117"></a><span class="lineno"> 1117</span>    <span class="comment">// Either not pressed anything or no space to move, return early to not change button highlight</span></div>
-<div class="line"><a id="l01118" name="l01118"></a><span class="lineno"> 1118</span>    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l01119" name="l01119"></a><span class="lineno"> 1119</span>    {</div>
-<div class="line"><a id="l01120" name="l01120"></a><span class="lineno"> 1120</span>        <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l01121" name="l01121"></a><span class="lineno"> 1121</span>    }</div>
-<div class="line"><a id="l01122" name="l01122"></a><span class="lineno"> 1122</span> </div>
-<div class="line"><a id="l01123" name="l01123"></a><span class="lineno"> 1123</span>    <span class="comment">// We only reach here after successfuly changing Tabs</span></div>
-<div class="line"><a id="l01124" name="l01124"></a><span class="lineno"> 1124</span>    tab_set_highlight(current_tab);</div>
-<div class="line"><a id="l01125" name="l01125"></a><span class="lineno"> 1125</span>}</div>
-<div class="line"><a id="l01126" name="l01126"></a><span class="lineno"> 1126</span> </div>
-<div class="line"><a id="l01127" name="l01127"></a><span class="lineno"> 1127</span><span class="keyword">static</span> <span class="keywordtype">int</span> back_row_get_size()</div>
-<div class="line"><a id="l01128" name="l01128"></a><span class="lineno"> 1128</span>{</div>
-<div class="line"><a id="l01129" name="l01129"></a><span class="lineno"> 1129</span>    <span class="keywordflow">return</span> 1;</div>
-<div class="line"><a id="l01130" name="l01130"></a><span class="lineno"> 1130</span>}</div>
-<div class="line"><a id="l01131" name="l01131"></a><span class="lineno"> 1131</span> </div>
-<div class="line"><a id="l01132" name="l01132"></a><span class="lineno"> 1132</span><span class="keyword">static</span> <span class="keywordtype">void</span> back_row_on_key_transit(<a class="code hl_struct" href="structSelectionGrid.html">SelectionGrid</a>* selection_grid, Selection* selection)</div>
-<div class="line"><a id="l01133" name="l01133"></a><span class="lineno"> 1133</span>{</div>
-<div class="line"><a id="l01134" name="l01134"></a><span class="lineno"> 1134</span>    <span class="keywordflow">if</span> (key_hit(SELECT_CARD))</div>
-<div class="line"><a id="l01135" name="l01135"></a><span class="lineno"> 1135</span>    {</div>
-<div class="line"><a id="l01136" name="l01136"></a><span class="lineno"> 1136</span>        <a class="code hl_function" href="button_8h.html#a071a4d1bf72a16a7f4a4153722ce36db">button_press</a>(&amp;back_button);</div>
-<div class="line"><a id="l01137" name="l01137"></a><span class="lineno"> 1137</span>    }</div>
-<div class="line"><a id="l01138" name="l01138"></a><span class="lineno"> 1138</span>}</div>
-<div class="line"><a id="l01139" name="l01139"></a><span class="lineno"> 1139</span> </div>
-<div class="line"><a id="l01140" name="l01140"></a><span class="lineno"> 1140</span><span class="preprocessor">#pragma endregion</span></div>
+<div class="line"><a id="l01086" name="l01086"></a><span class="lineno"> 1086</span>}</div>
+<div class="line"><a id="l01087" name="l01087"></a><span class="lineno"> 1087</span> </div>
+<div class="line"><a id="l01088" name="l01088"></a><span class="lineno"> 1088</span><span class="keyword">static</span> <span class="keywordtype">void</span> tab_set_highlight(<span class="keyword">enum</span> RunSetupTab tab_sel)</div>
+<div class="line"><a id="l01089" name="l01089"></a><span class="lineno"> 1089</span>{</div>
+<div class="line"><a id="l01090" name="l01090"></a><span class="lineno"> 1090</span>    <span class="keywordflow">for</span> (<span class="keyword">enum</span> RunSetupTab tab = 0; tab &lt; RUN_SETUP_TAB_MAX; tab++)</div>
+<div class="line"><a id="l01091" name="l01091"></a><span class="lineno"> 1091</span>    {</div>
+<div class="line"><a id="l01092" name="l01092"></a><span class="lineno"> 1092</span>        <a class="code hl_function" href="button_8h.html#ab07bc69b92e6642e2b986debfb152e48">button_set_highlight</a>(&amp;tabs_buttons[tab], tab == tab_sel);</div>
+<div class="line"><a id="l01093" name="l01093"></a><span class="lineno"> 1093</span>    }</div>
+<div class="line"><a id="l01094" name="l01094"></a><span class="lineno"> 1094</span>}</div>
+<div class="line"><a id="l01095" name="l01095"></a><span class="lineno"> 1095</span> </div>
+<div class="line"><a id="l01096" name="l01096"></a><span class="lineno"> 1096</span><span class="keyword">static</span> <span class="keywordtype">void</span> run_setup_tabs_update(<span class="keywordtype">void</span>)</div>
+<div class="line"><a id="l01097" name="l01097"></a><span class="lineno"> 1097</span>{</div>
+<div class="line"><a id="l01098" name="l01098"></a><span class="lineno"> 1098</span>    <span class="keyword">static</span> <span class="keyword">enum</span> RunSetupTab current_tab = RUN_SETUP_TAB_RESUME;</div>
+<div class="line"><a id="l01099" name="l01099"></a><span class="lineno"> 1099</span> </div>
+<div class="line"><a id="l01100" name="l01100"></a><span class="lineno"> 1100</span>    <span class="comment">// If there is no saved data, &quot;Resume&quot; tab is grayed out and only one tab is available</span></div>
+<div class="line"><a id="l01101" name="l01101"></a><span class="lineno"> 1101</span>    <span class="keywordflow">if</span> (!is_saved_game_valid)</div>
+<div class="line"><a id="l01102" name="l01102"></a><span class="lineno"> 1102</span>    {</div>
+<div class="line"><a id="l01103" name="l01103"></a><span class="lineno"> 1103</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l01104" name="l01104"></a><span class="lineno"> 1104</span>    }</div>
+<div class="line"><a id="l01105" name="l01105"></a><span class="lineno"> 1105</span> </div>
+<div class="line"><a id="l01106" name="l01106"></a><span class="lineno"> 1106</span>    <span class="comment">// Not all the way to the right and pressed R</span></div>
+<div class="line"><a id="l01107" name="l01107"></a><span class="lineno"> 1107</span>    <span class="keywordflow">if</span> (key_hit(TAB_RIGHT) &amp;&amp; current_tab &lt; RUN_SETUP_TAB_MAX - 1)</div>
+<div class="line"><a id="l01108" name="l01108"></a><span class="lineno"> 1108</span>    {</div>
+<div class="line"><a id="l01109" name="l01109"></a><span class="lineno"> 1109</span>        current_tab++;</div>
+<div class="line"><a id="l01110" name="l01110"></a><span class="lineno"> 1110</span>    }</div>
+<div class="line"><a id="l01111" name="l01111"></a><span class="lineno"> 1111</span>    <span class="comment">// Not all the way to the left and pressed L</span></div>
+<div class="line"><a id="l01112" name="l01112"></a><span class="lineno"> 1112</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (key_hit(TAB_LEFT) &amp;&amp; current_tab &gt; 0)</div>
+<div class="line"><a id="l01113" name="l01113"></a><span class="lineno"> 1113</span>    {</div>
+<div class="line"><a id="l01114" name="l01114"></a><span class="lineno"> 1114</span>        current_tab--;</div>
+<div class="line"><a id="l01115" name="l01115"></a><span class="lineno"> 1115</span>    }</div>
+<div class="line"><a id="l01116" name="l01116"></a><span class="lineno"> 1116</span>    <span class="comment">// Either not pressed anything or no space to move, return early to not change button highlight</span></div>
+<div class="line"><a id="l01117" name="l01117"></a><span class="lineno"> 1117</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l01118" name="l01118"></a><span class="lineno"> 1118</span>    {</div>
+<div class="line"><a id="l01119" name="l01119"></a><span class="lineno"> 1119</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l01120" name="l01120"></a><span class="lineno"> 1120</span>    }</div>
+<div class="line"><a id="l01121" name="l01121"></a><span class="lineno"> 1121</span> </div>
+<div class="line"><a id="l01122" name="l01122"></a><span class="lineno"> 1122</span>    <span class="comment">// We only reach here after successfuly changing Tabs</span></div>
+<div class="line"><a id="l01123" name="l01123"></a><span class="lineno"> 1123</span>    tab_set_highlight(current_tab);</div>
+<div class="line"><a id="l01124" name="l01124"></a><span class="lineno"> 1124</span>}</div>
+<div class="line"><a id="l01125" name="l01125"></a><span class="lineno"> 1125</span> </div>
+<div class="line"><a id="l01126" name="l01126"></a><span class="lineno"> 1126</span><span class="keyword">static</span> <span class="keywordtype">int</span> back_row_get_size()</div>
+<div class="line"><a id="l01127" name="l01127"></a><span class="lineno"> 1127</span>{</div>
+<div class="line"><a id="l01128" name="l01128"></a><span class="lineno"> 1128</span>    <span class="keywordflow">return</span> 1;</div>
+<div class="line"><a id="l01129" name="l01129"></a><span class="lineno"> 1129</span>}</div>
+<div class="line"><a id="l01130" name="l01130"></a><span class="lineno"> 1130</span> </div>
+<div class="line"><a id="l01131" name="l01131"></a><span class="lineno"> 1131</span><span class="keyword">static</span> <span class="keywordtype">void</span> back_row_on_key_transit(<a class="code hl_struct" href="structSelectionGrid.html">SelectionGrid</a>* selection_grid, Selection* selection)</div>
+<div class="line"><a id="l01132" name="l01132"></a><span class="lineno"> 1132</span>{</div>
+<div class="line"><a id="l01133" name="l01133"></a><span class="lineno"> 1133</span>    <span class="keywordflow">if</span> (key_hit(SELECT_CARD))</div>
+<div class="line"><a id="l01134" name="l01134"></a><span class="lineno"> 1134</span>    {</div>
+<div class="line"><a id="l01135" name="l01135"></a><span class="lineno"> 1135</span>        <a class="code hl_function" href="button_8h.html#a071a4d1bf72a16a7f4a4153722ce36db">button_press</a>(&amp;back_button);</div>
+<div class="line"><a id="l01136" name="l01136"></a><span class="lineno"> 1136</span>    }</div>
+<div class="line"><a id="l01137" name="l01137"></a><span class="lineno"> 1137</span>}</div>
+<div class="line"><a id="l01138" name="l01138"></a><span class="lineno"> 1138</span> </div>
+<div class="line"><a id="l01139" name="l01139"></a><span class="lineno"> 1139</span><span class="preprocessor">#pragma endregion</span></div>
 <div class="ttc" id="abutton_8h_html"><div class="ttname"><a href="button_8h.html">button.h</a></div><div class="ttdoc">A button structure containing the common button functionalities.</div></div>
 <div class="ttc" id="abutton_8h_html_a071a4d1bf72a16a7f4a4153722ce36db"><div class="ttname"><a href="button_8h.html#a071a4d1bf72a16a7f4a4153722ce36db">button_press</a></div><div class="ttdeci">void button_press(Button *button)</div><div class="ttdoc">Execute a button press, by calling the button's on_pressed function. This checks the button's can_be_...</div><div class="ttdef"><b>Definition</b> <a href="button_8c_source.html#l00018">button.c:18</a></div></div>
 <div class="ttc" id="abutton_8h_html_ab07bc69b92e6642e2b986debfb152e48"><div class="ttname"><a href="button_8h.html#ab07bc69b92e6642e2b986debfb152e48">button_set_highlight</a></div><div class="ttdeci">void button_set_highlight(Button *button, bool highlight)</div><div class="ttdoc">Set the button highlight on or off.</div><div class="ttdef"><b>Definition</b> <a href="button_8c_source.html#l00008">button.c:8</a></div></div>
