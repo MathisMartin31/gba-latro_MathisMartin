@@ -13,8 +13,8 @@
 /**
  * @brief Returns the size of the Jokers' row at the top of the game screen.
  *         Is equal to the number of Jokers owned.
- * 
- * @return int 
+ *
+ * @return int
  */
 int jokers_sel_row_get_size(void);
 
@@ -38,7 +38,7 @@ bool jokers_sel_row_on_selection_changed(
 
 /**
  * @brief Handle button inputs on the Jokers' row at the top of the game screen.
- * 
+ *
  * @param selection_grid pointer to the SelectionGrid the row is a part of.
  * @param selection pointer to the coordinates of the currently selected button in
  *                   `selection_grid`
