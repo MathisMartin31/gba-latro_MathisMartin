@@ -138,25 +138,32 @@ $(document).ready(function(){initNavTree('deck_8h_source.html',''); initResizabl
   <div class="headertitle"><div class="title">deck.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &quot;<a class="code" href="graphic__utils_8h.html">graphic_utils.h</a>&quot;</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#define DECK_NAME_LENGTH 14 </span><span class="comment">// 13 chars + &#39;\0&#39;</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#define DECK_DESC_WIDTH  DECK_NAME_LENGTH</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#define DECK_DESC_HEIGHT 5</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">enum</span> DeckType</div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>{</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>    DECK_RED,</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    DECK_BLUE,</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    DECK_YELLOW,</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    DECK_GREEN,</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    DECK_BLACK,</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    DECK_PAINTED,</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    DECK_MAX</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>};</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">const</span> <span class="keywordtype">void</span> print_deck_name(<span class="keyword">enum</span> DeckType deck, BG_POINT pos);</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="keyword">const</span> <span class="keywordtype">void</span> print_deck_description(<span class="keyword">enum</span> DeckType deck, BG_POINT pos);</div>
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef DECK_H</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define DECK_H</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="graphic__utils_8h.html">graphic_utils.h</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#define DECK_SPRITES_PB 1</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#define DECK_NAME_LENGTH 14 </span><span class="comment">// 13 chars + &#39;\0&#39;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#define DECK_DESC_WIDTH  DECK_NAME_LENGTH</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#define DECK_DESC_HEIGHT 5</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">enum</span> DeckType</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>{</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    DECK_TYPE_RED,</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    DECK_TYPE_BLUE,</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    DECK_TYPE_YELLOW,</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    DECK_TYPE_GREEN,</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    DECK_TYPE_BLACK,</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    DECK_TYPE_PAINTED,</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    DECK_TYPE_MAX</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>};</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">const</span> <span class="keywordtype">void</span> print_deck_name(<span class="keyword">enum</span> DeckType deck, BG_POINT pos);</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">const</span> <span class="keywordtype">void</span> print_deck_description(<span class="keyword">enum</span> DeckType deck, BG_POINT pos);</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#endif </span><span class="comment">// DECK_H</span></div>
 <div class="ttc" id="agraphic__utils_8h_html"><div class="ttname"><a href="graphic__utils_8h.html">graphic_utils.h</a></div><div class="ttdoc">Graphic utility functions.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
