@@ -366,11 +366,6 @@ static void shop_top_row_on_key_transit(SelectionGrid* selection_grid, Selection
             &pal_bg_mem[SHOP_PANEL_SHADOW_PAL_IDX],
             1
         );
-
-        // memcpy16(&pal_bg_mem[16], &pal_bg_mem[6], 1);
-        // This changes the color of the button to a dark red.
-        // However, it shares a palette with the shop icon, so it will change the color of the shop
-        // icon as well. And I don't care enough to fix it right now.
     }
     else
     {
@@ -384,9 +379,6 @@ static void shop_top_row_on_key_transit(SelectionGrid* selection_grid, Selection
         }
 
         game_shop_buy_joker(shop_joker_idx);
-
-        // In Balatro the selection actually stays on the purchased joker it's easier to just move
-        // it left
         selection_grid_move_selection_horz(selection_grid, -1);
     }
 }
