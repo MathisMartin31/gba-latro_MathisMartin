@@ -20,7 +20,7 @@ int jokers_sel_row_get_size(void);
 
 /**
  * @brief Handle directional inputs on the Jokers' row at the top of the game screen.
- * 
+ *
  * @param selection_grid pointer to the SelectionGrid the row is a part of.
  * @param row_idx index of the row this function is called on.
  * @param prev_selection pointer to the coordinates of the previously selected button
