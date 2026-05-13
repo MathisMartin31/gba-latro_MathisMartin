@@ -26,7 +26,7 @@ void rng_cancel_sampling(void);
  *         The seed will be capped at `MAX_SEED` for compatibility with the Seed Input screen
  *         used to choose a seed for seeded runs.
  *
- * @param seed the new RNG seed 
+ * @param seed the new RNG seed
  */
 void rng_set_seed(u32 seed);
 
