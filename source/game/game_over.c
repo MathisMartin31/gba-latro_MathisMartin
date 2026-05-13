@@ -7,6 +7,7 @@
 #include "game/main_menu.h"
 #include "graphic_utils.h"
 #include "layout.h"
+#include "random.h"
 #include "soundbank.h"
 #include "timer.h"
 #include "util.h"
@@ -38,6 +39,9 @@ static u32 timer = TM_ZERO;
 
 static void game_over_init(enum EndCondition init_condition)
 {
+    // Start sampling CPU cycles for the next game seed generation
+    rng_start_sampling();
+
     condition = init_condition;
     // Clears the round end menu
     main_bg_se_clear_rect(POP_MENU_ANIM_RECT);
@@ -128,4 +132,5 @@ void game_over_on_exit(void)
 {
     condition = END_CONDITION_NONE;
     game_reset();
+    rng_shuffle_seed();
 }

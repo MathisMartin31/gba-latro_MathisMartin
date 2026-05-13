@@ -1503,14 +1503,6 @@ static void game_round_on_init(void)
     game_playing_selection_grid.selection = GAME_PLAYING_INIT_SEL;
 }
 
-// General functions
-static inline void set_seed(int seed)
-{
-    srand(seed);
-    g_game_vars.rng_seed = seed;
-    g_game_vars.rng_step = 0;
-}
-
 // Playing state functions
 static void game_playing_discard_on_pressed(void)
 {
@@ -3018,8 +3010,8 @@ static void game_playing_on_update(void)
 
 void game_start(void)
 {
-    // set_seed(9); // 9 is a full house
-    set_seed(g_game_vars.rng_seed);
+    // rng_set_seed(9); // 9 is a full house
+    rng_shuffle_seed();
 
     affine_background_change_background(AFFINE_BG_GAME);
 
