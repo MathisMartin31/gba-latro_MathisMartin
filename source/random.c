@@ -5,14 +5,14 @@
 #include <stdlib.h>
 #include <tonc.h>
 
-// Accumulate 
+// Accumulate timer 1 into a bigger variable so we can generate more diverse seeds
 u32 timer_acc = 0;
 
 // Timers usage docs: https://gbadev.net/tonc/timers.html
 void rng_init(void)
 {
     REG_TM1D = 0;
-    REG_TM1CNT= TM_FREQ_1 | TM_ENABLE; // using timer with x1 prescale
+    REG_TM1CNT = TM_FREQ_1 | TM_ENABLE; // using timer with x1 prescale
 }
 
 void rng_update(void)
