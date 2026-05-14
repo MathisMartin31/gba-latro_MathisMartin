@@ -39,9 +39,6 @@ static u32 timer = TM_ZERO;
 
 static void game_over_init(enum EndCondition init_condition)
 {
-    // Start sampling CPU cycles for the next game seed generation
-    rng_start_sampling();
-
     condition = init_condition;
     // Clears the round end menu
     main_bg_se_clear_rect(POP_MENU_ANIM_RECT);

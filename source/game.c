@@ -630,6 +630,8 @@ static inline void jokers_update_loop(void)
 
 void game_update()
 {
+    rng_update();
+
     g_game_vars.timer++;
 
     jokers_update_loop();
@@ -3010,7 +3012,6 @@ static void game_playing_on_update(void)
 
 void game_start(void)
 {
-    // rng_set_seed(9); // 9 is a full house
     rng_shuffle_seed();
 
     affine_background_change_background(AFFINE_BG_GAME);

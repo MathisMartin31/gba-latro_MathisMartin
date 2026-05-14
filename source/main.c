@@ -25,7 +25,7 @@
 
 void init()
 {
-    rng_start_sampling();
+    rng_init();
 
     irq_init(NULL);
     irq_add(II_VBLANK, mmVBlank);

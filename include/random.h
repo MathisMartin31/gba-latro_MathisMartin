@@ -11,15 +11,15 @@
 #define MAX_SEED 0x81BF0FFF // Hex value of "ZZZZZZ" in base 36
 
 /**
- * @brief Starts a counter accumulating CPU cycles that will be used by rng_shuffle_seed to
- *         generate a more random seed.
+ * @brief Starts counting CPU cycles, this will be used by rng_shuffle_seed to
+ *         generate a more random seed. To be called once on game start.
  */
-void rng_start_sampling(void);
+void rng_init(void);
 
 /**
- * @brief Simply stops the CPU cycles count in case we don't need it after all.
+ * @brief Update the CPU cycles counter and accumulate it into a bigger u32 `timer_acc` variable.
  */
-void rng_cancel_sampling(void);
+void rng_update(void);
 
 /**
  * @brief Set the rng seed to the chosen value, and reset the step counter to 0.
