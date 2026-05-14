@@ -364,7 +364,7 @@ void load_game(void)
     SaveHeader header;
 
     if (get_save_header(&header) && (header.valid_sections & SAVE_SECTION_FLAG_GAME))
-        return;    
+        return;
 
     SaveGame game = SaveGame_default;
     read_sram(GAME_ADDRESS, (u8*)&game, sizeof(game));
