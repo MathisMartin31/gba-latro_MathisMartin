@@ -123,7 +123,7 @@ static SelectionGridRow options_menu_selection_rows[] = {
     }
 };
 
-static Button options_menu_buttons[][NB_OPTIONS_ROWS] = {
+static Button options_menu_buttons[NB_OPTIONS_ROWS][2] = {
     {{SPEED_BUTTON_OUTLINE_COLOR_PAL_IDX,    MENU_BUTTON_MAIN_COLOR_PAL_IDX, NULL,                     NULL}},
     {{CONTRAST_BUTTON_OUTLINE_COLOR_PAL_IDX, MENU_BUTTON_MAIN_COLOR_PAL_IDX, high_contrast_on_pressed, NULL}},
     {{MUSIC_BUTTON_OUTLINE_COLOR_PAL_IDX,    MENU_BUTTON_MAIN_COLOR_PAL_IDX, NULL,                     NULL}},
@@ -475,7 +475,7 @@ static int options_menu_return_upper_rows_size(void)
 }
 
 /**
- * @brief Gives the width of the Save and Back buttuns' row.
+ * @brief Gives the width of the Save and Back buttons' row.
  *
  * @returns 2
  */
