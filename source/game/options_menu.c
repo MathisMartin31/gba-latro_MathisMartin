@@ -378,7 +378,7 @@ void game_options_menu_change_background(void)
         TTE_WHITE_PB
     );
     tte_printf(
-        "#{P:%d,%d; cx:0x%X000}Save      Back",
+        "#{P:%d,%d; cx:0x%X000}Save     Cancel",
         OPTIONS_BACK_SAVE_TEXT_POS.x,
         OPTIONS_BACK_SAVE_TEXT_POS.y,
         TTE_WHITE_PB
