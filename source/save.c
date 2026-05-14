@@ -363,7 +363,7 @@ void load_game(void)
 {
     SaveHeader header;
 
-    if (get_save_header(&header) && (header.valid_sections & SAVE_SECTION_FLAG_GAME))
+    if (!get_save_header(&header) || !(header.valid_sections & SAVE_SECTION_FLAG_GAME))
         return;
 
     SaveGame game = SaveGame_default;
