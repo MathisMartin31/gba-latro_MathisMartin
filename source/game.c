@@ -288,6 +288,7 @@ static const HandValues hand_base_values[] = {
     {.chips = 160, .mult = 16, .display_name = "Flush 5"}  // FLUSH_FIVE
 };
 
+// The current game state, this is used to determine what the game is doing at any given time
 static enum GameState game_state = GAME_STATE_UNDEFINED;
 static enum HandState hand_state = HAND_DRAW;
 static enum PlayState play_state = PLAY_STARTING;
@@ -323,6 +324,7 @@ GameVariables g_game_vars = {
     .music_volume = DEFAULT_MUSIC_VOLUME,
     .sound_volume = DEFAULT_SOUND_VOLUME,
 };
+// clang-format on
 
 typedef struct
 {
@@ -338,17 +340,6 @@ StateInfo state_info[] = {
 #include "../include/def_state_info_table.h"
 #undef DEF_STATE_INFO
 };
-
-// The current game state, this is used to determine what the game is doing at any given time
-extern enum GameState game_state;
-extern enum HandState hand_state;
-extern enum PlayState play_state;
-
-// The current game state, this is used to determine what the game is doing at any given time
-enum GameState game_state = GAME_STATE_UNDEFINED;
-enum HandState hand_state = HAND_DRAW;
-enum PlayState play_state = PLAY_STARTING;
-// clang-format on
 
 // The sprite that displays the blind when in "GAME_PLAYING/GAME_ROUND_END" state
 
