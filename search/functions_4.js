@@ -15,11 +15,15 @@ var searchData=
   ['game_5foptions_5fmenu_5fon_5fupdate_12',['game_options_menu_on_update',['../options__menu_8h.html#ae9f1c19d3927dad17c2039bb346afa61',1,'options_menu.c']]],
   ['game_5fover_5fon_5fexit_13',['game_over_on_exit',['../game__over_8h.html#a5527e3c05a700b5f1401e58691f5f617',1,'game_over.c']]],
   ['game_5fover_5fon_5fupdate_14',['game_over_on_update',['../game__over_8h.html#a1c056d44b5768ac67209011a9c484adf',1,'game_over.c']]],
-  ['game_5frun_5fsetup_5fchange_5fbackground_15',['game_run_setup_change_background',['../run__setup_8h.html#a07eef7cea0b26def35da2b86655297d2',1,'run_setup.c']]],
-  ['game_5frun_5fsetup_5fon_5fexit_16',['game_run_setup_on_exit',['../run__setup_8h.html#a8a38b7caf89af4c2de2bbfb3bfa87e69',1,'run_setup.c']]],
-  ['game_5frun_5fsetup_5fon_5finit_17',['game_run_setup_on_init',['../run__setup_8h.html#acfad8d64b18066b45f53097cc7a4c09f',1,'run_setup.c']]],
-  ['game_5frun_5fsetup_5fon_5fupdate_18',['game_run_setup_on_update',['../run__setup_8h.html#aca2f4d081e3b46eadc1517c073342e2b',1,'run_setup.c']]],
-  ['game_5fwin_5fon_5finit_19',['game_win_on_init',['../game__over_8h.html#aaffb8156e7276d62874c7c5db0b8ed02',1,'game_over.c']]],
-  ['get_5ffont_5fpoint_5fstr_20',['get_font_point_str',['../font_8h.html#a0591d220421f2f0094aa80ae39007374',1,'font.c']]],
-  ['get_5fsave_5fheader_21',['get_save_header',['../save_8c.html#aa7c710df5af72243541a55e499e53bd9',1,'save.c']]]
+  ['game_5fround_5fend_5fchange_5fbackground_15',['game_round_end_change_background',['../round__end_8h.html#a6cb075ed0669b4a5ec6c72ed98a3dbcd',1,'round_end.c']]],
+  ['game_5fround_5fend_5fon_5fexit_16',['game_round_end_on_exit',['../round__end_8h.html#a2fb8a927165aebf53d7f93b7fee68ba1',1,'round_end.c']]],
+  ['game_5fround_5fend_5fon_5finit_17',['game_round_end_on_init',['../round__end_8h.html#a422af0c20ef999987ef2d1ccedc2ac54',1,'round_end.c']]],
+  ['game_5fround_5fend_5fon_5fupdate_18',['game_round_end_on_update',['../round__end_8h.html#a45620d5fc2607829039e6667bb075fab',1,'round_end.c']]],
+  ['game_5frun_5fsetup_5fchange_5fbackground_19',['game_run_setup_change_background',['../run__setup_8h.html#a07eef7cea0b26def35da2b86655297d2',1,'run_setup.c']]],
+  ['game_5frun_5fsetup_5fon_5fexit_20',['game_run_setup_on_exit',['../run__setup_8h.html#a8a38b7caf89af4c2de2bbfb3bfa87e69',1,'run_setup.c']]],
+  ['game_5frun_5fsetup_5fon_5finit_21',['game_run_setup_on_init',['../run__setup_8h.html#acfad8d64b18066b45f53097cc7a4c09f',1,'run_setup.c']]],
+  ['game_5frun_5fsetup_5fon_5fupdate_22',['game_run_setup_on_update',['../run__setup_8h.html#aca2f4d081e3b46eadc1517c073342e2b',1,'run_setup.c']]],
+  ['game_5fwin_5fon_5finit_23',['game_win_on_init',['../game__over_8h.html#aaffb8156e7276d62874c7c5db0b8ed02',1,'game_over.c']]],
+  ['get_5ffont_5fpoint_5fstr_24',['get_font_point_str',['../font_8h.html#a0591d220421f2f0094aa80ae39007374',1,'font.c']]],
+  ['get_5fsave_5fheader_25',['get_save_header',['../save_8c.html#aa7c710df5af72243541a55e499e53bd9',1,'save.c']]]
 ];

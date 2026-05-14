@@ -5,5 +5,6 @@ var dir_9ea5017e8fa7189fb9af6fe82af05461 =
     [ "game_over.c", "game__over_8c_source.html", null ],
     [ "main_menu.c", "main__menu_8c_source.html", null ],
     [ "options_menu.c", "options__menu_8c_source.html", null ],
+    [ "round_end.c", "round__end_8c_source.html", null ],
     [ "run_setup.c", "run__setup_8c_source.html", null ]
 ];
