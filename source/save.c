@@ -155,10 +155,10 @@ static const SaveHeader SaveHeader_default = {
  */
 static const SaveOptions SaveOptions_default = {
     .tag_options = "- OPTIONS DATA -",
-    .game_speed = 1,
-    .high_contrast = false,
-    .music_volume = 5,
-    .sound_volume = 5,
+    .game_speed = GAME_SPEED_MIN,
+    .high_contrast = DEFAULT_HIGH_CONTRAST,
+    .music_volume = VOLUME_OPTION_MAX,
+    .sound_volume = VOLUME_OPTION_MAX,
     .padding = {UNDEFINED, UNDEFINED, UNDEFINED},
 };
 
