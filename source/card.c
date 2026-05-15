@@ -33,7 +33,7 @@ static bool s_more_readable = DEFAULT_MORE_READABLE;
 
 void card_init()
 {
-    GRIT_CPY(&pal_obj_mem[DECK_SPRITES_PB * PAL_ROW_LEN], decks_face_down_gfxPal);
+    GRIT_CPY(&pal_obj_mem[DECK_PB * PAL_ROW_LEN], decks_face_down_gfxPal);
 }
 
 void set_cards_high_contrast(bool enable)
@@ -152,7 +152,7 @@ void card_object_set_sprite_face_down(CardObject* card_object, enum DeckType dec
         ATTR0_SQUARE | ATTR0_4BPP | ATTR0_AFF,
         ATTR1_SIZE_32,
         tile_index,
-        DECK_SPRITES_PB,
+        DECK_PB,
         layer + CARD_STARTING_LAYER
     );
     sprite_object_set_sprite((SpriteObject*)card_object, sprite);

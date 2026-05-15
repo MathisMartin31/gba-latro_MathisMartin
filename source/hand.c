@@ -67,7 +67,7 @@ static Hand s_hand = {
     .hand_selections = 0,
     .hand_type = NONE,
     .contained_hands = {{{0}}},
-    .state = HAND_DRAW,
+    .state = HAND_TAGS,
     .sort_by_suit = false
 };
 

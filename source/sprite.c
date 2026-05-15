@@ -319,8 +319,7 @@ void sprite_object_update_all(void)
 
 void sprite_object_shake(SpriteObject* sprite_object, mm_word sound_id)
 {
-    if (sprite_object == NULL)
-        return;
+    GBAL_RETURN_IF_NULL_VOID(sprite_object);
 
     sprite_object->vscale = float2fx(0.3f);
     sprite_object->vrotation = float2fx(8.0f); // Rotate the card when it's scored
@@ -329,6 +328,40 @@ void sprite_object_shake(SpriteObject* sprite_object, mm_word sound_id)
         return; // If no sound ID is provided, do nothing
 
     play_sfx(sound_id, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
+}
+
+#define SPRITE_OBJECT_BOUNCE_VSCALE (-0.4f)
+void sprite_object_bounce_grow(SpriteObject* sprite_object, float strength, mm_word sound_id)
+{
+    GBAL_RETURN_IF_NULL_VOID(sprite_object);
+
+    sprite_object->vscale = float2fx(SPRITE_OBJECT_BOUNCE_VSCALE * strength);
+
+    if (sound_id == UNDEFINED)
+        return;
+
+    play_sfx(sound_id, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
+}
+
+#define SPRITE_OBJECT_BOUNCE_SWAY_VSCALE    (-0.3f)
+#define SPRITE_OBJECT_BOUNCE_SWAY_VROTATION (-10.f)
+void sprite_object_bounce_sway(SpriteObject* sprite_object)
+{
+    GBAL_RETURN_IF_NULL_VOID(sprite_object);
+
+    // set scale and rotation velocity to grow the card and rotate it slightly
+    sprite_object->vscale = float2fx(SPRITE_OBJECT_BOUNCE_SWAY_VSCALE);
+    sprite_object->vrotation = float2fx(SPRITE_OBJECT_BOUNCE_SWAY_VROTATION);
+}
+
+void sprite_object_slide_to(SpriteObject* sprite_object, BG_POINT to)
+{
+    GBAL_RETURN_IF_NULL_VOID(sprite_object);
+    if (to.x == UNDEFINED || to.y == UNDEFINED)
+        return;
+
+    sprite_object->tx = int2fx(to.x);
+    sprite_object->ty = int2fx(to.y);
 }
 
 Sprite* sprite_object_get_sprite(SpriteObject* sprite_object)

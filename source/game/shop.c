@@ -20,6 +20,7 @@
 #include "mgba_logger.h"
 #include "random.h"
 #include "save.h"
+#include "skip_tag.h"
 #include "soundbank.h"
 #include "state_machine.h"
 #include "timer.h"
@@ -93,6 +94,7 @@ static List s_shop_items_list = LIST_DEFAULT;
 
 enum GameShopStates
 {
+    GAME_SHOP_SKIP_TAGS,
     GAME_SHOP_INTRO,
     GAME_SHOP_ACTIVE,
     GAME_SHOP_SHOW_CARD_DESC,
@@ -101,6 +103,7 @@ enum GameShopStates
     GAME_SHOP_MAX
 };
 
+static void game_shop_redeem_skip_tags(void);
 static void game_shop_intro(void);
 static void game_shop_process_user_input(void);
 static void game_shop_show_card_desc(void);
@@ -108,6 +111,7 @@ static void game_shop_hide_card_desc(void);
 static void game_shop_outro(void);
 
 static StateInfo shop_state_actions[GAME_SHOP_MAX] = {
+    STATE_INFO_UPDATE_FN_ONLY(game_shop_redeem_skip_tags),
     STATE_INFO_UPDATE_FN_ONLY(game_shop_intro),
     STATE_INFO_UPDATE_FN_ONLY(game_shop_process_user_input),
     STATE_INFO_UPDATE_FN_ONLY(game_shop_show_card_desc),
@@ -184,6 +188,16 @@ JokerObject* game_shop_get_description_card(void)
     return s_description_card;
 }
 
+int game_shop_get_reroll_cost(void)
+{
+    return reroll_cost;
+}
+
+void game_shop_set_reroll_cost(int cost)
+{
+    reroll_cost = cost;
+}
+
 void game_shop_reset(void)
 {
     list_clear(&s_shop_items_list);
@@ -222,12 +236,21 @@ void game_shop_on_init(void)
     s_timer = TM_ZERO;
 
     state_machine_register(&shop_sm);
-    state_machine_change_state(&shop_sm, GAME_SHOP_INTRO);
+    state_machine_change_state(&shop_sm, GAME_SHOP_SKIP_TAGS);
 
     // The selection grid is initialized outside of bounds and moved
     // to trigger the selection change so the initial selection is visible
     shop_selection_grid.selection = SHOP_INIT_SEL;
     selection_grid_move_selection_horz(&shop_selection_grid, 1);
+}
+
+static void game_shop_redeem_skip_tags(void)
+{
+    if (skip_tag_check_and_apply_for_event_loop(SKIP_TAG_EVENT_ON_SHOP_INIT) == SKIP_TAG_EFFECT_END)
+    {
+        timer = TM_ZERO;
+        state_machine_change_state(&shop_sm, GAME_SHOP_INTRO);
+    }
 }
 
 /**
@@ -617,7 +640,7 @@ static void game_shop_show_card_desc(void)
         tte_erase_rect_wrapper(PLAYING_SCREEN_RECT);
         toggle_windows(false, true);
 
-        // Move all other Jokers offscreen
+        // Move all other Sprites offscreen
 
         JokerObject* joker_object = NULL;
 
@@ -636,6 +659,9 @@ static void game_shop_show_card_desc(void)
             if (joker_object != s_description_card)
                 joker_object->ty = int2fx(SHOP_JOKER_SPRITES_INIT_POS.y + TILE_SIZE);
         }
+
+        // Owned SkipTags
+        move_owned_skip_tags_offscreen(true);
 
         // Set description_card new target position
 
@@ -736,7 +762,8 @@ static void game_shop_hide_card_desc(void)
             OWNED_CARDS_PANEL_3X3_SRC_POS
         );
 
-        // Move Jokers back to their positions
+        // Move Sprites back to their positions
+
         JokerObject* joker_object = NULL;
 
         // Owned Jokers
@@ -754,6 +781,8 @@ static void game_shop_hide_card_desc(void)
             if (joker_object != s_description_card)
                 joker_object->ty = int2fx(ITEM_SHOP_Y);
         }
+
+        move_owned_skip_tags_offscreen(false);
 
         s_description_card->tx = s_description_card_original_x_pos;
         s_description_card->ty = s_description_card_original_y_pos;

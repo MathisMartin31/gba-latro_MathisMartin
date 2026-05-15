@@ -256,6 +256,32 @@ void sprite_object_update_all(void);
 void sprite_object_shake(SpriteObject* sprite_object, mm_word sound_id);
 
 /**
+ * @brief Make SpriteObject bounce by slightly growing on screen and play a sound
+ *
+ * @param SpriteObject pointer to SpriteObject to make bounce. Cannot be **NULL**.
+ * @param strength how much does the sprite bounce, higher values yield a bigger bounce.
+ *        Recommended values are [0.5;2.0], although 1.0 is ideal.
+ * @param sound_id ID of sound from maxmod to play on executing bounce. If **UNDEFINED**
+ *        no sound will play.
+ */
+void sprite_object_bounce_grow(SpriteObject* sprite_object, float strength, mm_word sound_id);
+
+/**
+ * @brief Make SpriteObject bounce by slightly rotating on screen
+ *
+ * @param SpriteObject pointer to SpriteObject to make bounce. Cannot be **NULL**.
+ */
+void sprite_object_bounce_sway(SpriteObject* sprite_object);
+
+/**
+ * @brief Slide SpriteObject across the screen between from the current position to another
+ *
+ * @param SpriteObject pointer to SpriteObject to move. Cannot be **NULL**.
+ * @param to target position. Cannot be **UNDEFINED**.
+ */
+void sprite_object_slide_to(SpriteObject* sprite_object, BG_POINT to);
+
+/**
  * @brief Get a SpriteObject's registered Sprite
  *
  * @param sprite_object pointer to SpriteObject's registered Sprite. Cannot be **NULL**.

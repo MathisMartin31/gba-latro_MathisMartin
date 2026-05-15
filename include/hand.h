@@ -15,6 +15,7 @@
 
 enum HandState
 {
+    HAND_TAGS,
     HAND_DRAW,
     HAND_SELECT,
     // This is actually a misnomer because it's used for the deck

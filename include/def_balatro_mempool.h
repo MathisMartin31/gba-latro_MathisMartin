@@ -1,6 +1,7 @@
 #include "card.h"
 #include "joker.h"
 #include "list.h"
+#include "skip_tag.h"
 #include "sprite.h"
 
 POOL_ENTRY(Sprite, MAX_SPRITES);
@@ -8,4 +9,5 @@ POOL_ENTRY(Joker, MAX_ACTIVE_JOKERS);
 POOL_ENTRY(JokerObject, MAX_ACTIVE_JOKERS);
 POOL_ENTRY(Card, MAX_CARDS);
 POOL_ENTRY(CardObject, MAX_CARDS_ON_SCREEN);
+POOL_ENTRY(SkipTag, MAX_SKIP_TAGS);
 POOL_ENTRY(ListNode, MAX_LIST_NODES);

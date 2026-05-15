@@ -9,6 +9,12 @@
 #include "blind.h"
 
 /**
+ * @brief Reroll the Boss Blind from inside the menu.
+ *         This function is made to be used for both Vouchers and the Boss Skip Tag
+ */
+void game_blind_select_reroll_boss_from_menu(void);
+
+/**
  * @brief Change to the blind select background
  */
 void game_blind_select_change_background(void);
