@@ -360,6 +360,28 @@ void sprite_object_shake(SpriteObject* sprite_object, mm_word sound_id)
     play_sfx(sound_id, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
 }
 
+void sprite_object_bounce(SpriteObject* sprite_object, FIXED strength)
+{
+    GBAL_RETURN_IF_NULL_VOID(sprite_object);
+    sprite_object->vscale = strength;
+}
+
+void sprite_object_sway(SpriteObject* sprite_object)
+{
+    GBAL_RETURN_IF_NULL_VOID(sprite_object);
+    sprite_object->vrotation = float2fx(-10.f);
+}
+
+void sprite_object_set_target(SpriteObject* sprite_object, BG_POINT to)
+{
+    GBAL_RETURN_IF_NULL_VOID(sprite_object);
+    if (to.x == UNDEFINED || to.y == UNDEFINED)
+        return;
+
+    sprite_object->tx = int2fx(to.x);
+    sprite_object->ty = int2fx(to.y);
+}
+
 Sprite* sprite_object_get_sprite(SpriteObject* sprite_object)
 {
     GBAL_RETURN_IF_NULL_RET(sprite_object, NULL);
@@ -423,8 +445,8 @@ static Rect sprite_object_get_text_rect_under(SpriteObject* sprite_object)
     if (sprite_object_get_dimensions(sprite_object, &width, &height) == false)
     {
         // fallback
-        height = CARD_SPRITE_SIZE;
-        width = CARD_SPRITE_SIZE;
+        height = CARD_SPRITE_SIZE_PX;
+        width = CARD_SPRITE_SIZE_PX;
     }
 
     ret_rect.left = fx2int(sprite_object->tx);
