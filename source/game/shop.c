@@ -145,14 +145,14 @@ void game_shop_change_background(void)
 
     // Set the outline colors for the shop background. This is used for the alternate shop
     // palettes when opening packs
-    memset16(&pal_bg_mem[SHOP_BOTTOM_PANEL_BORDER_PAL_IDX], 0x213D, 1);
-    memset16(&pal_bg_mem[SHOP_PANEL_SHADOW_PAL_IDX], 0x10B4, 1);
+    pal_bg_mem[SHOP_BOTTOM_PANEL_BORDER_PAL_IDX] = 0x213D;
+    pal_bg_mem[SHOP_PANEL_SHADOW_PAL_IDX] = 0x10B4;
 
     // Reset the shop lights to correct colors
-    memset16(&pal_bg_mem[SHOP_LIGHTS_2_PAL_IDX], SHOP_LIGHTS_2_CLR, 1);
-    memset16(&pal_bg_mem[SHOP_LIGHTS_3_PAL_IDX], SHOP_LIGHTS_3_CLR, 1);
-    memset16(&pal_bg_mem[SHOP_LIGHTS_4_PAL_IDX], SHOP_LIGHTS_4_CLR, 1);
-    memset16(&pal_bg_mem[SHOP_LIGHTS_1_PAL_IDX], SHOP_LIGHTS_1_CLR, 1);
+    pal_bg_mem[SHOP_LIGHTS_2_PAL_IDX] = SHOP_LIGHTS_2_CLR;
+    pal_bg_mem[SHOP_LIGHTS_3_PAL_IDX] = SHOP_LIGHTS_3_CLR;
+    pal_bg_mem[SHOP_LIGHTS_4_PAL_IDX] = SHOP_LIGHTS_4_CLR;
+    pal_bg_mem[SHOP_LIGHTS_1_PAL_IDX] = SHOP_LIGHTS_1_CLR;
 
     // Disable the button highlight colors
     pal_bg_mem[REROLL_BTN_SELECTED_BORDER_PAL_IDX] = pal_bg_mem[REROLL_BTN_PAL_IDX];
