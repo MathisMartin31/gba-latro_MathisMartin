@@ -25,6 +25,7 @@
 #include "random.h"
 #include "save.h"
 #include "selection_grid.h"
+#include "skip_tag.h"
 #include "soundbank.h"
 #include "splash_screen.h"
 #include "sprite.h"
@@ -269,7 +270,7 @@ GameVariables g_game_vars = {
 
     .round = 0, .ante = 0, .money = 0, .hand_size = DEFAULT_HAND_SIZE,
     .deck = DECK_TYPE_RED,
-    .small_blind_skip_tag = NULL, .big_blind_skip_tag = NULL, .owned_skip_tags = NULL,
+    .owned_skip_tags = {},
 
     .current_blind = BLIND_TYPE_SMALL,
     .next_boss_blind = BLIND_TYPE_BIG,
@@ -415,6 +416,8 @@ void game_init()
     g_game_vars.score = STARTING_SCORE;
     g_game_vars.round = 0;
 
+    g_game_vars.owned_skip_tags = list_create();
+
     // Initialize/reset unbeaten Boss/Showdown Blinds so they are all available
     init_unbeaten_blinds_list(false);
     init_unbeaten_blinds_list(true);
@@ -544,6 +547,17 @@ static inline void jokers_update_loop(void)
     expired_jokers_update_loop();
 }
 
+static inline void owned_skip_tags_update_loop(void)
+{
+    ListItr itr = list_itr_create(&g_game_vars.owned_skip_tags);
+    SkipTag* tag;
+
+    while ((tag = list_itr_next(&itr)) && tag->sprite_object != NULL)
+    {
+        sprite_object_update(tag->sprite_object);
+    }
+}
+
 void game_update()
 {
     rng_update();
@@ -551,6 +565,7 @@ void game_update()
     g_game_vars.timer++;
 
     jokers_update_loop();
+    owned_skip_tags_update_loop();
 
     state_machine_update();
 
