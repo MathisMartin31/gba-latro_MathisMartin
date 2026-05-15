@@ -48,9 +48,7 @@ typedef struct
     s32 ante;
     s32 money;
 
-    SkipTag* small_blind_skip_tag;
-    SkipTag* big_blind_skip_tag;
-    List* owned_skip_tags;
+    List owned_skip_tags;
 
     // Blind variables
 

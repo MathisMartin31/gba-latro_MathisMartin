@@ -6,7 +6,7 @@
 
 #include <tonc.h>
 
-#define MAX_SKIP_TAGS 5
+#define MAX_SKIP_TAGS 16
 
 #define SKIP_TAG_SPRITE_OFFSET 4
 // Put Tag sprites after the Jokers'
@@ -52,8 +52,10 @@ typedef struct SkipTag
 
 SkipTag* skip_tag_new(u8 tag_type);
 void skip_tag_set_sprite(SkipTag* tag, int layer);
-void skip_tag_object_destroy(SkipTag** tag);
-
+void skip_tag_destroy(SkipTag** tag);
 SkipTag* roll_skip_tag(void);
+
+void add_skip_tag(SkipTag** blind_tag);
+void remove_skip_tag(int tag_idx);
 
 #endif // SKIP_TAGS_H

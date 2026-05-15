@@ -23,6 +23,8 @@
 #define BLIND_SKIP_BTN_SELECTED_BORDER_PID   10
 #define BLIND_SELECT_BTN_SELECTED_BORDER_PID 18
 
+#define NB_SKIPPABLE_BLINDS 2
+
 static int timer;
 
 static void game_blind_select_start_anim_seq(void);
@@ -56,6 +58,8 @@ static const SubStateActionFn blind_select_state_actions[] = {
 // clang-format off
 // Points                                                x        y
 static const BG_POINT TOP_LEFT_PANEL_EMPTY_3W_ROW_POS = {29,      31};
+static const BG_POINT SMALL_BLIND_SKIP_TAG_INIT_POS   = {70,      160};
+static const BG_POINT BIG_BLIND_SKIP_TAG_INIT_POS     = {110,     160};
 static const BG_POINT SMALL_BLIND_SKIP_TAG_HIGH_POS   = {70,      127};
 //static const BG_POINT SMALL_BLIND_SKIP_TAG_LOW_POS    = {70,      135};
 //static const BG_POINT BIG_BLIND_SKIP_TAG_HIGH_POS     = {110,     127};
@@ -83,6 +87,7 @@ static int selection_y = 0;
 static enum BlindSelectState substate;
 
 static Sprite* blind_select_tokens[NUM_BLINDS_PER_ANTE] = {NULL};
+static SkipTag* blind_skip_tags[NB_SKIPPABLE_BLINDS] = {NULL};
 
 static void game_blind_select_start_anim_seq()
 {
@@ -101,6 +106,7 @@ static void game_blind_select_start_anim_seq()
     if (timer == TM_END_ANIM_SEQ)
     {
         game_blind_select_print_blinds_reqs_and_rewards();
+        blind_skip_tags_init();
         substate = BLIND_SELECT;
         timer = TM_ZERO; // Reset the timer
     }
@@ -205,6 +211,16 @@ static void game_blind_select_handle_input()
             case SKIP_ROW:
                 if (g_game_vars.current_blind <= BLIND_TYPE_BIG)
                 {
+                    add_skip_tag(&blind_skip_tags[g_game_vars.current_blind]);
+
+                    // if we skipped the Small Blind, we have to up the Big Blind's
+                    // SkipTag by a tile
+                    if (g_game_vars.current_blind == BLIND_TYPE_SMALL)
+                    {
+                        blind_skip_tags[BLIND_TYPE_BIG]->sprite_object->y -= int2fx(TILE_SIZE);
+                        blind_skip_tags[BLIND_TYPE_BIG]->sprite_object->ty -= int2fx(TILE_SIZE);
+                    }
+
                     play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
                     increment_blind(BLIND_STATE_SKIPPED);
 
@@ -242,6 +258,16 @@ static void game_blind_select_handle_input()
 
 static void game_blind_select_selected_anim_seq()
 {
+    if (timer == 1)
+    {
+        // Hide all skip tags if ther aren't NULL already
+        for (int i = 0; i < NB_SKIPPABLE_BLINDS; i++)
+        {
+            if (blind_skip_tags[i] != NULL)
+                blind_skip_tags[i]->sprite_object->ty += int2fx(50);
+        }
+    }
+
     if (timer < 15)
     {
         Rect blinds_rect = POP_MENU_ANIM_RECT;
@@ -262,6 +288,13 @@ static void game_blind_select_selected_anim_seq()
         for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
         {
             obj_hide(blind_select_tokens[i]->obj);
+        }
+
+        // Destroy the current blind's skip tag if we are starting Small or Big blind.
+        // This way, both SkipTag pointers will be NULL by the end of the Ante
+        if (g_game_vars.current_blind <= BLIND_TYPE_BIG)
+        {
+            skip_tag_destroy(&blind_skip_tags[g_game_vars.current_blind]);
         }
 
         substate = DISPLAY_BLIND_PANEL; // Reset the state
@@ -442,35 +475,36 @@ static void blind_skip_tags_init(void)
     if (g_game_vars.current_blind != BLIND_TYPE_SMALL)
         return;
 
-    if (g_game_vars.small_blind_skip_tag != NULL)
-        skip_tag_object_destroy(&g_game_vars.small_blind_skip_tag);
-    if (g_game_vars.big_blind_skip_tag != NULL)
-        skip_tag_object_destroy(&g_game_vars.big_blind_skip_tag);
+    skip_tag_destroy(&blind_skip_tags[0]);
+    skip_tag_destroy(&blind_skip_tags[1]);
 
-    g_game_vars.small_blind_skip_tag = roll_skip_tag();
-    g_game_vars.big_blind_skip_tag = roll_skip_tag();
+    blind_skip_tags[0] = roll_skip_tag();
+    blind_skip_tags[1] = roll_skip_tag();
 
-    skip_tag_set_sprite(g_game_vars.small_blind_skip_tag, SMALL_BLIND_SKIP_TAG_LAYER);
-    skip_tag_set_sprite(g_game_vars.big_blind_skip_tag, BIG_BLIND_SKIP_TAG_LAYER);
+    skip_tag_set_sprite(blind_skip_tags[0], SMALL_BLIND_SKIP_TAG_LAYER);
+    skip_tag_set_sprite(blind_skip_tags[1], BIG_BLIND_SKIP_TAG_LAYER);
 
-    g_game_vars.small_blind_skip_tag->sprite_object->sprite->obj->attr0 |= ATTR0_AFF_DBL;
-    g_game_vars.small_blind_skip_tag->sprite_object->tx = int2fx(SMALL_BLIND_SKIP_TAG_HIGH_POS.x);
-    g_game_vars.small_blind_skip_tag->sprite_object->x = g_game_vars.small_blind_skip_tag->sprite_object->tx;
-    g_game_vars.small_blind_skip_tag->sprite_object->ty = int2fx(SMALL_BLIND_SKIP_TAG_HIGH_POS.y);
-    g_game_vars.small_blind_skip_tag->sprite_object->y = g_game_vars.small_blind_skip_tag->sprite_object->ty;
+    blind_skip_tags[0]->sprite_object->sprite->obj->attr0 |= ATTR0_AFF_DBL;
+    blind_skip_tags[0]->sprite_object->x = int2fx(SMALL_BLIND_SKIP_TAG_INIT_POS.x);
+    blind_skip_tags[0]->sprite_object->y = int2fx(SMALL_BLIND_SKIP_TAG_INIT_POS.y);
+    blind_skip_tags[0]->sprite_object->tx = int2fx(SMALL_BLIND_SKIP_TAG_HIGH_POS.x);
+    blind_skip_tags[0]->sprite_object->ty = int2fx(SMALL_BLIND_SKIP_TAG_HIGH_POS.y);
 
-    g_game_vars.big_blind_skip_tag->sprite_object->sprite->obj->attr0 |= ATTR0_AFF_DBL;
-    g_game_vars.big_blind_skip_tag->sprite_object->tx = int2fx(BIG_BLIND_SKIP_TAG_LOW_POS.x);
-    g_game_vars.big_blind_skip_tag->sprite_object->x = g_game_vars.big_blind_skip_tag->sprite_object->tx;
-    g_game_vars.big_blind_skip_tag->sprite_object->ty = int2fx(BIG_BLIND_SKIP_TAG_LOW_POS.y);
-    g_game_vars.big_blind_skip_tag->sprite_object->y = g_game_vars.big_blind_skip_tag->sprite_object->ty;
+    blind_skip_tags[1]->sprite_object->sprite->obj->attr0 |= ATTR0_AFF_DBL;
+    blind_skip_tags[1]->sprite_object->x = int2fx(BIG_BLIND_SKIP_TAG_INIT_POS.x);
+    blind_skip_tags[1]->sprite_object->y = int2fx(BIG_BLIND_SKIP_TAG_INIT_POS.y);
+    blind_skip_tags[1]->sprite_object->tx = int2fx(BIG_BLIND_SKIP_TAG_LOW_POS.x);
+    blind_skip_tags[1]->sprite_object->ty = int2fx(BIG_BLIND_SKIP_TAG_LOW_POS.y);
     blind_skip_tags_update();
 }
 
 static void blind_skip_tags_update(void)
 {
-    sprite_object_update(g_game_vars.small_blind_skip_tag->sprite_object);
-    sprite_object_update(g_game_vars.big_blind_skip_tag->sprite_object);
+    for (int i = 0; i < NB_SKIPPABLE_BLINDS; i++)
+    {
+        if (blind_skip_tags[i] != NULL)
+            sprite_object_update(blind_skip_tags[i]->sprite_object);
+    }
 }
 
 void game_blind_select_on_init(void)
@@ -482,7 +516,6 @@ void game_blind_select_on_init(void)
     selection_y = 0;
 
     blind_tokens_init();
-    blind_skip_tags_init();
 
     // TODO: silly bug rn, the sprite tokens are unhidden on a background change.
     // this probably shouldn't be here. also need to force redraw or the callback
