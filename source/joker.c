@@ -222,8 +222,7 @@ JokerObject* joker_object_new(Joker* joker)
 
     joker_object->type = ITEM_TYPE_JOKER;
 
-    int tile_index = JOKER_TID + layer * JOKER_SPRITE_OFFSET;
-
+    int tile_index = get_sprite_tid(JOKER_SPRITE, layer);
     int joker_spritesheet_idx = s_joker_get_spritesheet_idx(joker->id);
     int joker_idx = s_joker_get_sprite_idx_in_sheet(joker->id, joker_spritesheet_idx);
     int joker_pb = s_allocate_pb_if_needed(joker->id);
@@ -231,8 +230,8 @@ JokerObject* joker_object_new(Joker* joker)
 
     memcpy32(
         &tile_mem[TILE_MEM_OBJ_CHARBLOCK0_IDX][tile_index],
-        &joker_gfxTiles[joker_spritesheet_idx][joker_idx * TILE_SIZE * JOKER_SPRITE_OFFSET],
-        TILE_SIZE * JOKER_SPRITE_OFFSET
+        &joker_gfxTiles[joker_spritesheet_idx][joker_idx * TILE_SIZE * JOKER_SPRITE_SIZE],
+        TILE_SIZE * JOKER_SPRITE_SIZE
     );
 
     sprite_object_set_sprite(
@@ -242,7 +241,7 @@ JokerObject* joker_object_new(Joker* joker)
             ATTR1_SIZE_32,
             tile_index,
             joker_pb,
-            JOKER_STARTING_LAYER + layer
+            get_sprite_starting_layer(JOKER_SPRITE) + layer
         )
     );
 
@@ -254,7 +253,8 @@ void joker_object_destroy(JokerObject** joker_object)
     if (joker_object == NULL || *joker_object == NULL)
         return;
 
-    s16 layer = sprite_get_layer(joker_object_get_sprite(*joker_object)) - JOKER_STARTING_LAYER;
+    s16 layer = sprite_get_layer(joker_object_get_sprite(*joker_object)) -
+                get_sprite_starting_layer(JOKER_SPRITE);
     s_used_layers[layer] = false;
     s_joker_pb_remove_sprite_user(sprite_get_pb(joker_object_get_sprite(*joker_object)));
     if (s_joker_pb_get_num_sprite_users((sprite_get_pb(joker_object_get_sprite(*joker_object)))) ==
@@ -348,17 +348,19 @@ void joker_reset_rollable_jokers(void)
 
 /**
  * @brief Rolls a random Joker among the available ones
+ *
+ * @param joker_rarity passed here so that we can roll a Joker with a given rarity
+ * @param key to the RNG sequence used
+ *
+ * @return random Joker ID
  */
-static int joker_roll_id(enum RngSequence key)
+int joker_roll_id(int joker_rarity, enum RngSequence key)
 {
     // Now determine how many jokers are available based on the rarity
     int jokers_avail_size = get_num_rollable_jokers();
 
     if (jokers_avail_size == 0)
         return UNDEFINED;
-
-    // Roll for what rarity the joker will be
-    int joker_rarity = joker_get_random_rarity(key);
 
     int matching_joker_ids[jokers_avail_size];
     int fallback_random_idx = rng_get_u32(key) % jokers_avail_size;
@@ -407,7 +409,7 @@ Item* joker_object_roll_new(enum RngSequence key)
     else
 #endif
     {
-        joker_id = joker_roll_id(key);
+        joker_id = joker_roll_id(joker_get_random_rarity(), key);
     }
 
     // If for some reason only no joker is left, don't make another
