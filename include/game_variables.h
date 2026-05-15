@@ -7,7 +7,9 @@
 #define GAME_VARIABLES_H
 
 #include "blind.h"
+#include "list.h"
 #include "random.h"
+#include "skip_tag.h"
 
 #include <tonc.h>
 
@@ -48,6 +50,10 @@ typedef struct
     s32 money;
     s32 hand_size;
     s32 deck;
+
+    SkipTag* small_blind_skip_tag;
+    SkipTag* big_blind_skip_tag;
+    List* owned_skip_tags;
 
     // Blind variables
 
