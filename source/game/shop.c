@@ -1,3 +1,9 @@
+/**
+ * @file shop.c
+ *
+ * @brief Shop state functions implementation.
+ */
+
 #include "game/shop.h"
 
 #include "audio_utils.h"
@@ -46,8 +52,13 @@
 #define SHOP_LIGHTS_4_CLR 0x5F9F
 
 // clang-format off
-static const Rect SHOP_PRICES_TEXT_RECT = { 72,  56, 192, 160 };
-static const Rect SHOP_REROLL_RECT      = { 88,  96, UNDEFINED, UNDEFINED };
+static const Rect     SHOP_ICON_FROM_RECT   = {  0,  26,   8,  26 };
+static const BG_POINT SHOP_ICON_TO_POS      = {  0,   0 };
+static const Rect     SHOP_PRICES_TEXT_RECT = { 72,  56, 192, 160 };
+static const Rect     SHOP_REROLL_RECT      = { 88,  96, UNDEFINED, UNDEFINED };
+
+// Positions in pixels
+static const BG_POINT SHOP_JOKER_SPRITES_INIT_POS = {120, 160};
 // clang-format on
 
 enum GameShopStates
@@ -123,12 +134,8 @@ void game_shop_change_background(void)
     memset16(&pal_bg_mem[SHOP_LIGHTS_1_PAL_IDX], SHOP_LIGHTS_1_CLR, 1);
 
     // Disable the button highlight colors
-    memcpy16(&pal_bg_mem[REROLL_BTN_SELECTED_BORDER_PAL_IDX], &pal_bg_mem[REROLL_BTN_PAL_IDX], 1);
-    memcpy16(
-        &pal_bg_mem[NEXT_ROUND_BTN_SELECTED_BORDER_PAL_IDX],
-        &pal_bg_mem[NEXT_ROUND_BTN_PAL_IDX],
-        1
-    );
+    pal_bg_mem[REROLL_BTN_SELECTED_BORDER_PAL_IDX] = pal_bg_mem[REROLL_BTN_PAL_IDX];
+    pal_bg_mem[NEXT_ROUND_BTN_SELECTED_BORDER_PAL_IDX] = pal_bg_mem[NEXT_ROUND_BTN_PAL_IDX];
 }
 
 void game_shop_on_init(void)
@@ -247,8 +254,9 @@ static void game_shop_create_items(void)
 
         JokerObject* joker_object = joker_object_new(joker_new(joker_id));
 
-        joker_object->sprite_object->x = int2fx(120 + i * CARD_SPRITE_SIZE);
-        joker_object->sprite_object->y = int2fx(160);
+        joker_object->sprite_object->x =
+            int2fx(SHOP_JOKER_SPRITES_INIT_POS.x + i * CARD_SPRITE_SIZE);
+        joker_object->sprite_object->y = int2fx(SHOP_JOKER_SPRITES_INIT_POS.y);
         joker_object->sprite_object->tx = joker_object->sprite_object->x;
         joker_object->sprite_object->ty = int2fx(ITEM_SHOP_Y);
 
@@ -283,11 +291,12 @@ static void game_shop_intro()
         // TODO: Extract to generic function?
         for (int y = 0; y < timer_offset; y++)
         {
-            int y_from = 26 + y - timer_offset;
-            int y_to = 0 + y;
+            Rect from = SHOP_ICON_FROM_RECT;
+            from.top += y - timer_offset;
+            from.bottom += y - timer_offset;
 
-            Rect from = {0, y_from, 8, y_from};
-            BG_POINT to = {0, y_to};
+            BG_POINT to = SHOP_ICON_TO_POS;
+            to.y = y;
 
             main_bg_se_copy_rect(from, to);
         }
@@ -336,8 +345,8 @@ static inline void game_shop_buy_joker(int shop_joker_idx)
     List* shop_jokers_list = get_shop_jokers_list();
     JokerObject* joker_object = (JokerObject*)list_get_at_idx(shop_jokers_list, shop_joker_idx);
 
-    g_game_vars.money -= joker_object->joker->value; // Deduct the money spent on the joker
-    display_money();                                 // Update the money display
+    g_game_vars.money -= joker_object->joker->value;
+    display_money();
     sprite_object_erase_text_under(joker_object->sprite_object);
     sprite_object_set_focus(joker_object->sprite_object, false);
     add_to_held_jokers(joker_object);
@@ -361,11 +370,7 @@ static void shop_top_row_on_key_transit(SelectionGrid* selection_grid, Selection
         timer = TM_ZERO;
         reroll_cost = REROLL_BASE_COST;
 
-        memcpy16(
-            &pal_bg_mem[NEXT_ROUND_BTN_SELECTED_BORDER_PAL_IDX],
-            &pal_bg_mem[SHOP_PANEL_SHADOW_PAL_IDX],
-            1
-        );
+        pal_bg_mem[NEXT_ROUND_BTN_SELECTED_BORDER_PAL_IDX] = pal_bg_mem[SHOP_PANEL_SHADOW_PAL_IDX];
     }
     else
     {
@@ -407,11 +412,7 @@ static bool shop_top_row_on_selection_changed(
         if (prev_selection->x == NEXT_ROUND_BTN_SEL_X)
         {
             // Remove next round button highlight
-            memcpy16(
-                &pal_bg_mem[NEXT_ROUND_BTN_SELECTED_BORDER_PAL_IDX],
-                &pal_bg_mem[NEXT_ROUND_BTN_PAL_IDX],
-                1
-            );
+            pal_bg_mem[NEXT_ROUND_BTN_SELECTED_BORDER_PAL_IDX] = pal_bg_mem[NEXT_ROUND_BTN_PAL_IDX];
         }
         else
         {
@@ -462,11 +463,7 @@ static bool shop_reroll_row_on_selection_changed(
     if (row_idx == prev_selection->y)
     {
         // Remove highlight
-        memcpy16(
-            &pal_bg_mem[REROLL_BTN_SELECTED_BORDER_PAL_IDX],
-            &pal_bg_mem[REROLL_BTN_PAL_IDX],
-            1
-        );
+        pal_bg_mem[REROLL_BTN_SELECTED_BORDER_PAL_IDX] = pal_bg_mem[REROLL_BTN_PAL_IDX];
 
         if (new_selection->x != NEXT_ROUND_BTN_SEL_X)
         {
@@ -611,10 +608,10 @@ static inline void game_shop_lights_anim_frame(void)
 {
     // Shift palette around the border of the shop icon
     COLOR shifted_palette[4];
-    memcpy16(&shifted_palette[0], &pal_bg_mem[SHOP_LIGHTS_2_PAL_IDX], 1);
-    memcpy16(&shifted_palette[1], &pal_bg_mem[SHOP_LIGHTS_3_PAL_IDX], 1);
-    memcpy16(&shifted_palette[2], &pal_bg_mem[SHOP_LIGHTS_4_PAL_IDX], 1);
-    memcpy16(&shifted_palette[3], &pal_bg_mem[SHOP_LIGHTS_1_PAL_IDX], 1);
+    shifted_palette[0] = pal_bg_mem[SHOP_LIGHTS_2_PAL_IDX];
+    shifted_palette[1] = pal_bg_mem[SHOP_LIGHTS_3_PAL_IDX];
+    shifted_palette[2] = pal_bg_mem[SHOP_LIGHTS_4_PAL_IDX];
+    shifted_palette[3] = pal_bg_mem[SHOP_LIGHTS_1_PAL_IDX];
 
     // Circularly shift the palette
     int last = shifted_palette[3];
@@ -627,10 +624,10 @@ static inline void game_shop_lights_anim_frame(void)
     shifted_palette[0] = last;
 
     // Copy the shifted palette to the next 4 slots
-    memcpy16(&pal_bg_mem[SHOP_LIGHTS_2_PAL_IDX], &shifted_palette[0], 1);
-    memcpy16(&pal_bg_mem[SHOP_LIGHTS_3_PAL_IDX], &shifted_palette[1], 1);
-    memcpy16(&pal_bg_mem[SHOP_LIGHTS_4_PAL_IDX], &shifted_palette[2], 1);
-    memcpy16(&pal_bg_mem[SHOP_LIGHTS_1_PAL_IDX], &shifted_palette[3], 1);
+    pal_bg_mem[SHOP_LIGHTS_2_PAL_IDX] = shifted_palette[0];
+    pal_bg_mem[SHOP_LIGHTS_3_PAL_IDX] = shifted_palette[1];
+    pal_bg_mem[SHOP_LIGHTS_4_PAL_IDX] = shifted_palette[2];
+    pal_bg_mem[SHOP_LIGHTS_1_PAL_IDX] = shifted_palette[3];
 }
 
 void game_shop_on_update(void)

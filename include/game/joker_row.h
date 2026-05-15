@@ -8,7 +8,6 @@
 #define GAME_JOKER_ROW_H
 
 #include "selection_grid.h"
-#include "sprite.h"
 
 /**
  * @brief Returns the size of the Jokers' row at the top of the game screen.
