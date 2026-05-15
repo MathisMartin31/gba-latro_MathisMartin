@@ -61,6 +61,8 @@ static const Rect     SHOP_REROLL_RECT      = { 88,  96, UNDEFINED, UNDEFINED };
 static const BG_POINT SHOP_JOKER_SPRITES_INIT_POS = {120, 160};
 // clang-format on
 
+// Shop Substates
+
 enum GameShopStates
 {
     GAME_SHOP_INTRO,
@@ -68,6 +70,18 @@ enum GameShopStates
     GAME_SHOP_EXIT,
     GAME_SHOP_MAX
 };
+
+static void game_shop_intro();
+static void game_shop_process_user_input();
+static void game_shop_outro();
+
+static const SubStateActionFn shop_state_actions[] = {
+    game_shop_intro,
+    game_shop_process_user_input,
+    game_shop_outro
+};
+
+// Shop SelectionGrid
 
 static int shop_top_row_get_size(void);
 static bool shop_top_row_on_selection_changed(
@@ -85,15 +99,6 @@ static bool shop_reroll_row_on_selection_changed(
     const Selection* new_selection
 );
 static void shop_reroll_row_on_key_transit(SelectionGrid* selection_grid, Selection* selection);
-static void game_shop_intro();
-static void game_shop_process_user_input();
-static void game_shop_outro();
-
-static const SubStateActionFn shop_state_actions[] = {
-    game_shop_intro,
-    game_shop_process_user_input,
-    game_shop_outro
-};
 
 static SelectionGridRow shop_selection_rows[] = {
     {0, jokers_sel_row_get_size,  jokers_sel_row_on_selection_changed,  jokers_sel_row_on_key_transit,  {.wrap = false, .has_h_exit_idx = false, .h_exit_idx = 0}},
@@ -108,6 +113,22 @@ static SelectionGrid shop_selection_grid = {
     NUM_ELEM_IN_ARR(shop_selection_rows),
     SHOP_INIT_SEL
 };
+
+// Shop Buttons
+
+static void next_round_on_pressed(void);
+static void reroll_on_pressed(void);
+static bool reroll_can_be_pressed(void);
+static Button next_round_button =
+    {NEXT_ROUND_BTN_SELECTED_BORDER_PAL_IDX, NEXT_ROUND_BTN_PAL_IDX, next_round_on_pressed, NULL};
+static Button reroll_button = {
+    REROLL_BTN_SELECTED_BORDER_PAL_IDX,
+    REROLL_BTN_PAL_IDX,
+    reroll_on_pressed,
+    reroll_can_be_pressed
+};
+
+// Shop internal variables
 
 static int timer;
 static enum GameShopStates substate;
@@ -363,14 +384,7 @@ static void shop_top_row_on_key_transit(SelectionGrid* selection_grid, Selection
 
     if (selection->x == NEXT_ROUND_BTN_SEL_X)
     {
-        play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
-
-        // Go to next blind selection game state
-        substate = GAME_SHOP_EXIT; // Go to the outro sequence state
-        timer = TM_ZERO;
-        reroll_cost = REROLL_BASE_COST;
-
-        pal_bg_mem[NEXT_ROUND_BTN_SELECTED_BORDER_PAL_IDX] = pal_bg_mem[SHOP_PANEL_SHADOW_PAL_IDX];
+        button_press(&next_round_button);
     }
     else
     {
@@ -411,8 +425,7 @@ static bool shop_top_row_on_selection_changed(
     {
         if (prev_selection->x == NEXT_ROUND_BTN_SEL_X)
         {
-            // Remove next round button highlight
-            pal_bg_mem[NEXT_ROUND_BTN_SELECTED_BORDER_PAL_IDX] = pal_bg_mem[NEXT_ROUND_BTN_PAL_IDX];
+            button_set_highlight(&next_round_button, false);
         }
         else
         {
@@ -426,8 +439,7 @@ static bool shop_top_row_on_selection_changed(
     {
         if (new_selection->x == NEXT_ROUND_BTN_SEL_X)
         {
-            // Highlight next round button
-            memset16(&pal_bg_mem[NEXT_ROUND_BTN_SELECTED_BORDER_PAL_IDX], BTN_HIGHLIGHT_COLOR, 1);
+            button_set_highlight(&next_round_button, true);
         }
         else
         {
@@ -462,8 +474,7 @@ static bool shop_reroll_row_on_selection_changed(
 {
     if (row_idx == prev_selection->y)
     {
-        // Remove highlight
-        pal_bg_mem[REROLL_BTN_SELECTED_BORDER_PAL_IDX] = pal_bg_mem[REROLL_BTN_PAL_IDX];
+        button_set_highlight(&reroll_button, false);
 
         if (new_selection->x != NEXT_ROUND_BTN_SEL_X)
         {
@@ -474,7 +485,7 @@ static bool shop_reroll_row_on_selection_changed(
     }
     else if (row_idx == new_selection->y)
     {
-        memset16(&pal_bg_mem[REROLL_BTN_SELECTED_BORDER_PAL_IDX], BTN_HIGHLIGHT_COLOR, 1);
+        button_set_highlight(&reroll_button, true);
     }
 
     return true;
@@ -541,12 +552,28 @@ static void shop_reroll_row_on_key_transit(SelectionGrid* selection_grid, Select
         return;
     }
 
-    if (g_game_vars.money >= reroll_cost)
-    {
-        // TODO: Add money sound effect
-        play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
-        game_shop_reroll(&reroll_cost);
-    }
+    button_press(&reroll_button);
+}
+
+static void next_round_on_pressed(void)
+{
+    // Go to next blind selection game state
+    substate = GAME_SHOP_EXIT; // Go to the outro sequence state
+    timer = TM_ZERO;
+    reroll_cost = REROLL_BASE_COST;
+
+    pal_bg_mem[NEXT_ROUND_BTN_SELECTED_BORDER_PAL_IDX] = pal_bg_mem[SHOP_PANEL_SHADOW_PAL_IDX];
+}
+
+static void reroll_on_pressed(void)
+{
+    // TODO: Add money sound effect
+    game_shop_reroll(&reroll_cost);
+}
+
+static bool reroll_can_be_pressed(void)
+{
+    return g_game_vars.money >= reroll_cost;
 }
 
 /**
