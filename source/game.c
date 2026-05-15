@@ -302,6 +302,7 @@ GameVariables g_game_vars = {
     .timer = 0, .rng_seed = 0, .rng_step = 0,
 
     .round = 0, .ante = 0, .money = 0,
+    .small_blind_skip_tag = NULL, .big_blind_skip_tag = NULL, .owned_skip_tags = NULL,
 
     .current_blind = BLIND_TYPE_SMALL,
     .next_boss_blind = BLIND_TYPE_BIG,
