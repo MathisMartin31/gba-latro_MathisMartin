@@ -66,12 +66,12 @@ static StateMachine blind_select_sm = STATE_MACHINE_DEFINE(state_info, BLIND_SEL
 // clang-format off
 // Points                                                x        y
 static const BG_POINT TOP_LEFT_PANEL_EMPTY_3W_ROW_POS = {29,      31};
-static const BG_POINT SMALL_BLIND_SKIP_TAG_INIT_POS   = {67,      157};
-static const BG_POINT BIG_BLIND_SKIP_TAG_INIT_POS     = {107,     157};
-static const BG_POINT SMALL_BLIND_SKIP_TAG_HIGH_POS   = {67,      124};
-//static const BG_POINT SMALL_BLIND_SKIP_TAG_LOW_POS    = {67,      132};
-//static const BG_POINT BIG_BLIND_SKIP_TAG_HIGH_POS     = {107,     124};
-static const BG_POINT BIG_BLIND_SKIP_TAG_LOW_POS      = {107,     132};
+static const BG_POINT SMALL_BLIND_SKIP_TAG_INIT_POS   = {75,      165};
+static const BG_POINT BIG_BLIND_SKIP_TAG_INIT_POS     = {115,     165};
+static const BG_POINT SMALL_BLIND_SKIP_TAG_HIGH_POS   = {75,      132};
+//static const BG_POINT SMALL_BLIND_SKIP_TAG_LOW_POS    = {75,      140};
+//static const BG_POINT BIG_BLIND_SKIP_TAG_HIGH_POS     = {115,     132};
+static const BG_POINT BIG_BLIND_SKIP_TAG_LOW_POS      = {115,     140};
 // Rects                                                 left     top     right   bottom
 static const Rect BLIND_SKIP_BTN_GRAY_RECT            = {0,       24,     4,      27};
 static const Rect BLIND_SKIP_BTN_PREANIM_DEST_RECT    = {9,       29,     19,     31};
@@ -503,18 +503,16 @@ static void blind_skip_tags_init(void)
     skip_tag_set_sprite(blind_skip_tags[0], SMALL_BLIND_SKIP_TAG_LAYER);
     skip_tag_set_sprite(blind_skip_tags[1], BIG_BLIND_SKIP_TAG_LAYER);
 
-    blind_skip_tags[0]->sprite_object->sprite->obj->attr0 |= ATTR0_AFF_DBL;
-    blind_skip_tags[0]->sprite_object->x = int2fx(SMALL_BLIND_SKIP_TAG_INIT_POS.x);
-    blind_skip_tags[0]->sprite_object->y = int2fx(SMALL_BLIND_SKIP_TAG_INIT_POS.y);
-    blind_skip_tags[0]->sprite_object->tx = int2fx(SMALL_BLIND_SKIP_TAG_HIGH_POS.x);
-    blind_skip_tags[0]->sprite_object->ty = int2fx(SMALL_BLIND_SKIP_TAG_HIGH_POS.y);
-
-    blind_skip_tags[1]->sprite_object->sprite->obj->attr0 |= ATTR0_AFF_DBL;
-    blind_skip_tags[1]->sprite_object->x = int2fx(BIG_BLIND_SKIP_TAG_INIT_POS.x);
-    blind_skip_tags[1]->sprite_object->y = int2fx(BIG_BLIND_SKIP_TAG_INIT_POS.y);
-    blind_skip_tags[1]->sprite_object->tx = int2fx(BIG_BLIND_SKIP_TAG_LOW_POS.x);
-    blind_skip_tags[1]->sprite_object->ty = int2fx(BIG_BLIND_SKIP_TAG_LOW_POS.y);
-    blind_skip_tags_update();
+    sprite_object_slide_from_to(
+        blind_skip_tags[0]->sprite_object,
+        SMALL_BLIND_SKIP_TAG_INIT_POS,
+        SMALL_BLIND_SKIP_TAG_HIGH_POS
+    );
+    sprite_object_slide_from_to(
+        blind_skip_tags[1]->sprite_object,
+        BIG_BLIND_SKIP_TAG_INIT_POS,
+        BIG_BLIND_SKIP_TAG_LOW_POS
+    );
 }
 
 static void blind_skip_tags_update(void)
