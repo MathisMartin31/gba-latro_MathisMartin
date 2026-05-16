@@ -216,8 +216,8 @@ static inline int game_shop_get_rand_available_joker_id(void)
         }
     }
 
-    int selected_joker_id =
-        (match_count > 0) ? matching_joker_ids[rng_get_u32() % match_count] : fallback_random_joker_id;
+    int selected_joker_id = (match_count > 0) ? matching_joker_ids[rng_get_u32() % match_count]
+                                              : fallback_random_joker_id;
 
     return selected_joker_id;
 }
