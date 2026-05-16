@@ -5,6 +5,7 @@
 #include "graphic_utils.h"
 #include "pool.h"
 #include "skip_tags_gfx.h"
+#include "util.h"
 
 #include <stdio.h>
 #include <stdlib.h> //#include "random.h"
@@ -18,7 +19,6 @@
 // Points                                         x    y
 static const BG_POINT OWNED_SKIP_TAGS_BASE_POS = {219, 97};
 // Sizes
-static const int SKIP_TAG_SPRITE_HEIGHT       = 10;
 static const int OWNED_SKIP_TAGS_STACK_HEIGHT = 64;
 static const int OWNED_SKIP_TAGS_SPACING      = 12;
 // clang-format on
@@ -119,95 +119,50 @@ SkipTag* roll_skip_tag(void)
     return skip_tag_new(tag_type);
 }
 
-static void rearrange_skip_tags_sprites(void)
-{
-    FIXED prev_tags_posX[MAX_SKIP_TAGS] = {0};
-    FIXED prev_tags_posY[MAX_SKIP_TAGS] = {0};
-
-    // Start by destroying all the sprites only so the newly ordered sprites don't overlap
-    SkipTag* tag;
-    ListItr owned_tags_itr = list_itr_create(&g_game_vars.owned_skip_tags);
-    int i = 0;
-    while ((tag = list_itr_next(&owned_tags_itr)))
-    {
-        prev_tags_posX[i] = tag->sprite_object->x;
-        prev_tags_posY[i] = tag->sprite_object->y;
-        sprite_object_destroy(&(tag->sprite_object));
-        i++;
-    }
-
-    int nb_owned_tags = i;
-    int even_spacing =
-        (OWNED_SKIP_TAGS_STACK_HEIGHT - SKIP_TAG_SPRITE_HEIGHT) / (nb_owned_tags - 1);
-
-    // Then recreate them all in order
-    tag = NULL;
-    owned_tags_itr = list_itr_create(&g_game_vars.owned_skip_tags);
-    i = 0;
-    while ((tag = list_itr_next(&owned_tags_itr)))
-    {
-        skip_tag_set_sprite(tag, OWNED_SKIP_TAG_STARTING_LAYER + i);
-
-        // Restore the previous position so that the sprite doesn't spawn at (0,0)
-        tag->sprite_object->x = prev_tags_posX[i];
-        tag->sprite_object->y = prev_tags_posY[i];
-        tag->sprite_object->tx = int2fx(OWNED_SKIP_TAGS_BASE_POS.x);
-
-        // Direct it towards its new position.
-        // Need to fit all tags (10px each, 2px spacing) vertically within a height of 64px
-
-        // 5 tags fit nicely in `5*10 + 4*2 = 58px` but not one more
-        if (nb_owned_tags <= MAX_NON_OVERLAPING_TAG_SPRITES)
-        {
-            tag->sprite_object->ty = int2fx(OWNED_SKIP_TAGS_BASE_POS.y - i * OWNED_SKIP_TAGS_SPACING);
-        }
-        // Beyond that, we need to compute the spacing to distribute sprites evenly,
-        // knowing the first one doesn't move.
-        // This means we have to spread `nb_tags-1` tags over `64 - 10 = 54px`.
-        else
-        {
-            tag->sprite_object->ty = int2fx(OWNED_SKIP_TAGS_BASE_POS.y - i * even_spacing);
-        }
-
-        i++;
-
-        sprite_object_update(tag->sprite_object);
-
-        tte_printf(
-            "#{P:%d,%d; cx:0x%X000}%d:(%ld,%ld)",
-            0, 8*i,
-            TTE_RED_PB,
-            i,
-            tag->sprite_object->x,
-            tag->sprite_object->y
-        );
-    }
-}
-
 void add_skip_tag(SkipTag** blind_tag)
 {
     if (blind_tag == NULL)
         return;
 
     SkipTag* new_tag = skip_tag_new((*blind_tag)->type);
-    int new_tag_layer = list_get_len(&g_game_vars.owned_skip_tags);
-
-    skip_tag_set_sprite(new_tag, OWNED_SKIP_TAG_STARTING_LAYER + new_tag_layer);
-
-    BG_POINT to = {
-        OWNED_SKIP_TAGS_BASE_POS.x,
-        OWNED_SKIP_TAGS_BASE_POS.y - new_tag_layer * OWNED_SKIP_TAGS_SPACING
-    };
-
-    sprite_object_snap_to(new_tag->sprite_object, to, true);
-
     // Add to the back, so that the oldest (at the bottom) has the lowest sprite
     // index and is thus shown on top of the others
     list_push_back(&g_game_vars.owned_skip_tags, new_tag);
-    skip_tag_destroy(blind_tag);
 
-    return;
-    rearrange_skip_tags_sprites();
+    int nb_owned_tags = list_get_len(&g_game_vars.owned_skip_tags);
+    skip_tag_set_sprite(new_tag, OWNED_SKIP_TAG_STARTING_LAYER + nb_owned_tags);
+
+    BG_POINT new_tag_pos = OWNED_SKIP_TAGS_BASE_POS;
+
+    // If all the tags fix on the screen without issue,
+    // just move the new tag to the top of the stack and that's it
+    if (nb_owned_tags <= MAX_NON_OVERLAPING_TAG_SPRITES)
+    {
+        new_tag_pos.y -= (nb_owned_tags - 1) * OWNED_SKIP_TAGS_SPACING;
+    }
+    // If it's going to overlap the consumables' frame, then we must move all
+    // existing tags down a bit so we can put the new one at the very top
+    else
+    {
+        int even_spacing = OWNED_SKIP_TAGS_STACK_HEIGHT / nb_owned_tags;
+        BG_POINT unused_pos = {UNDEFINED, UNDEFINED};
+        
+        // Exclude the new one from the loop here, as it will be snapped into place directly
+        for (int idx = 0; idx < nb_owned_tags - 1; idx++)
+        {
+            SkipTag* tmp_tag = list_get_at_idx(&g_game_vars.owned_skip_tags, idx);
+            BG_POINT dest_pos = {
+                OWNED_SKIP_TAGS_BASE_POS.x,
+                OWNED_SKIP_TAGS_BASE_POS.y - idx * even_spacing
+            };
+            sprite_object_slide_from_to(tmp_tag->sprite_object, unused_pos, dest_pos);
+        }
+
+        new_tag_pos.y -= even_spacing * (nb_owned_tags - 1);
+    }
+
+    sprite_object_snap_to(new_tag->sprite_object, new_tag_pos, true);
+    skip_tag_destroy(blind_tag);
 }
 
 void remove_skip_tag(int tag_idx)
