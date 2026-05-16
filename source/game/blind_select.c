@@ -66,11 +66,11 @@ static StateMachine blind_select_sm = STATE_MACHINE_DEFINE(state_info, BLIND_SEL
 // clang-format off
 // Points                                                x        y
 static const BG_POINT TOP_LEFT_PANEL_EMPTY_3W_ROW_POS = {29,      31};
-static const BG_POINT SMALL_BLIND_SKIP_TAG_INIT_POS   = {75,      165};
-static const BG_POINT BIG_BLIND_SKIP_TAG_INIT_POS     = {115,     165};
+static const BG_POINT SMALL_BLIND_SKIP_TAG_INIT_POS   = {75,      170};
+static const BG_POINT BIG_BLIND_SKIP_TAG_INIT_POS     = {115,     170};
 static const BG_POINT SMALL_BLIND_SKIP_TAG_HIGH_POS   = {75,      132};
-//static const BG_POINT SMALL_BLIND_SKIP_TAG_LOW_POS    = {75,      140};
-//static const BG_POINT BIG_BLIND_SKIP_TAG_HIGH_POS     = {115,     132};
+static const BG_POINT SMALL_BLIND_SKIP_TAG_LOW_POS    = {75,      140};
+static const BG_POINT BIG_BLIND_SKIP_TAG_HIGH_POS     = {115,     132};
 static const BG_POINT BIG_BLIND_SKIP_TAG_LOW_POS      = {115,     140};
 // Rects                                                 left     top     right   bottom
 static const Rect BLIND_SKIP_BTN_GRAY_RECT            = {0,       24,     4,      27};
@@ -80,6 +80,7 @@ static const Rect SINGLE_BLIND_SELECT_RECT            = {9,       7,      13,   
 // clang-format on
 
 static const u32 TM_END_ANIM_SEQ = 12;
+static const u32 TM_SKIP_TAGS_ANIM_SEQ = 6;
 static const u32 TM_BLIND_SELECT_START = 1;
 
 static const u32 BLIND_LEFT_X = 80;
@@ -107,6 +108,29 @@ static void game_blind_select_start_anim_seq()
             blind_select_tokens[i]->pos.x,
             blind_select_tokens[i]->pos.y - TILE_SIZE
         );
+    }
+
+    if (timer == TM_SKIP_TAGS_ANIM_SEQ)
+    {
+        BG_POINT unused_pos = {UNDEFINED, UNDEFINED};
+        if (blind_skip_tags[0] != NULL)
+        {
+            sprite_object_slide_from_to(
+                blind_skip_tags[0]->sprite_object,
+                unused_pos,
+                g_game_vars.current_blind == BLIND_TYPE_SMALL ? SMALL_BLIND_SKIP_TAG_HIGH_POS
+                                                              : SMALL_BLIND_SKIP_TAG_LOW_POS
+            );
+        }
+        if (blind_skip_tags[1] != NULL)
+        {
+            sprite_object_slide_from_to(
+                blind_skip_tags[1]->sprite_object,
+                unused_pos,
+                g_game_vars.current_blind == BLIND_TYPE_BIG ? BIG_BLIND_SKIP_TAG_HIGH_POS
+                                                            : BIG_BLIND_SKIP_TAG_LOW_POS
+            );
+        }
     }
 
     if (timer == TM_END_ANIM_SEQ)
@@ -223,7 +247,7 @@ static void game_blind_select_handle_input()
                     // SkipTag by a tile
                     if (g_game_vars.current_blind == BLIND_TYPE_SMALL)
                     {
-                        blind_skip_tags[BLIND_TYPE_BIG]->sprite_object->y -= int2fx(TILE_SIZE);
+                        //blind_skip_tags[BLIND_TYPE_BIG]->sprite_object->y -= int2fx(TILE_SIZE);
                         blind_skip_tags[BLIND_TYPE_BIG]->sprite_object->ty -= int2fx(TILE_SIZE);
                     }
 
@@ -266,11 +290,22 @@ static void game_blind_select_selected_anim_seq()
 {
     if (timer == 1)
     {
-        // Hide all skip tags if ther aren't NULL already
-        for (int i = 0; i < NB_SKIPPABLE_BLINDS; i++)
+        BG_POINT unused_pos = {UNDEFINED, UNDEFINED};
+        if (blind_skip_tags[0] != NULL)
         {
-            if (blind_skip_tags[i] != NULL)
-                blind_skip_tags[i]->sprite_object->ty += int2fx(50);
+            sprite_object_slide_from_to(
+                blind_skip_tags[0]->sprite_object,
+                unused_pos,
+                SMALL_BLIND_SKIP_TAG_INIT_POS
+            );
+        }
+        if (blind_skip_tags[1] != NULL)
+        {
+            sprite_object_slide_from_to(
+                blind_skip_tags[1]->sprite_object,
+                unused_pos,
+                BIG_BLIND_SKIP_TAG_INIT_POS
+            );
         }
     }
 
@@ -503,16 +538,8 @@ static void blind_skip_tags_init(void)
     skip_tag_set_sprite(blind_skip_tags[0], SMALL_BLIND_SKIP_TAG_LAYER);
     skip_tag_set_sprite(blind_skip_tags[1], BIG_BLIND_SKIP_TAG_LAYER);
 
-    sprite_object_slide_from_to(
-        blind_skip_tags[0]->sprite_object,
-        SMALL_BLIND_SKIP_TAG_INIT_POS,
-        SMALL_BLIND_SKIP_TAG_HIGH_POS
-    );
-    sprite_object_slide_from_to(
-        blind_skip_tags[1]->sprite_object,
-        BIG_BLIND_SKIP_TAG_INIT_POS,
-        BIG_BLIND_SKIP_TAG_LOW_POS
-    );
+    sprite_object_snap_to(blind_skip_tags[0]->sprite_object, SMALL_BLIND_SKIP_TAG_INIT_POS, false);
+    sprite_object_snap_to(blind_skip_tags[1]->sprite_object, BIG_BLIND_SKIP_TAG_INIT_POS, false);
 }
 
 static void blind_skip_tags_update(void)
@@ -534,6 +561,9 @@ void game_blind_select_on_init(void)
     selection_y = 0;
 
     blind_tokens_init();
+
+    if (g_game_vars.current_blind == BLIND_TYPE_SMALL)
+        blind_skip_tags_init();
 
     // TODO: silly bug rn, the sprite tokens are unhidden on a background change.
     // this probably shouldn't be here. also need to force redraw or the callback
