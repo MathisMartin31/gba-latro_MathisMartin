@@ -313,6 +313,46 @@ void sprite_object_shake(SpriteObject* sprite_object, mm_word sound_id)
     play_sfx(sound_id, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
 }
 
+void sprite_object_slide_from_to(SpriteObject* sprite_object, BG_POINT from, BG_POINT to)
+{
+    if (sprite_object == NULL)
+        return;
+
+    obj_hide(sprite_object->sprite->obj);
+
+    if (from.x != UNDEFINED && from.y != UNDEFINED)
+    {
+        sprite_object->x = int2fx(from.x);
+        sprite_object->y = int2fx(from.y);
+    }
+
+    sprite_object->tx = int2fx(to.x);
+    sprite_object->ty = int2fx(to.y);
+
+    obj_unhide(sprite_object->sprite->obj, 0);
+    sprite_object_update(sprite_object);
+}
+
+void sprite_object_snap_to(SpriteObject* sprite_object, BG_POINT to, bool bounce)
+{
+    if (sprite_object == NULL)
+        return;
+
+    sprite_object->x = int2fx(to.x);
+    sprite_object->y = int2fx(to.y);
+    sprite_object->tx = int2fx(to.x);
+    sprite_object->ty = int2fx(to.y);
+
+    if (bounce)
+    {
+        play_sfx(SFX_CARD_DRAW, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
+        sprite_object->vscale = float2fx(-0.3f);
+        sprite_object->vrotation = float2fx(-10.0f);
+    }
+
+    //sprite_object_update(sprite_object);
+}
+
 Sprite* sprite_object_get_sprite(SpriteObject* sprite_object)
 {
     if (sprite_object == NULL)

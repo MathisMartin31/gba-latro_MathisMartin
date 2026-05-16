@@ -58,12 +58,12 @@ static const SubStateActionFn blind_select_state_actions[] = {
 // clang-format off
 // Points                                                x        y
 static const BG_POINT TOP_LEFT_PANEL_EMPTY_3W_ROW_POS = {29,      31};
-static const BG_POINT SMALL_BLIND_SKIP_TAG_INIT_POS   = {70,      160};
-static const BG_POINT BIG_BLIND_SKIP_TAG_INIT_POS     = {110,     160};
-static const BG_POINT SMALL_BLIND_SKIP_TAG_HIGH_POS   = {70,      127};
-//static const BG_POINT SMALL_BLIND_SKIP_TAG_LOW_POS    = {70,      135};
-//static const BG_POINT BIG_BLIND_SKIP_TAG_HIGH_POS     = {110,     127};
-static const BG_POINT BIG_BLIND_SKIP_TAG_LOW_POS      = {110,     135};
+static const BG_POINT SMALL_BLIND_SKIP_TAG_INIT_POS   = {67,      157};
+static const BG_POINT BIG_BLIND_SKIP_TAG_INIT_POS     = {107,     157};
+static const BG_POINT SMALL_BLIND_SKIP_TAG_HIGH_POS   = {67,      124};
+//static const BG_POINT SMALL_BLIND_SKIP_TAG_LOW_POS    = {67,      132};
+//static const BG_POINT BIG_BLIND_SKIP_TAG_HIGH_POS     = {107,     124};
+static const BG_POINT BIG_BLIND_SKIP_TAG_LOW_POS      = {107,     132};
 // Rects                                                 left     top     right   bottom
 static const Rect BLIND_SKIP_BTN_GRAY_RECT            = {0,       24,     4,      27};
 static const Rect BLIND_SKIP_BTN_PREANIM_DEST_RECT    = {9,       29,     19,     31};
