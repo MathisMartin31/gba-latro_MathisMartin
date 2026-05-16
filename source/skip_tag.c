@@ -16,7 +16,7 @@
 
 // clang-format off
 // Points                                         x    y
-static const BG_POINT OWNED_SKIP_TAGS_BASE_POS = {222, 100};
+static const BG_POINT OWNED_SKIP_TAGS_BASE_POS = {219, 97};
 // Sizes
 static const int SKIP_TAG_SPRITE_HEIGHT       = 10;
 static const int OWNED_SKIP_TAGS_STACK_HEIGHT = 64;
@@ -194,14 +194,16 @@ void add_skip_tag(SkipTag** blind_tag)
 
     skip_tag_set_sprite(new_tag, OWNED_SKIP_TAG_STARTING_LAYER + new_tag_layer);
 
-    obj_hide(new_tag->sprite_object->sprite->obj);
-    new_tag->sprite_object->x = (*blind_tag)->sprite_object->x;
-    new_tag->sprite_object->y = (*blind_tag)->sprite_object->y;
-    new_tag->sprite_object->tx = int2fx(OWNED_SKIP_TAGS_BASE_POS.x);
-    new_tag->sprite_object->ty =
-        int2fx(OWNED_SKIP_TAGS_BASE_POS.y - new_tag_layer * OWNED_SKIP_TAGS_SPACING);
-    obj_unhide(new_tag->sprite_object->sprite->obj, 0);
-    sprite_object_update(new_tag->sprite_object);
+    //BG_POINT from = {
+    //    fx2int((*blind_tag)->sprite_object->x),
+    //    fx2int((*blind_tag)->sprite_object->y)
+    //};
+    BG_POINT to = {
+        OWNED_SKIP_TAGS_BASE_POS.x,
+        OWNED_SKIP_TAGS_BASE_POS.y - new_tag_layer * OWNED_SKIP_TAGS_SPACING
+    };
+
+    sprite_object_snap_to(new_tag->sprite_object, to, true);
 
     // Add to the back, so that the oldest (at the bottom) has the lowest sprite
     // index and is thus shown on top of the others

@@ -255,6 +255,25 @@ void sprite_object_update_all(void);
 void sprite_object_shake(SpriteObject* sprite_object, mm_word sound_id);
 
 /**
+ * @brief Slide SpriteObject across the screen between two positions
+ *
+ * @param SpriteObject pointer to SpriteObject to shake. Cannot be **NULL**.
+ * @param from starting position, current SpriteObject position will be used if
+ *              any dimension is set to UNDEFINED.
+ * @param to target position
+ */
+void sprite_object_slide_from_to(SpriteObject* sprite_object, BG_POINT from, BG_POINT to);
+
+/**
+ * @brief Teleport SpriteObject to position
+ *
+ * @param SpriteObject pointer to SpriteObject to shake. Cannot be **NULL**.
+ * @param to target position
+ * @param bounce whether a little animation is played at the target position
+ */
+void sprite_object_snap_to(SpriteObject* sprite_object, BG_POINT to, bool bounce);
+
+/**
  * @brief Get a SpriteObject's registered Sprite
  *
  * @param sprite_object pointer to SpriteObject's registered Sprite. Cannot be **NULL**.
