@@ -194,10 +194,6 @@ void add_skip_tag(SkipTag** blind_tag)
 
     skip_tag_set_sprite(new_tag, OWNED_SKIP_TAG_STARTING_LAYER + new_tag_layer);
 
-    //BG_POINT from = {
-    //    fx2int((*blind_tag)->sprite_object->x),
-    //    fx2int((*blind_tag)->sprite_object->y)
-    //};
     BG_POINT to = {
         OWNED_SKIP_TAGS_BASE_POS.x,
         OWNED_SKIP_TAGS_BASE_POS.y - new_tag_layer * OWNED_SKIP_TAGS_SPACING
