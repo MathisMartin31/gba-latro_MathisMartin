@@ -23,7 +23,20 @@ var searchData=
   ['game_5frun_5fsetup_5fon_5fexit_20',['game_run_setup_on_exit',['../run__setup_8h.html#a8a38b7caf89af4c2de2bbfb3bfa87e69',1,'run_setup.c']]],
   ['game_5frun_5fsetup_5fon_5finit_21',['game_run_setup_on_init',['../run__setup_8h.html#acfad8d64b18066b45f53097cc7a4c09f',1,'run_setup.c']]],
   ['game_5frun_5fsetup_5fon_5fupdate_22',['game_run_setup_on_update',['../run__setup_8h.html#aca2f4d081e3b46eadc1517c073342e2b',1,'run_setup.c']]],
-  ['game_5fwin_5fon_5finit_23',['game_win_on_init',['../game__over_8h.html#aaffb8156e7276d62874c7c5db0b8ed02',1,'game_over.c']]],
-  ['get_5ffont_5fpoint_5fstr_24',['get_font_point_str',['../font_8h.html#a0591d220421f2f0094aa80ae39007374',1,'font.c']]],
-  ['get_5fsave_5fheader_25',['get_save_header',['../save_8c.html#aa7c710df5af72243541a55e499e53bd9',1,'save.c']]]
+  ['game_5fshop_5fbuy_5fjoker_23',['game_shop_buy_joker',['../shop_8c.html#afa2bcfaabfdef335423c04491a80ed40',1,'shop.c']]],
+  ['game_5fshop_5fchange_5fbackground_24',['game_shop_change_background',['../shop_8h.html#af86278c35e595a2e8d07740d58b9601d',1,'game_shop_change_background(void):&#160;shop.c'],['../shop_8c.html#af86278c35e595a2e8d07740d58b9601d',1,'game_shop_change_background(void):&#160;shop.c']]],
+  ['game_5fshop_5fcreate_5fitems_25',['game_shop_create_items',['../shop_8c.html#a803c0e0354394edf561f9b8ef38800b3',1,'shop.c']]],
+  ['game_5fshop_5fget_5frand_5favailable_5fjoker_5fid_26',['game_shop_get_rand_available_joker_id',['../shop_8c.html#aef028e8ce957a454ca26dcefbadad4b0',1,'shop.c']]],
+  ['game_5fshop_5fintro_27',['game_shop_intro',['../shop_8c.html#a484407ff53bda48be7caddeb4a3182f5',1,'shop.c']]],
+  ['game_5fshop_5flights_5fanim_5fframe_28',['game_shop_lights_anim_frame',['../shop_8c.html#a4eda134181fdd41d27ba407f4000f5d8',1,'shop.c']]],
+  ['game_5fshop_5fon_5fexit_29',['game_shop_on_exit',['../shop_8h.html#a17eee4573edc97f2bb8b4eba2d1d743b',1,'game_shop_on_exit(void):&#160;shop.c'],['../shop_8c.html#a17eee4573edc97f2bb8b4eba2d1d743b',1,'game_shop_on_exit(void):&#160;shop.c']]],
+  ['game_5fshop_5fon_5finit_30',['game_shop_on_init',['../shop_8h.html#a683cb9b742567084b93dcc3e71910a60',1,'game_shop_on_init(void):&#160;shop.c'],['../shop_8c.html#a683cb9b742567084b93dcc3e71910a60',1,'game_shop_on_init(void):&#160;shop.c']]],
+  ['game_5fshop_5fon_5fupdate_31',['game_shop_on_update',['../shop_8h.html#af3655830eeb2a559d26ba6c26e5704ee',1,'game_shop_on_update(void):&#160;shop.c'],['../shop_8c.html#af3655830eeb2a559d26ba6c26e5704ee',1,'game_shop_on_update(void):&#160;shop.c']]],
+  ['game_5fshop_5foutro_32',['game_shop_outro',['../shop_8c.html#aa10fa0331a4ed28dfd9f1d69eabca925',1,'shop.c']]],
+  ['game_5fshop_5fprocess_5fuser_5finput_33',['game_shop_process_user_input',['../shop_8c.html#ab3321c677dd5f9605d6895b97222e937',1,'shop.c']]],
+  ['game_5fshop_5freroll_34',['game_shop_reroll',['../shop_8c.html#ad9948c1ba7c455f0b70b362b3d2fb4a5',1,'shop.c']]],
+  ['game_5fwin_5fon_5finit_35',['game_win_on_init',['../game__over_8h.html#aaffb8156e7276d62874c7c5db0b8ed02',1,'game_over.c']]],
+  ['get_5ffont_5fpoint_5fstr_36',['get_font_point_str',['../font_8h.html#a0591d220421f2f0094aa80ae39007374',1,'font.c']]],
+  ['get_5fnum_5fshop_5fjokers_5favail_37',['get_num_shop_jokers_avail',['../shop_8c.html#a287b24e14301ee3170861a3801b6cb27',1,'shop.c']]],
+  ['get_5fsave_5fheader_38',['get_save_header',['../save_8c.html#aa7c710df5af72243541a55e499e53bd9',1,'save.c']]]
 ];
