@@ -60,13 +60,14 @@ enum SkipTagEvent
 };
 
 // SkipTagCallbacks will attempt to either return whether the SkipTag can be activated or trigger it
-typedef bool (*SkipTagCallback)(void);
+typedef bool (*SkipTagCondition)(void);
+typedef void (*SkipTagEffect)(void);
 
 typedef struct
 {
     enum SkipTagEvent event_type;
-    SkipTagCallback tag_condition_func;
-    SkipTagCallback tag_effect_func;
+    SkipTagCondition tag_condition_func;
+    SkipTagEffect tag_effect_func;
 } SkipTagInfo;
 
 const SkipTagInfo* get_skip_tag_registry_entry(int tag_id);

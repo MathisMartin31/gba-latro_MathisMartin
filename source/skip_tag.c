@@ -201,7 +201,7 @@ bool skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_ev
 {
     static int applied_tag_idx = 0;
     static SkipTag* consumed_tag = NULL;
-    static SkipTagCallback consumed_tag_effect = NULL;
+    static SkipTagEffect consumed_tag_effect = NULL;
     static bool tag_animation = false;
 
     // Only process tags every 40 frames so we have time to process what's happening
