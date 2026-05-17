@@ -87,10 +87,10 @@ void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer)
         ATTR1_SIZE_16,
         tile_index,
         SKIP_TAGS_PB,
-        layer + SKIP_TAG_STARTING_LAYER
+        SKIP_TAG_STARTING_LAYER + layer
     );
-    sprite_position(sprite, pos.x, pos.y);
     sprite_object_set_sprite(tag->sprite_object, sprite);
+    sprite_position(sprite, pos.x, pos.y);
     sprite_object_snap_to(tag->sprite_object, pos, false);
     sprite_object_update(tag->sprite_object);
 }
@@ -184,13 +184,6 @@ void add_skip_tag(SkipTag** blind_tag)
     sprite_object_update(new_tag->sprite_object);
 
     skip_tag_destroy(blind_tag);
-
-    // TODO: REMOVE
-    // Need to call it someplace where a timer is put in place
-    // so it doesn't all happen in one frame.
-    // Just like Jokers when scoring a hand.
-    int i = 0;
-    check_and_apply_tag_for_event(&i, SKIP_TAG_EVENT_IMMEDIATE);
 }
 
 void remove_skip_tag(int tag_idx)
@@ -203,28 +196,66 @@ void remove_skip_tag(int tag_idx)
     rearrange_skip_tag_sprites(list_get_len(&g_game_vars.owned_skip_tags), get_skip_tag_sprites_spacing());
 }
 
-// Use Tags list index instead of iterator because we need to be able to remove
-// Tags while we are iterating. Might change it later though.
-void check_and_apply_tag_for_event(int* tag_idx, enum SkipTagEvent tag_event)
+bool skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_event)
 {
-    for (; *tag_idx < list_get_len(&g_game_vars.owned_skip_tags); (*tag_idx)++)
+    static int applied_tag_idx = 0;
+    static SkipTag* consumed_tag = NULL;
+    static SkipTagCallback consumed_tag_effect = NULL;
+    static bool tag_animation = false;
+
+    // Only process tags every 40 frames so we have time to process what's happening
+    // Check against 1 so that we catch the timer on the first frame, since it's
+    // incremented before calling this function
+    if (timer % FRAMES(TM_SKIP_TAG_ANIM_DURATION) == 1)
     {
-        SkipTag* tag = list_get_at_idx(&g_game_vars.owned_skip_tags, *tag_idx);
-        const SkipTagInfo* info = get_skip_tag_registry_entry(tag->type);
-
-        if (info == NULL || info->event_type != tag_event)
-            continue;
-
-        // return early in case the tag triggers/is consumed
-        if (info->tag_effect_func())
+        if (consumed_tag != NULL && consumed_tag_effect != NULL)
         {
-            //tte_printf(
-            //    "#{P:0,0; cx:0x%X000}Scored Tag type: %d",
-            //    TTE_RED_PB,
-            //    tag->type
-            //);
-            remove_skip_tag(*tag_idx);
-            return;
+            BG_POINT tag_pos = {
+                fx2int(consumed_tag->sprite_object->x),
+                fx2int(consumed_tag->sprite_object->y)
+            };
+            consumed_tag->type += MAX_SKIP_TAG_TYPES;
+            skip_tag_set_sprite(consumed_tag, tag_pos, applied_tag_idx);
+
+            // Apply tag here so it matches the animation
+            (*consumed_tag_effect)();
+
+            consumed_tag = NULL;
+            consumed_tag_effect = NULL;
+            tag_animation = true;
+            return false;
         }
+
+        if (tag_animation)
+        {
+            remove_skip_tag(applied_tag_idx);
+
+            tag_animation = false;
+            return false;
+        }
+
+        int nb_owned_tags = list_get_len(&g_game_vars.owned_skip_tags);
+
+        for (; applied_tag_idx < nb_owned_tags; applied_tag_idx++)
+        {
+            consumed_tag = list_get_at_idx(&g_game_vars.owned_skip_tags, applied_tag_idx);
+            const SkipTagInfo* info = get_skip_tag_registry_entry(consumed_tag->type);
+
+            if (info == NULL || info->event_type != tag_event)
+                continue;
+
+            // Return early in case the tag can trigger, will apply effect later
+            if (info->tag_condition_func())
+            {
+                consumed_tag_effect = info->tag_effect_func;
+
+                return false;
+            }
+        }
+
+        applied_tag_idx = 0;
+        return true;
     }
+
+    return false;
 }

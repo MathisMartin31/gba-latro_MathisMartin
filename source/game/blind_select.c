@@ -32,6 +32,7 @@ static int timer;
 
 static void game_blind_select_start_anim_seq(void);
 static void game_blind_select_handle_input(void);
+static void game_blind_select_handle_immediate_tags(void);
 static void game_blind_select_selected_anim_seq(void);
 static void game_blind_select_display_blind_panel(void);
 static void game_blind_select_exit(void);
@@ -46,6 +47,7 @@ enum BlindSelectState
 {
     START_ANIM_SEQ,
     BLIND_SELECT,
+    APPLY_BLIND_TAGS,
     BLIND_SELECTED_ANIM_SEQ,
     DISPLAY_BLIND_PANEL,
     BLIND_SELECT_EXIT,
@@ -56,6 +58,7 @@ enum BlindSelectState
 static StateInfo state_info[] = {
     STATE_INFO_UPDATE_FN_ONLY(game_blind_select_start_anim_seq),
     STATE_INFO_UPDATE_FN_ONLY(game_blind_select_handle_input),
+    STATE_INFO_UPDATE_FN_ONLY(game_blind_select_handle_immediate_tags),
     STATE_INFO_UPDATE_FN_ONLY(game_blind_select_selected_anim_seq),
     STATE_INFO_UPDATE_FN_ONLY(game_blind_select_display_blind_panel),
     STATE_INFO_UPDATE_FN_ONLY(game_blind_select_exit),
@@ -278,11 +281,21 @@ static void game_blind_select_handle_input()
                     highlight_select_button();
 
                     timer = TM_ZERO;
+                    state_machine_change_state(&blind_select_sm, APPLY_BLIND_TAGS);
                 }
                 break;
             default:
                 break;
         }
+    }
+}
+
+static void game_blind_select_handle_immediate_tags(void)
+{
+    if (skip_tag_check_and_apply_for_event_loop(timer, SKIP_TAG_EVENT_IMMEDIATE))
+    {
+        timer = TM_ZERO;
+        substate = BLIND_SELECT;
     }
 }
 
@@ -585,7 +598,6 @@ void game_blind_select_on_update(void)
     timer++;
 
     blind_skip_tags_update();
-    blind_select_state_actions[substate]();
 }
 
 void game_blind_select_on_exit(void)

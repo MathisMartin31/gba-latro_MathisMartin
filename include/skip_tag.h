@@ -21,6 +21,9 @@
 #define SKIP_TAG_TID (SKIP_TAG_STARTING_LAYER * SKIP_TAG_SPRITE_OFFSET)
 #define SKIP_TAGS_PB 3
 
+// Timing definitions
+#define TM_SKIP_TAG_ANIM_DURATION  20
+
 #define SKIP_TAG_TYPE_UNCOMMON   0
 #define SKIP_TAG_TYPE_RARE       1
 #define SKIP_TAG_TYPE_INVESTMENT 6
@@ -35,6 +38,7 @@
 #define SKIP_TAG_TYPE_ECONOMY    23
 
 #define NB_SKIP_TAG_TYPES 12
+#define MAX_SKIP_TAG_TYPES 24
 
 typedef struct SkipTag
 {
@@ -45,21 +49,24 @@ typedef struct SkipTag
 
 enum SkipTagEvent
 {
-    SKIP_TAG_EVENT_NONE,        // For tags not yet impelemented, does nothing
-    SKIP_TAG_EVENT_IMMEDIATE,   // Triggers immediately after being bought.
-                                // (e.g. Boss, Charm, Double,...)
-    SKIP_TAG_EVENT_ON_SHOP,     // Triggers when entering the Shop (e.g. Coupon, Negative,...)
-    SKIP_TAG_EVENT_ON_ROUND,    // Triggers when starting a new round (Juggler)
-    SKIP_TAG_EVENT_ON_ROUND_END // Triggers when beating a round (Investment)
+    SKIP_TAG_EVENT_NONE,           // For tags not yet impelemented, does nothing
+    SKIP_TAG_EVENT_IMMEDIATE,      // Triggers immediately after being bought.
+                                   // (e.g. Boss, Charm, Double,...)
+    SKIP_TAG_EVENT_ON_ROUND_START, // Triggers when starting a new round (Juggler)
+    SKIP_TAG_EVENT_ON_ROUND_END,   // Triggers when beating a round (Investment)
+    SKIP_TAG_EVENT_ON_SHOP_INIT,   // Triggers when entering the Shop (e.g. Coupon, D6,...)
+    SKIP_TAG_EVENT_ON_SHOP_REROLL  // Triggers when rolling items for sale in the Shop
+                                   // (Foil, Holographic, Negative, Polychrome)
 };
 
-// SkipTagEffectFuncs will attempt to trigger and return whether the SkipTag has been consumed
-typedef bool (*SkipTagEffectFunc)();
+// SkipTagCallbacks will attempt to either return whether the SkipTag can be activated or trigger it
+typedef bool (*SkipTagCallback)(void);
 
 typedef struct
 {
     enum SkipTagEvent event_type;
-    SkipTagEffectFunc tag_effect_func;
+    SkipTagCallback tag_condition_func;
+    SkipTagCallback tag_effect_func;
 } SkipTagInfo;
 
 const SkipTagInfo* get_skip_tag_registry_entry(int tag_id);
@@ -73,6 +80,6 @@ SkipTag* roll_skip_tag(void);
 void add_skip_tag(SkipTag** blind_tag);
 void remove_skip_tag(int tag_idx);
 
-void check_and_apply_tag_for_event(int* tag_idx, enum SkipTagEvent tag_event);
+bool skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_event);
 
 #endif // SKIP_TAGS_H
