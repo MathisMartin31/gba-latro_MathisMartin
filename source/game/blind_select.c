@@ -515,11 +515,16 @@ static void blind_skip_tags_init(void)
     blind_skip_tags[0] = roll_skip_tag();
     blind_skip_tags[1] = roll_skip_tag();
 
-    skip_tag_set_sprite(blind_skip_tags[0], SMALL_BLIND_SKIP_TAG_LAYER);
-    skip_tag_set_sprite(blind_skip_tags[1], BIG_BLIND_SKIP_TAG_LAYER);
-
-    sprite_object_snap_to(blind_skip_tags[0]->sprite_object, SMALL_BLIND_SKIP_TAG_INIT_POS, false);
-    sprite_object_snap_to(blind_skip_tags[1]->sprite_object, BIG_BLIND_SKIP_TAG_INIT_POS, false);
+    skip_tag_set_sprite(
+        blind_skip_tags[0],
+        SMALL_BLIND_SKIP_TAG_INIT_POS,
+        SMALL_BLIND_SKIP_TAG_LAYER
+    );
+    skip_tag_set_sprite(
+        blind_skip_tags[1],
+        BIG_BLIND_SKIP_TAG_INIT_POS,
+        BIG_BLIND_SKIP_TAG_LAYER
+    );
 }
 
 static void blind_skip_tags_update(void)

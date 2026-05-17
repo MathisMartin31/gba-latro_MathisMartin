@@ -318,8 +318,6 @@ void sprite_object_slide_from_to(SpriteObject* sprite_object, BG_POINT from, BG_
     if (sprite_object == NULL)
         return;
 
-    obj_hide(sprite_object->sprite->obj);
-
     if (from.x != UNDEFINED && from.y != UNDEFINED)
     {
         sprite_object->x = int2fx(from.x);
@@ -328,9 +326,6 @@ void sprite_object_slide_from_to(SpriteObject* sprite_object, BG_POINT from, BG_
 
     sprite_object->tx = int2fx(to.x);
     sprite_object->ty = int2fx(to.y);
-
-    obj_unhide(sprite_object->sprite->obj, 0);
-    sprite_object_update(sprite_object);
 }
 
 void sprite_object_snap_to(SpriteObject* sprite_object, BG_POINT to, bool bounce)

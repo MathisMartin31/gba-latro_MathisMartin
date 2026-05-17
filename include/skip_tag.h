@@ -1,6 +1,7 @@
 #ifndef SKIP_TAGS_H
 #define SKIP_TAGS_H
 
+#include "graphic_utils.h"
 #include "joker.h"
 #include "sprite.h"
 
@@ -65,7 +66,7 @@ const SkipTagInfo* get_skip_tag_registry_entry(int tag_id);
 size_t get_skip_tag_registry_size(void);
 
 SkipTag* skip_tag_new(u8 tag_type);
-void skip_tag_set_sprite(SkipTag* tag, int layer);
+void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer);
 void skip_tag_destroy(SkipTag** tag);
 SkipTag* roll_skip_tag(void);
 
