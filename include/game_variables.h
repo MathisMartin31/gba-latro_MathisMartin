@@ -36,19 +36,21 @@
  */
 typedef struct
 {
-    // Internal variables
-
-    s32 timer; // This might already exist in libtonc but idk so i'm just making my own
-    u32 rng_seed;
-    u32 rng_step; // Position in the rng sequence.
-
     // Variables visible by the player
 
-    s32 round;
-    s32 ante;
+    u32 score;
+    s32 hands;
+    s32 discards;
     s32 money;
-
+    s32 ante;
+    s32 round;
     List owned_skip_tags;
+
+    // Hidden run variables
+
+    u32 nb_skipped_rounds;
+    u32 nb_unused_discards;
+    u32 nb_played_hands;
 
     // Blind variables
 
@@ -56,12 +58,15 @@ typedef struct
     enum BlindType next_boss_blind;
     enum BlindState blinds_states[NUM_BLINDS_PER_ANTE];
 
-    s32 hands;
-    s32 discards;
-    u32 score;
-
     Sprite* playing_blind_token;
     Sprite* round_end_blind_token;
+
+    // Internal variables
+
+    s32 timer; // This might already exist in libtonc but idk so i'm just making my own
+    u32 rng_seed;
+    u32 rng_step; // Position in the rng sequence.
+
     // Options variables
 
     // BY DEFAULT IS SET TO 1, but if changed to 2 or more, should speed up all (or most) of the

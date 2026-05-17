@@ -117,7 +117,8 @@ static void game_blind_select_start_anim_seq()
                 blind_skip_tags[0]->sprite_object,
                 unused_pos,
                 g_game_vars.current_blind == BLIND_TYPE_SMALL ? SMALL_BLIND_SKIP_TAG_HIGH_POS
-                                                              : SMALL_BLIND_SKIP_TAG_LOW_POS
+                                                              : SMALL_BLIND_SKIP_TAG_LOW_POS,
+                UNDEFINED
             );
         }
         if (blind_skip_tags[1] != NULL)
@@ -126,7 +127,8 @@ static void game_blind_select_start_anim_seq()
                 blind_skip_tags[1]->sprite_object,
                 unused_pos,
                 g_game_vars.current_blind == BLIND_TYPE_BIG ? BIG_BLIND_SKIP_TAG_HIGH_POS
-                                                            : BIG_BLIND_SKIP_TAG_LOW_POS
+                                                            : BIG_BLIND_SKIP_TAG_LOW_POS,
+                UNDEFINED
             );
         }
     }
@@ -238,6 +240,7 @@ static void game_blind_select_handle_input()
             case SKIP_ROW:
                 if (g_game_vars.current_blind <= BLIND_TYPE_BIG)
                 {
+                    g_game_vars.nb_skipped_rounds++;
                     add_skip_tag(&blind_skip_tags[g_game_vars.current_blind]);
 
                     // if we skipped the Small Blind, we have to up the Big Blind's
@@ -303,7 +306,8 @@ static void game_blind_select_selected_anim_seq()
             sprite_object_slide_from_to(
                 blind_skip_tags[0]->sprite_object,
                 unused_pos,
-                SMALL_BLIND_SKIP_TAG_INIT_POS
+                SMALL_BLIND_SKIP_TAG_INIT_POS,
+                UNDEFINED
             );
         }
         if (blind_skip_tags[1] != NULL)
@@ -311,7 +315,8 @@ static void game_blind_select_selected_anim_seq()
             sprite_object_slide_from_to(
                 blind_skip_tags[1]->sprite_object,
                 unused_pos,
-                BIG_BLIND_SKIP_TAG_INIT_POS
+                BIG_BLIND_SKIP_TAG_INIT_POS,
+                UNDEFINED
             );
         }
     }

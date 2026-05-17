@@ -248,23 +248,41 @@ IWRAM_CODE void sprite_object_update(SpriteObject* sprite_object);
 void sprite_object_shake(SpriteObject* sprite_object, mm_word sound_id);
 
 /**
- * @brief Slide SpriteObject across the screen between two positions
+ * @brief Make SpriteObject bounce on screen and play a sound
  *
- * @param SpriteObject pointer to SpriteObject to shake. Cannot be **NULL**.
+ * @param SpriteObject pointer to SpriteObject to make bounce. Cannot be **NULL**.
+ * @param sound_id ID of sound from maxmod to play on executing bounce. If **UNDEFINED**
+ *        no sound will play.
+ */
+void sprite_object_bounce(SpriteObject* sprite_object, mm_word sound_id);
+
+/**
+ * @brief Slide SpriteObject across the screen between two positions and play a sound
+ *
+ * @param SpriteObject pointer to SpriteObject to move. Cannot be **NULL**.
  * @param from starting position, current SpriteObject position will be used if
  *              any dimension is set to UNDEFINED.
  * @param to target position
+ * @param sound_id ID of sound from maxmod to play on executing shake. If **UNDEFINED**
+ *        no sound will play.
  */
-void sprite_object_slide_from_to(SpriteObject* sprite_object, BG_POINT from, BG_POINT to);
+void sprite_object_slide_from_to(
+    SpriteObject* sprite_object,
+    BG_POINT from,
+    BG_POINT to,
+    mm_word sound_id
+);
 
 /**
- * @brief Teleport SpriteObject to position
+ * @brief Teleport SpriteObject to position and play a sound
  *
- * @param SpriteObject pointer to SpriteObject to shake. Cannot be **NULL**.
+ * @param SpriteObject pointer to SpriteObject to move. Cannot be **NULL**.
  * @param to target position
  * @param bounce whether a little animation is played at the target position
+ * @param sound_id ID of sound from maxmod to play on move. If **UNDEFINED**
+ *        no sound will play.
  */
-void sprite_object_snap_to(SpriteObject* sprite_object, BG_POINT to, bool bounce);
+void sprite_object_snap_to(SpriteObject* sprite_object, BG_POINT to, bool bounce, mm_word sound_id);
 
 /**
  * @brief Get a SpriteObject's registered Sprite

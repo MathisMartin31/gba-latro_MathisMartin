@@ -313,7 +313,27 @@ void sprite_object_shake(SpriteObject* sprite_object, mm_word sound_id)
     play_sfx(sound_id, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
 }
 
-void sprite_object_slide_from_to(SpriteObject* sprite_object, BG_POINT from, BG_POINT to)
+void sprite_object_bounce(SpriteObject* sprite_object, mm_word sound_id)
+{
+    if (sprite_object == NULL)
+        return;
+
+    sprite_object->vscale = float2fx(-0.4f);
+    sprite_object->vrotation = float2fx(0.0f);
+    sprite_object->rotation = float2fx(0.0f);
+
+    if (sound_id == UNDEFINED)
+        return;
+
+    play_sfx(sound_id, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
+}
+
+void sprite_object_slide_from_to(
+    SpriteObject* sprite_object,
+    BG_POINT from,
+    BG_POINT to,
+    mm_word sound_id
+)
 {
     if (sprite_object == NULL)
         return;
@@ -326,9 +346,14 @@ void sprite_object_slide_from_to(SpriteObject* sprite_object, BG_POINT from, BG_
 
     sprite_object->tx = int2fx(to.x);
     sprite_object->ty = int2fx(to.y);
+
+    if (sound_id == UNDEFINED)
+        return;
+
+    play_sfx(sound_id, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
 }
 
-void sprite_object_snap_to(SpriteObject* sprite_object, BG_POINT to, bool bounce)
+void sprite_object_snap_to(SpriteObject* sprite_object, BG_POINT to, bool bounce, mm_word sound_id)
 {
     if (sprite_object == NULL)
         return;
@@ -340,12 +365,14 @@ void sprite_object_snap_to(SpriteObject* sprite_object, BG_POINT to, bool bounce
 
     if (bounce)
     {
-        play_sfx(SFX_CARD_DRAW, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
         sprite_object->vscale = float2fx(-0.3f);
         sprite_object->vrotation = float2fx(-10.0f);
     }
 
-    //sprite_object_update(sprite_object);
+    if (sound_id == UNDEFINED)
+        return;
+
+    play_sfx(sound_id, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
 }
 
 Sprite* sprite_object_get_sprite(SpriteObject* sprite_object)

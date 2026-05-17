@@ -448,6 +448,7 @@ void game_round_end_on_init(void)
 {
     substate = ROUND_END_START;
     g_game_vars.timer = 0;
+    g_game_vars.nb_unused_discards += g_game_vars.discards;
 }
 
 void game_round_end_on_update(void)
