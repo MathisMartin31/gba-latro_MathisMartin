@@ -16,9 +16,10 @@
 
 #include <maxmod.h>
 
-#define BLIND_SELECT_BTN_PID                 15
-#define TM_DISP_BLIND_PANEL_FINISH           7
-#define TM_DISP_BLIND_PANEL_START            1
+#define BLIND_SELECT_BTN_PID       15
+#define TM_DISP_BLIND_PANEL_FINISH 7
+#define TM_DISP_BLIND_PANEL_START  1
+
 #define BLIND_SKIP_BTN_PID                   5
 #define BLIND_SKIP_BTN_SELECTED_BORDER_PID   10
 #define BLIND_SELECT_BTN_SELECTED_BORDER_PID 18
@@ -29,6 +30,7 @@ static int timer;
 
 static void game_blind_select_start_anim_seq(void);
 static void game_blind_select_handle_input(void);
+static void game_blind_select_handle_immediate_tags(void);
 static void game_blind_select_selected_anim_seq(void);
 static void game_blind_select_display_blind_panel(void);
 static Rect game_blind_select_get_req_score_rect(enum BlindTokens blind);
@@ -42,6 +44,7 @@ enum BlindSelectState
 {
     START_ANIM_SEQ,
     BLIND_SELECT,
+    APPLY_BLIND_TAGS,
     BLIND_SELECTED_ANIM_SEQ,
     DISPLAY_BLIND_PANEL,
     BLIND_SELECT_MAX
@@ -51,6 +54,7 @@ enum BlindSelectState
 static const SubStateActionFn blind_select_state_actions[] = {
     game_blind_select_start_anim_seq,
     game_blind_select_handle_input,
+    game_blind_select_handle_immediate_tags,
     game_blind_select_selected_anim_seq,
     game_blind_select_display_blind_panel
 };
@@ -271,11 +275,21 @@ static void game_blind_select_handle_input()
                     highlight_select_button();
 
                     timer = TM_ZERO;
+                    substate = APPLY_BLIND_TAGS;
                 }
                 break;
             default:
                 break;
         }
+    }
+}
+
+static void game_blind_select_handle_immediate_tags(void)
+{
+    if (skip_tag_check_and_apply_for_event_loop(timer, SKIP_TAG_EVENT_IMMEDIATE))
+    {
+        timer = TM_ZERO;
+        substate = BLIND_SELECT;
     }
 }
 
