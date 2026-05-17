@@ -10,9 +10,10 @@
     static bool tag_condition_name(void);                    \
 
 #define REGISTER_SKIP_TAG_EFFECT_FUNC(tag_effect_name) \
-    static bool tag_effect_name(void);                 \
+    static void tag_effect_name(void);                 \
 
 REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_true)
+REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_double)
 REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_investment)
 
 REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_noop)
@@ -50,7 +51,7 @@ const SkipTagInfo skip_tag_registry[] =
     { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_true,       skip_tag_effect_garbage    }, // GARBAGE    = 14
     { SKIP_TAG_EVENT_NONE,           skip_tag_cond_true,       skip_tag_effect_noop       }, // 15
     { SKIP_TAG_EVENT_ON_SHOP_INIT,   skip_tag_cond_true,       skip_tag_effect_coupon     }, // COUPON     = 16
-    { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_true,       skip_tag_effect_double     }, // DOUBLE     = 17
+    { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_double,     skip_tag_effect_double     }, // DOUBLE     = 17
     { SKIP_TAG_EVENT_ON_ROUND_START, skip_tag_cond_true,       skip_tag_effect_juggle     }, // JUGGLE     = 18
     { SKIP_TAG_EVENT_NONE,           skip_tag_cond_true,       skip_tag_effect_noop       }, // 19
     { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_true,       skip_tag_effect_top_up     }, // TOP_UP     = 20
@@ -83,6 +84,12 @@ static bool skip_tag_cond_true(void)
     return true;
 }
 
+static bool skip_tag_cond_double(void)
+{
+    SkipTag* latest_tag = g_game_vars.owned_skip_tags.tail->data;
+    return (latest_tag != NULL) && (latest_tag->type != SKIP_TAG_TYPE_DOUBLE);
+}
+
 static bool skip_tag_cond_investment(void)
 {
     return g_game_vars.current_blind == BLIND_TYPE_BOSS;
@@ -90,79 +97,67 @@ static bool skip_tag_cond_investment(void)
 
 // EFFECTS IMPLEMENTATION
 
-static bool skip_tag_effect_noop(void)
+static void skip_tag_effect_noop(void)
 {
-    return false;
 }
 
-static bool skip_tag_effect_uncommon(void)
+static void skip_tag_effect_uncommon(void)
 {
-    return false;
 }
 
-static bool skip_tag_effect_rare(void)
+static void skip_tag_effect_rare(void)
 {
-    return false;
 }
 
-static bool skip_tag_effect_investment(void)
+static void skip_tag_effect_investment(void)
 {
-    if (g_game_vars.current_blind != BLIND_TYPE_BOSS)
-        return false;
-
-    // TODO: reroll boss blind
-
-    return true;
 }
 
-static bool skip_tag_effect_boss(void)
+static void skip_tag_effect_boss(void)
 {
-    return true;
 }
 
-static bool skip_tag_effect_handy(void)
+static void skip_tag_effect_handy(void)
 {
     g_game_vars.money += g_game_vars.nb_played_hands;
     display_money();
-    return true;
 }
 
-static bool skip_tag_effect_garbage(void)
+static void skip_tag_effect_garbage(void)
 {
     g_game_vars.money += g_game_vars.nb_unused_discards;
     display_money();
-    return true;
 }
 
-static bool skip_tag_effect_coupon(void)
+static void skip_tag_effect_coupon(void)
 {
-    return false;
 }
 
-static bool skip_tag_effect_double(void)
+static void skip_tag_effect_double(void)
 {
-    return false;
+    // If the double tag can activate, then we have already checked the latest
+    // tag exists and isn't a double tag
+    SkipTag* latest_tag = g_game_vars.owned_skip_tags.tail->data;
+    SkipTag* latest_tag_copy = skip_tag_new(latest_tag->type);
+    add_skip_tag(&latest_tag_copy);
 }
 
-static bool skip_tag_effect_juggle(void)
+static void skip_tag_effect_juggle(void)
 {
-    return false;
 }
 
-static bool skip_tag_effect_top_up(void)
+static void skip_tag_effect_top_up(void)
 {
-    return false;
 }
 
 #define SPEED_TAG_MONEY_BONUS 5
-static bool skip_tag_effect_speed(void)
+static void skip_tag_effect_speed(void)
 {
     g_game_vars.money += g_game_vars.nb_skipped_rounds * SPEED_TAG_MONEY_BONUS;
     display_money();
-    return true;
 }
 
-static bool skip_tag_effect_economy(void)
+static void skip_tag_effect_economy(void)
 {
     int added_money = 0;
     if (g_game_vars.money > 0)
@@ -170,6 +165,4 @@ static bool skip_tag_effect_economy(void)
 
     g_game_vars.money += added_money;
     display_money();
-
-    return true;
 }
