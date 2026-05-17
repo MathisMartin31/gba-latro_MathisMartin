@@ -268,9 +268,16 @@ static enum PlayState play_state = PLAY_STARTING;
 GameVariables g_game_vars = {
     .timer = 0, .rng_info = {0, 0},
 
-    .round = 0, .ante = 0, .money = 0, .hand_size = DEFAULT_HAND_SIZE,
+    .score = 0, .hands = 0, .discards = 0,
+    .money = 0, .hand_size = DEFAULT_HAND_SIZE,
+    .ante = 0, .round = 0,
     .deck = DECK_TYPE_RED,
+
     .owned_skip_tags = {},
+
+    .nb_skipped_rounds = 0,
+    .nb_unused_discards = 0,
+    .nb_played_hands = 0,
 
     .current_blind = BLIND_TYPE_SMALL,
     .next_boss_blind = BLIND_TYPE_BIG,
@@ -281,12 +288,10 @@ GameVariables g_game_vars = {
         BLIND_STATE_UPCOMING
     },
 
-    .hands = 0,
-    .discards = 0,
-    .score = 0,
-
     .playing_blind_token = NULL,
     .round_end_blind_token = NULL,
+
+    .timer = 0, .rng_seed = 0, .rng_step = 0,
 
     .game_speed = DEFAULT_GAME_SPEED,
     .music_volume = DEFAULT_MUSIC_VOLUME,
@@ -1157,6 +1162,8 @@ static void game_playing_play_hand_on_pressed(void)
 {
     if (!can_play_hand())
         return;
+
+    g_game_vars.nb_played_hands++;
 
     game_playing_execute_play_hand();
 

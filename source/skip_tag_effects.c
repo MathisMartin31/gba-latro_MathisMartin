@@ -122,12 +122,16 @@ static bool skip_tag_effect_boss(void)
 
 static bool skip_tag_effect_handy(void)
 {
+    g_game_vars.money += g_game_vars.nb_played_hands;
+    display_money();
     return true;
 }
 
 static bool skip_tag_effect_garbage(void)
 {
-    return false;
+    g_game_vars.money += g_game_vars.nb_unused_discards;
+    display_money();
+    return true;
 }
 
 static bool skip_tag_effect_coupon(void)
@@ -150,9 +154,12 @@ static bool skip_tag_effect_top_up(void)
     return false;
 }
 
+#define SPEED_TAG_MONEY_BONUS 5
 static bool skip_tag_effect_speed(void)
 {
-    return false;
+    g_game_vars.money += g_game_vars.nb_skipped_rounds * SPEED_TAG_MONEY_BONUS;
+    display_money();
+    return true;
 }
 
 static bool skip_tag_effect_economy(void)

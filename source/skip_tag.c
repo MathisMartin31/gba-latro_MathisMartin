@@ -4,6 +4,7 @@
 #include "game_variables.h"
 #include "pool.h"
 #include "skip_tags_gfx.h"
+#include "soundbank.h"
 #include "util.h"
 
 #include <stdio.h>
@@ -91,7 +92,7 @@ void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer)
     );
     sprite_object_set_sprite(tag->sprite_object, sprite);
     sprite_position(sprite, pos.x, pos.y);
-    sprite_object_snap_to(tag->sprite_object, pos, false);
+    sprite_object_snap_to(tag->sprite_object, pos, false, UNDEFINED);
     sprite_object_update(tag->sprite_object);
 }
 
@@ -140,7 +141,7 @@ static void rearrange_skip_tag_sprites(int nb_owned_tags, int tag_spacing)
             OWNED_SKIP_TAGS_BASE_POS.x,
             OWNED_SKIP_TAGS_BASE_POS.y - idx * tag_spacing
         };
-        sprite_object_slide_from_to(tmp_tag->sprite_object, unused_pos, dest_pos);
+        sprite_object_slide_from_to(tmp_tag->sprite_object, unused_pos, dest_pos, UNDEFINED);
     }
 }
 
@@ -180,7 +181,7 @@ void add_skip_tag(SkipTag** blind_tag)
     }
 
     skip_tag_set_sprite(new_tag, old_tag_pos, OWNED_SKIP_TAG_STARTING_LAYER + nb_owned_tags);
-    sprite_object_snap_to(new_tag->sprite_object, new_tag_pos, true);
+    sprite_object_snap_to(new_tag->sprite_object, new_tag_pos, true, SFX_CARD_DRAW);
     sprite_object_update(new_tag->sprite_object);
 
     skip_tag_destroy(blind_tag);
@@ -216,6 +217,7 @@ bool skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_ev
             };
             consumed_tag->type += MAX_SKIP_TAG_TYPES;
             skip_tag_set_sprite(consumed_tag, tag_pos, applied_tag_idx);
+            sprite_object_bounce(consumed_tag->sprite_object, SFX_REDEEM_TAG);
 
             // Apply tag here so it matches the animation
             (*consumed_tag_effect)();

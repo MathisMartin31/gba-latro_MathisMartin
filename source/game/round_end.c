@@ -449,6 +449,7 @@ void game_round_end_change_background(void)
 void game_round_end_on_init(void)
 {
     g_game_vars.timer = 0;
+    g_game_vars.nb_unused_discards += g_game_vars.discards;
     state_machine_register(&round_end_sm);
     state_machine_change_state(&round_end_sm, ROUND_END_START);
 }
