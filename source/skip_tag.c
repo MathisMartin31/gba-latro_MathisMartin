@@ -2,7 +2,6 @@
 
 #include "joker.h"
 #include "game_variables.h"
-#include "graphic_utils.h"
 #include "pool.h"
 #include "skip_tags_gfx.h"
 #include "util.h"
@@ -63,7 +62,7 @@ SkipTag* skip_tag_new(u8 tag_type)
     return tag;
 }
 
-void skip_tag_set_sprite(SkipTag* tag, int layer)
+void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer)
 {
     if (tag == NULL)
         return;
@@ -90,7 +89,10 @@ void skip_tag_set_sprite(SkipTag* tag, int layer)
         SKIP_TAGS_PB,
         layer + SKIP_TAG_STARTING_LAYER
     );
+    sprite_position(sprite, pos.x, pos.y);
     sprite_object_set_sprite(tag->sprite_object, sprite);
+    sprite_object_snap_to(tag->sprite_object, pos, false);
+    sprite_object_update(tag->sprite_object);
 }
 
 void skip_tag_destroy(SkipTag** tag)
@@ -153,8 +155,11 @@ void add_skip_tag(SkipTag** blind_tag)
     list_push_back(&g_game_vars.owned_skip_tags, new_tag);
 
     int nb_owned_tags = list_get_len(&g_game_vars.owned_skip_tags);
-    skip_tag_set_sprite(new_tag, OWNED_SKIP_TAG_STARTING_LAYER + nb_owned_tags);
 
+    BG_POINT old_tag_pos = {
+        fx2int((*blind_tag)->sprite_object->x),
+        fx2int((*blind_tag)->sprite_object->y)
+    };
     BG_POINT new_tag_pos = OWNED_SKIP_TAGS_BASE_POS;
 
     // If all the tags fix on the screen without issue,
@@ -174,7 +179,10 @@ void add_skip_tag(SkipTag** blind_tag)
         new_tag_pos.y -= even_spacing * (nb_owned_tags - 1);
     }
 
+    skip_tag_set_sprite(new_tag, old_tag_pos, OWNED_SKIP_TAG_STARTING_LAYER + nb_owned_tags);
     sprite_object_snap_to(new_tag->sprite_object, new_tag_pos, true);
+    sprite_object_update(new_tag->sprite_object);
+
     skip_tag_destroy(blind_tag);
 
     // TODO: REMOVE
