@@ -1,12 +1,11 @@
 var searchData=
 [
-  ['obj_0',['obj',['../structSprite.html#abdcca0516e817f6f84009b3ace44c495',1,'Sprite']]],
-  ['official_20full_20version_20from_20these_20sources_20below_3a_1',['Please buy the official full version from these sources below:',['../md_README.html#autotoc_md32',1,'']]],
-  ['on_20the_20hand_20row_20during_20round_2',['When on the hand row during round',['../md_README.html#autotoc_md36',1,'']]],
-  ['on_20the_20joker_20row_20in_20the_20shop_20or_20during_20round_3',['When on the joker row in the shop or during round',['../md_README.html#autotoc_md37',1,'']]],
-  ['on_5fpressed_4',['on_pressed',['../structButton.html#a51656aaa63000cb64081119d2d63d5c7',1,'Button']]],
-  ['options_5fmenu_2eh_5',['options_menu.h',['../options__menu_8h.html',1,'']]],
-  ['or_20during_20round_6',['When on the joker row in the shop or during round',['../md_README.html#autotoc_md37',1,'']]],
-  ['or_20tt_20make_20tt_20installed_7',['4. It says I don&apos;t have &lt;tt&gt;Git&lt;/tt&gt; or &lt;tt&gt;Make&lt;/tt&gt; installed!',['../index.html#autotoc_md28',1,'']]],
-  ['out_20and_20won_20t_20compile_8',['1. When I run &lt;tt&gt;make&lt;/tt&gt; it errors out and won&apos;t compile!',['../index.html#autotoc_md25',1,'']]]
+  ['nbits_0',['nbits',['../structBitset.html#a4319e1b6017c222f7a8f76d28b29a33a',1,'Bitset']]],
+  ['next_1',['next',['../structListNode.html#ac8677cf490a46744e8c4b69ab26ea9df',1,'ListNode']]],
+  ['next_5fnode_2',['next_node',['../structListItr.html#a4ffa1d50194521c927e48fb52d86f20f',1,'ListItr']]],
+  ['ninepatchrect_3',['ninepatchrect',['../structNinePatchRect.html',1,'NinePatchRect'],['../graphic__utils_8h.html#a533de5f085674ced95f37ede3b5bae7d',1,'NinePatchRect:&#160;graphic_utils.h']]],
+  ['no_5favail_5fjokers_4',['no_avail_jokers',['../shop_8c.html#a96f2c4056d32f68f01ae0e844bdb369a',1,'shop.c']]],
+  ['not_20required_5',['With &lt;tt&gt;Git&lt;/tt&gt; (not required)',['../index.html#autotoc_md22',1,'']]],
+  ['num_5felem_5fin_5farr_6',['NUM_ELEM_IN_ARR',['../util_8h.html#a3494fcb52c3d0ca1bf610facc8c81514',1,'util.h']]],
+  ['nwords_7',['nwords',['../structBitset.html#a6953acccb3e7058540129d4f8f20b546',1,'Bitset']]]
 ];

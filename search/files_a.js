@@ -1,10 +1,6 @@
 var searchData=
 [
-  ['save_2ec_0',['save.c',['../save_8c.html',1,'']]],
-  ['save_2eh_1',['save.h',['../save_8h.html',1,'']]],
-  ['selection_5fgrid_2eh_2',['selection_grid.h',['../selection__grid_8h.html',1,'']]],
-  ['shop_2ec_3',['shop.c',['../shop_8c.html',1,'']]],
-  ['shop_2eh_4',['shop.h',['../shop_8h.html',1,'']]],
-  ['splash_5fscreen_2eh_5',['splash_screen.h',['../splash__screen_8h.html',1,'']]],
-  ['sprite_2eh_6',['sprite.h',['../sprite_8h.html',1,'']]]
+  ['round_5fend_2eh_0',['round_end.h',['../round__end_8h.html',1,'']]],
+  ['run_5fsetup_2ec_1',['run_setup.c',['../run__setup_8c.html',1,'']]],
+  ['run_5fsetup_2eh_2',['run_setup.h',['../run__setup_8h.html',1,'']]]
 ];

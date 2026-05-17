@@ -1,8 +1,14 @@
 var searchData=
 [
-  ['read_5fsram_0',['read_sram',['../save_8c.html#a74c728ad1200cdda976410f883966567',1,'save.c']]],
-  ['rect_5fheight_1',['rect_height',['../graphic__utils_8h.html#a06ee61cf542dc9bb5885fbf5a6b6e17d',1,'graphic_utils.h']]],
-  ['rect_5fwidth_2',['rect_width',['../graphic__utils_8h.html#ad687d4e104c181d6d8312e6ffa6c459b',1,'graphic_utils.h']]],
-  ['reset_5ftop_5fleft_5fpanel_5fbottom_5frow_3',['reset_top_left_panel_bottom_row',['../graphic__utils_8h.html#ad91f726cfa93c1262dc1c4108f7c83c9',1,'graphic_utils.c']]],
-  ['rev_5flist_5fitr_5fcreate_4',['rev_list_itr_create',['../list_8h.html#a9dd6c8825c0862926490ab49ec008a63',1,'list.c']]]
+  ['play_5fon_5fpressed_0',['play_on_pressed',['../run__setup_8c.html#a5e67c35ecc20a331f8bfd9231584d25f',1,'run_setup.c']]],
+  ['play_5fsfx_1',['play_sfx',['../audio__utils_8h.html#aad23876e6c46c118561c5c6733c39d69',1,'audio_utils.c']]],
+  ['print_5fdeck_5fdescription_2',['print_deck_description',['../deck_8h.html#a61e154aa37e9dcad6502e8d90ef9b583',1,'print_deck_description(enum DeckType deck, BG_POINT pos):&#160;deck.c'],['../deck_8c.html#a61e154aa37e9dcad6502e8d90ef9b583',1,'print_deck_description(enum DeckType deck, BG_POINT pos):&#160;deck.c']]],
+  ['print_5fdeck_5fname_3',['print_deck_name',['../deck_8h.html#a1ef3f3b35d63c644ac60354d7148adb9',1,'print_deck_name(enum DeckType deck, BG_POINT pos):&#160;deck.c'],['../deck_8c.html#a1ef3f3b35d63c644ac60354d7148adb9',1,'print_deck_name(enum DeckType deck, BG_POINT pos):&#160;deck.c']]],
+  ['print_5fdesc_5fblack_5fdeck_4',['print_desc_black_deck',['../deck_8c.html#a5ce548a07b49068e4b2718fb02939a28',1,'deck.c']]],
+  ['print_5fdesc_5fblue_5fdeck_5',['print_desc_blue_deck',['../deck_8c.html#a994dd3e5b28e324cbff3f7c3d69d28ce',1,'deck.c']]],
+  ['print_5fdesc_5fgreen_5fdeck_6',['print_desc_green_deck',['../deck_8c.html#ab4e7764cc1e6cf64ebb03078795d2be4',1,'deck.c']]],
+  ['print_5fdesc_5fpainted_5fdeck_7',['print_desc_painted_deck',['../deck_8c.html#a736be51786cebff18770985e85d6a24e',1,'deck.c']]],
+  ['print_5fdesc_5fred_5fdeck_8',['print_desc_red_deck',['../deck_8c.html#ae06a285687193be23c00a00b209eb521',1,'deck.c']]],
+  ['print_5fdesc_5fyellow_5fdeck_9',['print_desc_yellow_deck',['../deck_8c.html#a0428dc33e219e8dd950bf541b57a4ef7',1,'deck.c']]],
+  ['print_5fempty_5fdesc_5fline_10',['print_empty_desc_line',['../deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2',1,'deck.c']]]
 ];
