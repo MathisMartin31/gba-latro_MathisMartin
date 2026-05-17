@@ -119,6 +119,29 @@ SkipTag* roll_skip_tag(void)
     return skip_tag_new(tag_type);
 }
 
+static inline int get_skip_tag_sprites_spacing(void)
+{
+    int nb_owned_tags = list_get_len(&g_game_vars.owned_skip_tags);
+    return (nb_owned_tags <= MAX_NON_OVERLAPING_TAG_SPRITES)
+             ? OWNED_SKIP_TAGS_SPACING
+             : OWNED_SKIP_TAGS_STACK_HEIGHT / nb_owned_tags;
+}
+
+static void rearrange_skip_tag_sprites(int nb_owned_tags, int tag_spacing)
+{
+    BG_POINT unused_pos = {UNDEFINED, UNDEFINED};
+    
+    for (int idx = 0; idx < nb_owned_tags; idx++)
+    {
+        SkipTag* tmp_tag = list_get_at_idx(&g_game_vars.owned_skip_tags, idx);
+        BG_POINT dest_pos = {
+            OWNED_SKIP_TAGS_BASE_POS.x,
+            OWNED_SKIP_TAGS_BASE_POS.y - idx * tag_spacing
+        };
+        sprite_object_slide_from_to(tmp_tag->sprite_object, unused_pos, dest_pos);
+    }
+}
+
 void add_skip_tag(SkipTag** blind_tag)
 {
     if (blind_tag == NULL)
@@ -144,28 +167,56 @@ void add_skip_tag(SkipTag** blind_tag)
     // existing tags down a bit so we can put the new one at the very top
     else
     {
-        int even_spacing = OWNED_SKIP_TAGS_STACK_HEIGHT / nb_owned_tags;
-        BG_POINT unused_pos = {UNDEFINED, UNDEFINED};
-        
-        // Exclude the new one from the loop here, as it will be snapped into place directly
-        for (int idx = 0; idx < nb_owned_tags - 1; idx++)
-        {
-            SkipTag* tmp_tag = list_get_at_idx(&g_game_vars.owned_skip_tags, idx);
-            BG_POINT dest_pos = {
-                OWNED_SKIP_TAGS_BASE_POS.x,
-                OWNED_SKIP_TAGS_BASE_POS.y - idx * even_spacing
-            };
-            sprite_object_slide_from_to(tmp_tag->sprite_object, unused_pos, dest_pos);
-        }
+        int even_spacing = get_skip_tag_sprites_spacing();
 
+        // Exclude the new one from the loop here, as it will be snapped into place directly
+        rearrange_skip_tag_sprites(nb_owned_tags - 1, even_spacing);
         new_tag_pos.y -= even_spacing * (nb_owned_tags - 1);
     }
 
     sprite_object_snap_to(new_tag->sprite_object, new_tag_pos, true);
     skip_tag_destroy(blind_tag);
+
+    // TODO: REMOVE
+    // Need to call it someplace where a timer is put in place
+    // so it doesn't all happen in one frame.
+    // Just like Jokers when scoring a hand.
+    int i = 0;
+    check_and_apply_tag_for_event(&i, SKIP_TAG_EVENT_IMMEDIATE);
 }
 
 void remove_skip_tag(int tag_idx)
 {
+    // Remove the tag itself
+    SkipTag* tag = list_get_at_idx(&g_game_vars.owned_skip_tags, tag_idx);
+    (void)list_remove_at_idx(&g_game_vars.owned_skip_tags, tag_idx);
+    skip_tag_destroy(&tag);
 
+    rearrange_skip_tag_sprites(list_get_len(&g_game_vars.owned_skip_tags), get_skip_tag_sprites_spacing());
+}
+
+// Use Tags list index instead of iterator because we need to be able to remove
+// Tags while we are iterating. Might change it later though.
+void check_and_apply_tag_for_event(int* tag_idx, enum SkipTagEvent tag_event)
+{
+    for (; *tag_idx < list_get_len(&g_game_vars.owned_skip_tags); (*tag_idx)++)
+    {
+        SkipTag* tag = list_get_at_idx(&g_game_vars.owned_skip_tags, *tag_idx);
+        const SkipTagInfo* info = get_skip_tag_registry_entry(tag->type);
+
+        if (info == NULL || info->event_type != tag_event)
+            continue;
+
+        // return early in case the tag triggers/is consumed
+        if (info->tag_effect_func())
+        {
+            //tte_printf(
+            //    "#{P:0,0; cx:0x%X000}Scored Tag type: %d",
+            //    TTE_RED_PB,
+            //    tag->type
+            //);
+            remove_skip_tag(*tag_idx);
+            return;
+        }
+    }
 }

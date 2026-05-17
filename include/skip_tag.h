@@ -20,14 +20,6 @@
 #define SKIP_TAG_TID (SKIP_TAG_STARTING_LAYER * SKIP_TAG_SPRITE_OFFSET)
 #define SKIP_TAGS_PB 3
 
-enum SkipTagEvent
-{
-    SKIP_TAG_EVENT_INSTANT,
-    SKIP_TAG_EVENT_ON_SHOP,
-    SKIP_TAG_EVENT_ON_ROUND,
-    SKIP_TAG_EVENT_ON_BOSS_BLIND
-};
-
 #define SKIP_TAG_TYPE_UNCOMMON   0
 #define SKIP_TAG_TYPE_RARE       1
 #define SKIP_TAG_TYPE_INVESTMENT 6
@@ -50,6 +42,28 @@ typedef struct SkipTag
 
 } SkipTag;
 
+enum SkipTagEvent
+{
+    SKIP_TAG_EVENT_NONE,        // For tags not yet impelemented, does nothing
+    SKIP_TAG_EVENT_IMMEDIATE,   // Triggers immediately after being bought.
+                                // (e.g. Boss, Charm, Double,...)
+    SKIP_TAG_EVENT_ON_SHOP,     // Triggers when entering the Shop (e.g. Coupon, Negative,...)
+    SKIP_TAG_EVENT_ON_ROUND,    // Triggers when starting a new round (Juggler)
+    SKIP_TAG_EVENT_ON_ROUND_END // Triggers when beating a round (Investment)
+};
+
+// SkipTagEffectFuncs will attempt to trigger and return whether the SkipTag has been consumed
+typedef bool (*SkipTagEffectFunc)();
+
+typedef struct
+{
+    enum SkipTagEvent event_type;
+    SkipTagEffectFunc tag_effect_func;
+} SkipTagInfo;
+
+const SkipTagInfo* get_skip_tag_registry_entry(int tag_id);
+size_t get_skip_tag_registry_size(void);
+
 SkipTag* skip_tag_new(u8 tag_type);
 void skip_tag_set_sprite(SkipTag* tag, int layer);
 void skip_tag_destroy(SkipTag** tag);
@@ -57,5 +71,7 @@ SkipTag* roll_skip_tag(void);
 
 void add_skip_tag(SkipTag** blind_tag);
 void remove_skip_tag(int tag_idx);
+
+void check_and_apply_tag_for_event(int* tag_idx, enum SkipTagEvent tag_event);
 
 #endif // SKIP_TAGS_H
