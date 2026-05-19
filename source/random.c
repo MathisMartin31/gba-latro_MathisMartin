@@ -41,7 +41,7 @@ u32 rng_get_u32(void)
 void rng_restore(RngInfo info)
 {
     g_game_vars.rng_info = info;
-    
+
     srand(g_game_vars.rng_info.seed);
     for (u32 i = 0; i < g_game_vars.rng_info.step; i++)
     {

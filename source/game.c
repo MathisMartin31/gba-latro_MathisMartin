@@ -301,7 +301,7 @@ static ContainedHandTypes _contained_hands = {0};
 // clang-format off
 GameVariables g_game_vars = {
     .timer = 0,
-    .rng_info = DEFAULT_RNG_INFO,
+    .rng_info = {0, 0},
 
     .round = 0, .ante = 0, .money = 0,
 
