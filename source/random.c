@@ -22,9 +22,9 @@ void rng_update(void)
 
 void rng_set_seed(u32 seed)
 {
-    g_game_vars.rng_seed = seed % (MAX_SEED + 1);
-    g_game_vars.rng_step = 0;
-    srand(g_game_vars.rng_seed);
+    g_game_vars.rng_info.seed = seed % (MAX_SEED + 1);
+    g_game_vars.rng_info.step = 0;
+    srand(g_game_vars.rng_info.seed);
 }
 
 void rng_shuffle_seed(void)
@@ -34,6 +34,17 @@ void rng_shuffle_seed(void)
 
 u32 rng_get_u32(void)
 {
-    g_game_vars.rng_step++;
+    g_game_vars.rng_info.step++;
     return rand();
+}
+
+void rng_restore(RngInfo info)
+{
+    g_game_vars.rng_info = info;
+    
+    srand(g_game_vars.rng_info.seed);
+    for (u32 i = 0; i < g_game_vars.rng_info.step; i++)
+    {
+        (void)rng_get_u32();
+    }
 }

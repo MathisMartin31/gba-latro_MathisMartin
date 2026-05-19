@@ -7,6 +7,7 @@
 #define GAME_VARIABLES_H
 
 #include "blind.h"
+#include "random.h"
 
 #include <tonc.h>
 
@@ -18,6 +19,7 @@
 #define VOLUME_OPTION_MAX       5
 #define VOLUME_OPTION_INCREMENT 20
 
+#define DEFAULT_RNG_INFO      {0, 0}
 #define DEFAULT_GAME_SPEED    1
 #define DEFAULT_HIGH_CONTRAST false
 #define DEFAULT_MUSIC_VOLUME  VOLUME_OPTION_MAX
@@ -37,8 +39,7 @@ typedef struct
     // Internal variables
 
     s32 timer; // This might already exist in libtonc but idk so i'm just making my own
-    u32 rng_seed;
-    u32 rng_step; // Position in the rng sequence.
+    RngInfo rng_info;
 
     // Variables visible by the player
 

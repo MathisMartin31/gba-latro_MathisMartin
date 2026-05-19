@@ -1,7 +1,11 @@
 /**
  * @file random.h
  *
- * @brief Common functions to handle RNG manipulation.
+ * @brief Common functions to handle RNG manipulation. Using this interface has three goals:
+ * 1. Make RNG repeatable so that people can share seeds and saves, and end up with the same run
+ * 2. Prevent the players from engaging in save-scumming since the pseudo-RNG is deterministic
+ * 3. Accomodate for base-36 seeds, so that we can freely chose one with alpha-numeric characters in
+ * the seed screen input
  */
 #ifndef RANDOM_H
 #define RANDOM_H
@@ -9,6 +13,12 @@
 #include <tonc.h>
 
 #define MAX_SEED 0x81BF0FFF // Hex value of "ZZZZZZ" in base 36
+
+typedef struct RngInfo
+{
+    u32 seed;
+    u32 step; // Position in the rng sequence.
+} RngInfo;
 
 /**
  * @brief Starts counting CPU cycles, this will be used by rng_shuffle_seed to
@@ -44,5 +54,13 @@ void rng_shuffle_seed(void);
  * @return u32
  */
 u32 rng_get_u32(void);
+
+/**
+ * @brief Restore RNG info struct in the GameVariables. Sets the `seed` and seeks the
+ *         position `step` in the rng sequence.
+ *
+ * @param info RngInfo struct applied
+ */
+void rng_restore(RngInfo info);
 
 #endif // RANDOM_H
