@@ -26,4 +26,6 @@ void game_round_end_on_update(void);
  */
 void game_round_end_on_exit(void);
 
+void game_round_end_redeem_investment_tag(void);
+
 #endif // GAME_ROUND_END_H

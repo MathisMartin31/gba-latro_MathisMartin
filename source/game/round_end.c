@@ -23,6 +23,8 @@ enum GameRoundEndStates
     ROUND_END_STATES_MAX
 };
 
+static const s32 INVESTMENT_TAG_BONUS = 25;
+
 static const u32 TM_RESET_STATIC_VARS = 30;
 static const u32 TM_END_POP_MENU_ANIM = 13;
 static const u32 TM_START_ROUND_END_REWARDS_ANIM = 1;
@@ -49,6 +51,7 @@ static const BG_POINT CASHOUT_SRC_3X3_RECT_POS =   {5,  29};
 
 static int blind_reward = 0;
 static int hand_reward = 0;
+static int investment_tag_reward = 0;
 static int interest_reward = 0;
 static int interest_to_count = 0;
 static int interest_start_time = UNDEFINED;
@@ -319,6 +322,11 @@ static inline void game_round_end_print_interest_reward(int interest_y_offset)
             interest_reward - interest_to_count
         );
     }
+}
+
+void game_round_end_redeem_investment_tag(void)
+{
+    
 }
 
 static void game_round_end_display_rewards(void)

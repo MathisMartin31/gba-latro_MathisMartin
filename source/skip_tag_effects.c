@@ -1,5 +1,6 @@
 #include "game.h"
 #include "game_variables.h"
+#include "round_end.h"
 #include "skip_tag.h"
 #include "util.h"
 
@@ -111,6 +112,7 @@ static void skip_tag_effect_rare(void)
 
 static void skip_tag_effect_investment(void)
 {
+    game_round_end_redeem_investment_tag();
 }
 
 static void skip_tag_effect_boss(void)
