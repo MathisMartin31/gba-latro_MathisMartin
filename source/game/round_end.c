@@ -22,8 +22,6 @@ enum GameRoundEndStates
     ROUND_END_EXIT
 };
 
-static const s32 INVESTMENT_TAG_BONUS = 25;
-
 static const u32 TM_RESET_STATIC_VARS = 30;
 static const u32 TM_END_POP_MENU_ANIM = 13;
 static const u32 TM_START_ROUND_END_REWARDS_ANIM = 1;
@@ -51,7 +49,9 @@ static const BG_POINT CASHOUT_SRC_3X3_RECT_POS =   {5,  29};
 static int substate;
 static int blind_reward = 0;
 static int hand_reward = 0;
-static int investment_tag_reward = 0;
+static bool investment_tag_active = false;
+static int investment_reward = 0;
+static int investment_start_time = UNDEFINED;
 static int interest_reward = 0;
 static int interest_to_count = 0;
 static int interest_start_time = UNDEFINED;
@@ -100,6 +100,10 @@ static void game_round_end_start(void)
         g_game_vars.timer = TM_ZERO;            // Reset the timer
         blind_reward = blind_get_reward(g_game_vars.current_blind);
         hand_reward = g_game_vars.hands;
+        investment_reward = 0;
+        investment_tag_active = skip_tag_is_owned(SKIP_TAG_TYPE_INVESTMENT) &&
+                                g_game_vars.current_blind >= BLIND_TYPE_BOSS;
+        investment_start_time = UNDEFINED;
         interest_reward = calculate_interest_reward();
         interest_to_count = interest_reward;
         interest_start_time = UNDEFINED;
@@ -285,7 +289,59 @@ static inline void game_round_end_print_hand_reward(int hand_y_offset)
         );
         if (hand_reward == 0)
         {
-            interest_start_time = g_game_vars.timer + TM_REWARD_DISPLAY_INTERVAL;
+            investment_start_time = g_game_vars.timer + TM_REWARD_DISPLAY_INTERVAL;
+        }
+    }
+}
+
+const static int INVESTMENT_TAG_REWARD = 25;
+
+static inline void game_round_end_redeem_investment_tags(int investment_y_offset)
+{
+    int investment_y = ROUND_END_REWARDS_ELLIPSIS_POS.y + investment_y_offset;
+
+    if (g_game_vars.timer == investment_start_time)
+    {
+        game_round_end_extend_black_panel_down(investment_y);
+
+        tte_printf(
+            "#{P:%lu,%d; cx:0x%X000}0 #{cx:0x%X000}Boss",
+            ROUND_END_REWARD_TEXT_X,
+            investment_y * TILE_SIZE,
+            TTE_YELLOW_PB,
+            TTE_WHITE_PB
+        );
+    }
+    else if (g_game_vars.timer > investment_start_time + TM_REWARD_DISPLAY_INTERVAL)
+    {
+        switch (
+            skip_tag_check_and_apply_for_event_loop(g_game_vars.timer, SKIP_TAG_EVENT_ON_ROUND_END))
+        {
+            // Increment investment bonus by 1
+            case SKIP_TAG_EFFECT_TRIGGER:
+                investment_reward++;
+                tte_printf(
+                    "#{P:%lu,%d; cx:0x%X000}%d",
+                    ROUND_END_REWARD_TEXT_X,
+                    investment_y * TILE_SIZE,
+                    TTE_YELLOW_PB,
+                    investment_reward
+                );
+                tte_printf(
+                    "#{P:%lu, %d; cx:0x%X000}$%d",
+                    ROUND_END_REWARD_AMOUNT_X,
+                    investment_y * TILE_SIZE,
+                    TTE_YELLOW_PB,
+                    investment_reward * INVESTMENT_TAG_REWARD
+                );
+                break;
+            // Go to interest reward state
+            case SKIP_TAG_EFFECT_END:
+                investment_start_time = UNDEFINED;
+                interest_start_time = g_game_vars.timer + TM_REWARD_DISPLAY_INTERVAL;
+                break;
+            default:
+                break;
         }
     }
 }
@@ -322,28 +378,32 @@ static inline void game_round_end_print_interest_reward(int interest_y_offset)
     }
 }
 
-void game_round_end_redeem_investment_tag(void)
-{
-    
-}
-
 static void game_round_end_display_rewards(void)
 {
     int hand_y_offset = 0;
+    int investment_y_offset = 0;
     int interest_y_offset = 0;
 
     if (g_game_vars.hands > 0)
     {
-        hand_y_offset = 1;
+        hand_y_offset++;
+        investment_y_offset++;
+        interest_y_offset++;
     }
     else
     {
         interest_start_time = TM_DISPLAY_REWARDS_CONT_WAIT;
     }
 
+    if (investment_tag_active)
+    {
+        investment_y_offset++;
+        interest_y_offset++;
+    }
+
     if (interest_reward > 0)
     {
-        interest_y_offset = hand_y_offset + 1;
+        interest_y_offset++;
     }
 
     // Once all rewards are accounted for go to the next state
@@ -364,6 +424,10 @@ static void game_round_end_display_rewards(void)
     {
         game_round_end_print_hand_reward(hand_y_offset);
     }
+    else if (investment_start_time != UNDEFINED && g_game_vars.timer >= investment_start_time)
+    {
+        game_round_end_redeem_investment_tags(investment_y_offset);
+    }
     else if (interest_start_time != UNDEFINED && g_game_vars.timer >= interest_start_time &&
              interest_to_count > 0)
     {
@@ -375,7 +439,7 @@ static inline void game_round_end_cashout(void)
 {
     // Reward the player
     g_game_vars.money += g_game_vars.hands + blind_get_reward(g_game_vars.current_blind) +
-                         calculate_interest_reward();
+                         investment_reward * INVESTMENT_TAG_REWARD + calculate_interest_reward();
     display_money();
 
     g_game_vars.hands = MAX_HANDS;       // Reset the hands to the maximum
@@ -396,6 +460,7 @@ static void game_round_end_display_cashout()
         main_bg_se_copy_expand_3x3_rect(CASHOUT_DEST_RECT, CASHOUT_SRC_3X3_RECT_POS);
 
         int cashout_amount = g_game_vars.hands + blind_get_reward(g_game_vars.current_blind) +
+                             investment_reward * INVESTMENT_TAG_REWARD +
                              calculate_interest_reward();
 
         bool omit_space = cashout_amount >= 10;
@@ -476,6 +541,8 @@ void game_round_end_on_exit(void)
     // allocated blind sprites each round
     blind_reward = 0;
     hand_reward = 0;
+    investment_reward = 0;
+    investment_tag_active = false;
     interest_reward = 0;
     sprite_destroy(&g_game_vars.playing_blind_token);
     sprite_destroy(&g_game_vars.round_end_blind_token);

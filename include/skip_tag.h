@@ -33,11 +33,12 @@
 #define SKIP_TAG_TYPE_COUPON     16
 #define SKIP_TAG_TYPE_DOUBLE     17
 #define SKIP_TAG_TYPE_JUGGLE     18
+#define SKIP_TAG_TYPE_D6         19
 #define SKIP_TAG_TYPE_TOP_UP     20
 #define SKIP_TAG_TYPE_SPEED      21
 #define SKIP_TAG_TYPE_ECONOMY    23
 
-#define NB_SKIP_TAG_TYPES 12
+#define NB_SKIP_TAG_TYPES 13
 #define MAX_SKIP_TAG_TYPES 24
 
 typedef struct SkipTag
@@ -59,15 +60,22 @@ enum SkipTagEvent
                                    // (Foil, Holographic, Negative, Polychrome)
 };
 
+enum SkipTagEffect
+{
+    SKIP_TAG_EFFECT_NONE,
+    SKIP_TAG_EFFECT_TRIGGER,
+    SKIP_TAG_EFFECT_END
+};
+
 // SkipTagCallbacks will attempt to either return whether the SkipTag can be activated or trigger it
 typedef bool (*SkipTagCondition)(void);
-typedef void (*SkipTagEffect)(void);
+typedef void (*SkipTagCallback)(void);
 
 typedef struct
 {
     enum SkipTagEvent event_type;
     SkipTagCondition tag_condition_func;
-    SkipTagEffect tag_effect_func;
+    SkipTagCallback tag_effect_func;
 } SkipTagInfo;
 
 const SkipTagInfo* get_skip_tag_registry_entry(int tag_id);
@@ -78,9 +86,10 @@ void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer);
 void skip_tag_destroy(SkipTag** tag);
 SkipTag* roll_skip_tag(void);
 
+bool skip_tag_is_owned(u8 tag_type);
 void add_skip_tag(SkipTag** blind_tag);
 void remove_skip_tag(int tag_idx);
 
-bool skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_event);
+enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_event);
 
 #endif // SKIP_TAGS_H

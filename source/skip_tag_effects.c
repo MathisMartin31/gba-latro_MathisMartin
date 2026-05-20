@@ -15,12 +15,12 @@
 
 REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_true)
 REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_double)
+REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_d6)
 REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_investment)
 
 REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_noop)
 REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_uncommon)
 REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_rare)
-REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_investment)
 REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_boss)
 REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_handy)
 REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_garbage)
@@ -41,7 +41,7 @@ const SkipTagInfo skip_tag_registry[] =
     { SKIP_TAG_EVENT_NONE,           skip_tag_cond_true,       skip_tag_effect_noop       }, // 3
     { SKIP_TAG_EVENT_NONE,           skip_tag_cond_true,       skip_tag_effect_noop       }, // 4
     { SKIP_TAG_EVENT_NONE,           skip_tag_cond_true,       skip_tag_effect_noop       }, // 5
-    { SKIP_TAG_EVENT_ON_ROUND_END,   skip_tag_cond_investment, skip_tag_effect_investment }, // INVESTMENT = 6
+    { SKIP_TAG_EVENT_ON_ROUND_END,   skip_tag_cond_investment, skip_tag_effect_noop       }, // INVESTMENT = 6
     { SKIP_TAG_EVENT_NONE,           skip_tag_cond_true,       skip_tag_effect_noop       }, // 7
     { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_true,       skip_tag_effect_boss       }, // BOSS       = 8
     { SKIP_TAG_EVENT_NONE,           skip_tag_cond_true,       skip_tag_effect_noop       }, // 9
@@ -54,7 +54,7 @@ const SkipTagInfo skip_tag_registry[] =
     { SKIP_TAG_EVENT_ON_SHOP_INIT,   skip_tag_cond_true,       skip_tag_effect_coupon     }, // COUPON     = 16
     { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_double,     skip_tag_effect_double     }, // DOUBLE     = 17
     { SKIP_TAG_EVENT_ON_ROUND_START, skip_tag_cond_true,       skip_tag_effect_juggle     }, // JUGGLE     = 18
-    { SKIP_TAG_EVENT_NONE,           skip_tag_cond_true,       skip_tag_effect_noop       }, // 19
+    { SKIP_TAG_EVENT_NONE,           skip_tag_cond_d6,         skip_tag_effect_noop       }, // D6         = 19
     { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_true,       skip_tag_effect_top_up     }, // TOP_UP     = 20
     { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_true,       skip_tag_effect_speed      }, // SPEED      = 21
     { SKIP_TAG_EVENT_NONE,           skip_tag_cond_true,       skip_tag_effect_noop       }, // 22
@@ -85,15 +85,20 @@ static bool skip_tag_cond_true(void)
     return true;
 }
 
+static bool skip_tag_cond_investment(void)
+{
+    return g_game_vars.current_blind >= BLIND_TYPE_BOSS;
+}
+
 static bool skip_tag_cond_double(void)
 {
     SkipTag* latest_tag = g_game_vars.owned_skip_tags.tail->data;
     return (latest_tag != NULL) && (latest_tag->type != SKIP_TAG_TYPE_DOUBLE);
 }
 
-static bool skip_tag_cond_investment(void)
+static bool skip_tag_cond_d6(void)
 {
-    return g_game_vars.current_blind == BLIND_TYPE_BOSS;
+    return true;
 }
 
 // EFFECTS IMPLEMENTATION
@@ -108,11 +113,6 @@ static void skip_tag_effect_uncommon(void)
 
 static void skip_tag_effect_rare(void)
 {
-}
-
-static void skip_tag_effect_investment(void)
-{
-    game_round_end_redeem_investment_tag();
 }
 
 static void skip_tag_effect_boss(void)
