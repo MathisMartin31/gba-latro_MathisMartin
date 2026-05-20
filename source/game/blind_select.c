@@ -249,9 +249,6 @@ static void game_blind_select_handle_input()
                     g_game_vars.nb_skipped_rounds++;
                     add_skip_tag(&blind_skip_tags[g_game_vars.current_blind]);
 
-                    SkipTag* tag = skip_tag_new(SKIP_TAG_TYPE_INVESTMENT);
-                    add_skip_tag(&tag);
-
                     // if we skipped the Small Blind, we have to up the Big Blind's
                     // SkipTag by a tile
                     if (g_game_vars.current_blind == BLIND_TYPE_SMALL)
