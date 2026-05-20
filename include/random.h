@@ -60,6 +60,8 @@ u32 rng_get_u32(void);
  *         position `step` in the rng sequence.
  *
  * @param info RngInfo struct applied
+ *
+ * @note Consistency of the RNG after reloading the RngInfo struct has yet to be tested properly
  */
 void rng_restore(RngInfo info);
 
