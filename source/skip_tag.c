@@ -13,7 +13,7 @@
 
 #define MAX_NON_OVERLAPING_TAG_SPRITES 5
 
-#define NB_ANTE1_SKIP_TAGS 9
+#define NB_ANTE1_SKIP_TAGS 10
 
 // clang-format off
 // Points                                         x    y
@@ -33,6 +33,7 @@ static const u8 ante1_skip_tags_roll_table[NB_ANTE1_SKIP_TAGS] = {
     SKIP_TAG_TYPE_COUPON,
     SKIP_TAG_TYPE_DOUBLE,
     SKIP_TAG_TYPE_JUGGLE,
+    SKIP_TAG_TYPE_D6,
     SKIP_TAG_TYPE_SPEED,
     SKIP_TAG_TYPE_ECONOMY
 };
@@ -47,6 +48,7 @@ static const u8 all_skip_tags_roll_table[NB_SKIP_TAG_TYPES] = {
     SKIP_TAG_TYPE_DOUBLE,
     SKIP_TAG_TYPE_JUGGLE,
     SKIP_TAG_TYPE_TOP_UP,
+    SKIP_TAG_TYPE_D6,
     SKIP_TAG_TYPE_SPEED,
     SKIP_TAG_TYPE_ECONOMY
 };
@@ -145,6 +147,22 @@ static void rearrange_skip_tag_sprites(int nb_owned_tags, int tag_spacing)
     }
 }
 
+bool skip_tag_is_owned(u8 tag_type)
+{
+    SkipTag* tag;
+    ListItr tag_itr = list_itr_create(&g_game_vars.owned_skip_tags);
+
+    while ((tag = list_itr_next(&tag_itr)))
+    {
+        if (tag->type == tag_type)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void add_skip_tag(SkipTag** blind_tag)
 {
     if (blind_tag == NULL)
@@ -197,11 +215,11 @@ void remove_skip_tag(int tag_idx)
     rearrange_skip_tag_sprites(list_get_len(&g_game_vars.owned_skip_tags), get_skip_tag_sprites_spacing());
 }
 
-bool skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_event)
+enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_event)
 {
     static int applied_tag_idx = 0;
     static SkipTag* consumed_tag = NULL;
-    static SkipTagEffect consumed_tag_effect = NULL;
+    static SkipTagCallback consumed_tag_effect = NULL;
     static bool tag_animation = false;
 
     // Only process tags every 40 frames so we have time to process what's happening
@@ -225,7 +243,7 @@ bool skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_ev
             consumed_tag = NULL;
             consumed_tag_effect = NULL;
             tag_animation = true;
-            return false;
+            return SKIP_TAG_EFFECT_TRIGGER;
         }
 
         if (tag_animation)
@@ -233,7 +251,7 @@ bool skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_ev
             remove_skip_tag(applied_tag_idx);
 
             tag_animation = false;
-            return false;
+            return SKIP_TAG_EFFECT_NONE;
         }
 
         int nb_owned_tags = list_get_len(&g_game_vars.owned_skip_tags);
@@ -251,13 +269,13 @@ bool skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_ev
             {
                 consumed_tag_effect = info->tag_effect_func;
 
-                return false;
+                return SKIP_TAG_EFFECT_NONE;
             }
         }
 
         applied_tag_idx = 0;
-        return true;
+        return SKIP_TAG_EFFECT_END;
     }
 
-    return false;
+    return SKIP_TAG_EFFECT_NONE;
 }

@@ -249,6 +249,9 @@ static void game_blind_select_handle_input()
                     g_game_vars.nb_skipped_rounds++;
                     add_skip_tag(&blind_skip_tags[g_game_vars.current_blind]);
 
+                    SkipTag* tag = skip_tag_new(SKIP_TAG_TYPE_INVESTMENT);
+                    add_skip_tag(&tag);
+
                     // if we skipped the Small Blind, we have to up the Big Blind's
                     // SkipTag by a tile
                     if (g_game_vars.current_blind == BLIND_TYPE_SMALL)
@@ -295,7 +298,8 @@ static void game_blind_select_handle_input()
 
 static void game_blind_select_handle_immediate_tags(void)
 {
-    if (skip_tag_check_and_apply_for_event_loop(timer, SKIP_TAG_EVENT_IMMEDIATE))
+    if (skip_tag_check_and_apply_for_event_loop(timer, SKIP_TAG_EVENT_IMMEDIATE) ==
+        SKIP_TAG_EFFECT_END)
     {
         timer = TM_ZERO;
         substate = BLIND_SELECT;
