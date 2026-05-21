@@ -25,7 +25,7 @@ typedef struct
     /** Initial seed */
     u32 seed;
     /** Position in the rng sequence. */
-    u32 step; 
+    u32 step;
 } RngInfo;
 
 /**
