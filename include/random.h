@@ -12,12 +12,20 @@
 
 #include <tonc.h>
 
-#define MAX_SEED 0x81BF0FFF // Hex value of "ZZZZZZ" in base 36
+/**
+ * @brief Hex value of "ZZZZZZ" in base 36
+ */
+#define MAX_SEED 0x81BF0FFF
 
-typedef struct RngInfo
+/**
+ * @brief Information to track and restore RNG state
+ */
+typedef struct
 {
+    /** Initial seed */
     u32 seed;
-    u32 step; // Position in the rng sequence.
+    /** Position in the rng sequence. */
+    u32 step; 
 } RngInfo;
 
 /**
