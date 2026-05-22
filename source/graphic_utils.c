@@ -2,6 +2,7 @@
 
 #include "layout.h"
 
+#include <stdio.h>
 #include <string.h>
 #include <tonc_core.h>
 #include <tonc_math.h>
@@ -506,4 +507,65 @@ void reset_top_left_panel_bottom_row(void)
     // Use the source rect height to offset to the bottom row point
     top_left_panel_bottom_row_pos.y += rect_height(&TOP_LEFT_ITEM_SRC_RECT) - 1;
     main_bg_se_copy_rect(TOP_LEFT_PANEL_BOTTOM_ROW_RESET_RECT, top_left_panel_bottom_row_pos);
+}
+
+static void print_text_with_tags(char* text, BG_POINT pos)
+{
+}
+
+void tte_printf_justified_in_rect(
+    char* raw_text,
+    Rect dst_rect,
+    enum TextJustifyFlag justify_direction,
+    enum ScreenHorzDir bias_direction
+)
+{
+    u8 max_line_len = dst_rect.right - dst_rect.left + 1;
+    u8 current_line_len = 0;
+    u8 current_line_y = 0;
+    u8 token_len;
+    u8 tag_len;
+    u8 word_len;
+
+    char tag[256]
+
+    // Will exit when there are no more words
+    char* token = strtok(raw_text, " ");
+    while (token)
+    {
+        word_len = 0;
+        token_len = strlen(token);
+
+        // Parse token length to compute the real length of the word that will be printed on screen
+        for (u8 i = 0; i < token_len; i++)
+        {
+            switch (token[i])
+            {
+                // Entering a {TAG}
+                case '{':
+                    tag_len = 0;
+                    break;
+
+                // Abrupt end of line, print current word if not empty and start
+                // a new line, with a new token
+                case '\0':
+                case '\n':
+                    current_line_len = 0;
+                    current_line_y++;
+                    i = token_len;
+                    token = strtok(NULL, " ");
+                    break;
+
+                default:
+                    // Current word is not null and goes out of bounds, start a new line
+                    // but keep the same word
+                    if (current_line_len + token_len > max_line_len)
+                    {
+                        current_line_len = 0;
+                        current_line_y++;
+                        break;
+                    }
+            }
+        }
+    }
 }
