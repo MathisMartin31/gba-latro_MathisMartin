@@ -5,7 +5,7 @@ var searchData=
   ['next_5fnode_2',['next_node',['../structListItr.html#a4ffa1d50194521c927e48fb52d86f20f',1,'ListItr']]],
   ['ninepatchrect_3',['ninepatchrect',['../structNinePatchRect.html',1,'NinePatchRect'],['../graphic__utils_8h.html#a533de5f085674ced95f37ede3b5bae7d',1,'NinePatchRect:&#160;graphic_utils.h']]],
   ['no_5favail_5fjokers_4',['no_avail_jokers',['../shop_8c.html#a96f2c4056d32f68f01ae0e844bdb369a',1,'shop.c']]],
-  ['not_20required_5',['With &lt;tt&gt;Git&lt;/tt&gt; (not required)',['../index.html#autotoc_md22',1,'']]],
+  ['not_20required_5',['With &lt;tt&gt;Git&lt;/tt&gt; (not required)',['../index.html#autotoc_md23',1,'']]],
   ['num_5felem_5fin_5farr_6',['NUM_ELEM_IN_ARR',['../util_8h.html#a3494fcb52c3d0ca1bf610facc8c81514',1,'util.h']]],
   ['nwords_7',['nwords',['../structBitset.html#a6953acccb3e7058540129d4f8f20b546',1,'Bitset']]]
 ];
