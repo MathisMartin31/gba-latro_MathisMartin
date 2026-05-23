@@ -18,7 +18,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "game_variables.h", "game__variables_8h.html", "game__variables_8h" ],
     [ "gbalatro_sys8.h", "gbalatro__sys8_8h_source.html", null ],
     [ "graphic_utils.h", "graphic__utils_8h.html", "graphic__utils_8h" ],
-    [ "hand_analysis.h", "hand__analysis_8h_source.html", null ],
+    [ "hand.h", "hand_8h.html", "hand_8h" ],
     [ "joker.h", "joker_8h_source.html", null ],
     [ "joker_gfx.h", "joker__gfx_8h_source.html", null ],
     [ "layout.h", "layout_8h.html", null ],
@@ -30,6 +30,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "selection_grid.h", "selection__grid_8h.html", "selection__grid_8h" ],
     [ "splash_screen.h", "splash__screen_8h.html", "splash__screen_8h" ],
     [ "sprite.h", "sprite_8h.html", "sprite_8h" ],
+    [ "state_machine.h", "state__machine_8h.html", "state__machine_8h" ],
     [ "timer.h", "timer_8h.html", null ],
     [ "util.h", "util_8h.html", "util_8h" ],
     [ "version.h", "version_8h.html", null ]
