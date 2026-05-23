@@ -403,7 +403,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a605786aff3f474d534207cfeb0de38ad" id="r_a605786aff3f474d534207cfeb0de38ad"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="run__setup_8c.html#a605786aff3f474d534207cfeb0de38ad">back_row_on_key_transit</a> (<a class="el" href="structSelectionGrid.html">SelectionGrid</a> *selection_grid, Selection *selection)</td></tr>
 <tr class="separator:a605786aff3f474d534207cfeb0de38ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5712e6adfa9e02ff989a8560414276fa" id="r_a5712e6adfa9e02ff989a8560414276fa"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="run__setup_8c.html#a5712e6adfa9e02ff989a8560414276fa">toggle_seed_enabled</a> (bool enable)</td></tr>
-<tr class="memdesc:a5712e6adfa9e02ff989a8560414276fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggle wheter or not we will use the seed chosen by the user. Changes the looks of the Sedd button to signal if it is clickable or not, and that of the checkbox next to it.  <br /></td></tr>
+<tr class="memdesc:a5712e6adfa9e02ff989a8560414276fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggle whether or not we will use the seed chosen by the user. Changes the looks of the Seed button to signal if it is clickable or not, and that of the checkbox next to it.  <br /></td></tr>
 <tr class="separator:a5712e6adfa9e02ff989a8560414276fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae35eb179e3f4dcb4e6b82c71035377b4" id="r_ae35eb179e3f4dcb4e6b82c71035377b4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="run__setup_8c.html#ae35eb179e3f4dcb4e6b82c71035377b4">use_seed_on_pressed</a> (void)</td></tr>
 <tr class="memdesc:ae35eb179e3f4dcb4e6b82c71035377b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seed checkbox <a class="el" href="structButton.html" title="A button representation.">Button</a> Callback. Toggles custom seed usage.  <br /></td></tr>
@@ -471,6 +471,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a492466e07233299a5f3e327b21ea8753" id="r_a492466e07233299a5f3e327b21ea8753"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="run__setup_8c.html#a492466e07233299a5f3e327b21ea8753">update_seed_text</a> (void)</td></tr>
 <tr class="memdesc:a492466e07233299a5f3e327b21ea8753"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints the string representing the chosen seed in base-36.  <br /></td></tr>
 <tr class="separator:a492466e07233299a5f3e327b21ea8753"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad00a2328e92525b7de20c1eecf2da9bc" id="r_ad00a2328e92525b7de20c1eecf2da9bc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="run__setup_8c.html#ad00a2328e92525b7de20c1eecf2da9bc">reroll_seed_str</a> (void)</td></tr>
+<tr class="memdesc:ad00a2328e92525b7de20c1eecf2da9bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes the last char in the seed string base-36 representation.  <br /></td></tr>
+<tr class="separator:ad00a2328e92525b7de20c1eecf2da9bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1092fc659186157c9e79f5b8a8505e42" id="r_a1092fc659186157c9e79f5b8a8505e42"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="run__setup_8c.html#a1092fc659186157c9e79f5b8a8505e42">delete_seed_char</a> (void)</td></tr>
 <tr class="memdesc:a1092fc659186157c9e79f5b8a8505e42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes the last char in the seed string base-36 representation.  <br /></td></tr>
 <tr class="separator:a1092fc659186157c9e79f5b8a8505e42"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1624,7 +1627,7 @@ Variables</h2></td></tr>
 
 <p>Back <a class="el" href="structButton.html" title="A button representation.">Button</a> Callback. Goes back to the Main Menu. </p>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01220">1220</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01236">1236</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -1640,6 +1643,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">static int back_row_get_size </td>
           <td>(</td>
+          <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
@@ -1654,7 +1658,7 @@ Variables</h2></td></tr>
 <p>Retuns the width of the Back button's row. </p>
 <dl class="section return"><dt>Returns</dt><dd>1, as there is only the Back button on that row. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01284">1284</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01313">1313</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -1692,7 +1696,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01289">1289</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01318">1318</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -1790,7 +1794,7 @@ Variables</h2></td></tr>
 
 <p><a class="el" href="structButton.html" title="A button representation.">Button</a> Callback used for cycling through the Decks. </p>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01228">1228</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01244">1244</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -1980,7 +1984,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>pointer to the <a class="el" href="structButton.html" title="A button representation.">Button</a> at coordinates <code>sel</code> in grid </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01046">1046</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01062">1062</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2089,7 +2093,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01069">1069</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01085">1085</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2151,7 +2155,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>bool </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01086">1086</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01102">1102</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2181,7 +2185,7 @@ Variables</h2></td></tr>
 
 <p>Deck <a class="el" href="structButton.html" title="A button representation.">Button</a> Callback. </p>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01111">1111</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01127">1127</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2211,7 +2215,7 @@ Variables</h2></td></tr>
 
 <p>Deletes the last char in the seed string base-36 representation. </p>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l00958">958</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l00975">975</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2336,7 +2340,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the key index </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l00990">990</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01007">1007</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2366,7 +2370,7 @@ Variables</h2></td></tr>
 
 <p>Keyboard key <a class="el" href="structButton.html" title="A button representation.">Button</a> callback. </p>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l00998">998</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01015">1015</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2396,7 +2400,37 @@ Variables</h2></td></tr>
 
 <p>Play <a class="el" href="structButton.html" title="A button representation.">Button</a> Callback. Applies the chosen seed if enabled and starts a new run. </p>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01202">1202</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01218">1218</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+
+</div>
+</div>
+<a id="ad00a2328e92525b7de20c1eecf2da9bc" name="ad00a2328e92525b7de20c1eecf2da9bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad00a2328e92525b7de20c1eecf2da9bc">&#9670;&#160;</a></span>reroll_seed_str()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void reroll_seed_str </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deletes the last char in the seed string base-36 representation. </p>
+
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l00958">958</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2426,7 +2460,7 @@ Variables</h2></td></tr>
 
 <p>Initialize the "Resume Previous Run" substate. </p>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01124">1124</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01140">1140</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2456,7 +2490,7 @@ Variables</h2></td></tr>
 
 <p>Update the "Resume Previous Run" substate. </p>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01135">1135</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01151">1151</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2486,7 +2520,7 @@ Variables</h2></td></tr>
 
 <p>Handle user input in regards to the Tabs. Tabs are cycled through using the L/R buttons. </p>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01249">1249</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01265">1265</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2576,7 +2610,7 @@ Variables</h2></td></tr>
 
 <p>Seed <a class="el" href="structButton.html" title="A button representation.">Button</a> Callback. Opens the seed input keyboard. </p>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01191">1191</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01207">1207</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2690,7 +2724,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01238">1238</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01254">1254</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2718,7 +2752,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Toggle wheter or not we will use the seed chosen by the user. Changes the looks of the Sedd button to signal if it is clickable or not, and that of the checkbox next to it. </p>
+<p>Toggle whether or not we will use the seed chosen by the user. Changes the looks of the Seed button to signal if it is clickable or not, and that of the checkbox next to it. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">enable</td><td>whether the seed is enabled or not </td></tr>
@@ -2726,7 +2760,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01148">1148</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01164">1164</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2762,7 +2796,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l00973">973</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l00990">990</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2822,7 +2856,7 @@ Variables</h2></td></tr>
 
 <p>Seed checkbox <a class="el" href="structButton.html" title="A button representation.">Button</a> Callback. Toggles custom seed usage. </p>
 
-<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01180">1180</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l01196">1196</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
 </div>
 </div>
@@ -2850,7 +2884,7 @@ Variables</h2></td></tr>
 <div class="line">    BACK_BTN_OUTLINE_COLOR_PAL_IDX, BACK_BTN_MAIN_COLOR_PAL_IDX,</div>
 <div class="line">    <a class="code hl_function" href="run__setup_8c.html#a4df8a3b9bce679d0a1b1c0299978a666">back_on_pressed</a>, NULL</div>
 <div class="line">}</div>
-<div class="ttc" id="arun__setup_8c_html_a4df8a3b9bce679d0a1b1c0299978a666"><div class="ttname"><a href="run__setup_8c.html#a4df8a3b9bce679d0a1b1c0299978a666">back_on_pressed</a></div><div class="ttdeci">static void back_on_pressed(void)</div><div class="ttdoc">Back Button Callback. Goes back to the Main Menu.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01220">run_setup.c:1220</a></div></div>
+<div class="ttc" id="arun__setup_8c_html_a4df8a3b9bce679d0a1b1c0299978a666"><div class="ttname"><a href="run__setup_8c.html#a4df8a3b9bce679d0a1b1c0299978a666">back_on_pressed</a></div><div class="ttdeci">static void back_on_pressed(void)</div><div class="ttdoc">Back Button Callback. Goes back to the Main Menu.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01236">run_setup.c:1236</a></div></div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l00216">216</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
@@ -2881,7 +2915,7 @@ Variables</h2></td></tr>
 <div class="line">    <a class="code hl_function" href="run__setup_8c.html#a8d1d910d8aacd4c97b4c7a99fe3a9a8f">change_deck_on_pressed</a>,</div>
 <div class="line">    NULL</div>
 <div class="line">}</div>
-<div class="ttc" id="arun__setup_8c_html_a8d1d910d8aacd4c97b4c7a99fe3a9a8f"><div class="ttname"><a href="run__setup_8c.html#a8d1d910d8aacd4c97b4c7a99fe3a9a8f">change_deck_on_pressed</a></div><div class="ttdeci">static void change_deck_on_pressed(void)</div><div class="ttdoc">Button Callback used for cycling through the Decks.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01228">run_setup.c:1228</a></div></div>
+<div class="ttc" id="arun__setup_8c_html_a8d1d910d8aacd4c97b4c7a99fe3a9a8f"><div class="ttname"><a href="run__setup_8c.html#a8d1d910d8aacd4c97b4c7a99fe3a9a8f">change_deck_on_pressed</a></div><div class="ttdeci">static void change_deck_on_pressed(void)</div><div class="ttdoc">Button Callback used for cycling through the Decks.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01244">run_setup.c:1244</a></div></div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l00294">294</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
@@ -2918,9 +2952,9 @@ Variables</h2></td></tr>
 <div class="line">        <a class="code hl_function" href="run__setup_8c.html#a1bb89f6f4c58f40852b4447aa2f8a654">seed_on_pressed</a>, NULL</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="ttc" id="arun__setup_8c_html_a1bb89f6f4c58f40852b4447aa2f8a654"><div class="ttname"><a href="run__setup_8c.html#a1bb89f6f4c58f40852b4447aa2f8a654">seed_on_pressed</a></div><div class="ttdeci">static void seed_on_pressed(void)</div><div class="ttdoc">Seed Button Callback. Opens the seed input keyboard.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01191">run_setup.c:1191</a></div></div>
-<div class="ttc" id="arun__setup_8c_html_a5e67c35ecc20a331f8bfd9231584d25f"><div class="ttname"><a href="run__setup_8c.html#a5e67c35ecc20a331f8bfd9231584d25f">play_on_pressed</a></div><div class="ttdeci">static void play_on_pressed(void)</div><div class="ttdoc">Play Button Callback. Applies the chosen seed if enabled and starts a new run.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01202">run_setup.c:1202</a></div></div>
-<div class="ttc" id="arun__setup_8c_html_ae35eb179e3f4dcb4e6b82c71035377b4"><div class="ttname"><a href="run__setup_8c.html#ae35eb179e3f4dcb4e6b82c71035377b4">use_seed_on_pressed</a></div><div class="ttdeci">static void use_seed_on_pressed(void)</div><div class="ttdoc">Seed checkbox Button Callback. Toggles custom seed usage.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01180">run_setup.c:1180</a></div></div>
+<div class="ttc" id="arun__setup_8c_html_a1bb89f6f4c58f40852b4447aa2f8a654"><div class="ttname"><a href="run__setup_8c.html#a1bb89f6f4c58f40852b4447aa2f8a654">seed_on_pressed</a></div><div class="ttdeci">static void seed_on_pressed(void)</div><div class="ttdoc">Seed Button Callback. Opens the seed input keyboard.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01207">run_setup.c:1207</a></div></div>
+<div class="ttc" id="arun__setup_8c_html_a5e67c35ecc20a331f8bfd9231584d25f"><div class="ttname"><a href="run__setup_8c.html#a5e67c35ecc20a331f8bfd9231584d25f">play_on_pressed</a></div><div class="ttdeci">static void play_on_pressed(void)</div><div class="ttdoc">Play Button Callback. Applies the chosen seed if enabled and starts a new run.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01218">run_setup.c:1218</a></div></div>
+<div class="ttc" id="arun__setup_8c_html_ae35eb179e3f4dcb4e6b82c71035377b4"><div class="ttname"><a href="run__setup_8c.html#ae35eb179e3f4dcb4e6b82c71035377b4">use_seed_on_pressed</a></div><div class="ttdeci">static void use_seed_on_pressed(void)</div><div class="ttdoc">Seed checkbox Button Callback. Toggles custom seed usage.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01196">run_setup.c:1196</a></div></div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l00303">303</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 
@@ -2966,7 +3000,7 @@ Variables</h2></td></tr>
 <div class="line">        {.wrap = <span class="keyword">false</span>}</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="ttc" id="arun__setup_8c_html_a021d858e94646371f960ac039d09244d"><div class="ttname"><a href="run__setup_8c.html#a021d858e94646371f960ac039d09244d">back_row_get_size</a></div><div class="ttdeci">static int back_row_get_size()</div><div class="ttdoc">Retuns the width of the Back button's row.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01284">run_setup.c:1284</a></div></div>
+<div class="ttc" id="arun__setup_8c_html_a021d858e94646371f960ac039d09244d"><div class="ttname"><a href="run__setup_8c.html#a021d858e94646371f960ac039d09244d">back_row_get_size</a></div><div class="ttdeci">static int back_row_get_size(void)</div><div class="ttdoc">Retuns the width of the Back button's row.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01313">run_setup.c:1313</a></div></div>
 <div class="ttc" id="arun__setup_8c_html_abf5ce3f9c6d21d636eb2109e3a06a7b4"><div class="ttname"><a href="run__setup_8c.html#abf5ce3f9c6d21d636eb2109e3a06a7b4">seed_play_row_on_key_transit</a></div><div class="ttdeci">static void seed_play_row_on_key_transit(SelectionGrid *selection_grid, Selection *selection)</div><div class="ttdoc">Handle button inputs for choose_deck_selection_grid</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l00843">run_setup.c:843</a></div></div>
 <div class="ttc" id="arun__setup_8c_html_acb466f1a1cd41dd5a87f7d3a26806fde"><div class="ttname"><a href="run__setup_8c.html#acb466f1a1cd41dd5a87f7d3a26806fde">seed_play_get_row_size</a></div><div class="ttdeci">static int seed_play_get_row_size(void)</div><div class="ttdoc">Returns the width of the Seed checkbox/Seed/Play buttons' row.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l00832">run_setup.c:832</a></div></div>
 <div class="ttc" id="arun__setup_8c_html_adccabd02c56aed3f75638fe422e57d01"><div class="ttname"><a href="run__setup_8c.html#adccabd02c56aed3f75638fe422e57d01">change_deck_get_row_size</a></div><div class="ttdeci">static int change_deck_get_row_size(void)</div><div class="ttdoc">Returns the width of the Change Deck Button's row.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l00773">run_setup.c:773</a></div></div>
@@ -3033,7 +3067,7 @@ Variables</h2></td></tr>
 <div class="line">        <a class="code hl_function" href="run__setup_8c.html#adfb29cc263e0dfc5f4140631a2ba3dbc">deck_on_pressed</a>, NULL</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="ttc" id="arun__setup_8c_html_adfb29cc263e0dfc5f4140631a2ba3dbc"><div class="ttname"><a href="run__setup_8c.html#adfb29cc263e0dfc5f4140631a2ba3dbc">deck_on_pressed</a></div><div class="ttdeci">static void deck_on_pressed(void)</div><div class="ttdoc">Deck Button Callback.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01111">run_setup.c:1111</a></div></div>
+<div class="ttc" id="arun__setup_8c_html_adfb29cc263e0dfc5f4140631a2ba3dbc"><div class="ttname"><a href="run__setup_8c.html#adfb29cc263e0dfc5f4140631a2ba3dbc">deck_on_pressed</a></div><div class="ttdeci">static void deck_on_pressed(void)</div><div class="ttdoc">Deck Button Callback.</div><div class="ttdef"><b>Definition</b> <a href="run__setup_8c_source.html#l01127">run_setup.c:1127</a></div></div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="run__setup_8c_source.html#l00593">593</a> of file <a class="el" href="run__setup_8c_source.html">run_setup.c</a>.</p>
 

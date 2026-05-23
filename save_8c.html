@@ -189,6 +189,8 @@ Macros</h2></td></tr>
 <tr class="separator:a64987474101a6404b9dc84978aa40dcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bbd55f81f9d61952ed5470da580998f" id="r_a9bbd55f81f9d61952ed5470da580998f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="save_8c.html#a9bbd55f81f9d61952ed5470da580998f">SAVE_LABEL_SIZE</a>&#160;&#160;&#160;16</td></tr>
 <tr class="separator:a9bbd55f81f9d61952ed5470da580998f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1fea73f3f1109a74e29714054595d04" id="r_ae1fea73f3f1109a74e29714054595d04"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="save_8c.html#ae1fea73f3f1109a74e29714054595d04">SAVE_DATA_CLEAR_U32</a>&#160;&#160;&#160;0xFFFFFFFF</td></tr>
+<tr class="separator:ae1fea73f3f1109a74e29714054595d04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -348,6 +350,22 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00024">24</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+
+</div>
+</div>
+<a id="ae1fea73f3f1109a74e29714054595d04" name="ae1fea73f3f1109a74e29714054595d04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae1fea73f3f1109a74e29714054595d04">&#9670;&#160;</a></span>SAVE_DATA_CLEAR_U32</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SAVE_DATA_CLEAR_U32&#160;&#160;&#160;0xFFFFFFFF</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00037">37</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -570,7 +588,7 @@ Variables</h2></td></tr>
 <p>Checks the 7 chars of gbalatro_version after the "GBALATRO_VERSION" prefix representing the git hash of the code the build is based on. </p>
 <dl class="section return"><dt>Returns</dt><dd>true if the git hash of the ROM is equal to the hash saved in SRAM. false if they are different. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00223">223</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00225">225</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -607,7 +625,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the save data is valid, false if not </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00254">254</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00256">256</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -630,7 +648,7 @@ Variables</h2></td></tr>
 <p>Checks whether the <a class="el" href="structSaveGame.html" title="SaveGame will contain the data about the current run to be saved to SRAM. GameVariables was used for ...">SaveGame</a> section is present and valid. </p>
 <dl class="section return"><dt>Returns</dt><dd>true if it is, false if not. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00322">322</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00324">324</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -661,7 +679,7 @@ Variables</h2></td></tr>
 <p>Determines if the current build is considered "dirty" aka has uncommitted changes. This works because the gbalatro_version string has "-dirty" added at the end if it's dirty. </p>
 <dl class="section return"><dt>Returns</dt><dd>true if version is dirty, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00243">243</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00245">245</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -684,7 +702,7 @@ Variables</h2></td></tr>
 <p>Load previous run data from SRAM. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="save_8h.html#a9e232271002ca804d61417ca6773b07a" title="Save current run data to SRAM.">save_game</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00365">365</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00367">367</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -707,7 +725,7 @@ Variables</h2></td></tr>
 <p>Load options values from SRAM. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="save_8h.html#af08a6f81dc09e7abbf2e4f33f99bec6e" title="Save options values to SRAM.">save_options</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00304">304</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00306">306</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -754,7 +772,7 @@ Variables</h2></td></tr>
 <p>Read raw binary data from SRAM. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="save_8c.html#ae0171ac7798cc10a4915844e79f050d0" title="Write raw binary data to SRAM.">write_sram</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00205">205</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00207">207</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -776,7 +794,7 @@ Variables</h2></td></tr>
 
 <p>Save current run data to SRAM. </p>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00328">328</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00330">330</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -798,7 +816,7 @@ Variables</h2></td></tr>
 
 <p>Save options values to SRAM. </p>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00291">291</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00293">293</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -835,7 +853,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00272">272</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00274">274</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -889,7 +907,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00189">189</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00191">191</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -920,7 +938,7 @@ Variables</h2></td></tr>
 <div class="line">    .round = 0,</div>
 <div class="line">    .ante = 0,</div>
 <div class="line">    .money = 0,</div>
-<div class="line">    .padding = {UNDEFINED, UNDEFINED},</div>
+<div class="line">    .padding = {SAVE_DATA_CLEAR_U32, SAVE_DATA_CLEAR_U32},</div>
 <div class="line"> </div>
 <div class="line">    .tag_jokers = <span class="stringliteral">&quot;- OWNED JOKERS -&quot;</span>,</div>
 <div class="line">    .jokers_data = {},</div>
@@ -930,7 +948,7 @@ Variables</h2></td></tr>
 </div><!-- fragment -->
 <p>Default value for the <a class="el" href="structSaveGame.html" title="SaveGame will contain the data about the current run to be saved to SRAM. GameVariables was used for ...">SaveGame</a> struct, with tags already set. </p>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00167">167</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00169">169</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -962,7 +980,7 @@ Variables</h2></td></tr>
 </div><!-- fragment -->
 <p>Default value for the <a class="el" href="structSaveHeader.html" title="SaveHeader for validation checks to be packed and written to SRAM for validation. Defined in this dis...">SaveHeader</a> struct. </p>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00145">145</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00147">147</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>
@@ -991,12 +1009,12 @@ Variables</h2></td></tr>
 <div class="line">    .high_contrast = DEFAULT_HIGH_CONTRAST,</div>
 <div class="line">    .music_volume = VOLUME_OPTION_MAX,</div>
 <div class="line">    .sound_volume = VOLUME_OPTION_MAX,</div>
-<div class="line">    .padding = {UNDEFINED, UNDEFINED, UNDEFINED},</div>
+<div class="line">    .padding = {SAVE_DATA_CLEAR_U32, SAVE_DATA_CLEAR_U32, SAVE_DATA_CLEAR_U32},</div>
 <div class="line">}</div>
 </div><!-- fragment -->
 <p>Default value for the <a class="el" href="structSaveOptions.html" title="SaveOptions will only contain options data set in the Options Menu.">SaveOptions</a> struct, with tags already set. </p>
 
-<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00155">155</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="save_8c_source.html#l00157">157</a> of file <a class="el" href="save_8c_source.html">save.c</a>.</p>
 
 </div>
 </div>

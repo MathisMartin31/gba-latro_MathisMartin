@@ -1,7 +1,7 @@
 var deck_8c =
 [
-    [ "print_deck_description", "deck_8c.html#a61e154aa37e9dcad6502e8d90ef9b583", null ],
-    [ "print_deck_name", "deck_8c.html#a1ef3f3b35d63c644ac60354d7148adb9", null ],
+    [ "print_deck_description", "deck_8c.html#aeb6c51fe050fea32811f33e01f5c8542", null ],
+    [ "print_deck_name", "deck_8c.html#a339c1fe49beee05dda44a8b2ae414d15", null ],
     [ "print_desc_black_deck", "deck_8c.html#a5ce548a07b49068e4b2718fb02939a28", null ],
     [ "print_desc_blue_deck", "deck_8c.html#a994dd3e5b28e324cbff3f7c3d69d28ce", null ],
     [ "print_desc_green_deck", "deck_8c.html#ab4e7764cc1e6cf64ebb03078795d2be4", null ],

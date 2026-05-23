@@ -23,6 +23,7 @@ var run__setup_8c =
     [ "get_keyboard_index_from_sel", "run__setup_8c.html#a4f8e645ad43810f5bc789c0385b89318", null ],
     [ "keyboard_button_on_pressed", "run__setup_8c.html#a0f1cdfa154c8147d52038214a678a6e8", null ],
     [ "play_on_pressed", "run__setup_8c.html#a5e67c35ecc20a331f8bfd9231584d25f", null ],
+    [ "reroll_seed_str", "run__setup_8c.html#ad00a2328e92525b7de20c1eecf2da9bc", null ],
     [ "resume_substate_init", "run__setup_8c.html#adcc3123e99b0af659149cbfa8df7d366", null ],
     [ "resume_substate_update", "run__setup_8c.html#a190191db02f5d8d1646672199d318b7e", null ],
     [ "run_setup_tabs_update", "run__setup_8c.html#ad8f373b6c06e1a2b727bdc2a39dd2cd2", null ],

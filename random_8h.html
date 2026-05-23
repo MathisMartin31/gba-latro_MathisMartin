@@ -158,7 +158,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:a3364aa4a4ff4352d9df2222c4735151a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the CPU cycles counter and accumulate it into a bigger u32 <code>timer_acc</code> variable.  <br /></td></tr>
 <tr class="separator:a3364aa4a4ff4352d9df2222c4735151a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53482f39207d0f9884dda144723fb518" id="r_a53482f39207d0f9884dda144723fb518"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="random_8h.html#a53482f39207d0f9884dda144723fb518">rng_set_seed</a> (u32 seed)</td></tr>
-<tr class="memdesc:a53482f39207d0f9884dda144723fb518"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the rng seed to the chosen value, and reset the step counter to 0. The seed will be capped at <code>MAX_SEED</code> for compatibility with the Seed Input screen used to choose a seed for seeded runs.  <br /></td></tr>
+<tr class="memdesc:a53482f39207d0f9884dda144723fb518"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the rng seed to the chosen value, and reset the step counter to 0. The seed will be capped at <code>MAX_BASE36</code> for compatibility with the Seed Input screen used to choose a seed for seeded runs.  <br /></td></tr>
 <tr class="separator:a53482f39207d0f9884dda144723fb518"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43bd63e66bebf4e4d463a7bee43dd737" id="r_a43bd63e66bebf4e4d463a7bee43dd737"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="random_8h.html#a43bd63e66bebf4e4d463a7bee43dd737">rng_shuffle_seed</a> (void)</td></tr>
 <tr class="memdesc:a43bd63e66bebf4e4d463a7bee43dd737"><td class="mdescLeft">&#160;</td><td class="mdescRight">Uses the CPU cycles counter to randomize the RNG seed as much as possible. This will be called by the main menu and the game over screens so that the next run's seed isn't the same as the last's. rng_start_sampling needs to have been called, and will stop the profiling.  <br /></td></tr>
@@ -270,7 +270,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set the rng seed to the chosen value, and reset the step counter to 0. The seed will be capped at <code>MAX_SEED</code> for compatibility with the Seed Input screen used to choose a seed for seeded runs. </p>
+<p>Set the rng seed to the chosen value, and reset the step counter to 0. The seed will be capped at <code>MAX_BASE36</code> for compatibility with the Seed Input screen used to choose a seed for seeded runs. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">seed</td><td>the new RNG seed </td></tr>

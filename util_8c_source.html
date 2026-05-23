@@ -360,7 +360,7 @@ $(document).ready(function(){initNavTree('util_8c_source.html',''); initResizabl
 <div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span> </div>
 <div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>    <span class="keywordflow">for</span> (uint8_t i = 0; i &lt; BASE36_MAX_DIGITS; i++)</div>
 <div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    {</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        res += base36_digit_value(b36_str[i]) * get_base36_power(i);</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        res += base36_digit_value(b36_str[i]) * get_base36_power(BASE36_MAX_DIGITS - i - 1);</div>
 <div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    }</div>
 <div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span> </div>
 <div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    <span class="keywordflow">return</span> res;</div>
@@ -372,13 +372,15 @@ $(document).ready(function(){initNavTree('util_8c_source.html',''); initResizabl
 <div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>{</div>
 <div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    uint32_t power;</div>
 <div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    uint32_t acc = (n &gt; <a class="code hl_define" href="util_8h.html#a1ce076ed9d155bf8e50c66f6f6c24d5d">MAX_BASE36</a>) ? <a class="code hl_define" href="util_8h.html#a1ce076ed9d155bf8e50c66f6f6c24d5d">MAX_BASE36</a> : n;</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = BASE36_MAX_DIGITS - 1; i &gt;= 0; i--)</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; BASE36_MAX_DIGITS; i++)</div>
 <div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    {</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>        power = get_base36_power(i);</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>        power = get_base36_power(BASE36_MAX_DIGITS - i - 1);</div>
 <div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>        b36_str[i] = base36_digit_char(acc / power);</div>
 <div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>        acc = acc % power;</div>
 <div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    }</div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>}</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    <span class="comment">// Properly end the string</span></div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>    b36_str[BASE36_MAX_DIGITS] = <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>}</div>
 </div>
 <div class="ttc" id="afont_8h_html"><div class="ttname"><a href="font_8h.html">font.h</a></div><div class="ttdoc">Utility file to interact with custom font.</div></div>
 <div class="ttc" id="afont_8h_html_a5c5982b0302d3d4d83f3a245952aab4b"><div class="ttname"><a href="font_8h.html#a5c5982b0302d3d4d83f3a245952aab4b">digit_char_to_font_point</a></div><div class="ttdeci">char digit_char_to_font_point(char digit_char)</div><div class="ttdoc">Get the decimal point char equivalent of 0-9 from char param.</div><div class="ttdef"><b>Definition</b> <a href="font_8c_source.html#l00026">font.c:26</a></div></div>
