@@ -41,13 +41,12 @@ var NAVTREEINDEX1 =
 "pool_8h_source.html":[3,0,0,24],
 "random_8c_source.html":[3,0,1,18],
 "random_8h.html":[3,0,0,25],
-"random_8h.html#a3364aa4a4ff4352d9df2222c4735151a":[3,0,0,25,7],
-"random_8h.html#a3c2a49da4657870823ba03983a88dd9e":[3,0,0,25,1],
-"random_8h.html#a43bd63e66bebf4e4d463a7bee43dd737":[3,0,0,25,6],
-"random_8h.html#a53482f39207d0f9884dda144723fb518":[3,0,0,25,5],
-"random_8h.html#a83ec4c5702aa84b05b24e8335ba7966e":[3,0,0,25,4],
-"random_8h.html#aa9ae84d9bf14a3987243f76cdf78c67b":[3,0,0,25,2],
-"random_8h.html#ad5a3df3d0092f55f6ea54ccaa7daf3dc":[3,0,0,25,3],
+"random_8h.html#a3364aa4a4ff4352d9df2222c4735151a":[3,0,0,25,6],
+"random_8h.html#a43bd63e66bebf4e4d463a7bee43dd737":[3,0,0,25,5],
+"random_8h.html#a53482f39207d0f9884dda144723fb518":[3,0,0,25,4],
+"random_8h.html#a83ec4c5702aa84b05b24e8335ba7966e":[3,0,0,25,3],
+"random_8h.html#aa9ae84d9bf14a3987243f76cdf78c67b":[3,0,0,25,1],
+"random_8h.html#ad5a3df3d0092f55f6ea54ccaa7daf3dc":[3,0,0,25,2],
 "random_8h_source.html":[3,0,0,25],
 "round__end_8c_source.html":[3,0,1,0,6],
 "round__end_8h.html":[3,0,0,0,6],
@@ -249,5 +248,6 @@ var NAVTREEINDEX1 =
 "structSelGridRowAttributes.html#a6599c8f0c5bae86b6e3b2d13fbf2768c":[2,0,24,1],
 "structSelGridRowAttributes.html#aae4302fd3b786eaab0c51e87ecc84633":[2,0,24,0],
 "structSelGridRowAttributes.html#ad694781c319f7ac04c4b381152b4abaf":[2,0,24,2],
-"structSelectionGrid.html":[2,0,22]
+"structSelectionGrid.html":[2,0,22],
+"structSelectionGridRow.html":[2,0,23]
 };
