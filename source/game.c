@@ -291,8 +291,6 @@ GameVariables g_game_vars = {
     .playing_blind_token = NULL,
     .round_end_blind_token = NULL,
 
-    .timer = 0, .rng_seed = 0, .rng_step = 0,
-
     .game_speed = DEFAULT_GAME_SPEED,
     .music_volume = DEFAULT_MUSIC_VOLUME,
     .sound_volume = DEFAULT_SOUND_VOLUME,
@@ -421,7 +419,7 @@ void game_init()
     g_game_vars.score = STARTING_SCORE;
     g_game_vars.round = 0;
 
-    g_game_vars.owned_skip_tags = list_create();
+    g_game_vars.owned_skip_tags = list_init();
 
     // Initialize/reset unbeaten Boss/Showdown Blinds so they are all available
     init_unbeaten_blinds_list(false);

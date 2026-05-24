@@ -142,8 +142,7 @@ static void game_blind_select_start_anim_seq()
     {
         game_blind_select_print_blinds_reqs_and_rewards();
         state_machine_change_state(&blind_select_sm, BLIND_SELECT);
-        blind_skip_tags_init();
-        timer = TM_ZERO; // Reset the timer
+        timer = TM_ZERO;
     }
 }
 
@@ -299,7 +298,7 @@ static void game_blind_select_handle_immediate_tags(void)
         SKIP_TAG_EFFECT_END)
     {
         timer = TM_ZERO;
-        substate = BLIND_SELECT;
+        state_machine_change_state(&blind_select_sm, BLIND_SELECT);
     }
 }
 
@@ -602,7 +601,6 @@ void game_blind_select_on_init(void)
 void game_blind_select_on_update(void)
 {
     timer++;
-
     blind_skip_tags_update();
 }
 
