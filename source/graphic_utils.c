@@ -527,7 +527,8 @@ void tte_printf_justified_in_rect(
     u8 tag_len;
     u8 word_len;
 
-    char tag[256]
+    char tag[256];
+    char line[256];
 
     // Will exit when there are no more words
     char* token = strtok(raw_text, " ");
