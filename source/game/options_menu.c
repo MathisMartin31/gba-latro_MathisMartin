@@ -366,7 +366,7 @@ void game_options_menu_change_background(void)
     GRIT_CPY(&se_mem[MAIN_BG_SBB], background_options_menu_gfxMap);
 
     // TODO remove
-    char* TOTO = "This should show up formatted. This is " TTE_RED_TAG "red.";
+    char* TOTO = "This  should show up formatted. This is " TTE_RED_TAG "red.";
     Rect TOTO_dest = {3, 2, 5, 4};
     tte_printf_justified_in_rect(TOTO, TOTO_dest, TTE_YELLOW_TAG, JUSTIFY_LEFT, SCREEN_LEFT);
     return;
