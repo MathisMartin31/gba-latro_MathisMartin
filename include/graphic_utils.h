@@ -464,7 +464,6 @@ void reset_top_left_panel_bottom_row(void);
  *                  not count towards the computed line widths, as they won't appear on screen.
  * @param dst_rect Rectangle the justified text must fit into. Will overflow at the bottom if
  *                  text is too long. Size in tiles
- * @param clear_clr A formatting `{TAG}`, determines the base text color.
  * @param justify_direction Align the text either to the left or center.
  * @param bias_direction Used with `JUSTIFY_CENTER` only. Determines if lines that cannot be
  *                        centered are to be slightly to the left or to the right.
@@ -473,9 +472,8 @@ void reset_top_left_panel_bottom_row(void);
  * @sa TTE_BLACK_TAG
  */
 void tte_printf_justified_in_rect(
-    char* raw_text,
+    const char* raw_text,
     Rect dst_rect,
-    const char* clear_clr,
     enum TextJustifyFlag justify_direction,
     enum ScreenHorzDir bias_direction
 );
