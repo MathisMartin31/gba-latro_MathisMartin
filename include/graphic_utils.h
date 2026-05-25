@@ -91,6 +91,29 @@
 /** @} */
 
 /**
+ * @name TTE Color formatting Tags
+ *
+ * @{
+ */
+
+/** @def TTE_BLACK_TAG */
+#define TTE_BLACK_TAG "#{cx:0x0000}"
+
+/** @def TTE_YELLOW_TAG */
+#define TTE_YELLOW_TAG "#{cx:0xC000}"
+
+/** @def TTE_BLUE_TAG */
+#define TTE_BLUE_TAG "#{cx:0xD000}"
+
+/** @def TTE_RED_TAG */
+#define TTE_RED_TAG "#{cx:0xE000}"
+
+/** @def TTE_WHITE_TAG */
+#define TTE_WHITE_TAG "#{cx:0xF000}"
+
+/** @} */
+
+/**
  * @name Text colors
  *
  * @{
@@ -435,21 +458,24 @@ void reset_top_left_panel_bottom_row(void);
  * - The raw_text will be divided into Words, separated by 1 space, and 1 space only.
  * - Each Word can have one or more formatting `{TAGS}` attached to it, and they MUST be right
  *   next to each other. It might not apply correctly otherwise if the line wraps.
- * - `{TAGS}` must not be put inside one another, only one level of braces is allowed.
+ * - `{TAGS}` must be one of TTE_BLACK_TAG, TTE_YELLOW_TAG, etc.
  *
  * @param raw_text The unformatted text. The '\n' character and custom formatting `{TAGS}` will
  *                  not count towards the computed line widths, as they won't appear on screen.
  * @param dst_rect Rectangle the justified text must fit into. Will overflow at the bottom if
  *                  text is too long. Size in tiles
+ * @param clear_clr A formatting `{TAG}`, determines the base text color.
  * @param justify_direction Align the text either to the left or center.
  * @param bias_direction Used with `JUSTIFY_CENTER` only. Determines if lines that cannot be
  *                        centered are to be slightly to the left or to the right.
  *
  * @sa update_text_rect_to_center_str
+ * @sa TTE_BLACK_TAG
  */
 void tte_printf_justified_in_rect(
     char* raw_text,
     Rect dst_rect,
+    const char* clear_clr,
     enum TextJustifyFlag justify_direction,
     enum ScreenHorzDir bias_direction
 );

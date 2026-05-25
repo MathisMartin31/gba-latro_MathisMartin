@@ -509,64 +509,111 @@ void reset_top_left_panel_bottom_row(void)
     main_bg_se_copy_rect(TOP_LEFT_PANEL_BOTTOM_ROW_RESET_RECT, top_left_panel_bottom_row_pos);
 }
 
-static void print_text_with_tags(char* text, BG_POINT pos)
-{
-}
-
+#define MAX_LINE_LENGTH 256
 void tte_printf_justified_in_rect(
     char* raw_text,
     Rect dst_rect,
+    const char* clear_clr,
     enum TextJustifyFlag justify_direction,
     enum ScreenHorzDir bias_direction
 )
 {
-    u8 max_line_len = dst_rect.right - dst_rect.left + 1;
+    u8 max_line_len = rect_width(&dst_rect);
     u8 current_line_len = 0;
+    u8 current_line_x = dst_rect.left;
     u8 current_line_y = 0;
+    
     u8 token_len;
-    u8 tag_len;
     u8 word_len;
 
-    char tag[256];
-    char line[256];
+    bool token_has_tag = false;
+
+    char line[MAX_LINE_LENGTH] = {'\0'};
+    const char* delimiters = " ";
 
     // Will exit when there are no more words
-    char* token = strtok(raw_text, " ");
-    while (token)
+    char* tmp;
+    while ((tmp = strtok_r(raw_text, " ", &raw_text)))
     {
+        // Need to build an intermediary word, because it seems tte_printf does NOT stop at \0
+        char token[256] = {'\0'};
+
+        int count = 0;
+        while (tmp[count] != ' ')
+            count++;
+        count++;
+        snprintf(token, count, "%s", tmp);
+
+        // TODO: remove
+        tte_printf(
+            "#{P:%d,%d}%s%s",
+            current_line_x * TILE_SIZE,
+            current_line_y * TILE_SIZE,
+            clear_clr, token
+        );
+        current_line_y++;
+        continue;
+
+
         word_len = 0;
         token_len = strlen(token);
+
+        // Token is too long, will cause infinite loop. Abort here.
+        if (token_len >= MAX_LINE_LENGTH)
+            return;
 
         // Parse token length to compute the real length of the word that will be printed on screen
         for (u8 i = 0; i < token_len; i++)
         {
-            switch (token[i])
+            // Entering a {TAG}. loop over chars until we exit it.
+            // This way we still keep it in the token, but don't count its length since
+            // it won't be visible on screen when printed
+            if (token[i] == '{')
             {
-                // Entering a {TAG}
-                case '{':
-                    tag_len = 0;
-                    break;
+                token_has_tag = true;
+                while ((token[i] != '}') && (i < token_len))
+                    i++;
+            }
 
-                // Abrupt end of line, print current word if not empty and start
-                // a new line, with a new token
-                case '\0':
-                case '\n':
-                    current_line_len = 0;
-                    current_line_y++;
-                    i = token_len;
-                    token = strtok(NULL, " ");
-                    break;
+            // Either an end of word or line, or current word goes out of bounds.
+            // Print current line and start a new one, but keep the current token.
+            else if (
+                (token[i] == '\0') || (token[i] == '\n') ||
+                (current_line_len + word_len > max_line_len)
+            )
+            {
+                tte_printf(
+                    "#{P:%d,%d}%s",
+                    current_line_x * TILE_SIZE,
+                    current_line_y * TILE_SIZE,
+                    line
+                );
+                line[0] = '\0';
+                current_line_len = 0;
+                current_line_x = 0;
+                current_line_y++;
+                break;
+            }
 
-                default:
-                    // Current word is not null and goes out of bounds, start a new line
-                    // but keep the same word
-                    if (current_line_len + token_len > max_line_len)
-                    {
-                        current_line_len = 0;
-                        current_line_y++;
-                        break;
-                    }
+            else
+            {
+                word_len++;
             }
         }
+
+        // We've arrived normally at the end of the token, and it fits within the current line.
+        // Add the current token at the end of the line, and fetch the next one.
+        snprintf(
+            line + current_line_len,
+            MAX_LINE_LENGTH,
+            "%s%s",
+            token,
+            token_has_tag ? clear_clr : ""
+        );
+        current_line_len += word_len;
+        tmp = strtok(NULL, delimiters);
+
+        // If there is no next token, and the current line length is not null, print the line
+        tte_printf("#{P:%d,%d}%s", current_line_x * TILE_SIZE, current_line_y * TILE_SIZE, line);
     }
 }
