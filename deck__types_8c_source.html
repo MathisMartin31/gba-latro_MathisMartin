@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>GBAlatro: source/deck.c Source File</title>
+<title>GBAlatro: source/deck_types.c Source File</title>
 <!--BEGIN PROJECT_ICON-->
 <link rel="icon" href="$projecticon" type="image/x-icon" />
 <!--END PROJECT_ICON-->
@@ -109,7 +109,7 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('deck__types_8c_source.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -135,11 +135,11 @@ $(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizabl
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">deck.c</div></div>
+  <div class="headertitle"><div class="title">deck_types.c</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="deck_8c.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="deck_8h.html">deck.h</a>&quot;</span></div>
+<a href="deck__types_8c.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="deck__types_8h.html">deck_types.h</a>&quot;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;game.h&quot;</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
@@ -148,7 +148,7 @@ $(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizabl
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#define TTE_COLOR_TEXT_FORMAT &quot;#{cx:0x%X000}%s&quot;</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
 <div class="foldopen" id="foldopen00017" data-start="{" data-end="};">
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="deck_8c.html#aa69c0508a53c09b17c5283a1e5be751a">   17</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span> <a class="code hl_variable" href="deck_8c.html#aa69c0508a53c09b17c5283a1e5be751a">deck_names</a>[DECK_TYPE_MAX][DECK_NAME_LENGTH] = {</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="deck__types_8c.html#aa69c0508a53c09b17c5283a1e5be751a">   17</a></span><span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span> <a class="code hl_variable" href="deck__types_8c.html#aa69c0508a53c09b17c5283a1e5be751a">deck_names</a>[DECK_TYPE_MAX][DECK_NAME_LENGTH] = {</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="stringliteral">&quot;  Red Deck   &quot;</span>,</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="stringliteral">&quot;  Blue Deck  &quot;</span>,</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="stringliteral">&quot; Yellow Deck &quot;</span>,</div>
@@ -158,32 +158,32 @@ $(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizabl
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>};</div>
 </div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#ae06a285687193be23c00a00b209eb521">print_desc_red_deck</a>(BG_POINT pos);</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#a994dd3e5b28e324cbff3f7c3d69d28ce">print_desc_blue_deck</a>(BG_POINT pos);</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#a0428dc33e219e8dd950bf541b57a4ef7">print_desc_yellow_deck</a>(BG_POINT pos);</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#ab4e7764cc1e6cf64ebb03078795d2be4">print_desc_green_deck</a>(BG_POINT pos);</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#a5ce548a07b49068e4b2718fb02939a28">print_desc_black_deck</a>(BG_POINT pos);</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#a736be51786cebff18770985e85d6a24e">print_desc_painted_deck</a>(BG_POINT pos);</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#ae06a285687193be23c00a00b209eb521">print_desc_red_deck</a>(BG_POINT pos);</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#a994dd3e5b28e324cbff3f7c3d69d28ce">print_desc_blue_deck</a>(BG_POINT pos);</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#a0428dc33e219e8dd950bf541b57a4ef7">print_desc_yellow_deck</a>(BG_POINT pos);</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#ab4e7764cc1e6cf64ebb03078795d2be4">print_desc_green_deck</a>(BG_POINT pos);</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#a5ce548a07b49068e4b2718fb02939a28">print_desc_black_deck</a>(BG_POINT pos);</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#a736be51786cebff18770985e85d6a24e">print_desc_painted_deck</a>(BG_POINT pos);</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="keyword">typedef</span> void (*PrintDescCallback)(BG_POINT);</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">static</span> <span class="keyword">const</span> PrintDescCallback deck_description_functions[DECK_TYPE_MAX] = {</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <a class="code hl_function" href="deck_8c.html#ae06a285687193be23c00a00b209eb521">print_desc_red_deck</a>,</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <a class="code hl_function" href="deck_8c.html#a994dd3e5b28e324cbff3f7c3d69d28ce">print_desc_blue_deck</a>,</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <a class="code hl_function" href="deck_8c.html#a0428dc33e219e8dd950bf541b57a4ef7">print_desc_yellow_deck</a>,</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <a class="code hl_function" href="deck_8c.html#ab4e7764cc1e6cf64ebb03078795d2be4">print_desc_green_deck</a>,</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <a class="code hl_function" href="deck_8c.html#a5ce548a07b49068e4b2718fb02939a28">print_desc_black_deck</a>,</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <a class="code hl_function" href="deck_8c.html#a736be51786cebff18770985e85d6a24e">print_desc_painted_deck</a></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <a class="code hl_function" href="deck__types_8c.html#ae06a285687193be23c00a00b209eb521">print_desc_red_deck</a>,</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <a class="code hl_function" href="deck__types_8c.html#a994dd3e5b28e324cbff3f7c3d69d28ce">print_desc_blue_deck</a>,</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <a class="code hl_function" href="deck__types_8c.html#a0428dc33e219e8dd950bf541b57a4ef7">print_desc_yellow_deck</a>,</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <a class="code hl_function" href="deck__types_8c.html#ab4e7764cc1e6cf64ebb03078795d2be4">print_desc_green_deck</a>,</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <a class="code hl_function" href="deck__types_8c.html#a5ce548a07b49068e4b2718fb02939a28">print_desc_black_deck</a>,</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <a class="code hl_function" href="deck__types_8c.html#a736be51786cebff18770985e85d6a24e">print_desc_painted_deck</a></div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>};</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
 <div class="foldopen" id="foldopen00043" data-start="{" data-end="}">
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="deck_8h.html#a339c1fe49beee05dda44a8b2ae414d15">   43</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#a339c1fe49beee05dda44a8b2ae414d15">print_deck_name</a>(<span class="keyword">enum</span> DeckType deck, BG_POINT pos)</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="deck__types_8h.html#a339c1fe49beee05dda44a8b2ae414d15">   43</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#a339c1fe49beee05dda44a8b2ae414d15">print_deck_name</a>(<span class="keyword">enum</span> DeckType deck, BG_POINT pos)</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>{</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    tte_printf(<span class="stringliteral">&quot;#{P:%d,%d; cx:0x%X000}%s&quot;</span>, pos.x, pos.y, TTE_WHITE_PB, <a class="code hl_variable" href="deck_8c.html#aa69c0508a53c09b17c5283a1e5be751a">deck_names</a>[deck]);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    tte_printf(<span class="stringliteral">&quot;#{P:%d,%d; cx:0x%X000}%s&quot;</span>, pos.x, pos.y, TTE_WHITE_PB, <a class="code hl_variable" href="deck__types_8c.html#aa69c0508a53c09b17c5283a1e5be751a">deck_names</a>[deck]);</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>}</div>
 </div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
 <div class="foldopen" id="foldopen00048" data-start="{" data-end="}">
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="deck_8h.html#aeb6c51fe050fea32811f33e01f5c8542">   48</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#aeb6c51fe050fea32811f33e01f5c8542">print_deck_description</a>(<span class="keyword">enum</span> DeckType deck, BG_POINT pos)</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="deck__types_8h.html#aeb6c51fe050fea32811f33e01f5c8542">   48</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#aeb6c51fe050fea32811f33e01f5c8542">print_deck_description</a>(<span class="keyword">enum</span> DeckType deck, BG_POINT pos)</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>{</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keywordflow">if</span> (deck_description_functions[deck] == NULL)</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    {</div>
@@ -195,16 +195,16 @@ $(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizabl
 </div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
 <div class="foldopen" id="foldopen00065" data-start="{" data-end="}">
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">   65</a></span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(<span class="keywordtype">int</span> pos_x, <span class="keywordtype">int</span> pos_y)</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">   65</a></span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(<span class="keywordtype">int</span> pos_x, <span class="keywordtype">int</span> pos_y)</div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>{</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    tte_printf(<span class="stringliteral">&quot;#{P:%d,%d}&quot;</span> TTE_COLOR_TEXT_FORMAT, pos_x, pos_y, TTE_BLACK_PB, <span class="stringliteral">&quot;             &quot;</span>);</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>}</div>
 </div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
 <div class="foldopen" id="foldopen00081" data-start="{" data-end="}">
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno"><a class="line" href="deck_8c.html#ae06a285687193be23c00a00b209eb521">   81</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#ae06a285687193be23c00a00b209eb521">print_desc_red_deck</a>(BG_POINT pos)</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno"><a class="line" href="deck__types_8c.html#ae06a285687193be23c00a00b209eb521">   81</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#ae06a285687193be23c00a00b209eb521">print_desc_red_deck</a>(BG_POINT pos)</div>
 <div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>{</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y);</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y);</div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    tte_printf(</div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        <span class="stringliteral">&quot;#{P:%d,%d}&quot;</span> TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT,</div>
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        pos.x,</div>
@@ -221,15 +221,15 @@ $(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizabl
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        TTE_BLACK_PB,</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        <span class="stringliteral">&quot; every Round &quot;</span></div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    );</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 3 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 4 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 3 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 4 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
 <div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>}</div>
 </div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
 <div class="foldopen" id="foldopen00115" data-start="{" data-end="}">
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno"><a class="line" href="deck_8c.html#a994dd3e5b28e324cbff3f7c3d69d28ce">  115</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#a994dd3e5b28e324cbff3f7c3d69d28ce">print_desc_blue_deck</a>(BG_POINT pos)</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno"><a class="line" href="deck__types_8c.html#a994dd3e5b28e324cbff3f7c3d69d28ce">  115</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#a994dd3e5b28e324cbff3f7c3d69d28ce">print_desc_blue_deck</a>(BG_POINT pos)</div>
 <div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>{</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y);</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y);</div>
 <div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    tte_printf(</div>
 <div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        <span class="stringliteral">&quot;#{P:%d,%d}&quot;</span> TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT,</div>
 <div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        pos.x,</div>
@@ -246,15 +246,15 @@ $(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizabl
 <div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>        TTE_BLACK_PB,</div>
 <div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        <span class="stringliteral">&quot; every Round &quot;</span></div>
 <div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    );</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 3 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 4 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 3 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 4 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
 <div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>}</div>
 </div>
 <div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
 <div class="foldopen" id="foldopen00149" data-start="{" data-end="}">
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno"><a class="line" href="deck_8c.html#a0428dc33e219e8dd950bf541b57a4ef7">  149</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#a0428dc33e219e8dd950bf541b57a4ef7">print_desc_yellow_deck</a>(BG_POINT pos)</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno"><a class="line" href="deck__types_8c.html#a0428dc33e219e8dd950bf541b57a4ef7">  149</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#a0428dc33e219e8dd950bf541b57a4ef7">print_desc_yellow_deck</a>(BG_POINT pos)</div>
 <div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>{</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y);</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y);</div>
 <div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    tte_printf(</div>
 <div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>        <span class="stringliteral">&quot;#{P:%d,%d}&quot;</span> TTE_COLOR_TEXT_FORMAT,</div>
 <div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>        pos.x,</div>
@@ -271,16 +271,16 @@ $(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizabl
 <div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>        TTE_YELLOW_PB,</div>
 <div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>        <span class="stringliteral">&quot; $10 &quot;</span></div>
 <div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>    );</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 3 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 4 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 3 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 4 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
 <div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>}</div>
 </div>
 <div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span> </div>
 <div class="foldopen" id="foldopen00183" data-start="{" data-end="}">
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno"><a class="line" href="deck_8c.html#ab4e7764cc1e6cf64ebb03078795d2be4">  183</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#ab4e7764cc1e6cf64ebb03078795d2be4">print_desc_green_deck</a>(BG_POINT pos)</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno"><a class="line" href="deck__types_8c.html#ab4e7764cc1e6cf64ebb03078795d2be4">  183</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#ab4e7764cc1e6cf64ebb03078795d2be4">print_desc_green_deck</a>(BG_POINT pos)</div>
 <div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>{</div>
 <div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>    tte_printf(<span class="stringliteral">&quot;#{P:%d,%d; cx:0x%X000}%s&quot;</span>, pos.x, pos.y, TTE_BLACK_PB, <span class="stringliteral">&quot;End of Round:&quot;</span>);</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
 <div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    tte_printf(</div>
 <div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        <span class="stringliteral">&quot;#{P:%d,%d}&quot;</span> TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT</div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>            TTE_COLOR_TEXT_FORMAT,</div>
@@ -322,7 +322,7 @@ $(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizabl
 </div>
 <div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span> </div>
 <div class="foldopen" id="foldopen00237" data-start="{" data-end="}">
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno"><a class="line" href="deck_8c.html#a5ce548a07b49068e4b2718fb02939a28">  237</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#a5ce548a07b49068e4b2718fb02939a28">print_desc_black_deck</a>(BG_POINT pos)</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno"><a class="line" href="deck__types_8c.html#a5ce548a07b49068e4b2718fb02939a28">  237</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#a5ce548a07b49068e4b2718fb02939a28">print_desc_black_deck</a>(BG_POINT pos)</div>
 <div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>{</div>
 <div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    tte_printf(</div>
 <div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>        <span class="stringliteral">&quot;#{P:%d,%d}&quot;</span> TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT,</div>
@@ -333,7 +333,7 @@ $(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizabl
 <div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>        TTE_BLACK_PB,</div>
 <div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>        <span class="stringliteral">&quot;Joker slot&quot;</span></div>
 <div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>    );</div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
 <div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    tte_printf(</div>
 <div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>        <span class="stringliteral">&quot;#{P:%d,%d}&quot;</span> TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT,</div>
 <div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>        pos.x,</div>
@@ -350,14 +350,14 @@ $(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizabl
 <div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        TTE_BLACK_PB,</div>
 <div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>        <span class="stringliteral">&quot; every Round &quot;</span></div>
 <div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>    );</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 4 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 4 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
 <div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>}</div>
 </div>
 <div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span> </div>
 <div class="foldopen" id="foldopen00279" data-start="{" data-end="}">
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno"><a class="line" href="deck_8c.html#a736be51786cebff18770985e85d6a24e">  279</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck_8c.html#a736be51786cebff18770985e85d6a24e">print_desc_painted_deck</a>(BG_POINT pos)</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno"><a class="line" href="deck__types_8c.html#a736be51786cebff18770985e85d6a24e">  279</a></span><span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="deck__types_8c.html#a736be51786cebff18770985e85d6a24e">print_desc_painted_deck</a>(BG_POINT pos)</div>
 <div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>{</div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y);</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y);</div>
 <div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    tte_printf(</div>
 <div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>        <span class="stringliteral">&quot;#{P:%d,%d}&quot;</span> TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT,</div>
 <div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>        pos.x,</div>
@@ -376,28 +376,28 @@ $(document).ready(function(){initNavTree('deck_8c_source.html',''); initResizabl
 <div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>        TTE_BLACK_PB,</div>
 <div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>        <span class="stringliteral">&quot;Joker slot&quot;</span></div>
 <div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    );</div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 3 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>    <a class="code hl_function" href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 4 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 3 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>    <a class="code hl_function" href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a>(pos.x, pos.y + 4 * <a class="code hl_define" href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a>);</div>
 <div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>}</div>
 </div>
-<div class="ttc" id="adeck_8c_html_a0428dc33e219e8dd950bf541b57a4ef7"><div class="ttname"><a href="deck_8c.html#a0428dc33e219e8dd950bf541b57a4ef7">print_desc_yellow_deck</a></div><div class="ttdeci">static void print_desc_yellow_deck(BG_POINT pos)</div><div class="ttdoc">Print the decription of the Yellow Deck.</div><div class="ttdef"><b>Definition</b> <a href="deck_8c_source.html#l00149">deck.c:149</a></div></div>
-<div class="ttc" id="adeck_8c_html_a339c1fe49beee05dda44a8b2ae414d15"><div class="ttname"><a href="deck_8c.html#a339c1fe49beee05dda44a8b2ae414d15">print_deck_name</a></div><div class="ttdeci">void print_deck_name(enum DeckType deck, BG_POINT pos)</div><div class="ttdoc">Prints the Deck name string to the screen at the given position.</div><div class="ttdef"><b>Definition</b> <a href="deck_8c_source.html#l00043">deck.c:43</a></div></div>
-<div class="ttc" id="adeck_8c_html_a5ce548a07b49068e4b2718fb02939a28"><div class="ttname"><a href="deck_8c.html#a5ce548a07b49068e4b2718fb02939a28">print_desc_black_deck</a></div><div class="ttdeci">static void print_desc_black_deck(BG_POINT pos)</div><div class="ttdoc">Print the decription of the Black Deck.</div><div class="ttdef"><b>Definition</b> <a href="deck_8c_source.html#l00237">deck.c:237</a></div></div>
-<div class="ttc" id="adeck_8c_html_a72695ce33b02b8163efcd58a1d3190c2"><div class="ttname"><a href="deck_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a></div><div class="ttdeci">static void print_empty_desc_line(int pos_x, int pos_y)</div><div class="ttdoc">Print an empty string of 13 characters long at given coordinates. Reduces boilerplate in deck descrip...</div><div class="ttdef"><b>Definition</b> <a href="deck_8c_source.html#l00065">deck.c:65</a></div></div>
-<div class="ttc" id="adeck_8c_html_a736be51786cebff18770985e85d6a24e"><div class="ttname"><a href="deck_8c.html#a736be51786cebff18770985e85d6a24e">print_desc_painted_deck</a></div><div class="ttdeci">static void print_desc_painted_deck(BG_POINT pos)</div><div class="ttdoc">Print the decription of the Painted Deck.</div><div class="ttdef"><b>Definition</b> <a href="deck_8c_source.html#l00279">deck.c:279</a></div></div>
-<div class="ttc" id="adeck_8c_html_a994dd3e5b28e324cbff3f7c3d69d28ce"><div class="ttname"><a href="deck_8c.html#a994dd3e5b28e324cbff3f7c3d69d28ce">print_desc_blue_deck</a></div><div class="ttdeci">static void print_desc_blue_deck(BG_POINT pos)</div><div class="ttdoc">Print the decription of the Blue Deck.</div><div class="ttdef"><b>Definition</b> <a href="deck_8c_source.html#l00115">deck.c:115</a></div></div>
-<div class="ttc" id="adeck_8c_html_aa69c0508a53c09b17c5283a1e5be751a"><div class="ttname"><a href="deck_8c.html#aa69c0508a53c09b17c5283a1e5be751a">deck_names</a></div><div class="ttdeci">static const char deck_names[DECK_TYPE_MAX][DECK_NAME_LENGTH]</div><div class="ttdoc">List of DeckType names, all formatted to be centered in a string of 13 characters.</div><div class="ttdef"><b>Definition</b> <a href="deck_8c_source.html#l00017">deck.c:17</a></div></div>
-<div class="ttc" id="adeck_8c_html_ab4e7764cc1e6cf64ebb03078795d2be4"><div class="ttname"><a href="deck_8c.html#ab4e7764cc1e6cf64ebb03078795d2be4">print_desc_green_deck</a></div><div class="ttdeci">static void print_desc_green_deck(BG_POINT pos)</div><div class="ttdoc">Print the decription of the Green Deck.</div><div class="ttdef"><b>Definition</b> <a href="deck_8c_source.html#l00183">deck.c:183</a></div></div>
-<div class="ttc" id="adeck_8c_html_ae06a285687193be23c00a00b209eb521"><div class="ttname"><a href="deck_8c.html#ae06a285687193be23c00a00b209eb521">print_desc_red_deck</a></div><div class="ttdeci">static void print_desc_red_deck(BG_POINT pos)</div><div class="ttdoc">Print the decription of the Red Deck.</div><div class="ttdef"><b>Definition</b> <a href="deck_8c_source.html#l00081">deck.c:81</a></div></div>
-<div class="ttc" id="adeck_8c_html_aeb6c51fe050fea32811f33e01f5c8542"><div class="ttname"><a href="deck_8c.html#aeb6c51fe050fea32811f33e01f5c8542">print_deck_description</a></div><div class="ttdeci">void print_deck_description(enum DeckType deck, BG_POINT pos)</div><div class="ttdoc">Prints the Deck description string to the screen at the given position.</div><div class="ttdef"><b>Definition</b> <a href="deck_8c_source.html#l00048">deck.c:48</a></div></div>
-<div class="ttc" id="adeck_8h_html"><div class="ttname"><a href="deck_8h.html">deck.h</a></div><div class="ttdoc">Functions related to the different types of Decks.</div></div>
+<div class="ttc" id="adeck__types_8c_html_a0428dc33e219e8dd950bf541b57a4ef7"><div class="ttname"><a href="deck__types_8c.html#a0428dc33e219e8dd950bf541b57a4ef7">print_desc_yellow_deck</a></div><div class="ttdeci">static void print_desc_yellow_deck(BG_POINT pos)</div><div class="ttdoc">Print the decription of the Yellow Deck.</div><div class="ttdef"><b>Definition</b> <a href="deck__types_8c_source.html#l00149">deck_types.c:149</a></div></div>
+<div class="ttc" id="adeck__types_8c_html_a339c1fe49beee05dda44a8b2ae414d15"><div class="ttname"><a href="deck__types_8c.html#a339c1fe49beee05dda44a8b2ae414d15">print_deck_name</a></div><div class="ttdeci">void print_deck_name(enum DeckType deck, BG_POINT pos)</div><div class="ttdoc">Prints the Deck name string to the screen at the given position.</div><div class="ttdef"><b>Definition</b> <a href="deck__types_8c_source.html#l00043">deck_types.c:43</a></div></div>
+<div class="ttc" id="adeck__types_8c_html_a5ce548a07b49068e4b2718fb02939a28"><div class="ttname"><a href="deck__types_8c.html#a5ce548a07b49068e4b2718fb02939a28">print_desc_black_deck</a></div><div class="ttdeci">static void print_desc_black_deck(BG_POINT pos)</div><div class="ttdoc">Print the decription of the Black Deck.</div><div class="ttdef"><b>Definition</b> <a href="deck__types_8c_source.html#l00237">deck_types.c:237</a></div></div>
+<div class="ttc" id="adeck__types_8c_html_a72695ce33b02b8163efcd58a1d3190c2"><div class="ttname"><a href="deck__types_8c.html#a72695ce33b02b8163efcd58a1d3190c2">print_empty_desc_line</a></div><div class="ttdeci">static void print_empty_desc_line(int pos_x, int pos_y)</div><div class="ttdoc">Print an empty string of 13 characters long at given coordinates. Reduces boilerplate in deck descrip...</div><div class="ttdef"><b>Definition</b> <a href="deck__types_8c_source.html#l00065">deck_types.c:65</a></div></div>
+<div class="ttc" id="adeck__types_8c_html_a736be51786cebff18770985e85d6a24e"><div class="ttname"><a href="deck__types_8c.html#a736be51786cebff18770985e85d6a24e">print_desc_painted_deck</a></div><div class="ttdeci">static void print_desc_painted_deck(BG_POINT pos)</div><div class="ttdoc">Print the decription of the Painted Deck.</div><div class="ttdef"><b>Definition</b> <a href="deck__types_8c_source.html#l00279">deck_types.c:279</a></div></div>
+<div class="ttc" id="adeck__types_8c_html_a994dd3e5b28e324cbff3f7c3d69d28ce"><div class="ttname"><a href="deck__types_8c.html#a994dd3e5b28e324cbff3f7c3d69d28ce">print_desc_blue_deck</a></div><div class="ttdeci">static void print_desc_blue_deck(BG_POINT pos)</div><div class="ttdoc">Print the decription of the Blue Deck.</div><div class="ttdef"><b>Definition</b> <a href="deck__types_8c_source.html#l00115">deck_types.c:115</a></div></div>
+<div class="ttc" id="adeck__types_8c_html_aa69c0508a53c09b17c5283a1e5be751a"><div class="ttname"><a href="deck__types_8c.html#aa69c0508a53c09b17c5283a1e5be751a">deck_names</a></div><div class="ttdeci">static const char deck_names[DECK_TYPE_MAX][DECK_NAME_LENGTH]</div><div class="ttdoc">List of DeckType names, all formatted to be centered in a string of 13 characters.</div><div class="ttdef"><b>Definition</b> <a href="deck__types_8c_source.html#l00017">deck_types.c:17</a></div></div>
+<div class="ttc" id="adeck__types_8c_html_ab4e7764cc1e6cf64ebb03078795d2be4"><div class="ttname"><a href="deck__types_8c.html#ab4e7764cc1e6cf64ebb03078795d2be4">print_desc_green_deck</a></div><div class="ttdeci">static void print_desc_green_deck(BG_POINT pos)</div><div class="ttdoc">Print the decription of the Green Deck.</div><div class="ttdef"><b>Definition</b> <a href="deck__types_8c_source.html#l00183">deck_types.c:183</a></div></div>
+<div class="ttc" id="adeck__types_8c_html_ae06a285687193be23c00a00b209eb521"><div class="ttname"><a href="deck__types_8c.html#ae06a285687193be23c00a00b209eb521">print_desc_red_deck</a></div><div class="ttdeci">static void print_desc_red_deck(BG_POINT pos)</div><div class="ttdoc">Print the decription of the Red Deck.</div><div class="ttdef"><b>Definition</b> <a href="deck__types_8c_source.html#l00081">deck_types.c:81</a></div></div>
+<div class="ttc" id="adeck__types_8c_html_aeb6c51fe050fea32811f33e01f5c8542"><div class="ttname"><a href="deck__types_8c.html#aeb6c51fe050fea32811f33e01f5c8542">print_deck_description</a></div><div class="ttdeci">void print_deck_description(enum DeckType deck, BG_POINT pos)</div><div class="ttdoc">Prints the Deck description string to the screen at the given position.</div><div class="ttdef"><b>Definition</b> <a href="deck__types_8c_source.html#l00048">deck_types.c:48</a></div></div>
+<div class="ttc" id="adeck__types_8h_html"><div class="ttname"><a href="deck__types_8h.html">deck_types.h</a></div><div class="ttdoc">Functions related to the different types of Decks.</div></div>
 <div class="ttc" id="agraphic__utils_8h_html_a62ecd70800687eb2d625af180c4210d7"><div class="ttname"><a href="graphic__utils_8h.html#a62ecd70800687eb2d625af180c4210d7">TILE_SIZE</a></div><div class="ttdeci">#define TILE_SIZE</div><div class="ttdoc">Tile size in pixels, both height and width as tiles are square.</div><div class="ttdef"><b>Definition</b> <a href="graphic__utils_8h_source.html#l00044">graphic_utils.h:44</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li><li class="navelem"><a class="el" href="deck_8c.html">deck.c</a></li>
+    <li class="navelem"><a class="el" href="dir_b2f33c71d4aa5e7af42a1ca61ff5af1b.html">source</a></li><li class="navelem"><a class="el" href="deck__types_8c.html">deck_types.c</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

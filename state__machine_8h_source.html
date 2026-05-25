@@ -178,7 +178,7 @@ $(document).ready(function(){initNavTree('state__machine_8h_source.html',''); in
 <div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span><span class="comment">// clang-format off</span></div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span><span class="preprocessor">#define STATE_INFO_UPDATE_FN_ONLY(fn) {.on_init = noop, .on_update = fn, .on_exit = noop}</span></div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="preprocessor">#define STATE_INFO_INIT_UPDATE_FN(init, update) {.on_init = init, .on_update = update, .on_exit = noop}</span></div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="preprocessor">#define STATE_INFO_INIT_UPDATE_FN(init_fn, update_fn) {.on_init = init_fn, .on_update = update_fn, .on_exit = noop}</span></div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="comment">// clang-format on</span></div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
 <div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span><span class="preprocessor">#endif </span><span class="comment">// STATE_MACHINE_H</span></div>
