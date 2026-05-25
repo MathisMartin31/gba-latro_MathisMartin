@@ -537,8 +537,6 @@ void tte_printf_justified_in_rect(
     int line_x = dst_rect.left;
     int line_x_offset = 0;
     int line_y = dst_rect.top;
-
-    char line [256] = {'\0'};
     
     // Will exit when there are no more words
     while (line_start < raw_text_len)
@@ -548,7 +546,7 @@ void tte_printf_justified_in_rect(
         token_text_len = 0;
 
         // Parse the `raw_text` and 
-        while (line_text_len < max_line_text_len && token_start < raw_text_len)
+        while (line_text_len <= max_line_text_len && token_start < raw_text_len)
         {
             int current_char = token_start + token_len;
 
@@ -556,33 +554,45 @@ void tte_printf_justified_in_rect(
             if (raw_text[current_char] == '#' &&
                 raw_text[current_char + 1] == '{')
             {
-                int tag_start = current_char;
                 while (raw_text[current_char] != '}')
                 {
                     token_len++;
-                    current_char = token_start + token_len;
+                    current_char++;
                 }
-                tte_printf("#{P:0,72}Tag is %d long", current_char - tag_start + 1);
+                token_len++;
+                current_char++;
             }
 
+            // End of word detected
             if (raw_text[current_char] == ' ')
             {
                 token_start = current_char + 1;
-                token_len = 0;
-                token_text_len = 0;
+                // Set to -1 so that it becomes 0 when incremented for the next iteration.
+                token_len = -1;
+                token_text_len = -1;
             }
 
+            token_len++;
             token_text_len++;
             line_text_len++;
-            token_len++;
         };
 
-        // Now, we can print the chars from line_start to token_start
+        // Length of line, including non printable stuff
         int line_len = token_start - line_start;
-        snprintf(line, line_len, "%s", raw_text + line_start);
 
-        tte_printf("#{P:%d,%d}%s", (line_x + line_x_offset) * TILE_SIZE, line_y * TILE_SIZE, line);
-        memset(line, '\0', 256);
+        // Take out length of token text that is overflowing, it is not part of that line
+        // Also take out spaces and null characters
+        line_text_len = line_text_len - token_text_len - 1;
+        tte_printf("#{P:0,%d}line %d - %d", 80 + line_y * TILE_SIZE, line_y, line_text_len);
+
+        // Now, we can print the chars from line_start to token_start
+        line_x_offset = 0;
+        if (justify_direction == JUSTIFY_CENTER)
+        {
+            line_x_offset = (max_line_text_len - line_text_len) / 2;
+        }
+
+        tte_printf("#{P:%d,%d}%.*s", (line_x + line_x_offset) * TILE_SIZE, line_y * TILE_SIZE, line_len, raw_text + line_start);
 
         line_start = token_start;
         line_text_len = 0;
