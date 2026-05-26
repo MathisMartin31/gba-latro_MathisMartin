@@ -365,6 +365,21 @@ void game_options_menu_change_background(void)
     GRIT_CPY(&tile_mem[MAIN_BG_CBB], background_options_menu_gfxTiles);
     GRIT_CPY(&se_mem[MAIN_BG_SBB], background_options_menu_gfxMap);
 
+    // TODO remove
+    Rect dest_rect = {4, 1, 25, 19};
+    main_bg_se_clear_rect(dest_rect);
+    dest_rect.top += 4;
+    static const char* desc1 = TTE_WHITE_TAG "Each played ";
+    static const char desc2[] = TTE_YELLOW_TAG
+        "Ace" TTE_WHITE_TAG ", " TTE_YELLOW_TAG "2" TTE_WHITE_TAG ", " TTE_YELLOW_TAG
+        "3" TTE_WHITE_TAG ", " TTE_YELLOW_TAG "5" TTE_WHITE_TAG ", or " TTE_YELLOW_TAG "8";
+    static const char desc3[] =
+        TTE_WHITE_TAG " gives " TTE_RED_TAG "+8 " TTE_WHITE_TAG "Mult when scored";
+    dest_rect.top += tte_printf_justified_in_rect(desc1, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
+    dest_rect.top += tte_printf_justified_in_rect(desc2, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
+    dest_rect.top += tte_printf_justified_in_rect(desc3, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
+    return;
+
     tte_printf(
         "#{P:%d,%d; cx:0x%X000}Game Speed",
         OPTIONS_GAME_SPEED_TEXT_POS.x,
@@ -404,6 +419,9 @@ void game_options_menu_on_init(void)
     // Select game speed button by default
     options_menu_selection_grid.selection = OPTIONS_MENU_INIT_SEL;
     disable_all_outlines_except_self(OPTIONS_MENU_INIT_SEL);
+
+    // TODO: remove
+    return;
 
     // Do an update on the first frame
     update_game_speed_button_graphics();

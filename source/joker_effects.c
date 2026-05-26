@@ -24,6 +24,67 @@
 
 static JokerEffect shared_joker_effect = {0};
 
+// Joker Descriptions
+
+#define REGISTER_JOKER_DESC_FUNC(joker_desc_name) \
+    static void joker_desc_name(                  \
+        Rect dest_rect,                           \
+        bool dynamic_only                         \
+    );
+
+REGISTER_JOKER_DESC_FUNC(default_joker_desc)
+REGISTER_JOKER_DESC_FUNC(greedy_joker_desc)
+REGISTER_JOKER_DESC_FUNC(lusty_joker_desc)
+REGISTER_JOKER_DESC_FUNC(wrathful_joker_desc)
+REGISTER_JOKER_DESC_FUNC(gluttonous_joker_desc)
+REGISTER_JOKER_DESC_FUNC(jolly_joker_desc)
+REGISTER_JOKER_DESC_FUNC(zany_joker_desc)
+REGISTER_JOKER_DESC_FUNC(mad_joker_desc)
+REGISTER_JOKER_DESC_FUNC(crazy_joker_desc)
+REGISTER_JOKER_DESC_FUNC(droll_joker_desc)
+REGISTER_JOKER_DESC_FUNC(sly_joker_desc)
+REGISTER_JOKER_DESC_FUNC(wily_joker_desc)
+REGISTER_JOKER_DESC_FUNC(clever_joker_desc)
+REGISTER_JOKER_DESC_FUNC(devious_joker_desc)
+REGISTER_JOKER_DESC_FUNC(crafty_joker_desc)
+REGISTER_JOKER_DESC_FUNC(half_joker_desc)
+REGISTER_JOKER_DESC_FUNC(stencil_joker_desc)
+REGISTER_JOKER_DESC_FUNC(misprint_joker_desc)
+REGISTER_JOKER_DESC_FUNC(walkie_talkie_joker_desc)
+REGISTER_JOKER_DESC_FUNC(fibonnaci_joker_desc)
+REGISTER_JOKER_DESC_FUNC(banner_joker_desc)
+REGISTER_JOKER_DESC_FUNC(mystic_summit_joker_desc)
+REGISTER_JOKER_DESC_FUNC(blackboard_joker_desc)
+REGISTER_JOKER_DESC_FUNC(blue_joker_desc)
+REGISTER_JOKER_DESC_FUNC(raised_fist_joker_desc)
+REGISTER_JOKER_DESC_FUNC(reserved_parking_joker_desc)
+REGISTER_JOKER_DESC_FUNC(business_card_joker_desc)
+REGISTER_JOKER_DESC_FUNC(scholar_joker_desc)
+REGISTER_JOKER_DESC_FUNC(scary_face_joker_desc)
+REGISTER_JOKER_DESC_FUNC(abstract_joker_desc)
+REGISTER_JOKER_DESC_FUNC(bull_joker_desc)
+REGISTER_JOKER_DESC_FUNC(smiley_face_joker_desc)
+REGISTER_JOKER_DESC_FUNC(even_steven_joker_desc)
+REGISTER_JOKER_DESC_FUNC(odd_todd_joker_desc)
+REGISTER_JOKER_DESC_FUNC(acrobat_joker_desc)
+REGISTER_JOKER_DESC_FUNC(hanging_chad_joker_desc)
+REGISTER_JOKER_DESC_FUNC(the_duo_joker_desc)
+REGISTER_JOKER_DESC_FUNC(the_trio_joker_desc)
+REGISTER_JOKER_DESC_FUNC(the_family_joker_desc)
+REGISTER_JOKER_DESC_FUNC(the_order_joker_desc)
+REGISTER_JOKER_DESC_FUNC(the_tribe_joker_desc)
+REGISTER_JOKER_DESC_FUNC(bootstraps_joker_desc)
+REGISTER_JOKER_DESC_FUNC(shoot_the_moon_joker_desc)
+REGISTER_JOKER_DESC_FUNC(pareidolia_joker_desc)
+REGISTER_JOKER_DESC_FUNC(photograph_joker_desc)
+REGISTER_JOKER_DESC_FUNC(dusk_joker_desc)
+REGISTER_JOKER_DESC_FUNC(shortcut_joker_desc)
+REGISTER_JOKER_DESC_FUNC(blueprint_brainstorm_joker_desc)
+REGISTER_JOKER_DESC_FUNC(hack_joker_desc)
+REGISTER_JOKER_DESC_FUNC(four_fingers_joker_desc)
+REGISTER_JOKER_DESC_FUNC(seltzer_joker_desc)
+REGISTER_JOKER_DESC_FUNC(sock_and_buskin_joker_desc)
+
 // Joker Effect functions
 
 #define REGISTER_JOKER_EFFECT_FUNC(joker_effect_name) \
@@ -106,68 +167,68 @@ REGISTER_JOKER_EFFECT_FUNC(sock_and_buskin_joker_effect)
 const JokerInfo joker_registry[] = 
 {
     // Spritesheet 0
-    { COMMON_JOKER,    2, default_joker_effect              }, // DEFAULT_JOKER_ID = 0
-    { COMMON_JOKER,    4, abstract_joker_effect             }, // 1
-    { COMMON_JOKER,    5, half_joker_effect                 }, // 2
-    { COMMON_JOKER,    4, misprint_joker_effect             }, // 3
-    { COMMON_JOKER,    4, scary_face_joker_effect           }, // 4
-    { UNCOMMON_JOKER,  6, sock_and_buskin_joker_effect      }, // 5
-    { UNCOMMON_JOKER,  6, acrobat_joker_effect              }, // 6
-    { UNCOMMON_JOKER,  8, fibonnaci_joker_effect            }, // 7
-    { COMMON_JOKER,    4, scholar_joker_effect              }, // 8
-    { COMMON_JOKER,    4, crafty_joker_effect               }, // 9
-    { COMMON_JOKER,    4, droll_joker_effect                }, // 10
-    { COMMON_JOKER,    5, raised_fist_joker_effect          }, // 11
-    { COMMON_JOKER,    6, reserved_parking_joker_effect     }, // 12
-    { COMMON_JOKER,    4, business_card_joker_effect        }, // 13
-    { COMMON_JOKER,    4, hanging_chad_joker_effect         }, // 14
-    { UNCOMMON_JOKER,  8, stencil_joker_effect              }, // 15
-    { COMMON_JOKER,    5, banner_joker_effect               }, // 16
-    { COMMON_JOKER,    5, shoot_the_moon_joker_effect,      }, // 17
+    { COMMON_JOKER,    2, false, default_joker_desc,              default_joker_effect              }, // DEFAULT_JOKER_ID = 0
+    { COMMON_JOKER,    4, false, abstract_joker_desc,             abstract_joker_effect             }, // 1
+    { COMMON_JOKER,    5, false, half_joker_desc,                 half_joker_effect                 }, // 2
+    { COMMON_JOKER,    4, true,  misprint_joker_desc,             misprint_joker_effect             }, // 3
+    { COMMON_JOKER,    4, false, scary_face_joker_desc,           scary_face_joker_effect           }, // 4
+    { UNCOMMON_JOKER,  6, false, sock_and_buskin_joker_desc,      sock_and_buskin_joker_effect      }, // 5
+    { UNCOMMON_JOKER,  6, false, acrobat_joker_desc,              acrobat_joker_effect              }, // 6
+    { UNCOMMON_JOKER,  8, false, fibonnaci_joker_desc,            fibonnaci_joker_effect            }, // 7
+    { COMMON_JOKER,    4, false, scholar_joker_desc,              scholar_joker_effect              }, // 8
+    { COMMON_JOKER,    4, false, crafty_joker_desc,               crafty_joker_effect               }, // 9
+    { COMMON_JOKER,    4, false, droll_joker_desc,                droll_joker_effect                }, // 10
+    { COMMON_JOKER,    5, false, raised_fist_joker_desc,          raised_fist_joker_effect          }, // 11
+    { COMMON_JOKER,    6, false, reserved_parking_joker_desc,     reserved_parking_joker_effect     }, // 12
+    { COMMON_JOKER,    4, false, business_card_joker_desc,        business_card_joker_effect        }, // 13
+    { COMMON_JOKER,    4, false, hanging_chad_joker_desc,         hanging_chad_joker_effect         }, // 14
+    { UNCOMMON_JOKER,  8, false, stencil_joker_desc,              stencil_joker_effect              }, // 15
+    { COMMON_JOKER,    5, false, banner_joker_desc,               banner_joker_effect               }, // 16
+    { COMMON_JOKER,    5, false, shoot_the_moon_joker_desc,       shoot_the_moon_joker_effect,      }, // 17
     // Spritesheet 1 
-    { COMMON_JOKER,    5, greedy_joker_effect               }, // 18
-    { COMMON_JOKER,    5, lusty_joker_effect                }, // 19
+    { COMMON_JOKER,    5, false, greedy_joker_desc,               greedy_joker_effect               }, // 18
+    { COMMON_JOKER,    5, false, lusty_joker_desc,                lusty_joker_effect                }, // 19
     // Spritesheet 2
-    { COMMON_JOKER,    5, wrathful_joker_effect             }, // 20
-    { COMMON_JOKER,    5, gluttonous_joker_effect           }, // 21
+    { COMMON_JOKER,    5, false, wrathful_joker_desc,             wrathful_joker_effect             }, // 20
+    { COMMON_JOKER,    5, false, gluttonous_joker_desc,           gluttonous_joker_effect           }, // 21
     // Spritesheet 3
-    { COMMON_JOKER,    4, crazy_joker_effect                }, // 22
-    { COMMON_JOKER,    4, mad_joker_effect                  }, // 23
-    { COMMON_JOKER,    4, clever_joker_effect               }, // 24
-    { COMMON_JOKER,    4, devious_joker_effect              }, // 25
-    { COMMON_JOKER,    4, even_steven_joker_effect          }, // 26
+    { COMMON_JOKER,    4, false, crazy_joker_desc,                crazy_joker_effect                }, // 22
+    { COMMON_JOKER,    4, false, mad_joker_desc,                  mad_joker_effect                  }, // 23
+    { COMMON_JOKER,    4, false, clever_joker_desc,               clever_joker_effect               }, // 24
+    { COMMON_JOKER,    4, false, devious_joker_desc,              devious_joker_effect              }, // 25
+    { COMMON_JOKER,    4, false, even_steven_joker_desc,          even_steven_joker_effect          }, // 26
     // Spritesheet 4
-    { UNCOMMON_JOKER,  6, blackboard_joker_effect           }, // 27
-    { COMMON_JOKER,    5, mystic_summit_joker_effect        }, // 28
-    { COMMON_JOKER,    4, walkie_talkie_joker_effect        }, // 29
-    { COMMON_JOKER,    4, zany_joker_effect                 }, // 30
-    { COMMON_JOKER,    4, wily_joker_effect                 }, // 31
+    { UNCOMMON_JOKER,  6, false, blackboard_joker_desc,           blackboard_joker_effect           }, // 27
+    { COMMON_JOKER,    5, false, mystic_summit_joker_desc,        mystic_summit_joker_effect        }, // 28
+    { COMMON_JOKER,    4, false, walkie_talkie_joker_desc,        walkie_talkie_joker_effect        }, // 29
+    { COMMON_JOKER,    4, false, zany_joker_desc,                 zany_joker_effect                 }, // 30
+    { COMMON_JOKER,    4, false, wily_joker_desc,                 wily_joker_effect                 }, // 31
     // Spritesheet 5
-    { COMMON_JOKER,    3, sly_joker_effect                  }, // 32
-    { COMMON_JOKER,    3, jolly_joker_effect                }, // 33
-    { COMMON_JOKER,    5, blue_joker_effect                 }, // 34
-    { COMMON_JOKER,    4, odd_todd_joker_effect             }, // 35
+    { COMMON_JOKER,    3, false, sly_joker_desc,                  sly_joker_effect                  }, // 32
+    { COMMON_JOKER,    3, false, jolly_joker_desc,                jolly_joker_effect                }, // 33
+    { COMMON_JOKER,    5, false, blue_joker_desc,                 blue_joker_effect                 }, // 34
+    { COMMON_JOKER,    4, false, odd_todd_joker_desc,             odd_todd_joker_effect             }, // 35
     // Spritesheet 6
-    { RARE_JOKER,      8, the_duo_joker_effect              }, // 36
-    { RARE_JOKER,      8, the_trio_joker_effect             }, // 37
-    { RARE_JOKER,      8, the_order_joker_effect            }, // 38
-    { RARE_JOKER,      8, the_tribe_joker_effect            }, // 39
+    { RARE_JOKER,      8, false, the_duo_joker_desc,              the_duo_joker_effect              }, // 36
+    { RARE_JOKER,      8, false, the_trio_joker_desc,             the_trio_joker_effect             }, // 37
+    { RARE_JOKER,      8, false, the_order_joker_desc,            the_order_joker_effect            }, // 38
+    { RARE_JOKER,      8, false, the_tribe_joker_desc,            the_tribe_joker_effect            }, // 39
     // Spritesheet 7
-    { RARE_JOKER,      8, the_family_joker_effect           }, // 40
-    { RARE_JOKER,     10, blueprint_brainstorm_joker_effect }, // 41 Brainstorm
+    { RARE_JOKER,      8, false, the_family_joker_desc,           the_family_joker_effect           }, // 40
+    { RARE_JOKER,     10, false, blueprint_brainstorm_joker_desc, blueprint_brainstorm_joker_effect }, // 41 Brainstorm
     // Spritesheet 8
-    { COMMON_JOKER,    4, smiley_face_joker_effect          }, // 42
-    { UNCOMMON_JOKER,  6, bull_joker_effect                 }, // 43
+    { COMMON_JOKER,    4, false, smiley_face_joker_desc,          smiley_face_joker_effect          }, // 42
+    { UNCOMMON_JOKER,  6, false, bull_joker_desc,                 bull_joker_effect                 }, // 43
     // Individual Jokers (for now :3)
-    { COMMON_JOKER,    5, photograph_joker_effect,          }, // 44
-    { UNCOMMON_JOKER,  6, hack_joker_effect                 }, // 45
-    { UNCOMMON_JOKER,  5, joker_effect_noop                 }, // 46 Pareidolia
-    { UNCOMMON_JOKER,  7, bootstraps_joker_effect           }, // 47
-    { UNCOMMON_JOKER,  7, joker_effect_noop,                }, // 48 Shortcut
-    { UNCOMMON_JOKER,  5, dusk_joker_effect                 }, // 49
-    { UNCOMMON_JOKER,  7, joker_effect_noop,                }, // 50 Four Fingers
-    { UNCOMMON_JOKER,  6, seltzer_joker_effect,             }, // 51
-    { RARE_JOKER,     10, blueprint_brainstorm_joker_effect }, // 52 Blueprint
+    { COMMON_JOKER,    5, false, photograph_joker_desc,           photograph_joker_effect,          }, // 44
+    { UNCOMMON_JOKER,  6, false, hack_joker_desc,                 hack_joker_effect                 }, // 45
+    { UNCOMMON_JOKER,  5, false, pareidolia_joker_desc,           joker_effect_noop                 }, // 46 Pareidolia
+    { UNCOMMON_JOKER,  7, false, bootstraps_joker_desc,           bootstraps_joker_effect           }, // 47
+    { UNCOMMON_JOKER,  7, false, shortcut_joker_desc,             joker_effect_noop,                }, // 48 Shortcut
+    { UNCOMMON_JOKER,  5, false, dusk_joker_desc,                 dusk_joker_effect                 }, // 49
+    { UNCOMMON_JOKER,  7, false, four_fingers_joker_desc,         joker_effect_noop,                }, // 50 Four Fingers
+    { UNCOMMON_JOKER,  6, false, seltzer_joker_desc,              seltzer_joker_effect,             }, // 51
+    { RARE_JOKER,     10, false, blueprint_brainstorm_joker_desc, blueprint_brainstorm_joker_effect }, // 52 Blueprint
 
     // The following jokers don't have sprites yet,
     // uncomment them when their sprites are added.
@@ -191,6 +252,371 @@ size_t get_joker_registry_size(void)
 {
     return joker_registry_size;
 }
+
+#pragma region JOKER DESCRIPTIONS
+
+static void default_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = TTE_RED_TAG "+4 " TTE_BLACK_TAG "Mult";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void greedy_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] =
+        TTE_BLACK_TAG "Played cards with " TTE_DIAMOND_TAG TTE_BLACK_TAG "suit give " TTE_RED_TAG
+                      "+3 " TTE_BLACK_TAG "Mult when scored";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void lusty_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] =
+        TTE_BLACK_TAG "Played cards with " TTE_HEART_TAG TTE_BLACK_TAG "suit give " TTE_RED_TAG
+                      "+3 " TTE_BLACK_TAG "Mult when scored";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void wrathful_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] =
+        TTE_BLACK_TAG "Played cards with " TTE_SPADE_TAG TTE_BLACK_TAG "suit give " TTE_RED_TAG
+                      "+3 " TTE_BLACK_TAG "Mult when scored";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void gluttonous_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] =
+        TTE_BLACK_TAG "Played cards with " TTE_CLUB_TAG TTE_BLACK_TAG "suit give " TTE_RED_TAG
+                      "+3 " TTE_BLACK_TAG "Mult when scored";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void jolly_joker_desc(Rect dest_rect, bool dynamic_only){
+    static const char desc[] = TTE_RED_TAG "+8 " TTE_BLACK_TAG
+                                           "Mult if played hand contains a " TTE_YELLOW_TAG "Pair";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void zany_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = TTE_RED_TAG "+12 " TTE_BLACK_TAG
+                                           "Mult if played hand contains a " TTE_YELLOW_TAG "Three of a Kind";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void mad_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = TTE_RED_TAG "+10 " TTE_BLACK_TAG
+                                           "Mult if played hand contains a " TTE_YELLOW_TAG "Two Pair";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void crazy_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = TTE_RED_TAG "+12 " TTE_BLACK_TAG
+                                           "Mult if played hand contains a " TTE_YELLOW_TAG "Straight";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void droll_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = TTE_RED_TAG "+10 " TTE_BLACK_TAG
+                                           "Mult if played hand contains a " TTE_YELLOW_TAG "Flush";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void sly_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = TTE_BLUE_TAG "+50 " TTE_BLACK_TAG
+                                           "Chips if played hand contains a " TTE_YELLOW_TAG "Pair";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void wily_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = TTE_BLUE_TAG "+100 " TTE_BLACK_TAG
+                                           "Chips if played hand contains a " TTE_YELLOW_TAG "Three of a Kind";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void clever_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = TTE_BLUE_TAG "+80 " TTE_BLACK_TAG
+                                           "Chips if played hand contains a " TTE_YELLOW_TAG "Two Pair";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void devious_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = TTE_BLUE_TAG "+100 " TTE_BLACK_TAG
+                                           "Chips if played hand contains a " TTE_YELLOW_TAG "Straight";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void crafty_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = TTE_BLUE_TAG "+80 " TTE_BLACK_TAG
+                                           "Chips if played hand contains a " TTE_YELLOW_TAG "Flush";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void half_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] =
+        TTE_RED_TAG "+20 " TTE_BLACK_TAG "Mult if played hand contains " TTE_YELLOW_TAG
+                    "3 " TTE_BLACK_TAG "or fewer cards";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void stencil_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = TTE_RED_TAG "X1 " TTE_BLACK_TAG "Mult for each empty Joker slot Joker Stencil included";
+    int desc_y_offset = tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+
+    // TODO: print "(Currently Xn Mult)"
+    if (dynamic_only)
+    {
+        char dynamic_desc[] = TTE_BLACK_TAG "(Currently " TTE_RED_TAG "Xn " TTE_BLACK_TAG "Mult)";
+        Rect dynamic_desc_rect = dest_rect;
+        dynamic_desc_rect.top += desc_y_offset;
+        tte_printf_justified_in_rect(
+            dynamic_desc,
+            dynamic_desc_rect,
+            JUSTIFY_CENTER,
+            SCREEN_LEFT,
+            false
+        );
+    }
+}
+
+static void misprint_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    // TODO: print glitchy desc with occasional next card reveal
+    char desc[16] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void walkie_talkie_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] =
+        TTE_BLACK_TAG "Each played " TTE_YELLOW_TAG "10 " TTE_BLACK_TAG "or " TTE_YELLOW_TAG
+                      "4 " TTE_BLACK_TAG "gives " TTE_BLUE_TAG "+10 " TTE_BLACK_TAG
+                      "Chips and " TTE_RED_TAG "+4 " TTE_BLACK_TAG "Mult when scored";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void fibonnaci_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc1[] = TTE_BLACK_TAG "Each played ";
+    static const char desc2[] = TTE_YELLOW_TAG
+        "Ace" TTE_BLACK_TAG ", " TTE_YELLOW_TAG "2" TTE_BLACK_TAG ", " TTE_YELLOW_TAG
+        "3" TTE_BLACK_TAG ", " TTE_YELLOW_TAG "5" TTE_BLACK_TAG ", or " TTE_YELLOW_TAG "8";
+    static const char desc3[] =
+        TTE_BLACK_TAG " gives " TTE_RED_TAG "+8 " TTE_BLACK_TAG "Mult when scored";
+
+    Rect curr_dest_rect = dest_rect;
+    curr_dest_rect.top += tte_printf_justified_in_rect(desc1, curr_dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    curr_dest_rect.top += tte_printf_justified_in_rect(desc2, curr_dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    curr_dest_rect.top += tte_printf_justified_in_rect(desc3, curr_dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void banner_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void mystic_summit_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void blackboard_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void blue_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void raised_fist_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void reserved_parking_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void business_card_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void scholar_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void scary_face_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void abstract_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void bull_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void smiley_face_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void even_steven_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void odd_todd_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void acrobat_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void hanging_chad_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void the_duo_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void the_trio_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void the_family_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void the_order_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void the_tribe_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void bootstraps_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void shoot_the_moon_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void photograph_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void dusk_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void blueprint_brainstorm_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void hack_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void seltzer_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void sock_and_buskin_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void pareidolia_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void shortcut_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+static void four_fingers_joker_desc(Rect dest_rect, bool dynamic_only)
+{
+    static const char desc[] = "";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+}
+
+#pragma endregion
+
+#pragma region JOKER EFFECTS
 
 static u32 joker_effect_noop(
     Joker* joker,
@@ -1505,3 +1931,5 @@ static u32 sock_and_buskin_joker_effect(
 
     return effect_flags_ret;
 }
+
+#pragma endregion

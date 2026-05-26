@@ -103,7 +103,7 @@
 /** @} */
 
 /**
- * @name TTE Color formatting Tags
+ * @name TTE Text formatting Tags
  *
  * @{
  */
@@ -135,6 +135,18 @@
 /** @def TTE_WHITE_TAG */
 #define TTE_WHITE_TAG "#{cx:0xE000}"
 
+/** @def TTE_DIAMOND_TAG */
+#define TTE_DIAMOND_TAG TTE_YELLOW_TAG"Diamond "
+
+/** @def TTE_HEART_TAG */
+#define TTE_HEART_TAG TTE_RED_TAG"Hearts "
+
+/** @def TTE_SPADE_TAG */
+#define TTE_SPADE_TAG TTE_DARK_BLUE_TAG"Spade "
+
+/** @def TTE_CLUB_TAG */
+#define TTE_CLUB_TAG TTE_BLUE_TAG"Club "
+
 /** @} */
 
 /**
@@ -147,7 +159,7 @@
 #define TEXT_CLR_GREEN RGB15(0, 0, 0)
 
 /** @def TEXT_CLR_BLACK */
-#define TEXT_CLR_PURPLE RGB15(0, 0, 0)
+#define TEXT_CLR_PURPLE RGB15(31, 0, 31)
 
 /** @def TEXT_CLR_BLACK */
 #define TEXT_CLR_DARK_GREEN RGB15(0, 7, 4)
@@ -519,15 +531,20 @@ void reset_top_left_panel_bottom_row(void);
  * @param justify_direction Align the text either to the left or center.
  * @param bias_direction Used with `JUSTIFY_CENTER` only. Determines if lines that cannot be
  *                        centered are to be slightly to the left or to the right.
+ * @param do_print does not actually print anything, only does the calculations to determine
+ *                  the number of lines taken by the paragraph
+ *
+ * @returns the number of lines the wrapped paragraph takes
  *
  * @sa update_text_rect_to_center_str
  * @sa TTE_BLACK_TAG
  */
-void tte_printf_justified_in_rect(
+int tte_printf_justified_in_rect(
     const char* raw_text,
     Rect dst_rect,
     enum TextJustifyFlag justify_direction,
-    enum ScreenHorzDir bias_direction
+    enum ScreenHorzDir bias_direction,
+    bool do_print
 );
 
 #endif // GRAPHIC_UTILS_H
