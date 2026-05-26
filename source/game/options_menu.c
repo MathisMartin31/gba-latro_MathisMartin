@@ -365,12 +365,6 @@ void game_options_menu_change_background(void)
     GRIT_CPY(&tile_mem[MAIN_BG_CBB], background_options_menu_gfxTiles);
     GRIT_CPY(&se_mem[MAIN_BG_SBB], background_options_menu_gfxMap);
 
-    // TODO remove
-    const char* TOTO = TTE_YELLOW_TAG "This should " TTE_RED_TAG "show up formatted" TTE_BLUE_TAG " This is blue " TTE_YELLOW_TAG "but the " TTE_BLACK_TAG "rest isn't " TTE_BLUE_TAG "Blue blue bluuuue";
-    Rect TOTO_dest = {4, 1, 25, 20};
-    tte_printf_justified_in_rect(TOTO, TOTO_dest, JUSTIFY_CENTER, SCREEN_LEFT);
-    return;
-
     tte_printf(
         "#{P:%d,%d; cx:0x%X000}Game Speed",
         OPTIONS_GAME_SPEED_TEXT_POS.x,

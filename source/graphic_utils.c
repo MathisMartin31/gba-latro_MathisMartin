@@ -563,8 +563,8 @@ void tte_printf_justified_in_rect(
                 current_char++;
             }
 
-            // End of word detected
-            if (raw_text[current_char] == ' ')
+            // End of word/line detected
+            if (raw_text[current_char] == ' ' || raw_text[current_char] == '\0')
             {
                 token_start = current_char + 1;
                 // Set to -1 so that it becomes 0 when incremented for the next iteration.
@@ -577,15 +577,17 @@ void tte_printf_justified_in_rect(
             line_text_len++;
         };
 
-        // Length of line, including non printable stuff
-        int line_len = token_start - line_start;
+        // Length of line, including non printable stuff, and excluding any trailing space/null char
+        int line_len = token_start - line_start - 1;
 
         // Take out length of token text that is overflowing, it is not part of that line
         // Also take out spaces and null characters
         line_text_len = line_text_len - token_text_len;
-        while (raw_text[line_text_len] == ' ' || raw_text[line_text_len] == '\n' ||
-               raw_text[line_text_len] == '\0')
+        while (raw_text[line_text_len - 1] == ' ' || raw_text[line_text_len - 1] == '\n' ||
+               raw_text[line_text_len - 1] == '\0')
             line_text_len--;
+        line_text_len--;
+
         tte_printf("#{P:0,%d}line %d - %d", 80 + line_y * TILE_SIZE, line_y, line_text_len);
 
         // Now, we can print the chars from line_start to token_start
