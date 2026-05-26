@@ -582,7 +582,10 @@ void tte_printf_justified_in_rect(
 
         // Take out length of token text that is overflowing, it is not part of that line
         // Also take out spaces and null characters
-        line_text_len = line_text_len - token_text_len - 1;
+        line_text_len = line_text_len - token_text_len;
+        while (raw_text[line_text_len] == ' ' || raw_text[line_text_len] == '\n' ||
+               raw_text[line_text_len] == '\0')
+            line_text_len--;
         tte_printf("#{P:0,%d}line %d - %d", 80 + line_y * TILE_SIZE, line_y, line_text_len);
 
         // Now, we can print the chars from line_start to token_start

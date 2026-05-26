@@ -63,20 +63,32 @@
 /** @def TTE_BIT_ON_CLR_IDX */
 #define TTE_BIT_ON_CLR_IDX TTE_BIT_UNPACK_OFFSET + 1
 
+/** @def TTE_GREEN_PB */
+#define TTE_GREEN_PB 6 // 0x8
+
+/** @def TTE_PURPLE_PB */
+#define TTE_PURPLE_PB 7 // 0x8
+
+/** @def TTE_DARK_GREEN_PB */
+#define TTE_DARK_GREEN_PB 8 // 0x8
+
+/** @def TTE_DARK_BLUE_PB */
+#define TTE_DARK_BLUE_PB 9 // 0x9
+
 /** @def TTE_BLACK_PB */
-#define TTE_BLACK_PB 0 // 0x0
+#define TTE_BLACK_PB 10 // 0xA
 
 /** @def TTE_YELLOW_PB */
-#define TTE_YELLOW_PB 12 // 0xC
+#define TTE_YELLOW_PB 11 // 0xB
 
 /** @def TTE_BLUE_PB */
-#define TTE_BLUE_PB 13 // 0xD
+#define TTE_BLUE_PB 12 // 0xC
 
 /** @def TTE_RED_PB */
-#define TTE_RED_PB 14 // 0xE
+#define TTE_RED_PB 13 // 0xD
 
 /** @def TTE_WHITE_PB */
-#define TTE_WHITE_PB 15 // 0xF
+#define TTE_WHITE_PB 14 // 0xE
 
 /** @def TTE_SPECIAL_PB_MULT_OFFSET */
 #define TTE_SPECIAL_PB_MULT_OFFSET 0x1000
@@ -96,20 +108,32 @@
  * @{
  */
 
+/** @def TTE_GREEN_TAG */
+#define TTE_GREEN_TAG "#{cx:0x6000}"
+
+/** @def TTE_PURPLE_TAG */
+#define TTE_PURPLE_TAG "#{cx:0x7000}"
+
+/** @def TTE_GREEN_TAG */
+#define TTE_DARK_GREEN_TAG "#{cx:0x8000}"
+
+/** @def TTE_PURPLE_TAG */
+#define TTE_DARK_BLUE_TAG "#{cx:0x9000}"
+
 /** @def TTE_BLACK_TAG */
-#define TTE_BLACK_TAG "#{cx:0x0000}"
+#define TTE_BLACK_TAG "#{cx:0xA000}"
 
 /** @def TTE_YELLOW_TAG */
-#define TTE_YELLOW_TAG "#{cx:0xC000}"
+#define TTE_YELLOW_TAG "#{cx:0xB000}"
 
 /** @def TTE_BLUE_TAG */
-#define TTE_BLUE_TAG "#{cx:0xD000}"
+#define TTE_BLUE_TAG "#{cx:0xC000}"
 
 /** @def TTE_RED_TAG */
-#define TTE_RED_TAG "#{cx:0xE000}"
+#define TTE_RED_TAG "#{cx:0xD000}"
 
 /** @def TTE_WHITE_TAG */
-#define TTE_WHITE_TAG "#{cx:0xF000}"
+#define TTE_WHITE_TAG "#{cx:0xE000}"
 
 /** @} */
 
@@ -118,6 +142,21 @@
  *
  * @{
  */
+
+/** @def TEXT_CLR_BLACK */
+#define TEXT_CLR_GREEN RGB15(0, 0, 0)
+
+/** @def TEXT_CLR_BLACK */
+#define TEXT_CLR_PURPLE RGB15(0, 0, 0)
+
+/** @def TEXT_CLR_BLACK */
+#define TEXT_CLR_DARK_GREEN RGB15(0, 7, 4)
+
+/** @def TEXT_CLR_BLACK */
+#define TEXT_CLR_DARK_BLUE RGB15(0, 4, 7)
+
+/** @def TEXT_CLR_BLACK */
+#define TEXT_CLR_BLACK RGB15(3, 5, 5) // ~ 0x1483
 
 /** @def TEXT_CLR_YELLOW */
 #define TEXT_CLR_YELLOW RGB15(31, 20, 0) // 0x029F
@@ -211,6 +250,19 @@ typedef struct NinePatchRect
     Rect patch_rect;
     Rect margins;
 } NinePatchRect;
+
+INLINE void tte_colors_setup(void)
+{
+    pal_bg_bank[TTE_GREEN_PB][TTE_BIT_ON_CLR_IDX] = TEXT_CLR_GREEN;
+    pal_bg_bank[TTE_PURPLE_PB][TTE_BIT_ON_CLR_IDX] = TEXT_CLR_PURPLE;
+    pal_bg_bank[TTE_DARK_GREEN_PB][TTE_BIT_ON_CLR_IDX] = TEXT_CLR_DARK_GREEN;
+    pal_bg_bank[TTE_DARK_BLUE_PB][TTE_BIT_ON_CLR_IDX] = TEXT_CLR_DARK_BLUE;
+    pal_bg_bank[TTE_BLACK_PB][TTE_BIT_ON_CLR_IDX] = TEXT_CLR_BLACK;
+    pal_bg_bank[TTE_YELLOW_PB][TTE_BIT_ON_CLR_IDX] = TEXT_CLR_YELLOW;
+    pal_bg_bank[TTE_BLUE_PB][TTE_BIT_ON_CLR_IDX] = TEXT_CLR_BLUE;
+    pal_bg_bank[TTE_RED_PB][TTE_BIT_ON_CLR_IDX] = TEXT_CLR_RED;
+    pal_bg_bank[TTE_WHITE_PB][TTE_BIT_ON_CLR_IDX] = TEXT_CLR_WHITE;
+}
 
 /**
  * @brief Get the width of a rectangle

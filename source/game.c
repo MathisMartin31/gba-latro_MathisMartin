@@ -972,9 +972,10 @@ void display_round(void)
 void display_hands(void)
 {
     tte_printf(
-        "#{P:%d,%d; cx:0xD000}%ld",
+        "#{P:%d,%d; cx:0x%X000}%ld",
         HANDS_TEXT_RECT.left,
         HANDS_TEXT_RECT.top,
+        TTE_BLUE_PB,
         g_game_vars.hands
     );
 }
@@ -982,9 +983,10 @@ void display_hands(void)
 void display_discards(void)
 {
     tte_printf(
-        "#{P:%d,%d; cx:0xE000}%ld",
+        "#{P:%d,%d; cx:0x%X000}%ld",
         DISCARDS_TEXT_RECT.left,
         DISCARDS_TEXT_RECT.top,
+        TTE_RED_PB,
         g_game_vars.discards
     );
 }
@@ -2549,6 +2551,7 @@ static void game_playing_on_update(void)
 void game_start(void)
 {
     affine_background_change_background(AFFINE_BG_GAME);
+    tte_colors_setup();
 
     g_game_vars.hands = MAX_HANDS;
     g_game_vars.discards = MAX_DISCARDS;
