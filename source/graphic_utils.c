@@ -563,13 +563,26 @@ int tte_printf_justified_in_rect(
                 current_char++;
             }
 
-            // End of word/line detected
+            // Handle special cases
+
+            // End of word/text detected
             if (raw_text[current_char] == ' ' || raw_text[current_char] == '\0')
             {
                 token_start = current_char + 1;
-                // Set to -1 so that it becomes 0 when incremented for the next iteration.
+                // Set these to -1 so that it becomes 0 when incremented for the
+                // next iteration since we need to continue.
                 token_len = -1;
                 token_text_len = -1;
+            }
+            // Early end of line detected, interrupt parsing immediately
+            else if (raw_text[current_char] == '\n')
+            {
+                token_start = current_char + 1;
+                // Set to 0, no need to compensate for continuing the loops since
+                // we're breaking early from it.
+                token_len = 0;
+                token_text_len = 0;
+                break;
             }
 
             token_len++;
