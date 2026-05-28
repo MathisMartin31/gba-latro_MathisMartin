@@ -2606,5 +2606,5 @@ void game_start(void)
         MAX_ANTE
     ); // Ante
 
-    game_change_state(GAME_STATE_BLIND_SELECT);
+    game_change_state(GAME_STATE_SHOP);
 }

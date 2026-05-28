@@ -74,6 +74,7 @@ static const Rect     CARD_DESC_TEXT_RECT         = { 12,  9, 25, 15};
 
 // Positions in pixels
 static const BG_POINT SHOP_JOKER_SPRITES_INIT_POS = {120, 160};
+static const BG_POINT CARD_DESCRIPTION_SPRITE_POS = {130,   0};
 static const Rect     SHOP_PRICES_TEXT_RECT       = { 72,  56, 192, 160 };
 static const Rect     SHOP_REROLL_RECT            = { 88,  96, UNDEFINED, UNDEFINED };
 // clang-format on
@@ -161,6 +162,7 @@ static int timer;
 static int reroll_cost = REROLL_BASE_COST;
 
 static JokerObject* description_joker = NULL;
+static BG_POINT description_joker_original_pos = {UNDEFINED, UNDEFINED};
 
 static inline void reset_shop_jokers(void)
 {
@@ -645,18 +647,43 @@ static void game_shop_process_user_input(void)
     selection_grid_process_input(&shop_selection_grid);
 }
 
+static void hide_jokers_except_desc(ListItr* itr)
+{
+    JokerObject* joker_object = NULL;
+    while ((joker_object = list_itr_next(itr)))
+    {
+        if (joker_object != description_joker)
+            obj_hide(joker_object->sprite_object->sprite->obj);
+    }
+}
+
 static void game_shop_show_card_desc(void)
 {
     // Start:
     //  - erase shop text
     //  - remove Jokers/Consumables frames
     //  - disable transparency window
+    //  - Hide all other Jokers
+    //  - Set description_joker new target position
     if (timer == 1)
     {
-        //tte_erase_screen();
         tte_erase_rect_wrapper(PLAYING_SCREEN_RECT);
         main_bg_se_copy_expand_3x3_rect(OWNED_CARDS_PANEL_RECT, SHOP_CLEAR_3X3_SRC_POS);
         toggle_windows(false, true);
+
+        // Owned Jokers
+        ListItr itr = list_itr_create(get_jokers_list());
+        hide_jokers_except_desc(&itr);
+
+        // Shop Jokers
+        itr = list_itr_create(get_shop_jokers_list());
+        hide_jokers_except_desc(&itr);
+
+        description_joker_original_pos.x = description_joker->sprite_object->x;
+        description_joker_original_pos.y = description_joker->sprite_object->y;
+
+        description_joker->sprite_object->tx = int2fx(CARD_DESCRIPTION_SPRITE_POS.x);
+        description_joker->sprite_object->ty = int2fx(CARD_DESCRIPTION_SPRITE_POS.y);
     }
 
     // First 12 frames:
@@ -823,7 +850,7 @@ void game_shop_on_update(void)
             case 1:
                 description_joker =
                     (shop_selection_grid.selection.x > 0)
-                        ? list_get_at_idx(get_shop_jokers_list(), shop_selection_grid.selection.x)
+                        ? list_get_at_idx(get_shop_jokers_list(), shop_selection_grid.selection.x - 1)
                         : NULL;
                 break;
 
