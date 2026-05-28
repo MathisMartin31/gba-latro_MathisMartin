@@ -558,6 +558,11 @@ void game_change_state(enum GameState new_game_state)
     state_machine_change_state(&game_sm, new_game_state);
 }
 
+enum GameState game_get_state(void)
+{
+    return game_sm.state;
+}
+
 CardObject** get_played_array(void)
 {
     return played;
