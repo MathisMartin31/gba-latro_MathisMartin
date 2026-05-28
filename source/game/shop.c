@@ -653,6 +653,7 @@ static void game_shop_show_card_desc(void)
     //  - disable transparency window
     if (timer == 1)
     {
+        //tte_erase_screen();
         tte_erase_rect_wrapper(PLAYING_SCREEN_RECT);
         main_bg_se_copy_expand_3x3_rect(OWNED_CARDS_PANEL_RECT, SHOP_CLEAR_3X3_SRC_POS);
         toggle_windows(false, true);
@@ -675,7 +676,7 @@ static void game_shop_show_card_desc(void)
     {
         // TODO: 9-patch
         const JokerInfo* info = get_joker_registry_entry(description_joker->joker->id);
-        info->joker_print_desc(CARD_DESC_TEXT_RECT, false);
+        info->joker_print_desc(description_joker->joker, CARD_DESC_TEXT_RECT, false);
     }
 }
 
