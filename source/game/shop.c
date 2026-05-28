@@ -74,7 +74,7 @@ static const Rect     CARD_DESC_TEXT_RECT         = { 12,  9, 25, 15};
 
 // Positions in pixels
 static const BG_POINT SHOP_JOKER_SPRITES_INIT_POS = {120, 160};
-static const BG_POINT CARD_DESCRIPTION_SPRITE_POS = {130,   0};
+static const BG_POINT CARD_DESCRIPTION_SPRITE_POS = {138,   4};
 static const Rect     SHOP_PRICES_TEXT_RECT       = { 72,  56, 192, 160 };
 static const Rect     SHOP_REROLL_RECT            = { 88,  96, UNDEFINED, UNDEFINED };
 // clang-format on
