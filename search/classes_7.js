@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rnginfo_0',['RngInfo',['../structRngInfo.html',1,'']]]
+  ['musicplayerstate_0',['MusicPlayerState',['../structMusicPlayerState.html',1,'']]]
 ];

@@ -3,6 +3,7 @@ var util_8h =
     [ "GBAL_UNUSED", "util_8h.html#aabfb019556c44576446cc201a0ac5459", null ],
     [ "MAX_BASE36", "util_8h.html#a1ce076ed9d155bf8e50c66f6f6c24d5d", null ],
     [ "NUM_ELEM_IN_ARR", "util_8h.html#a3494fcb52c3d0ca1bf610facc8c81514", null ],
+    [ "SIGN", "util_8h.html#a8c5ff70b6b28cd0157c50a22406f92c4", null ],
     [ "base36_to_u32", "util_8h.html#a55717746a1b3f98855213356b0aabde8", null ],
     [ "truncate_uint_to_suffixed_str", "util_8h.html#a75d2bcf3ada5a77afd676b0c7209556a", null ],
     [ "u16_protected_add", "util_8h.html#a5875cff92160238ea730aba85090f224", null ],
