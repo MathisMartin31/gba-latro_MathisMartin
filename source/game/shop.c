@@ -676,7 +676,7 @@ static void game_shop_show_card_desc(void)
         hide_jokers_except_desc(&itr);
 
         // Shop Jokers
-        itr = list_itr_create(get_shop_jokers_list());
+        itr = list_itr_create(&s_shop_jokers_list);
         hide_jokers_except_desc(&itr);
 
         description_joker_original_pos.x = description_joker->sprite_object->x;
@@ -850,7 +850,7 @@ void game_shop_on_update(void)
             case 1:
                 description_joker =
                     (shop_selection_grid.selection.x > 0)
-                        ? list_get_at_idx(get_shop_jokers_list(), shop_selection_grid.selection.x - 1)
+                        ? list_get_at_idx(&s_shop_jokers_list, shop_selection_grid.selection.x - 1)
                         : NULL;
                 break;
 
