@@ -1009,8 +1009,7 @@ static inline Button* choose_seed_get_button_from_sel(const Selection* sel)
  */
 static void choose_seed_row_on_key_transit(SelectionGrid* selection_grid, Selection* selection)
 {
-    if (key_hit(SELECT_CARD) || key_hit(DESELECT_CARDS))
-        button_press(choose_seed_get_button_from_sel(selection));
+    button_press(choose_seed_get_button_from_sel(selection));
 }
 
 /**
@@ -1151,6 +1150,9 @@ static void seed_on_pressed(void)
  */
 static void play_on_pressed(void)
 {
+    if (!key_hit(SELECT_CARD))
+        return;
+
     // Apply provided Seed if enabled
     if (use_seed)
         rng_set_seed(base36_to_u32(seed_str));
@@ -1165,7 +1167,8 @@ static void play_on_pressed(void)
  */
 static void back_on_pressed(void)
 {
-    game_change_state(GAME_STATE_MAIN_MENU);
+    if (key_hit(SELECT_CARD))
+        game_change_state(GAME_STATE_MAIN_MENU);
 }
 
 /**
@@ -1243,8 +1246,7 @@ static int back_row_get_size()
 
 static void back_row_on_key_transit(SelectionGrid* selection_grid, Selection* selection)
 {
-    if (key_hit(SELECT_CARD))
-        button_press(&back_button);
+    button_press(&back_button);
 }
 
 #pragma endregion
