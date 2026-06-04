@@ -797,10 +797,10 @@ static void game_shop_show_card_desc(void)
         );
     }
 
-    // Actively wait for the B button to be released, but only if the described card has stopped moving
+    // Actively wait for the B button to be released, but only if the described card has stopped
+    // moving
     else if (description_card->sprite_object->vx == 0 && description_card->sprite_object->vy == 0 &&
-        !key_held(DESELECT_CARDS)
-    )
+             !key_held(DESELECT_CARDS))
     {
         timer = TM_ZERO;
         state_machine_change_state(&shop_sm, GAME_SHOP_HIDE_CARD_DESC);
