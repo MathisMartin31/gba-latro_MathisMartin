@@ -136,16 +136,16 @@
 #define TTE_WHITE_TAG "#{cx:0xE000}"
 
 /** @def TTE_DIAMOND_TAG */
-#define TTE_DIAMOND_TAG TTE_YELLOW_TAG"Diamond "
+#define TTE_DIAMOND_TAG TTE_YELLOW_TAG "Diamond "
 
 /** @def TTE_HEART_TAG */
-#define TTE_HEART_TAG TTE_RED_TAG"Hearts "
+#define TTE_HEART_TAG TTE_RED_TAG "Hearts "
 
 /** @def TTE_SPADE_TAG */
-#define TTE_SPADE_TAG TTE_DARK_BLUE_TAG"Spade "
+#define TTE_SPADE_TAG TTE_DARK_BLUE_TAG "Spade "
 
 /** @def TTE_CLUB_TAG */
-#define TTE_CLUB_TAG TTE_BLUE_TAG"Club "
+#define TTE_CLUB_TAG TTE_BLUE_TAG "Club "
 
 /** @} */
 
@@ -155,16 +155,16 @@
  * @{
  */
 
-/** @def TEXT_CLR_BLACK */
+/** @def TEXT_CLR_GREEN */
 #define TEXT_CLR_GREEN RGB15(0, 0, 0)
 
-/** @def TEXT_CLR_BLACK */
+/** @def TEXT_CLR_PURPLE */
 #define TEXT_CLR_PURPLE RGB15(31, 0, 31)
 
-/** @def TEXT_CLR_BLACK */
+/** @def TEXT_CLR_DARK_GREEN */
 #define TEXT_CLR_DARK_GREEN RGB15(0, 7, 4)
 
-/** @def TEXT_CLR_BLACK */
+/** @def TEXT_CLR_DARK_BLUE */
 #define TEXT_CLR_DARK_BLUE RGB15(0, 4, 7)
 
 /** @def TEXT_CLR_BLACK */
