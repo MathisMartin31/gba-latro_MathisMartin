@@ -164,7 +164,8 @@ static int timer;
 static int reroll_cost = REROLL_BASE_COST;
 
 static JokerObject* description_card = NULL;
-static BG_POINT description_card_original_pos = {UNDEFINED, UNDEFINED};
+static FIXED description_card_original_x_pos = UNDEFINED;
+static FIXED description_card_original_y_pos = UNDEFINED;
 static List* description_card_original_list = NULL;
 
 JokerObject* game_shop_get_description_card(void)
@@ -684,6 +685,9 @@ static void game_shop_process_user_input(void)
         key_held(DESELECT_CARDS))
     {
         description_card = tmp_card;
+        description_card_original_x_pos = description_card->sprite_object->x;
+        description_card_original_y_pos = description_card->sprite_object->y;
+
         timer = TM_ZERO;
         state_machine_change_state(&shop_sm, GAME_SHOP_SHOW_CARD_DESC);
     }
@@ -718,9 +722,6 @@ static void game_shop_show_card_desc(void)
             if (joker_object != description_card)
                 joker_object->sprite_object->ty = int2fx(SHOP_JOKER_SPRITES_INIT_POS.y + TILE_SIZE);
         }
-
-        description_card_original_pos.x = description_card->sprite_object->x;
-        description_card_original_pos.y = description_card->sprite_object->y;
 
         description_card->sprite_object->tx = int2fx(CARD_DESCRIPTION_SPRITE_POS.x);
         description_card->sprite_object->ty = int2fx(CARD_DESCRIPTION_SPRITE_POS.y);
@@ -800,8 +801,8 @@ static void game_shop_hide_card_desc(void)
                 joker_object->sprite_object->ty = int2fx(ITEM_SHOP_Y);
         }
 
-        description_card->sprite_object->tx = description_card_original_pos.x;
-        description_card->sprite_object->ty = description_card_original_pos.y;
+        description_card->sprite_object->tx = description_card_original_x_pos;
+        description_card->sprite_object->ty = description_card_original_y_pos;
     }
 
     // First 12 frames:
