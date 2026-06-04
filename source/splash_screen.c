@@ -17,7 +17,8 @@ void splash_screen_on_init(void)
 
     tte_printf("#{P:72,8; cx:0x%X000}DISCLAIMER", TTE_WHITE_PB);
     tte_printf(
-        "#{P:8,24; cx:0x%X000}This project is NOT endorsed \n by or affiliated with \n Playstack or "
+        "#{P:8,24; cx:0x%X000}This project is NOT endorsed \n by or affiliated with \n Playstack "
+        "or "
         "LocalThunk.\n\n If you have paid for this, \n you have been scammed \n and should request "
         "a refund \n IMMEDIATELY. \n\n The only official place \n to obtain this is from: \n\n "
         "'github.com/\n  GBALATRO/balatro-gba'",
