@@ -668,24 +668,30 @@ static void game_shop_process_user_input(void)
     {
         // Owned Joker
         case 0:
+        {
             description_card_original_list = get_jokers_list();
             tmp_card = list_get_at_idx(get_jokers_list(), shop_selection_grid.selection.x);
             break;
+        }
 
         // Jokers for sale
         case 1:
+        {
             description_card_original_list = &s_shop_jokers_list;
             tmp_card = (shop_selection_grid.selection.x > 0)
                          ? list_get_at_idx(&s_shop_jokers_list, shop_selection_grid.selection.x - 1)
                          : NULL;
             break;
+        }
 
         // TODO: handle Consumables and Vouchers when implemented
 
         default:
+        {
             description_card_original_list = NULL;
             tmp_card = NULL;
             break;
+        }
     }
 
     // Show description of selected card when pressing B.
@@ -771,8 +777,10 @@ static void game_shop_show_card_desc(void)
             "",
             rarity_str
         );
-        pal_bg_mem[SHOP_DESC_RARITY_MAIN_COLOR_PAL_IDX] = joker_get_rarity_color(info->rarity, true);
-        pal_bg_mem[SHOP_DESC_RARITY_SHADOW_COLOR_PAL_IDX] = joker_get_rarity_color(info->rarity, false);
+        pal_bg_mem[SHOP_DESC_RARITY_MAIN_COLOR_PAL_IDX] =
+            joker_get_rarity_color(info->rarity, true);
+        pal_bg_mem[SHOP_DESC_RARITY_SHADOW_COLOR_PAL_IDX] =
+            joker_get_rarity_color(info->rarity, false);
 
         // Draw description panel
         Rect actual_dest_rect = CARD_DESC_9_PTCH_TO_RECT;
@@ -814,7 +822,10 @@ static void game_shop_hide_card_desc(void)
 
         // Redraw Jokers/Consumables frames
         main_bg_se_copy_expand_3x3_rect(OWNED_JOKERS_PANEL_RECT, OWNED_CARDS_PANEL_3X3_SRC_POS);
-        main_bg_se_copy_expand_3x3_rect(OWNED_CONSUMABLES_PANEL_RECT, OWNED_CARDS_PANEL_3X3_SRC_POS);
+        main_bg_se_copy_expand_3x3_rect(
+            OWNED_CONSUMABLES_PANEL_RECT,
+            OWNED_CARDS_PANEL_3X3_SRC_POS
+        );
 
         // Move Jokers back to their positions
         JokerObject* joker_object = NULL;
@@ -826,7 +837,7 @@ static void game_shop_hide_card_desc(void)
             if (joker_object != description_card)
                 joker_object->sprite_object->ty = int2fx(HELD_JOKERS_POS.y);
         }
-        
+
         // Shop Jokers
         itr = list_itr_create(&s_shop_jokers_list);
         while ((joker_object = list_itr_next(&itr)))
@@ -858,14 +869,20 @@ static void game_shop_hide_card_desc(void)
 
         // Print price under it if it was owned
         else if (description_card_original_list == get_jokers_list())
-            sprite_object_print_price_under(description_card->sprite_object, description_card->joker->value);
+            sprite_object_print_price_under(
+                description_card->sprite_object,
+                description_card->joker->value
+            );
 
         // Print price under shop Jokers
         JokerObject* joker_object = NULL;
         ListItr itr = list_itr_create(&s_shop_jokers_list);
         while ((joker_object = list_itr_next(&itr)))
         {
-            sprite_object_print_price_under(joker_object->sprite_object, joker_object->joker->value);
+            sprite_object_print_price_under(
+                joker_object->sprite_object,
+                joker_object->joker->value
+            );
         }
 
         if (description_card_original_list == &s_shop_jokers_list)
