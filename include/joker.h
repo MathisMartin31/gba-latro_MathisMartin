@@ -37,6 +37,8 @@
 #define RARE_JOKER      2
 #define LEGENDARY_JOKER 3
 
+#define MAX_RARITIES (LEGENDARY_JOKER + 1)
+
 // Percent chance to get a joker of each rarity
 // Note that this deviates slightly from the Balatro wiki to allow legendary
 // jokers to appear without spectral cards implemented
@@ -162,6 +164,9 @@ u32 joker_get_score_effect(
     enum JokerEvent joker_event,
     JokerEffect** joker_effect
 );
+const char* joker_get_rarity_string(u8 rarity);
+const u16 joker_get_rarity_color(u8 rarity, bool shadow);
+
 int joker_get_sell_value(const Joker* joker);
 
 JokerObject* joker_object_new(Joker* joker);

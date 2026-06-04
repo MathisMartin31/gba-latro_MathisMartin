@@ -50,6 +50,8 @@
 #define SHOP_LIGHTS_3_PAL_IDX                  17
 #define SHOP_LIGHTS_4_PAL_IDX                  22
 #define SHOP_BOTTOM_PANEL_BORDER_PAL_IDX       26
+#define SHOP_DESC_RARITY_MAIN_COLOR_PAL_IDX    27
+#define SHOP_DESC_RARITY_SHADOW_COLOR_PAL_IDX  28
 
 #define SHOP_LIGHTS_1_CLR 0xFFFF
 #define SHOP_LIGHTS_2_CLR 0x32BE
@@ -80,7 +82,7 @@ static const Rect     CARD_NAME_TEXT_RECT           = { 10,  7, 27,  7};
 
 // Positions in pixels
 static const BG_POINT SHOP_JOKER_SPRITES_INIT_POS = {120, 160};
-static const BG_POINT CARD_DESCRIPTION_SPRITE_POS = {138,   9};
+static const BG_POINT CARD_DESCRIPTION_SPRITE_POS = {135,   9};
 static const Rect     SHOP_PRICES_TEXT_RECT       = { 72,  56, 192, 160 };
 static const Rect     SHOP_REROLL_RECT            = { 88,  96, UNDEFINED, UNDEFINED };
 // clang-format on
@@ -750,14 +752,30 @@ static void game_shop_show_card_desc(void)
     {
         // Compute needed space for the description
         const JokerInfo* info = get_joker_registry_entry(description_card->joker->id);
-        int desc_height = info->joker_print_desc(description_card->joker, CARD_DESC_TEXT_RECT, false);
+        int desc_bottom_offset =
+            CARD_DESC_MAX_TEXT_HEIGHT -
+            info->joker_print_desc(description_card->joker, CARD_DESC_TEXT_RECT, false);
 
-        
+        // Print Rarity and change color or the panel
+        // Do it before drawing the panel so the color is already set
+        const char* rarity_str = joker_get_rarity_string(info->rarity);
+        tte_printf(
+            TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
+            CARD_DESC_TEXT_RECT.left * 8,
+            (CARD_DESC_TEXT_RECT.bottom - desc_bottom_offset - 1) * 8,
+            (rect_width(&CARD_DESC_TEXT_RECT) - strlen(rarity_str)) / 2,
+            "",
+            rarity_str
+        );
+        pal_bg_mem[SHOP_DESC_RARITY_MAIN_COLOR_PAL_IDX] = joker_get_rarity_color(info->rarity, false);
+        pal_bg_mem[SHOP_DESC_RARITY_SHADOW_COLOR_PAL_IDX] = joker_get_rarity_color(info->rarity, true);
+
+        // Draw description panel
         Rect actual_dest_rect = CARD_DESC_9_PTCH_TO_RECT;
-        actual_dest_rect.bottom -= CARD_DESC_MAX_TEXT_HEIGHT - desc_height;
-
+        actual_dest_rect.bottom -= desc_bottom_offset;
         main_bg_se_copy_expand_9_patch(actual_dest_rect, &CARD_DESC_9_PTCH_SRC);
-        tte_printf(TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
+        tte_printf(
+            TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
             CARD_NAME_TEXT_RECT.left * 8,
             CARD_NAME_TEXT_RECT.top * 8,
             (rect_width(&CARD_NAME_TEXT_RECT) - strlen(info->name)) / 2,
@@ -766,7 +784,8 @@ static void game_shop_show_card_desc(void)
         );
     }
 
-    // Actively wait for the B button to be released, but only if the described card has stopped moving
+    // Actively wait for the B button to be released, but only if the described card has stopped
+    // moving
     else if (
         description_card->sprite_object->vx == 0 && description_card->sprite_object->vy == 0 &&
         !key_held(DESELECT_CARDS)
