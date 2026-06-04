@@ -768,7 +768,8 @@ static int seed_play_get_row_size(void)
  */
 static void seed_play_row_on_key_transit(SelectionGrid* selection_grid, Selection* selection)
 {
-    button_press(&choose_deck_bottom_buttons[selection->x]);
+    if (key_hit(SELECT_CARD))
+        button_press(&choose_deck_bottom_buttons[selection->x]);
 }
 
 // CHOOSE SEED
@@ -1004,12 +1005,18 @@ static inline Button* choose_seed_get_button_from_sel(const Selection* sel)
 /**
  * @brief Handle button imputs in `choose_seed_selection_grid`
  *
+ * Always register A press, but only B press when we are on a keyboard row
+ *
  * @param selection_grid pointer to `choose_seed_selection_grid`
  * @param selection Selected button in `choose_seed_selection_grid`
  */
 static void choose_seed_row_on_key_transit(SelectionGrid* selection_grid, Selection* selection)
 {
-    button_press(choose_seed_get_button_from_sel(selection));
+    if (key_hit(SELECT_CARD) ||
+        (selection->y <= RUN_SETUP_SEED_ROW_KEY3 && key_hit(DESELECT_CARDS)))
+    {
+        button_press(choose_seed_get_button_from_sel(selection));
+    }
 }
 
 /**
@@ -1132,8 +1139,7 @@ static inline void toggle_seed_enabled(bool enable)
  */
 static void use_seed_on_pressed(void)
 {
-    if (key_hit(SELECT_CARD))
-        toggle_seed_enabled(!use_seed);
+    toggle_seed_enabled(!use_seed);
 }
 
 /**
@@ -1141,7 +1147,7 @@ static void use_seed_on_pressed(void)
  */
 static void seed_on_pressed(void)
 {
-    if (key_hit(SELECT_CARD) && use_seed)
+    if (use_seed)
         state_machine_change_state(&run_setup_sm, RUN_SETUP_SUBSTATE_CHOOSE_SEED);
 }
 
@@ -1150,9 +1156,6 @@ static void seed_on_pressed(void)
  */
 static void play_on_pressed(void)
 {
-    if (!key_hit(SELECT_CARD))
-        return;
-
     // Apply provided Seed if enabled
     if (use_seed)
         rng_set_seed(base36_to_u32(seed_str));
@@ -1167,8 +1170,7 @@ static void play_on_pressed(void)
  */
 static void back_on_pressed(void)
 {
-    if (key_hit(SELECT_CARD))
-        game_change_state(GAME_STATE_MAIN_MENU);
+    game_change_state(GAME_STATE_MAIN_MENU);
 }
 
 /**
@@ -1246,7 +1248,8 @@ static int back_row_get_size()
 
 static void back_row_on_key_transit(SelectionGrid* selection_grid, Selection* selection)
 {
-    button_press(&back_button);
+    if (key_hit(SELECT_CARD))
+        button_press(&back_button);
 }
 
 #pragma endregion
