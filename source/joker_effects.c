@@ -692,11 +692,11 @@ static int bull_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc_format[] =
         TTE_BLUE_TAG "+2" TTE_BLACK_TAG " Chips for each " TTE_YELLOW_TAG "$1" TTE_BLACK_TAG
-                     " you have\n\n(Now " TTE_BLUE_TAG "+%ld" TTE_BLACK_TAG " Mult)";
+                     " you have\n\n(Now " TTE_BLUE_TAG "+%ld" TTE_BLACK_TAG " Chips)";
 
     u32 bull_bonus = (g_game_vars.money > 0) ? g_game_vars.money * 2 : 0;
-    char desc[132];
-    snprintf(desc, 132, desc_format, bull_bonus);
+    char desc[133];
+    snprintf(desc, 133, desc_format, bull_bonus);
 
     return tte_printf_justified_in_rect(
         desc,

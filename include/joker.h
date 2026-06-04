@@ -143,7 +143,7 @@ typedef int (*JokerDescFunc)(Joker* joker, Rect dest_rect, bool dynamic_only);
 
 typedef struct
 {
-    char* name;
+    const char* name;
     u8 rarity;
     u8 base_value;
     bool is_desc_dynamic; // Is the little variable description at the bottom dynamic?
@@ -189,7 +189,7 @@ const char* joker_get_rarity_string(u8 rarity);
  * @param main_color Whether we want the main or shadow color
  * @return u16 value of the color, not a pointer
  */
-const u16 joker_get_rarity_color(u8 rarity, bool main_color);
+u16 joker_get_rarity_color(u8 rarity, bool main_color);
 
 int joker_get_sell_value(const Joker* joker);
 

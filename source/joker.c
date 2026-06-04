@@ -168,7 +168,7 @@ const char* joker_get_rarity_string(u8 rarity)
     return joker_rarity_strings_lut[rarity];
 }
 
-const u16 joker_get_rarity_color(u8 rarity, bool main_color)
+u16 joker_get_rarity_color(u8 rarity, bool main_color)
 {
     if (rarity >= MAX_RARITIES)
         return 0x0;
