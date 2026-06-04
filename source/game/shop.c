@@ -23,6 +23,7 @@
 #include "state_machine.h"
 #include "timer.h"
 #include "util.h"
+
 #include <string.h>
 
 // Timer defs
@@ -684,7 +685,7 @@ static void game_shop_process_user_input(void)
             break;
         }
 
-        // TODO: handle Consumables and Vouchers when implemented
+            // TODO: handle Consumables and Vouchers when implemented
 
         default:
         {
@@ -796,10 +797,8 @@ static void game_shop_show_card_desc(void)
         );
     }
 
-    // Actively wait for the B button to be released, but only if the described card has stopped
-    // moving
-    else if (
-        description_card->sprite_object->vx == 0 && description_card->sprite_object->vy == 0 &&
+    // Actively wait for the B button to be released, but only if the described card has stopped moving
+    else if (description_card->sprite_object->vx == 0 && description_card->sprite_object->vy == 0 &&
         !key_held(DESELECT_CARDS)
     )
     {
