@@ -16,6 +16,11 @@
  */
 void game_shop_reset(void);
 
+/**
+ * @brief Get a pointer to the Card we are currently showing the description of.
+ *
+ * @return JokerObject*
+ */
 JokerObject* game_shop_get_description_card(void);
 
 /**

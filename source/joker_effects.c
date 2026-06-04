@@ -154,13 +154,18 @@ REGISTER_JOKER_EFFECT_FUNC(sock_and_buskin_joker_effect)
 
 // clang-format off
 /* The index of a joker in the registry matches its ID.
+ *
  * The joker sprites are matched by ID so the position in the registry
  * determines the joker's sprite.
+ *
  * Each consecutive NUM_JOKERS_PER_SPRITESHEET (defined in joker.c) jokers
  * share a spritesheet and thus a color palette.
+ *
  * To make better use of color palettes jokers may be rearranged here
  * (and put together in the matching spritesheet) to share a color palette.
  * Otherwise the order is similar to the wiki.
+ *
+ * TODO: move Name and Description printing out of this when the CardInstance is implemented.
  */
 // clang-format off
 const JokerInfo joker_registry[] = 

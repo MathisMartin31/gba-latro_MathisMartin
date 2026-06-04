@@ -168,23 +168,14 @@ const char* joker_get_rarity_string(u8 rarity)
     return joker_rarity_strings_lut[rarity];
 }
 
-// card_rarity_pal_gfxPal is organized like this:
-//  - 0     -> transparency
-//  - 1,2   -> Common Joker
-//  - 3,4   -> Uncommon Joker
-//  - 5,6   -> Rare Joker
-//  - 7,8   -> Legendary Joker / Tarot Card
-//  - 9,10  -> Planet Card
-//  - 11,12 -> Spectral Card
-//  - 13,14 -> Voucher
-const u16 joker_get_rarity_color(u8 rarity, bool shadow)
+const u16 joker_get_rarity_color(u8 rarity, bool main_color)
 {
     if (rarity >= MAX_RARITIES)
         return 0x0;
 
     // +1 to account for the transparency
     // odd indices are the main colors, even ones are the shadows
-    return card_rarity_pal_gfxPal[1 + 2 * rarity + (shadow ? 1 : 0)];
+    return card_rarity_pal_gfxPal[1 + 2 * rarity + (main_color ? 0 : 1)];
 }
 
 int joker_get_sell_value(const Joker* joker)
