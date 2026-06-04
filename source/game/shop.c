@@ -787,6 +787,8 @@ static void game_shop_show_card_desc(void)
         Rect actual_dest_rect = CARD_DESC_9_PTCH_TO_RECT;
         actual_dest_rect.bottom -= desc_bottom_offset;
         main_bg_se_copy_expand_9_patch(actual_dest_rect, &CARD_DESC_9_PTCH_SRC);
+
+        // Print joker name
         tte_printf(
             TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
             CARD_NAME_TEXT_RECT.left * 8,

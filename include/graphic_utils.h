@@ -156,10 +156,10 @@
  */
 
 /** @def TEXT_CLR_GREEN */
-#define TEXT_CLR_GREEN RGB15(0, 0, 0)
+#define TEXT_CLR_GREEN RGB15(10, 27, 16)
 
 /** @def TEXT_CLR_PURPLE */
-#define TEXT_CLR_PURPLE RGB15(31, 0, 31)
+#define TEXT_CLR_PURPLE RGB15(25, 15, 31)
 
 /** @def TEXT_CLR_DARK_GREEN */
 #define TEXT_CLR_DARK_GREEN RGB15(0, 7, 4)
