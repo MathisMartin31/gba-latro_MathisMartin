@@ -582,6 +582,7 @@ int tte_printf_justified_in_rect(
                 // we're breaking early from it.
                 token_len = 0;
                 token_text_len = 0;
+                line_text_len++;
                 break;
             }
 
@@ -605,7 +606,7 @@ int tte_printf_justified_in_rect(
             line_text_len--;
 
             // useful DEBUG
-            //tte_printf("#{P:0,%d}line %d - %d", 80 + (dst_rect.top + line_y) * TILE_SIZE, line_y, line_text_len);
+            //tte_printf("#{P:0,%d}line %d - %d", 40 + (dst_rect.top + line_y) * TILE_SIZE, line_y, line_text_len);
 
             // Now, we can print the chars from line_start to token_start
             line_x = 0;

@@ -490,8 +490,9 @@ static inline void held_jokers_update_loop(void)
     int i = 0;
     while ((joker = list_itr_next(&itr)))
     {
-        joker->sprite_object->tx = hand_x - int2fx(spacing_lut[jokers_top][i++]);
-
+        // Let the Shop handle the position of this Joker
+        if (joker != game_shop_get_description_card())
+            joker->sprite_object->tx = hand_x - int2fx(spacing_lut[jokers_top][i++]);
         joker_object_update(joker);
     }
 }

@@ -6,6 +6,8 @@
 #ifndef GAME_SHOP_H
 #define GAME_SHOP_H
 
+#include "joker.h"
+
 #include <stdbool.h>
 
 /**
@@ -13,6 +15,8 @@
  * Resets all the shop data for the run, needs to be called once per run.
  */
 void game_shop_reset(void);
+
+JokerObject* game_shop_get_description_card(void);
 
 /**
  * @brief Set whether a Joker can appear in the shop.

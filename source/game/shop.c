@@ -23,6 +23,7 @@
 #include "state_machine.h"
 #include "timer.h"
 #include "util.h"
+#include <string.h>
 
 // Timer defs
 #define TM_END_GAME_SHOP_INTRO    12
@@ -31,7 +32,8 @@
 #define TM_SHOW_CARD_DESC_WAIT    12
 
 // Pixel sized
-#define ITEM_SHOP_Y 71
+#define ITEM_SHOP_Y               71
+#define OWNED_CARDS_HIDE_Y_OFFSET 50
 
 // Shop
 #define REROLL_BASE_COST     5 // Base cost for rerolling the shop items
@@ -59,22 +61,22 @@
 static const BG_POINT SHOP_CLEAR_3X3_SRC_POS        = { 29,  0};
 static const Rect     SHOP_ICON_FROM_RECT           = {  0, 26,  8, 26};
 static const BG_POINT SHOP_ICON_TO_POS              = {  0,  0};
-//static const BG_POINT OWNED_CARDS_PANEL_3X3_SRC_POS = { 29, 21};
-//static const Rect     OWNED_JOKERS_PANEL_RECT       = {  9,  1, 21,  5};
-//static const Rect     OWNED_CONSUMABLES_PANEL_RECT  = { 23,  1, 28,  5};
+static const BG_POINT OWNED_CARDS_PANEL_3X3_SRC_POS = { 29, 21};
+static const Rect     OWNED_JOKERS_PANEL_RECT       = {  9,  1, 21,  5};
+static const Rect     OWNED_CONSUMABLES_PANEL_RECT  = { 23,  1, 28,  5};
 static const Rect     OWNED_CARDS_PANEL_RECT        = {  9,  1, 28,  5};
-//static const Rect     CARD_DESC_9_PTCH_TO_RECT      = { 10,  6, 28, 18};
-//static const NinePatchRect CARD_DESC_9_PTCH_SRC     = {
-//                                        .patch_rect = { 27, 25, 31, 31},
-//                                           .margins = {  2,  3,  2,  3}
-//static const Rect     CARD_NAME_TEXT_RECT         = { 11,  7, 27,  7};
-static const Rect     CARD_DESC_TEXT_RECT         = { 12,  9, 25, 15};
+static const Rect     CARD_DESC_9_PTCH_TO_RECT      = {  9,  6, 28, 18};
+static const NinePatchRect CARD_DESC_9_PTCH_SRC = {
+                                        .patch_rect = { 27, 25, 31, 31},
+                                        .margins    = {  2,  3,  2,  3}
+};
+static const Rect     CARD_DESC_TEXT_RECT           = { 11,  9, 26, 18};
 //static const Rect     CARD_RARITY_TEXT_RECT       = { 12, 17, 25, 17};
-//};
+static const Rect     CARD_NAME_TEXT_RECT           = { 10,  7, 27,  7};
 
 // Positions in pixels
 static const BG_POINT SHOP_JOKER_SPRITES_INIT_POS = {120, 160};
-static const BG_POINT CARD_DESCRIPTION_SPRITE_POS = {138,   4};
+static const BG_POINT CARD_DESCRIPTION_SPRITE_POS = {138,   9};
 static const Rect     SHOP_PRICES_TEXT_RECT       = { 72,  56, 192, 160 };
 static const Rect     SHOP_REROLL_RECT            = { 88,  96, UNDEFINED, UNDEFINED };
 // clang-format on
@@ -161,8 +163,14 @@ static int timer;
 
 static int reroll_cost = REROLL_BASE_COST;
 
-static JokerObject* description_joker = NULL;
-static BG_POINT description_joker_original_pos = {UNDEFINED, UNDEFINED};
+static JokerObject* description_card = NULL;
+static BG_POINT description_card_original_pos = {UNDEFINED, UNDEFINED};
+static List* description_card_original_list = NULL;
+
+JokerObject* game_shop_get_description_card(void)
+{
+    return description_card;
+}
 
 static inline void reset_shop_jokers(void)
 {
@@ -558,9 +566,9 @@ static bool shop_reroll_row_on_selection_changed(
  * @brief Reroll items up for sale in the Shop.
  *         Reroll cost will go up by a rate that increases by 1 each reroll.
  */
-static inline void game_shop_reroll(int* reroll_cost)
+static inline void game_shop_reroll(void)
 {
-    g_game_vars.money -= *reroll_cost;
+    g_game_vars.money -= reroll_cost;
     display_money(); // Update the money display
 
     List* shop_jokers_list = &s_shop_jokers_list;
@@ -595,13 +603,13 @@ static inline void game_shop_reroll(int* reroll_cost)
         }
     }
 
-    (*reroll_cost)++;
+    reroll_cost++;
     tte_printf(
         "#{P:%d,%d; cx:0x%X000}$%d",
         SHOP_REROLL_RECT.left,
         SHOP_REROLL_RECT.top,
         TTE_WHITE_PB,
-        *reroll_cost
+        reroll_cost
     );
 }
 
@@ -631,7 +639,7 @@ static void next_round_on_pressed(void)
 static void reroll_on_pressed(void)
 {
     // TODO: Add money sound effect
-    game_shop_reroll(&reroll_cost);
+    game_shop_reroll();
 }
 
 static bool reroll_can_be_pressed(void)
@@ -645,15 +653,39 @@ static bool reroll_can_be_pressed(void)
 static void game_shop_process_user_input(void)
 {
     selection_grid_process_input(&shop_selection_grid);
-}
 
-static void hide_jokers_except_desc(ListItr* itr)
-{
-    JokerObject* joker_object = NULL;
-    while ((joker_object = list_itr_next(itr)))
+    static JokerObject* tmp_card = NULL;
+
+    // Determine the Joker we would show the description of
+    switch (shop_selection_grid.selection.y)
     {
-        if (joker_object != description_joker)
-            obj_hide(joker_object->sprite_object->sprite->obj);
+        // Owned Joker
+        case 0:
+            description_card_original_list = get_jokers_list();
+            tmp_card = list_get_at_idx(get_jokers_list(), shop_selection_grid.selection.x);
+            break;
+
+        // Jokers for sale
+        case 1:
+            description_card_original_list = &s_shop_jokers_list;
+            tmp_card = (shop_selection_grid.selection.x > 0)
+                         ? list_get_at_idx(&s_shop_jokers_list, shop_selection_grid.selection.x - 1)
+                         : NULL;
+            break;
+
+        default:
+            description_card_original_list = NULL;
+            tmp_card = NULL;
+            break;
+    }
+
+    // Show description of selected card when pressing B
+    if (tmp_card != NULL && tmp_card->sprite_object->vx == 0 && tmp_card->sprite_object->vy == 0 &&
+        key_held(DESELECT_CARDS))
+    {
+        description_card = tmp_card;
+        timer = TM_ZERO;
+        state_machine_change_state(&shop_sm, GAME_SHOP_SHOW_CARD_DESC);
     }
 }
 
@@ -661,49 +693,76 @@ static void game_shop_show_card_desc(void)
 {
     // Start:
     //  - erase shop text
-    //  - remove Jokers/Consumables frames
     //  - disable transparency window
-    //  - Hide all other Jokers
-    //  - Set description_joker new target position
+    //  - Move all other Jokers offscreen
+    //  - Set description_card new target position
     if (timer == 1)
     {
         tte_erase_rect_wrapper(PLAYING_SCREEN_RECT);
-        main_bg_se_copy_expand_3x3_rect(OWNED_CARDS_PANEL_RECT, SHOP_CLEAR_3X3_SRC_POS);
         toggle_windows(false, true);
+
+        JokerObject* joker_object = NULL;
 
         // Owned Jokers
         ListItr itr = list_itr_create(get_jokers_list());
-        hide_jokers_except_desc(&itr);
+        while ((joker_object = list_itr_next(&itr)))
+        {
+            if (joker_object != description_card)
+                joker_object->sprite_object->ty -= int2fx(OWNED_CARDS_HIDE_Y_OFFSET);
+        }
 
         // Shop Jokers
         itr = list_itr_create(&s_shop_jokers_list);
-        hide_jokers_except_desc(&itr);
+        while ((joker_object = list_itr_next(&itr)))
+        {
+            if (joker_object != description_card)
+                joker_object->sprite_object->ty = int2fx(SHOP_JOKER_SPRITES_INIT_POS.y + TILE_SIZE);
+        }
 
-        description_joker_original_pos.x = description_joker->sprite_object->x;
-        description_joker_original_pos.y = description_joker->sprite_object->y;
+        description_card_original_pos.x = description_card->sprite_object->x;
+        description_card_original_pos.y = description_card->sprite_object->y;
 
-        description_joker->sprite_object->tx = int2fx(CARD_DESCRIPTION_SPRITE_POS.x);
-        description_joker->sprite_object->ty = int2fx(CARD_DESCRIPTION_SPRITE_POS.y);
+        description_card->sprite_object->tx = int2fx(CARD_DESCRIPTION_SPRITE_POS.x);
+        description_card->sprite_object->ty = int2fx(CARD_DESCRIPTION_SPRITE_POS.y);
     }
 
     // First 12 frames:
-    //  - Hide Deck (only 6 frames)
+    //  - Hide Deck (last 5 frames)
     //  - Hide shop panel
+    //  - Hide Owned Cards panels
     if (timer <= TM_SHOW_CARD_DESC_WAIT)
     {
-        if (TM_SHOW_CARD_DESC_WAIT - timer < 6)
+        if (TM_SHOW_CARD_DESC_WAIT - timer < 5)
             main_bg_se_move_rect_1_tile_vert(DECK_ANIM_RECT, SCREEN_DOWN);
         main_bg_se_move_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_DOWN);
+        main_bg_se_move_rect_1_tile_vert(OWNED_CARDS_PANEL_RECT, SCREEN_UP);
     }
 
     // End:
     //  - draw description panel
     //  - print the Joker's name, description and rarity
-    else
+    else if (timer == TM_SHOW_CARD_DESC_WAIT + 1)
     {
-        // TODO: 9-patch
-        const JokerInfo* info = get_joker_registry_entry(description_joker->joker->id);
-        info->joker_print_desc(description_joker->joker, CARD_DESC_TEXT_RECT, false);
+        main_bg_se_copy_expand_9_patch(CARD_DESC_9_PTCH_TO_RECT, &CARD_DESC_9_PTCH_SRC);
+        const JokerInfo* info = get_joker_registry_entry(description_card->joker->id);
+        tte_printf(TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
+            CARD_NAME_TEXT_RECT.left * 8,
+            CARD_NAME_TEXT_RECT.top * 8,
+            (rect_width(&CARD_NAME_TEXT_RECT) - strlen(info->name)) / 2,
+            "",
+            info->name
+        );
+        info->joker_print_desc(description_card->joker, CARD_DESC_TEXT_RECT, false);
+    }
+
+    // Actively wait for the B button to be released, but only if the described card has stopped moving
+    else if (
+        description_card->sprite_object->vx == 0 && description_card->sprite_object->vy == 0 &&
+        !key_held(DESELECT_CARDS)
+    )
+    {
+        timer = TM_ZERO;
+        state_machine_change_state(&shop_sm, GAME_SHOP_HIDE_CARD_DESC);
     }
 }
 
@@ -714,28 +773,84 @@ static void game_shop_hide_card_desc(void)
     //  - erase Joker Description frame
     //  - enable transparency window
     //  - redraw Jokers/Consumables frames
+    //  - Move Jokers back to their positions
     if (timer == 1)
     {
         tte_erase_rect_wrapper(PLAYING_SCREEN_RECT);
-        main_bg_se_copy_expand_3x3_rect(OWNED_CARDS_PANEL_RECT, SHOP_CLEAR_3X3_SRC_POS);
+        main_bg_se_copy_expand_3x3_rect(CARD_DESC_9_PTCH_TO_RECT, SHOP_CLEAR_3X3_SRC_POS);
         toggle_windows(false, true);
+        main_bg_se_copy_expand_3x3_rect(OWNED_JOKERS_PANEL_RECT, OWNED_CARDS_PANEL_3X3_SRC_POS);
+        main_bg_se_copy_expand_3x3_rect(OWNED_CONSUMABLES_PANEL_RECT, OWNED_CARDS_PANEL_3X3_SRC_POS);
+
+        JokerObject* joker_object = NULL;
+
+        // Owned Jokers
+        ListItr itr = list_itr_create(get_jokers_list());
+        while ((joker_object = list_itr_next(&itr)))
+        {
+            if (joker_object != description_card)
+                joker_object->sprite_object->ty = int2fx(HELD_JOKERS_POS.y);
+        }
+        
+        // Shop Jokers
+        itr = list_itr_create(&s_shop_jokers_list);
+        while ((joker_object = list_itr_next(&itr)))
+        {
+            if (joker_object != description_card)
+                joker_object->sprite_object->ty = int2fx(ITEM_SHOP_Y);
+        }
+
+        description_card->sprite_object->tx = description_card_original_pos.x;
+        description_card->sprite_object->ty = description_card_original_pos.y;
     }
 
     // First 12 frames:
-    //  - Hide Deck (only 6 frames)
-    //  - Hide shop panel
-    //  - Grow Desc panel
+    //  - Show Deck (last 5 frames)
+    //  - Show shop panel
     if (timer <= TM_SHOW_CARD_DESC_WAIT)
     {
-        if (TM_SHOW_CARD_DESC_WAIT - timer < 6)
-            main_bg_se_move_rect_1_tile_vert(DECK_ANIM_RECT, SCREEN_DOWN);
-        main_bg_se_move_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_DOWN);
+        if (TM_SHOW_CARD_DESC_WAIT - timer < 5)
+            main_bg_se_move_rect_1_tile_vert(DECK_ANIM_RECT, SCREEN_UP);
+        main_bg_se_move_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
     }
 
-    // End:
-    else
+    // Last anim frame (no need to wait for the Joker to have stopped for this):
+    //  - Print Shop prices (Jokers + Reroll)
+    else if (timer == TM_SHOW_CARD_DESC_WAIT + 1)
     {
-        
+        // Need to account for the description_card being selected if it came from the shop
+        if (description_card_original_list == &s_shop_jokers_list)
+            description_card->sprite_object->ty += int2fx(TILE_SIZE);
+
+        // Print price under it if it was owned
+        else if (description_card_original_list == get_jokers_list())
+            sprite_object_print_price_under(description_card->sprite_object, description_card->joker->value);
+
+        JokerObject* joker_object = NULL;
+        ListItr itr = list_itr_create(&s_shop_jokers_list);
+        while ((joker_object = list_itr_next(&itr)))
+        {
+            sprite_object_print_price_under(joker_object->sprite_object, joker_object->joker->value);
+        }
+
+        if (description_card_original_list == &s_shop_jokers_list)
+            description_card->sprite_object->ty -= int2fx(TILE_SIZE);
+
+        tte_printf(
+            "#{P:%d,%d; cx:0x%X000}$%d",
+            SHOP_REROLL_RECT.left,
+            SHOP_REROLL_RECT.top,
+            TTE_WHITE_PB,
+            reroll_cost
+        );
+    }
+
+    // Cleanup and change state
+    else if (description_card->sprite_object->vx == 0 && description_card->sprite_object->vy == 0)
+    {
+        description_card = NULL;
+        timer = TM_ZERO;
+        state_machine_change_state(&shop_sm, GAME_SHOP_ACTIVE);
     }
 }
 
@@ -833,37 +948,6 @@ void game_shop_on_update(void)
     if (timer % 20 == 0)
     {
         game_shop_lights_anim_frame();
-    }
-
-    // Show description of selected card when pressing B
-    else if (key_hit(DESELECT_CARDS) && game_get_state() == GAME_STATE_SHOP)
-    {
-        // Determine the Joker to show the description of
-        switch (shop_selection_grid.selection.y)
-        {
-            // Owned Joker
-            case 0:
-                description_joker = list_get_at_idx(get_jokers_list(), shop_selection_grid.selection.x);
-                break;
-
-            // Jokers for sale
-            case 1:
-                description_joker =
-                    (shop_selection_grid.selection.x > 0)
-                        ? list_get_at_idx(&s_shop_jokers_list, shop_selection_grid.selection.x - 1)
-                        : NULL;
-                break;
-
-            default:
-                description_joker = NULL;
-                break;
-        }
-
-        if (description_joker)
-        {
-            timer = TM_ZERO;
-            state_machine_change_state(&shop_sm, GAME_SHOP_SHOW_CARD_DESC);
-        }
     }
 }
 

@@ -136,6 +136,7 @@ typedef void (*JokerDescFunc)(Joker* joker, Rect dest_rect, bool dynamic_only);
 
 typedef struct
 {
+    char* name;
     u8 rarity;
     u8 base_value;
     bool is_desc_dynamic; // Is the little variable description at the bottom dynamic?
