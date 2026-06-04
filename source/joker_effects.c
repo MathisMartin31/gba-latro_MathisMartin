@@ -498,7 +498,8 @@ static int stencil_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 static int misprint_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     // TODO: print glitchy desc with occasional next card reveal
-    char desc[] = "TODO: misprint Joker desc.";
+    char desc[] = TTE_YELLOW_TAG "Random" TTE_BLACK_TAG " Mult between " TTE_RED_TAG
+                                 "+0" TTE_BLACK_TAG " and " TTE_RED_TAG "+23";
     return tte_printf_justified_in_rect(
         desc,
         dest_rect,
