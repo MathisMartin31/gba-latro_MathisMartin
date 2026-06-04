@@ -132,7 +132,7 @@ typedef u32 (*JokerEffectFunc)(
     JokerEffect** joker_effect
 );
 
-typedef void (*JokerDescFunc)(Joker* joker, Rect dest_rect, bool dynamic_only);
+typedef int (*JokerDescFunc)(Joker* joker, Rect dest_rect, bool dynamic_only);
 
 typedef struct
 {

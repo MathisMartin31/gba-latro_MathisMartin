@@ -28,7 +28,7 @@ static JokerEffect shared_joker_effect = {0};
 // Joker Descriptions
 
 #define REGISTER_JOKER_DESC_FUNC(joker_desc_name) \
-    static void joker_desc_name(Joker* joker, Rect dest_rect, bool dynamic_only);
+    static int joker_desc_name(Joker* joker, Rect dest_rect, bool dynamic_only);
 
 REGISTER_JOKER_DESC_FUNC(default_joker_desc)
 REGISTER_JOKER_DESC_FUNC(greedy_joker_desc)
@@ -253,123 +253,123 @@ size_t get_joker_registry_size(void)
 
 #pragma region JOKER DESCRIPTIONS
 
-static void default_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int default_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_RED_TAG "+4 " TTE_BLACK_TAG "Mult";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void greedy_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int greedy_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Played cards with " TTE_DIAMOND_TAG TTE_BLACK_TAG "suit give " TTE_RED_TAG
                       "+3 " TTE_BLACK_TAG "Mult when scored";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void lusty_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int lusty_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Played cards with " TTE_HEART_TAG TTE_BLACK_TAG "suit give " TTE_RED_TAG
                       "+3 " TTE_BLACK_TAG "Mult when scored";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void wrathful_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int wrathful_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Played cards with " TTE_SPADE_TAG TTE_BLACK_TAG "suit give " TTE_RED_TAG
                       "+3 " TTE_BLACK_TAG "Mult when scored";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void gluttonous_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int gluttonous_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Played cards with " TTE_CLUB_TAG TTE_BLACK_TAG "suit give " TTE_RED_TAG
                       "+3 " TTE_BLACK_TAG "Mult when scored";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void jolly_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int jolly_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_RED_TAG "+8 " TTE_BLACK_TAG "Mult if played hand contains a " TTE_YELLOW_TAG "Pair";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void zany_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int zany_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_RED_TAG
         "+12 " TTE_BLACK_TAG "Mult if played hand contains a " TTE_YELLOW_TAG "Three of a Kind";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void mad_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int mad_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_RED_TAG
         "+10 " TTE_BLACK_TAG "Mult if played hand contains a " TTE_YELLOW_TAG "Two Pair";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void crazy_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int crazy_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_RED_TAG
         "+12 " TTE_BLACK_TAG "Mult if played hand contains a " TTE_YELLOW_TAG "Straight";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void droll_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int droll_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_RED_TAG "+10 " TTE_BLACK_TAG "Mult if played hand contains a " TTE_YELLOW_TAG "Flush";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void sly_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int sly_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLUE_TAG "+50 " TTE_BLACK_TAG "Chips if played hand contains a " TTE_YELLOW_TAG "Pair";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void wily_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int wily_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_BLUE_TAG
         "+100 " TTE_BLACK_TAG "Chips if played hand contains a " TTE_YELLOW_TAG "Three of a Kind";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void clever_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int clever_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_BLUE_TAG
         "+80 " TTE_BLACK_TAG "Chips if played hand contains a " TTE_YELLOW_TAG "Two Pair";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void devious_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int devious_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_BLUE_TAG
         "+100 " TTE_BLACK_TAG "Chips if played hand contains a " TTE_YELLOW_TAG "Straight";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void crafty_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int crafty_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLUE_TAG "+80 " TTE_BLACK_TAG "Chips if played hand contains a " TTE_YELLOW_TAG "Flush";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void half_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int half_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_RED_TAG "+20 " TTE_BLACK_TAG "Mult if played hand contains " TTE_YELLOW_TAG
                     "3 " TTE_BLACK_TAG "or fewer cards";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void stencil_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int stencil_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc_format[] = TTE_RED_TAG
         "X1 " TTE_BLACK_TAG
@@ -390,26 +390,26 @@ static void stencil_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
     char desc[136];
     snprintf(desc, 136, desc_format, stencil_bonus);
 
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, false);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, false);
 }
 
-static void misprint_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int misprint_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     // TODO: print glitchy desc with occasional next card reveal
     char desc[] = "TODO: misprint Joker desc.";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void walkie_talkie_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int walkie_talkie_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Each played " TTE_YELLOW_TAG "10 " TTE_BLACK_TAG "or " TTE_YELLOW_TAG
                       "4 " TTE_BLACK_TAG "gives " TTE_BLUE_TAG "+10 " TTE_BLACK_TAG
                       "Chips and " TTE_RED_TAG "+4 " TTE_BLACK_TAG "Mult when scored";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void fibonnaci_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int fibonnaci_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Each played\n" TTE_YELLOW_TAG "Ace" TTE_BLACK_TAG ", " TTE_YELLOW_TAG
@@ -417,32 +417,32 @@ static void fibonnaci_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only
                       "5" TTE_BLACK_TAG ", " TTE_YELLOW_TAG "8\n" TTE_BLACK_TAG "gives " TTE_RED_TAG
                       "+8 " TTE_BLACK_TAG "Mult when scored";
 
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void banner_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int banner_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLUE_TAG "+30 " TTE_BLACK_TAG "Chips for each remaining " TTE_YELLOW_TAG "discard";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void mystic_summit_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int mystic_summit_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_RED_TAG "+15 " TTE_BLACK_TAG "Mult when " TTE_YELLOW_TAG
                                            "0 " TTE_BLACK_TAG "discards remaining ";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void blackboard_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int blackboard_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_RED_TAG
         "X3 " TTE_BLACK_TAG "Mult if all cards held in hand are " TTE_SPADE_TAG TTE_BLACK_TAG
         "or " TTE_CLUB_TAG;
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void blue_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int blue_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc_format[] = TTE_BLUE_TAG
         "+2 " TTE_BLACK_TAG "Chips for each remaining card in " TTE_YELLOW_TAG "deck" TTE_BLACK_TAG
@@ -452,50 +452,50 @@ static void blue_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
     char desc[145];
     snprintf(desc, 145, desc_format, blue_bonus);
 
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void raised_fist_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int raised_fist_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Adds " TTE_YELLOW_TAG "double" TTE_BLACK_TAG " the rank of " TTE_YELLOW_TAG
                       "lowest" TTE_BLACK_TAG " ranked card held in hand to Mult";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void reserved_parking_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int reserved_parking_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_BLACK_TAG
         "Each " TTE_YELLOW_TAG "face" TTE_BLACK_TAG " card held in hand has a " TTE_GREEN_TAG
         "1 in 2" TTE_BLACK_TAG " chance to give " TTE_YELLOW_TAG "$1";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void business_card_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int business_card_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_BLACK_TAG
         "Played " TTE_YELLOW_TAG "face" TTE_BLACK_TAG " cards have a " TTE_GREEN_TAG
         "1 in 2" TTE_BLACK_TAG " chance to give " TTE_YELLOW_TAG "$2" TTE_BLACK_TAG " when scored";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void scholar_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int scholar_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_BLACK_TAG
         "Played " TTE_YELLOW_TAG "Aces" TTE_BLACK_TAG " give " TTE_BLUE_TAG "+20" TTE_BLACK_TAG
         " Chips and " TTE_RED_TAG "+4" TTE_BLACK_TAG " Mult when scored";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void scary_face_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int scary_face_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Played " TTE_YELLOW_TAG "face" TTE_BLACK_TAG " cards give " TTE_BLUE_TAG
                       "+30" TTE_BLACK_TAG " Chips when scored";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void abstract_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int abstract_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc_format[] =
         TTE_RED_TAG "+3" TTE_BLACK_TAG " Mult for each " TTE_YELLOW_TAG "Joker" TTE_BLACK_TAG
@@ -505,10 +505,10 @@ static void abstract_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
     char desc[131];
     snprintf(desc, 131, desc_format, abstract_bonus);
 
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void bull_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int bull_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc_format[] =
         TTE_BLUE_TAG "+2" TTE_BLACK_TAG " Chips for each " TTE_YELLOW_TAG "$1" TTE_BLACK_TAG
@@ -518,84 +518,84 @@ static void bull_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
     char desc[132];
     snprintf(desc, 132, desc_format, bull_bonus);
 
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void smiley_face_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int smiley_face_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Played " TTE_YELLOW_TAG "face" TTE_BLACK_TAG " cards give " TTE_RED_TAG
                       "+5" TTE_BLACK_TAG " Mult when scored";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void even_steven_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int even_steven_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Played cards with " TTE_YELLOW_TAG "even rank give " TTE_RED_TAG
                       "+4" TTE_BLACK_TAG " Mult when scored\n(10, 8, 6, 4, 2)";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void odd_todd_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int odd_todd_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Played cards with " TTE_YELLOW_TAG "odd rank give " TTE_BLUE_TAG
                       "+31" TTE_BLACK_TAG " Chips when scored\n(A, 9, 7, 5, 3)";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void acrobat_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int acrobat_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_RED_TAG "X3" TTE_BLACK_TAG " Mult on " TTE_YELLOW_TAG
                                            "final hand" TTE_BLACK_TAG " of round";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void hanging_chad_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int hanging_chad_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_BLACK_TAG "Retrigger " TTE_YELLOW_TAG "first" TTE_BLACK_TAG
                                              " played card used in scoring " TTE_YELLOW_TAG
                                              "2" TTE_BLACK_TAG " additional times ";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void the_duo_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int the_duo_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_RED_TAG "X2" TTE_BLACK_TAG " Mult if played hand contains a " TTE_YELLOW_TAG "Pair";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void the_trio_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int the_trio_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_RED_TAG
         "X3" TTE_BLACK_TAG " Mult if played hand contains a " TTE_YELLOW_TAG "Three of a Kind";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void the_family_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int the_family_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_RED_TAG
         "X4" TTE_BLACK_TAG " Mult if played hand contains a " TTE_YELLOW_TAG "Four of a Kind";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void the_order_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int the_order_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_RED_TAG "X3" TTE_BLACK_TAG " Mult if played hand contains a " TTE_YELLOW_TAG "Straight";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void the_tribe_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int the_tribe_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_RED_TAG "X2" TTE_BLACK_TAG " Mult if played hand contains a " TTE_YELLOW_TAG "Flush";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void bootstraps_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int bootstraps_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc_format[] =
         TTE_RED_TAG "+2" TTE_BLACK_TAG " Mult for every " TTE_YELLOW_TAG "$5" TTE_BLACK_TAG
@@ -605,48 +605,48 @@ static void bootstraps_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_onl
     char desc[256];
     snprintf(desc, 256, desc_format, bootstrap_bonus);
 
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void shoot_the_moon_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int shoot_the_moon_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Each " TTE_YELLOW_TAG "Queen" TTE_BLACK_TAG
                       " held in hand gives " TTE_RED_TAG "+13" TTE_BLACK_TAG " Mult";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void photograph_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int photograph_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "First played " TTE_YELLOW_TAG "face" TTE_BLACK_TAG " card gives " TTE_RED_TAG
                       "X2" TTE_BLACK_TAG " Mult when scored";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void dusk_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int dusk_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_BLACK_TAG "Retrigger all played cards in " TTE_YELLOW_TAG
                                              "final hand" TTE_BLACK_TAG " of the round";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void blueprint_brainstorm_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int blueprint_brainstorm_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Copies ability of " TTE_YELLOW_TAG "Joker" TTE_BLACK_TAG " to the right";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void hack_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int hack_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] = TTE_BLACK_TAG
         "Retrigger each played " TTE_YELLOW_TAG "2" TTE_BLACK_TAG ", " TTE_YELLOW_TAG
         "3" TTE_BLACK_TAG ", " TTE_YELLOW_TAG "4" TTE_BLACK_TAG ", or " TTE_YELLOW_TAG "5";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void seltzer_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int seltzer_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc_format[] = TTE_BLACK_TAG
         "Retrigger all cards played for the next " TTE_YELLOW_TAG "%ld" TTE_BLACK_TAG " hands";
@@ -654,38 +654,38 @@ static void seltzer_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
     char desc[256];
     snprintf(desc, 256, desc_format, joker->persistent_state);
 
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void sock_and_buskin_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int sock_and_buskin_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Retrigger all played " TTE_YELLOW_TAG "face" TTE_BLACK_TAG " cards";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void pareidolia_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int pareidolia_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "All cards are considered " TTE_YELLOW_TAG "face" TTE_BLACK_TAG " cards";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void shortcut_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int shortcut_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "Allows " TTE_YELLOW_TAG "Straights" TTE_BLACK_TAG
                       " to be made with gaps of " TTE_YELLOW_TAG "1 rank" TTE_BLACK_TAG
                       "\n\n(ex: " TTE_YELLOW_TAG "10 8 6 5 3" TTE_BLACK_TAG ")";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
-static void four_fingers_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
+static int four_fingers_joker_desc(Joker* joker, Rect dest_rect, bool dynamic_only)
 {
     static const char desc[] =
         TTE_BLACK_TAG "All " TTE_YELLOW_TAG "Flushes" TTE_BLACK_TAG " and " TTE_YELLOW_TAG
                       "Straights" TTE_BLACK_TAG " can be made with 4 cards";
-    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
+    return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, !dynamic_only);
 }
 
 #pragma endregion

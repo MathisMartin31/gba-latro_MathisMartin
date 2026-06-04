@@ -70,6 +70,10 @@ static const NinePatchRect CARD_DESC_9_PTCH_SRC = {
                                         .patch_rect = { 27, 25, 31, 31},
                                         .margins    = {  2,  3,  2,  3}
 };
+static const int      CARD_DESC_MAX_TEXT_HEIGHT     = CARD_DESC_9_PTCH_TO_RECT.bottom -
+                                                      CARD_DESC_9_PTCH_TO_RECT.top + 1 -
+                                                      CARD_DESC_9_PTCH_SRC.margins.top -
+                                                      CARD_DESC_9_PTCH_SRC.margins.bottom;
 static const Rect     CARD_DESC_TEXT_RECT           = { 11,  9, 26, 18};
 //static const Rect     CARD_RARITY_TEXT_RECT       = { 12, 17, 25, 17};
 static const Rect     CARD_NAME_TEXT_RECT           = { 10,  7, 27,  7};
@@ -744,8 +748,15 @@ static void game_shop_show_card_desc(void)
     //  - print the Joker's name, description and rarity
     else if (timer == TM_SHOW_CARD_DESC_WAIT + 1)
     {
-        main_bg_se_copy_expand_9_patch(CARD_DESC_9_PTCH_TO_RECT, &CARD_DESC_9_PTCH_SRC);
+        // Compute needed space for the description
         const JokerInfo* info = get_joker_registry_entry(description_card->joker->id);
+        int desc_height = info->joker_print_desc(description_card->joker, CARD_DESC_TEXT_RECT, false);
+
+        
+        Rect actual_dest_rect = CARD_DESC_9_PTCH_TO_RECT;
+        actual_dest_rect.bottom -= CARD_DESC_MAX_TEXT_HEIGHT - desc_height;
+
+        main_bg_se_copy_expand_9_patch(actual_dest_rect, &CARD_DESC_9_PTCH_SRC);
         tte_printf(TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
             CARD_NAME_TEXT_RECT.left * 8,
             CARD_NAME_TEXT_RECT.top * 8,
@@ -753,7 +764,6 @@ static void game_shop_show_card_desc(void)
             "",
             info->name
         );
-        info->joker_print_desc(description_card->joker, CARD_DESC_TEXT_RECT, false);
     }
 
     // Actively wait for the B button to be released, but only if the described card has stopped moving
