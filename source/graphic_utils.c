@@ -551,7 +551,8 @@ int tte_printf_justified_in_rect(
             int current_char = token_start + token_len;
 
             // Handle tags
-            if (raw_text[current_char] == '#' && (current_char + 1) < raw_text_len && raw_text[current_char + 1] == '{')
+            if (raw_text[current_char] == '#' && (current_char + 1) < raw_text_len &&
+                raw_text[current_char + 1] == '{')
             {
                 while (current_char < raw_text_len && raw_text[current_char] != '}')
                 {
@@ -616,7 +617,8 @@ int tte_printf_justified_in_rect(
                 line_text_len = 0;
 
             // useful DEBUG
-            //tte_printf("#{P:0,%d}line %d - %d", 40 + (dst_rect.top + line_y) * TILE_SIZE, line_y, line_text_len);
+            // tte_printf("#{P:0,%d}line %d - %d", 40 + (dst_rect.top + line_y) * TILE_SIZE, line_y,
+            // line_text_len);
 
             // Now, we can print the chars from line_start to token_start
             line_x = 0;
