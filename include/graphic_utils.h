@@ -145,7 +145,7 @@
 #define TTE_SPADE_TAG TTE_DARK_BLUE_TAG "Spade "
 
 /** @def TTE_CLUB_TAG */
-#define TTE_CLUB_TAG TTE_BLUE_TAG "Club "
+#define TTE_CLUB_TAG TTE_DARK_GREEN_TAG "Club "
 
 /** @} */
 
@@ -162,10 +162,10 @@
 #define TEXT_CLR_PURPLE RGB15(25, 15, 31)
 
 /** @def TEXT_CLR_DARK_GREEN */
-#define TEXT_CLR_DARK_GREEN RGB15(0, 7, 4)
+#define TEXT_CLR_DARK_GREEN RGB15(0, 14, 8)
 
 /** @def TEXT_CLR_DARK_BLUE */
-#define TEXT_CLR_DARK_BLUE RGB15(0, 4, 7)
+#define TEXT_CLR_DARK_BLUE RGB15(10, 5, 15)
 
 /** @def TEXT_CLR_BLACK */
 #define TEXT_CLR_BLACK RGB15(3, 5, 5) // ~ 0x1483
