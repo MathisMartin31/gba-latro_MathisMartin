@@ -1,3 +1,7 @@
+/**
+ * @file skip_tag.h
+ * @brief Data structures and functions related to the handling of Skip Tags
+ */
 #ifndef SKIP_TAGS_H
 #define SKIP_TAGS_H
 
@@ -23,22 +27,40 @@
 // Timing definitions
 #define TM_SKIP_TAG_ANIM_DURATION  20
 
-#define SKIP_TAG_TYPE_UNCOMMON   0
-#define SKIP_TAG_TYPE_RARE       1
-#define SKIP_TAG_TYPE_INVESTMENT 6
-#define SKIP_TAG_TYPE_BOSS       8
-#define SKIP_TAG_TYPE_HANDY      13
-#define SKIP_TAG_TYPE_GARBAGE    14
-#define SKIP_TAG_TYPE_COUPON     16
-#define SKIP_TAG_TYPE_DOUBLE     17
-#define SKIP_TAG_TYPE_JUGGLE     18
-#define SKIP_TAG_TYPE_D6         19
-#define SKIP_TAG_TYPE_TOP_UP     20
-#define SKIP_TAG_TYPE_SPEED      21
-#define SKIP_TAG_TYPE_ECONOMY    23
-
-#define NB_SKIP_TAG_TYPES 13
-#define MAX_SKIP_TAG_TYPES 24
+/**
+ * @brief List of all Skip Tags, in the order they are in on their spritesheet.
+ *         Not all of them are implemented (or will be) but at least they are in order.
+ *
+ * @sa NB_SKIP_TAG_TYPES, ante1_skip_tags_roll_table, all_skip_tags_roll_table
+ */
+enum SkipTagTypes
+{
+    SKIP_TAG_TYPE_UNCOMMON,
+    SKIP_TAG_TYPE_RARE,
+    SKIP_TAG_TYPE_NEGATIVE,
+    SKIP_TAG_TYPE_FOIL,
+    SKIP_TAG_TYPE_HOLOGRAPHIC,
+    SKIP_TAG_TYPE_POLYCHROME,
+    SKIP_TAG_TYPE_INVESTMENT,
+    SKIP_TAG_TYPE_VOUCHER,
+    SKIP_TAG_TYPE_BOSS,
+    SKIP_TAG_TYPE_STANDARD,
+    SKIP_TAG_TYPE_CHARM,
+    SKIP_TAG_TYPE_METEOR,
+    SKIP_TAG_TYPE_BUFFOON,
+    SKIP_TAG_TYPE_HANDY,
+    SKIP_TAG_TYPE_GARBAGE,
+    SKIP_TAG_TYPE_ETHEREAL,
+    SKIP_TAG_TYPE_COUPON,
+    SKIP_TAG_TYPE_DOUBLE,
+    SKIP_TAG_TYPE_JUGGLE,
+    SKIP_TAG_TYPE_D6,
+    SKIP_TAG_TYPE_TOP_UP,
+    SKIP_TAG_TYPE_SPEED,
+    SKIP_TAG_TYPE_ORBITAL,
+    SKIP_TAG_TYPE_ECONOMY,
+    MAX_SKIP_TAG_TYPES
+};
 
 typedef struct SkipTag
 {

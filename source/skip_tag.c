@@ -1,3 +1,7 @@
+/**
+ * @file skip_tag.c
+ * @brief Implementation of functions related to the handling of Skip Tags
+ */
 #include "skip_tag.h"
 
 #include "joker.h"
@@ -13,8 +17,6 @@
 
 #define MAX_NON_OVERLAPING_TAG_SPRITES 5
 
-#define NB_ANTE1_SKIP_TAGS 10
-
 // clang-format off
 // Points                                         x    y
 static const BG_POINT OWNED_SKIP_TAGS_BASE_POS = {219, 97};
@@ -22,6 +24,18 @@ static const BG_POINT OWNED_SKIP_TAGS_BASE_POS = {219, 97};
 static const int OWNED_SKIP_TAGS_STACK_HEIGHT = 64;
 static const int OWNED_SKIP_TAGS_SPACING      = 12;
 // clang-format on
+
+/**
+ * @def NB_ANTE1_SKIP_TAGS
+ * @brief Number of implemented Skip Tags available from Ante 1
+ */
+#define NB_ANTE1_SKIP_TAGS 10
+
+/**
+ * @def NB_SKIP_TAG_TYPES
+ * @brief Number of implemented Skip Tags
+ */
+#define NB_SKIP_TAG_TYPES 13
 
 // Not all Skip Tags can be drawn on Ante 1, so we need 2 different roll tables
 // one for Ante 1 only, and one for all other Antes.
@@ -37,6 +51,8 @@ static const u8 ante1_skip_tags_roll_table[NB_ANTE1_SKIP_TAGS] = {
     SKIP_TAG_TYPE_SPEED,
     SKIP_TAG_TYPE_ECONOMY
 };
+
+// Won't be needed if all tags are implemented, but likely won't ever be the case
 static const u8 all_skip_tags_roll_table[NB_SKIP_TAG_TYPES] = {
     SKIP_TAG_TYPE_UNCOMMON,
     SKIP_TAG_TYPE_RARE,

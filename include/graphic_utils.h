@@ -37,7 +37,6 @@
 #define PAL_ROW_LEN   16
 
 /**
- * @def SpritePaletteBanks
  * @brief Indices of the palettes for the different type of sprites
  */
 enum SpritePaletteBanks
