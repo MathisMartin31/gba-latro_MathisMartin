@@ -376,6 +376,19 @@ static inline Card* discard_pop()
     return discard_pile[discard_top--];
 }
 
+static inline void display_ante(void)
+{
+    tte_printf(
+        "#{P:%d,%d; cx:0x%X000}%ld#{cx:0x%X000}/%d",
+        ANTE_TEXT_RECT.left,
+        ANTE_TEXT_RECT.top,
+        TTE_YELLOW_PB,
+        g_game_vars.ante,
+        TTE_WHITE_PB,
+        MAX_ANTE
+    );
+}
+
 void game_init()
 {
     state_machine_remove(&game_sm);
@@ -437,15 +450,7 @@ void game_reset()
     display_discards();
     display_money();
     // Ante
-    tte_printf(
-        "#{P:%d,%d; cx:0x%X000}%ld#{cx:0x%X000}/%d",
-        ANTE_TEXT_RECT.left,
-        ANTE_TEXT_RECT.top,
-        TTE_YELLOW_PB,
-        g_game_vars.ante,
-        TTE_WHITE_PB,
-        MAX_ANTE
-    );
+    display_ante();
 
     affine_background_load_palette(affine_background_gfxPal);
 }
@@ -766,17 +771,6 @@ void display_mult(void)
     );
 
     check_flaming_score();
-}
-
-static inline void display_ante(int value)
-{
-    tte_printf(
-        "#{P:%d,%d; cx:0xC000}%d#{cx:0xF000}/%d",
-        ANTE_TEXT_RECT.left,
-        ANTE_TEXT_RECT.top,
-        value,
-        MAX_ANTE
-    );
 }
 
 // Returns true if the card is *considered* a face card
@@ -1391,7 +1385,8 @@ static inline void game_playing_handle_round_over(void)
         {
             if (g_game_vars.ante < MAX_ANTE)
             {
-                display_ante(++g_game_vars.ante);
+                g_game_vars.ante++;
+                display_ante();
 
                 // mark current boss blind as beaten and allow for reroll
                 set_blind_beaten(g_game_vars.next_boss_blind);
@@ -2597,16 +2592,7 @@ void game_start(void)
     display_discards(); // Discard
 
     display_money(); // Set the money display
-
-    tte_printf(
-        "#{P:%d,%d; cx:0x%X000}%ld#{cx:0x%X000}/%d",
-        ANTE_TEXT_RECT.left,
-        ANTE_TEXT_RECT.top,
-        TTE_YELLOW_PB,
-        g_game_vars.ante,
-        TTE_WHITE_PB,
-        MAX_ANTE
-    ); // Ante
+    display_ante();
 
     game_change_state(GAME_STATE_BLIND_SELECT);
 }
