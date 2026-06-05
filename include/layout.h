@@ -7,7 +7,6 @@
 #define LAYOUT_H
 
 #include "graphic_utils.h"
-#include "util.h"
 
 // clang-format off
 // Points                                               x        y

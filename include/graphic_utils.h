@@ -64,10 +64,10 @@
 #define TTE_BIT_ON_CLR_IDX TTE_BIT_UNPACK_OFFSET + 1
 
 /** @def TTE_GREEN_PB */
-#define TTE_GREEN_PB 6 // 0x8
+#define TTE_GREEN_PB 6 // 0x6
 
 /** @def TTE_PURPLE_PB */
-#define TTE_PURPLE_PB 7 // 0x8
+#define TTE_PURPLE_PB 7 // 0x7
 
 /** @def TTE_DARK_GREEN_PB */
 #define TTE_DARK_GREEN_PB 8 // 0x8

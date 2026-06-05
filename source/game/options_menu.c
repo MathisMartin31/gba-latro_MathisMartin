@@ -15,7 +15,6 @@
 #include "util.h"
 
 #include <stdint.h>
-#include <stdio.h>
 #include <string.h>
 #include <tonc.h>
 #include <tonc_math.h>

@@ -772,8 +772,8 @@ static void game_shop_show_card_desc(void)
         const char* rarity_str = joker_get_rarity_string(info->rarity);
         tte_printf(
             TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
-            CARD_DESC_TEXT_RECT.left * 8,
-            (CARD_DESC_TEXT_RECT.bottom - desc_bottom_offset - 1) * 8,
+            CARD_DESC_TEXT_RECT.left * TILE_SIZE,
+            (CARD_DESC_TEXT_RECT.bottom - desc_bottom_offset - 1) * TILE_SIZE,
             (rect_width(&CARD_DESC_TEXT_RECT) - strlen(rarity_str)) / 2,
             "",
             rarity_str
@@ -791,8 +791,8 @@ static void game_shop_show_card_desc(void)
         // Print joker name
         tte_printf(
             TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
-            CARD_NAME_TEXT_RECT.left * 8,
-            CARD_NAME_TEXT_RECT.top * 8,
+            CARD_NAME_TEXT_RECT.left * TILE_SIZE,
+            CARD_NAME_TEXT_RECT.top * TILE_SIZE,
             (rect_width(&CARD_NAME_TEXT_RECT) - strlen(info->name)) / 2,
             "",
             info->name
