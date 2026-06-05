@@ -551,15 +551,19 @@ int tte_printf_justified_in_rect(
             int current_char = token_start + token_len;
 
             // Handle tags
-            if (raw_text[current_char] == '#' && raw_text[current_char + 1] == '{')
+            if (raw_text[current_char] == '#' && (current_char + 1) < raw_text_len && raw_text[current_char + 1] == '{')
             {
-                while (raw_text[current_char] != '}')
+                while (current_char < raw_text_len && raw_text[current_char] != '}')
                 {
                     token_len++;
                     current_char++;
                 }
-                token_len++;
-                current_char++;
+
+                if (current_char < raw_text_len)
+                {
+                    token_len++;
+                    current_char++;
+                }
             }
 
             // Handle special cases
