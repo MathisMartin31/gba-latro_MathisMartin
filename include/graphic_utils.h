@@ -35,7 +35,22 @@
 #define AFFINE_BG_SBB 2
 #define AFFINE_BG_CBB 2
 #define PAL_ROW_LEN   16
-#define NUM_PALETTES  16
+
+/**
+ * @def SpritePaletteBanks
+ * @brief Indices of the palettes for the different type of sprites
+ */
+enum SpritePaletteBanks
+{
+    CARD_PB,
+    DECK_PB,
+    SKIP_TAGS_PB,
+    NORMAL_BLIND_PB,
+    BOSS_BLIND_PB,
+    JOKER_BASE_PB,
+    JOKER_LAST_PB = 15,
+    NUM_PALETTES
+};
 
 /**
  * @def TILE_SIZE

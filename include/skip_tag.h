@@ -19,7 +19,6 @@
 #define OWNED_SKIP_TAG_STARTING_LAYER 2
 // Tile ID for the starting index in the tile memory
 #define SKIP_TAG_TID (SKIP_TAG_STARTING_LAYER * SKIP_TAG_SPRITE_OFFSET)
-#define SKIP_TAGS_PB 3
 
 // Timing definitions
 #define TM_SKIP_TAG_ANIM_DURATION  20
