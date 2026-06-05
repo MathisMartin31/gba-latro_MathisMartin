@@ -593,21 +593,26 @@ int tte_printf_justified_in_rect(
         // Do not print anything if we only need to compute the paragraph's total height
         if (do_print)
         {
-            // Length of line, including non printable stuff, and excluding any trailing space/null
-            // char
-            int line_len = token_start - line_start - 1;
+            // Length of the raw slice for this line (includes formatting tags)
+            int line_len = token_start - line_start;
 
-            // Take out length of token text that is overflowing, it is not part of that line
-            // Also take out spaces and null characters
-            line_text_len = line_text_len - token_text_len;
-            while (raw_text[line_text_len - 1] == ' ' || raw_text[line_text_len - 1] == '\n' ||
-                   raw_text[line_text_len - 1] == '\0')
-                line_text_len--;
-            line_text_len--;
+            // Trim trailing whitespace/newlines from the raw slice
+            while (line_len > 0)
+            {
+                char c = raw_text[line_start + line_len - 1];
+                if (c == ' ' || c == '\n' || c == '\0')
+                    line_len--;
+                else
+                    break;
+            }
+
+            // Remove the overflowing token's visible length from this line
+            line_text_len = line_text_len - token_text_len - 1;
+            if (line_text_len < 0)
+                line_text_len = 0;
 
             // useful DEBUG
-            // tte_printf("#{P:0,%d}line %d - %d", 40 + (dst_rect.top + line_y) * TILE_SIZE, line_y,
-            // line_text_len);
+            //tte_printf("#{P:0,%d}line %d - %d", 40 + (dst_rect.top + line_y) * TILE_SIZE, line_y, line_text_len);
 
             // Now, we can print the chars from line_start to token_start
             line_x = 0;
