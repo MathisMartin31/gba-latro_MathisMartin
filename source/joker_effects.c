@@ -16,9 +16,6 @@
 #define REGISTER_JOKER_DESC_FUNC(joker_desc_name) \
     static int joker_desc_name(Joker* joker, Rect dest_rect);
 
-#define FORMAT_DESC_WITH_ONE_VALUE(desc_format, total_length, value, dest_rect) \
-    [total_length]; snprintf(desc, total_length, desc_format, value);
-
 #define REGISTER_JOKER_EFFECT_FUNC(joker_effect_name) \
     static u32 joker_effect_name(                     \
         Joker* joker,                                 \
@@ -385,6 +382,7 @@ static int stencil_joker_desc(Joker* joker, Rect dest_rect)
         TTE_RED_TAG "X1 " TTE_BLACK_TAG
                     "Mult for each empty Joker slot Joker Stencil included\n\n(Now " TTE_RED_TAG
                     "X%ld " TTE_BLACK_TAG "Mult)";
+    const u32 desc_max_size = 130;
 
     List* jokers = get_jokers_list();
     u32 stencil_bonus = MAX_JOKERS_HELD_SIZE - list_get_len(jokers);
@@ -397,7 +395,8 @@ static int stencil_joker_desc(Joker* joker, Rect dest_rect)
             stencil_bonus++;
     }
 
-    char desc FORMAT_DESC_WITH_ONE_VALUE(desc_format, 130, stencil_bonus, dest_rect);
+    char desc[desc_max_size];
+    snprintf(desc, desc_max_size, desc_format, stencil_bonus);
 
     return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
 }
@@ -457,9 +456,12 @@ static int blue_joker_desc(Joker* joker, Rect dest_rect)
     static const char desc_format[] =
         TTE_BLUE_TAG "+2 " TTE_BLACK_TAG "Chips for each remaining card in " TTE_YELLOW_TAG
                      "deck" TTE_BLACK_TAG "\n\n(Now " TTE_BLUE_TAG "+%ld" TTE_BLACK_TAG " Chips)";
+    const u32 desc_max_size = 139;
 
     u32 blue_bonus = (get_deck_top() + 1) * 2;
-    char desc FORMAT_DESC_WITH_ONE_VALUE(desc_format, 139, blue_bonus, dest_rect);
+
+    char desc[desc_max_size];
+    snprintf(desc, desc_max_size, desc_format, blue_bonus);
 
     return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
 }
@@ -509,9 +511,12 @@ static int abstract_joker_desc(Joker* joker, Rect dest_rect)
     static const char desc_format[] =
         TTE_RED_TAG "+3" TTE_BLACK_TAG " Mult for each " TTE_YELLOW_TAG "Joker" TTE_BLACK_TAG
                     " card\n\n(Now " TTE_RED_TAG "+%ld" TTE_BLACK_TAG " Mult)";
+    const u32 desc_max_size = 125;
 
     u32 abstract_bonus = list_get_len(get_jokers_list()) * 3;
-    char desc FORMAT_DESC_WITH_ONE_VALUE(desc_format, 125, abstract_bonus, dest_rect);
+
+    char desc[desc_max_size];
+    snprintf(desc, desc_max_size, desc_format, abstract_bonus);
 
     return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
 }
@@ -521,9 +526,12 @@ static int bull_joker_desc(Joker* joker, Rect dest_rect)
     static const char desc_format[] =
         TTE_BLUE_TAG "+2" TTE_BLACK_TAG " Chips for each " TTE_YELLOW_TAG "$1" TTE_BLACK_TAG
                      " you have\n\n(Now " TTE_BLUE_TAG "+%ld" TTE_BLACK_TAG " Chips)";
+    const u32 desc_max_size = 127;
 
     u32 bull_bonus = (g_game_vars.money > 0) ? g_game_vars.money * 2 : 0;
-    char desc FORMAT_DESC_WITH_ONE_VALUE(desc_format, 127, bull_bonus, dest_rect);
+
+    char desc[desc_max_size];
+    snprintf(desc, desc_max_size, desc_format, bull_bonus);
 
     return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
 }
@@ -607,9 +615,12 @@ static int bootstraps_joker_desc(Joker* joker, Rect dest_rect)
     static const char desc_format[] =
         TTE_RED_TAG "+2" TTE_BLACK_TAG " Mult for every " TTE_YELLOW_TAG "$5" TTE_BLACK_TAG
                     " you have\n\n(Now " TTE_RED_TAG "+%ld" TTE_BLACK_TAG " Mult)";
+    const u32 desc_max_size = 125;
 
     u32 bootstrap_bonus = (g_game_vars.money > 0) ? (g_game_vars.money / 5) * 2 : 0;
-    char desc FORMAT_DESC_WITH_ONE_VALUE(desc_format, 125, bootstrap_bonus, dest_rect);
+
+    char desc[desc_max_size];
+    snprintf(desc, desc_max_size, desc_format, bootstrap_bonus);
 
     return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
 }
@@ -663,8 +674,10 @@ static int seltzer_joker_desc(Joker* joker, Rect dest_rect)
 {
     static const char desc_format[] = TTE_BLACK_TAG
         "Retrigger all cards played for the next " TTE_YELLOW_TAG "%ld" TTE_BLACK_TAG " hands";
+    const u32 desc_max_size = 94;
 
-    char desc FORMAT_DESC_WITH_ONE_VALUE(desc_format, 94, joker->persistent_state, dest_rect);
+    char desc[desc_max_size];
+    snprintf(desc, desc_max_size, desc_format, joker->persistent_state);
 
     return tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
 }
