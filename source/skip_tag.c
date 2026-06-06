@@ -39,7 +39,9 @@ static const int OWNED_SKIP_TAGS_SPACING      = 12;
 
 // Not all Skip Tags can be drawn on Ante 1, so we need 2 different roll tables
 // one for Ante 1 only, and one for all other Antes.
-static const u8 ante1_skip_tags_roll_table[NB_ANTE1_SKIP_TAGS] = {
+static const u8 ante1_skip_tags_roll_table[NB_ANTE1_SKIP_TAGS + 1] = {
+    SKIP_TAG_TYPE_TOP_UP,
+
     SKIP_TAG_TYPE_UNCOMMON,
     SKIP_TAG_TYPE_RARE,
     SKIP_TAG_TYPE_INVESTMENT,

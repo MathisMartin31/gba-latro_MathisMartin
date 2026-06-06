@@ -32,6 +32,18 @@ JokerObject* game_shop_get_description_card(void);
 void game_shop_set_joker_avail(int joker_id, bool avail);
 
 /**
+ * @brief Rolls a random Joker ID among the available ones
+ */
+int game_shop_get_rand_available_joker_id(void);
+
+/**
+ * @brief Rolls a random Joker ID among the available ones with a given rarity
+ *
+ * @param joker_rarity
+ */
+int game_shop_get_rand_available_joker_id_with_rarity(int joker_rarity);
+
+/**
  * @brief Change to the shop background
  */
 void game_shop_change_background(void);

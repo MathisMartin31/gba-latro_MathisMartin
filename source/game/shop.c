@@ -254,14 +254,15 @@ static inline int get_num_shop_jokers_avail(void)
     return bitset_num_set_bits(&s_avail_jokers_bitset);
 }
 
-/**
- * @brief Rolls a random Joker among the available ones
- */
-static inline int game_shop_get_rand_available_joker_id(void)
+int game_shop_get_rand_available_joker_id(void)
 {
     // Roll for what rarity the joker will be
     int joker_rarity = joker_get_random_rarity();
+    return game_shop_get_rand_available_joker_id_with_rarity(joker_rarity);
+}
 
+int game_shop_get_rand_available_joker_id_with_rarity(int joker_rarity)
+{
     // Now determine how many jokers are available based on the rarity
     int jokers_avail_size = get_num_shop_jokers_avail();
 
@@ -423,15 +424,6 @@ static int shop_top_row_get_size(void)
 }
 
 /**
- * @brief Add a newly purchased Joker to the list of owned Jokers.
- */
-static inline void add_to_held_jokers(JokerObject* joker_object)
-{
-    joker_object->sprite_object->ty = int2fx(HELD_JOKERS_POS.y);
-    add_joker(joker_object);
-}
-
-/**
  * @brief Called when pressing A on a Shop Joker to buy it.
  */
 static inline void game_shop_buy_joker(int shop_joker_idx)
@@ -443,7 +435,7 @@ static inline void game_shop_buy_joker(int shop_joker_idx)
     display_money();
     sprite_object_erase_text_under(joker_object->sprite_object);
     sprite_object_set_focus(joker_object->sprite_object, false);
-    add_to_held_jokers(joker_object);
+    add_to_held_joker(joker_object);
     list_remove_at_idx(shop_jokers_list, shop_joker_idx); // Remove the joker from the shop
 }
 

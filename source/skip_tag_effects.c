@@ -1,6 +1,8 @@
 #include "game.h"
+#include "game/shop.h"
 #include "game_variables.h"
 #include "round_end.h"
+#include "joker.h"
 #include "skip_tag.h"
 #include "util.h"
 
@@ -148,8 +150,24 @@ static void skip_tag_effect_juggle(void)
 {
 }
 
+#define TOP_UP_TAG_JOKER_BONUS 2
 static void skip_tag_effect_top_up(void)
 {
+    int available_joker_slots = MAX_JOKERS_HELD_SIZE - list_get_len(get_jokers_list());
+    if (available_joker_slots > TOP_UP_TAG_JOKER_BONUS)
+        available_joker_slots = TOP_UP_TAG_JOKER_BONUS;
+
+    for (int i = 0; i < available_joker_slots; i++)
+    {
+        int joker_id = game_shop_get_rand_available_joker_id_with_rarity(COMMON_JOKER);
+
+        // Something went wrong, maybe there are no more Common Jokers available
+        if (joker_id == UNDEFINED)
+            break;
+
+        game_shop_set_joker_avail(joker_id, false);
+        add_to_held_joker(joker_object_new(joker_new(joker_id)));
+    }
 }
 
 #define SPEED_TAG_MONEY_BONUS 5

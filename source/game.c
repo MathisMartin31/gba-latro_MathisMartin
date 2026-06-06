@@ -643,9 +643,10 @@ int get_straight_and_flush_size(void)
                                         : STRAIGHT_AND_FLUSH_SIZE_DEFAULT;
 }
 
-void add_joker(JokerObject* joker_object)
+void add_to_held_joker(JokerObject* joker_object)
 {
     list_push_back(&_owned_jokers_list, joker_object);
+    joker_object->sprite_object->ty = int2fx(HELD_JOKERS_POS.y);
 
     // TODO: Extract to on_joker_added() callback
     // In case the player gets multiple Four Fingers Jokers,
