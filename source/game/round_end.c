@@ -291,10 +291,8 @@ static inline void game_round_end_print_hand_reward(void)
         );
     }
     // Increment the hand reward text until the hand reward variable is depleted
-    else if (
-        g_game_vars.timer > TM_HAND_REWARD_INCR_WAIT &&
-        g_game_vars.timer % FRAMES(TM_REWARD_INCREMENT_INTERVAL) == 0
-    )
+    else if (g_game_vars.timer > TM_HAND_REWARD_INCR_WAIT &&
+             g_game_vars.timer % FRAMES(TM_REWARD_INCREMENT_INTERVAL) == 0)
     {
         hand_reward--;
         tte_printf(
@@ -330,8 +328,7 @@ static inline void game_round_end_redeem_investment_tags(void)
     }
     else if (g_game_vars.timer > current_reward_start_time + TM_REWARD_DISPLAY_INTERVAL)
     {
-        switch (
-            skip_tag_check_and_apply_for_event_loop(g_game_vars.timer, SKIP_TAG_EVENT_ON_ROUND_END))
+        switch (skip_tag_check_and_apply_for_event_loop(g_game_vars.timer, SKIP_TAG_EVENT_ON_ROUND_END))
         {
             // Increment investment bonus by 1
             case SKIP_TAG_EFFECT_TRIGGER:
@@ -381,10 +378,8 @@ static inline void game_round_end_print_interest_reward(void)
         );
     }
     // Increment the interest reward text until the interest reward variable is depleted
-    else if (
-        g_game_vars.timer > current_reward_start_time + TM_REWARD_DISPLAY_INTERVAL &&
-        g_game_vars.timer % FRAMES(TM_REWARD_INCREMENT_INTERVAL) == 0
-    )
+    else if (g_game_vars.timer > current_reward_start_time + TM_REWARD_DISPLAY_INTERVAL &&
+             g_game_vars.timer % FRAMES(TM_REWARD_INCREMENT_INTERVAL) == 0)
     {
         interest_to_count--;
         tte_printf(

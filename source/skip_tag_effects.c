@@ -2,19 +2,17 @@
 #include "game/blind_select.h"
 #include "game/shop.h"
 #include "game_variables.h"
-#include "round_end.h"
 #include "joker.h"
+#include "round_end.h"
 #include "skip_tag.h"
 #include "util.h"
 
 #include <stdlib.h>
 #include <tonc.h>
 
-#define REGISTER_SKIP_TAG_CONDITION_FUNC(tag_condition_name) \
-    static bool tag_condition_name(void);                    \
+#define REGISTER_SKIP_TAG_CONDITION_FUNC(tag_condition_name) static bool tag_condition_name(void);
 
-#define REGISTER_SKIP_TAG_EFFECT_FUNC(tag_effect_name) \
-    static void tag_effect_name(void);                 \
+#define REGISTER_SKIP_TAG_EFFECT_FUNC(tag_effect_name) static void tag_effect_name(void);
 
 REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_true)
 REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_double)

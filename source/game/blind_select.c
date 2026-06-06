@@ -163,10 +163,8 @@ static inline void game_blind_select_erase_blind_req_and_reward(enum BlindTokens
     // To account for overflow
     blind_req_and_reward_rect.right += TILE_SIZE;
 
-    blind_req_and_reward_rect.left +=
-        blind * rect_width(&SINGLE_BLIND_SELECT_RECT) * TILE_SIZE;
-    blind_req_and_reward_rect.right +=
-        blind * rect_width(&SINGLE_BLIND_SELECT_RECT) * TILE_SIZE;
+    blind_req_and_reward_rect.left += blind * rect_width(&SINGLE_BLIND_SELECT_RECT) * TILE_SIZE;
+    blind_req_and_reward_rect.right += blind * rect_width(&SINGLE_BLIND_SELECT_RECT) * TILE_SIZE;
 
     tte_erase_rect_wrapper(blind_req_and_reward_rect);
 }
@@ -369,7 +367,9 @@ static void game_blind_select_reroll_boss_anim_seq(void)
     }
 
     // Move whole panel up after a short pause
-    else if (timer > MENU_POP_OUT_ANIM_FRAMES && timer < (MENU_POP_OUT_ANIM_FRAMES + panel_move_duration))
+    else if (
+        timer > MENU_POP_OUT_ANIM_FRAMES && timer < (MENU_POP_OUT_ANIM_FRAMES + panel_move_duration)
+    )
     {
         main_bg_se_move_rect_1_tile_vert(BOSS_BLIND_REROLL_ANIM_RECT, SCREEN_UP);
         sprite_position(
@@ -637,11 +637,7 @@ static void blind_skip_tags_init(void)
         SMALL_BLIND_SKIP_TAG_INIT_POS,
         SMALL_BLIND_SKIP_TAG_LAYER
     );
-    skip_tag_set_sprite(
-        blind_skip_tags[1],
-        BIG_BLIND_SKIP_TAG_INIT_POS,
-        BIG_BLIND_SKIP_TAG_LAYER
-    );
+    skip_tag_set_sprite(blind_skip_tags[1], BIG_BLIND_SKIP_TAG_INIT_POS, BIG_BLIND_SKIP_TAG_LAYER);
 }
 
 static void blind_skip_tags_update(void)

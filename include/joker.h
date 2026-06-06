@@ -22,7 +22,7 @@
 #define JOKER_SPRITE_OFFSET  16 // Offset for the joker sprites
 #define JOKER_STARTING_LAYER 26
 // Tile ID for the starting index in the tile memory
-#define JOKER_TID     (JOKER_STARTING_LAYER * JOKER_SPRITE_OFFSET)
+#define JOKER_TID (JOKER_STARTING_LAYER * JOKER_SPRITE_OFFSET)
 
 #define BASE_EDITION     0
 #define FOIL_EDITION     1

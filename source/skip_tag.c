@@ -4,8 +4,8 @@
  */
 #include "skip_tag.h"
 
-#include "joker.h"
 #include "game_variables.h"
+#include "joker.h"
 #include "pool.h"
 #include "skip_tags_gfx.h"
 #include "soundbank.h"
@@ -88,8 +88,7 @@ void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer)
     int tile_index = SKIP_TAG_TID + (layer * SKIP_TAG_SPRITE_OFFSET);
     memcpy32(
         &tile_mem[TILE_MEM_OBJ_CHARBLOCK0_IDX][tile_index],
-        &skip_tags_gfxTiles
-            [tag->type * SKIP_TAG_SPRITE_OFFSET * TILE_SIZE],
+        &skip_tags_gfxTiles[tag->type * SKIP_TAG_SPRITE_OFFSET * TILE_SIZE],
         SKIP_TAG_SPRITE_OFFSET * TILE_SIZE
     );
 
@@ -148,7 +147,7 @@ static inline int get_skip_tag_sprites_spacing(void)
 static void rearrange_skip_tag_sprites(int nb_owned_tags, int tag_spacing)
 {
     BG_POINT unused_pos = {UNDEFINED, UNDEFINED};
-    
+
     for (int idx = 0; idx < nb_owned_tags; idx++)
     {
         SkipTag* tmp_tag = list_get_at_idx(&g_game_vars.owned_skip_tags, idx);
@@ -225,7 +224,10 @@ void remove_skip_tag(int tag_idx)
     (void)list_remove_at_idx(&g_game_vars.owned_skip_tags, tag_idx);
     skip_tag_destroy(&tag);
 
-    rearrange_skip_tag_sprites(list_get_len(&g_game_vars.owned_skip_tags), get_skip_tag_sprites_spacing());
+    rearrange_skip_tag_sprites(
+        list_get_len(&g_game_vars.owned_skip_tags),
+        get_skip_tag_sprites_spacing()
+    );
 }
 
 enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_event)
@@ -249,7 +251,11 @@ enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipT
 
             // Set tiles to the "activated" ones, each with colors that correspond to their tag type
             consumed_tag->type += MAX_SKIP_TAG_TYPES;
-            skip_tag_set_sprite(consumed_tag, tag_pos, OWNED_SKIP_TAG_STARTING_LAYER + applied_tag_idx);
+            skip_tag_set_sprite(
+                consumed_tag,
+                tag_pos,
+                OWNED_SKIP_TAG_STARTING_LAYER + applied_tag_idx
+            );
             sprite_object_bounce(consumed_tag->sprite_object, SFX_REDEEM_TAG);
 
             // Apply tag here so it matches the animation

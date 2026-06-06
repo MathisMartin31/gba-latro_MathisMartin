@@ -15,9 +15,9 @@
 
 #define SKIP_TAG_SPRITE_OFFSET 4
 // Put Tag sprites after the Jokers'
-#define SKIP_TAG_STARTING_LAYER (JOKER_STARTING_LAYER + MAX_ACTIVE_JOKERS)
+#define SKIP_TAG_STARTING_LAYER    (JOKER_STARTING_LAYER + MAX_ACTIVE_JOKERS)
 #define SMALL_BLIND_SKIP_TAG_LAYER 0
-#define BIG_BLIND_SKIP_TAG_LAYER 1
+#define BIG_BLIND_SKIP_TAG_LAYER   1
 // There are max 2 skip tags visible in the Blind Select screen
 // The sprites for the ones we own will be stored after them.
 #define OWNED_SKIP_TAG_STARTING_LAYER 2
