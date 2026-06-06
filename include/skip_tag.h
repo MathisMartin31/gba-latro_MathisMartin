@@ -108,8 +108,27 @@ void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer);
 void skip_tag_destroy(SkipTag** tag);
 SkipTag* roll_skip_tag(void);
 
+/**
+ * @brief Checks if the given tag type is present in owned Tags list
+ *
+ * @param tag_type SkipTagType to check
+ * @return true if tag type is present, false otherwise
+ */
 bool skip_tag_is_owned(u8 tag_type);
+
+/**
+ * @brief Adds the SkipTag to the owned list, snaps it into position and sets the original pointer
+ *         to NULL
+ *
+ * @param blind_tag 
+ */
 void add_skip_tag(SkipTag** blind_tag);
+
+/**
+ * @brief Pops the Tag at index in owned list, destroys it and rearranges the remaining Tags' sprites
+ *
+ * @param tag_idx index of the Tag to remove in owned list
+ */
 void remove_skip_tag(int tag_idx);
 
 enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_event);

@@ -92,6 +92,12 @@ void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer)
             [tag->type * SKIP_TAG_SPRITE_OFFSET * TILE_SIZE],
         SKIP_TAG_SPRITE_OFFSET * TILE_SIZE
     );
+
+    // Recreate sprite
+    if (tag->sprite_object->sprite)
+    {
+        sprite_destroy(&tag->sprite_object->sprite);
+    }
     Sprite* sprite = sprite_new(
         ATTR0_SQUARE | ATTR0_4BPP | ATTR0_AFF,
         ATTR1_SIZE_16,
@@ -175,10 +181,9 @@ void add_skip_tag(SkipTag** blind_tag)
     if (blind_tag == NULL)
         return;
 
-    SkipTag* new_tag = skip_tag_new((*blind_tag)->type);
     // Add to the back, so that the oldest (at the bottom) has the lowest sprite
     // index and is thus shown on top of the others
-    list_push_back(&g_game_vars.owned_skip_tags, new_tag);
+    list_push_back(&g_game_vars.owned_skip_tags, *blind_tag);
 
     int nb_owned_tags = list_get_len(&g_game_vars.owned_skip_tags);
 
@@ -205,11 +210,12 @@ void add_skip_tag(SkipTag** blind_tag)
         new_tag_pos.y -= even_spacing * (nb_owned_tags - 1);
     }
 
-    skip_tag_set_sprite(new_tag, old_tag_pos, OWNED_SKIP_TAG_STARTING_LAYER + nb_owned_tags);
-    sprite_object_snap_to(new_tag->sprite_object, new_tag_pos, true, SFX_CARD_DRAW);
-    sprite_object_update(new_tag->sprite_object);
+    // Create new sprite at the old position to avoid flickering
+    skip_tag_set_sprite(*blind_tag, old_tag_pos, OWNED_SKIP_TAG_STARTING_LAYER + nb_owned_tags - 1);
+    sprite_object_snap_to((*blind_tag)->sprite_object, new_tag_pos, true, SFX_CARD_DRAW);
+    sprite_object_update((*blind_tag)->sprite_object);
 
-    skip_tag_destroy(blind_tag);
+    *blind_tag = NULL;
 }
 
 void remove_skip_tag(int tag_idx)
@@ -240,8 +246,10 @@ enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipT
                 fx2int(consumed_tag->sprite_object->x),
                 fx2int(consumed_tag->sprite_object->y)
             };
+
+            // Set tiles to the "activated" ones, each with colors that correspond to their tag type
             consumed_tag->type += MAX_SKIP_TAG_TYPES;
-            skip_tag_set_sprite(consumed_tag, tag_pos, applied_tag_idx);
+            skip_tag_set_sprite(consumed_tag, tag_pos, OWNED_SKIP_TAG_STARTING_LAYER + applied_tag_idx);
             sprite_object_bounce(consumed_tag->sprite_object, SFX_REDEEM_TAG);
 
             // Apply tag here so it matches the animation
@@ -250,14 +258,15 @@ enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipT
             consumed_tag = NULL;
             consumed_tag_effect = NULL;
             tag_animation = true;
+
             return SKIP_TAG_EFFECT_TRIGGER;
         }
 
         if (tag_animation)
         {
+            tag_animation = false;
             remove_skip_tag(applied_tag_idx);
 
-            tag_animation = false;
             return SKIP_TAG_EFFECT_NONE;
         }
 
@@ -275,7 +284,6 @@ enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipT
             if (info->tag_condition_func())
             {
                 consumed_tag_effect = info->tag_effect_func;
-
                 return SKIP_TAG_EFFECT_NONE;
             }
         }
