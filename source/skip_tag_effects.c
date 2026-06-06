@@ -1,4 +1,5 @@
 #include "game.h"
+#include "game/blind_select.h"
 #include "game/shop.h"
 #include "game_variables.h"
 #include "round_end.h"
@@ -119,6 +120,7 @@ static void skip_tag_effect_rare(void)
 
 static void skip_tag_effect_boss(void)
 {
+    game_blind_select_reroll_boss_from_menu();
 }
 
 static void skip_tag_effect_handy(void)
