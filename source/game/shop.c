@@ -765,7 +765,7 @@ static void game_shop_show_card_desc(void)
         const JokerInfo* info = get_joker_registry_entry(description_card->joker->id);
         int desc_bottom_offset =
             CARD_DESC_MAX_TEXT_HEIGHT -
-            info->joker_print_desc(description_card->joker, CARD_DESC_TEXT_RECT, false);
+            info->joker_print_desc(description_card->joker, CARD_DESC_TEXT_RECT);
 
         // Print Rarity and change color or the panel
         // Do it before drawing the panel so the color is already set
