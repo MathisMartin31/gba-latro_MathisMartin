@@ -24,8 +24,7 @@
 // Tile ID for the starting index in the tile memory
 #define SKIP_TAG_TID (SKIP_TAG_STARTING_LAYER * SKIP_TAG_SPRITE_OFFSET)
 
-// Timing definitions
-#define TM_SKIP_TAG_ANIM_DURATION  20
+#define INVESTMENT_TAG_REWARD 25
 
 // clang-format off
 /**

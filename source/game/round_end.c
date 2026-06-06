@@ -274,7 +274,6 @@ static inline void game_round_end_print_separator_ellipsis(void)
     tte_printf("#{P:%d,%d; cx:0x%X000}.", x, y, TTE_WHITE_PB);
 }
 
-// TODO: Allow for more generic rewards and consolidate with game_round_end_print_interest_reward()
 static inline void game_round_end_print_hand_reward(void)
 {
     int hand_y = ROUND_END_REWARDS_ELLIPSIS_POS.y + reward_y_offset;
@@ -292,8 +291,10 @@ static inline void game_round_end_print_hand_reward(void)
         );
     }
     // Increment the hand reward text until the hand reward variable is depleted
-    else if (g_game_vars.timer > TM_HAND_REWARD_INCR_WAIT &&
-             g_game_vars.timer % FRAMES(TM_REWARD_INCREMENT_INTERVAL) == 0)
+    else if (
+        g_game_vars.timer > TM_HAND_REWARD_INCR_WAIT &&
+        g_game_vars.timer % FRAMES(TM_REWARD_INCREMENT_INTERVAL) == 0
+    )
     {
         hand_reward--;
         tte_printf(
@@ -310,8 +311,6 @@ static inline void game_round_end_print_hand_reward(void)
         }
     }
 }
-
-const static int INVESTMENT_TAG_REWARD = 25;
 
 static inline void game_round_end_redeem_investment_tags(void)
 {
@@ -382,8 +381,10 @@ static inline void game_round_end_print_interest_reward(void)
         );
     }
     // Increment the interest reward text until the interest reward variable is depleted
-    else if (g_game_vars.timer > current_reward_start_time + TM_REWARD_DISPLAY_INTERVAL &&
-             g_game_vars.timer % FRAMES(TM_REWARD_INCREMENT_INTERVAL) == 0)
+    else if (
+        g_game_vars.timer > current_reward_start_time + TM_REWARD_DISPLAY_INTERVAL &&
+        g_game_vars.timer % FRAMES(TM_REWARD_INCREMENT_INTERVAL) == 0
+    )
     {
         interest_to_count--;
         tte_printf(
@@ -416,6 +417,8 @@ static void game_round_end_display_rewards(void)
     {
         switch (current_reward)
         {
+            // Falling immediately to the next case if we don't need to count the current reward
+            // is intentional.
             case REWARD_TYPE_HAND:
             {
                 if (hand_reward > 0)

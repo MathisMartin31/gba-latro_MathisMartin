@@ -9,6 +9,7 @@
 #include "pool.h"
 #include "skip_tags_gfx.h"
 #include "soundbank.h"
+#include "timer.h"
 #include "util.h"
 
 #include <stdio.h>
