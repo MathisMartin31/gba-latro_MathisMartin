@@ -29,42 +29,32 @@ static const int OWNED_SKIP_TAGS_SPACING      = 12;
  * @def NB_ANTE1_SKIP_TAGS
  * @brief Number of implemented Skip Tags available from Ante 1
  */
-#define NB_ANTE1_SKIP_TAGS 10
+#define NB_ANTE1_SKIP_TAGS 5
 
 /**
  * @def NB_SKIP_TAG_TYPES
  * @brief Number of implemented Skip Tags
  */
-#define NB_SKIP_TAG_TYPES 13
+#define NB_SKIP_TAG_TYPES 8
 
 // Not all Skip Tags can be drawn on Ante 1, so we need 2 different roll tables
 // one for Ante 1 only, and one for all other Antes.
 static const u8 ante1_skip_tags_roll_table[NB_ANTE1_SKIP_TAGS] = {
-    SKIP_TAG_TYPE_UNCOMMON,
-    SKIP_TAG_TYPE_RARE,
     SKIP_TAG_TYPE_INVESTMENT,
     SKIP_TAG_TYPE_BOSS,
-    SKIP_TAG_TYPE_COUPON,
     SKIP_TAG_TYPE_DOUBLE,
-    SKIP_TAG_TYPE_JUGGLE,
-    SKIP_TAG_TYPE_D6,
     SKIP_TAG_TYPE_SPEED,
     SKIP_TAG_TYPE_ECONOMY
 };
 
 // Won't be needed if all tags are implemented, but likely won't ever be the case
 static const u8 all_skip_tags_roll_table[NB_SKIP_TAG_TYPES] = {
-    SKIP_TAG_TYPE_UNCOMMON,
-    SKIP_TAG_TYPE_RARE,
     SKIP_TAG_TYPE_INVESTMENT,
     SKIP_TAG_TYPE_BOSS,
     SKIP_TAG_TYPE_HANDY,
     SKIP_TAG_TYPE_GARBAGE,
-    SKIP_TAG_TYPE_COUPON,
     SKIP_TAG_TYPE_DOUBLE,
-    SKIP_TAG_TYPE_JUGGLE,
     SKIP_TAG_TYPE_TOP_UP,
-    SKIP_TAG_TYPE_D6,
     SKIP_TAG_TYPE_SPEED,
     SKIP_TAG_TYPE_ECONOMY
 };
