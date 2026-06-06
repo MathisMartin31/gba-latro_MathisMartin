@@ -367,9 +367,8 @@ static void game_blind_select_reroll_boss_anim_seq(void)
     }
 
     // Move whole panel up after a short pause
-    else if (
-        timer > MENU_POP_OUT_ANIM_FRAMES && timer < (MENU_POP_OUT_ANIM_FRAMES + panel_move_duration)
-    )
+    else if (timer > MENU_POP_OUT_ANIM_FRAMES &&
+             timer < (MENU_POP_OUT_ANIM_FRAMES + panel_move_duration))
     {
         main_bg_se_move_rect_1_tile_vert(BOSS_BLIND_REROLL_ANIM_RECT, SCREEN_UP);
         sprite_position(
