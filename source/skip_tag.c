@@ -137,7 +137,7 @@ SkipTag* roll_skip_tag(void)
         tag_type = all_skip_tags_roll_table[rand() % NB_SKIP_TAG_TYPES];
     }
 
-    tag_type = SKIP_TAG_TYPE_BOSS;
+    tag_type;
 
     return skip_tag_new(tag_type);
 }
