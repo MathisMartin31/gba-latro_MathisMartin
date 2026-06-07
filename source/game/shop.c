@@ -811,6 +811,9 @@ static void game_shop_show_card_desc(void)
 
 static void game_shop_hide_card_desc(void)
 {
+    // just so we don't print the price of an owned Joker too many times
+    static bool owned_joker_price_printed = false;
+
     // Anim start
     if (timer == 1)
     {
@@ -864,16 +867,9 @@ static void game_shop_hide_card_desc(void)
     // Last anim frame (no need to wait for the Joker to have stopped for this):
     else if (timer == TM_SHOW_CARD_DESC_WAIT + 1)
     {
-        // Need to account for the description_card being selected if it came from the shop
+        // Need to account for the description_card being selected if it came from the shop.
         if (description_card_original_list == &s_shop_jokers_list)
             description_card->sprite_object->ty += int2fx(TILE_SIZE);
-
-        // Print price under it if it was owned
-        else if (description_card_original_list == get_jokers_list())
-            sprite_object_print_price_under(
-                description_card->sprite_object,
-                description_card->joker->value
-            );
 
         // Print price under shop Jokers
         JokerObject* joker_object = NULL;
@@ -902,9 +898,22 @@ static void game_shop_hide_card_desc(void)
     // Cleanup and change state
     else if (description_card->sprite_object->vx == 0 && description_card->sprite_object->vy == 0)
     {
+        owned_joker_price_printed = false;
         description_card = NULL;
         timer = TM_ZERO;
         state_machine_change_state(&shop_sm, GAME_SHOP_ACTIVE);
+    }
+
+    // At any point after the other prices have been printed, and while the card is still moving,
+    // if we are NOT pressing A, print the price under it.
+    else if (!owned_joker_price_printed && !key_held(SELECT_CARD) &&
+             description_card_original_list == get_jokers_list())
+    {
+        owned_joker_price_printed = true;
+        sprite_object_print_price_under(
+            description_card->sprite_object,
+            description_card->joker->value
+        );
     }
 }
 
