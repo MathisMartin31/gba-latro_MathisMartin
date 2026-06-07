@@ -120,12 +120,13 @@ bool skip_tag_is_owned(u8 tag_type);
  * @brief Adds the SkipTag to the owned list, snaps it into position and sets the original pointer
  *         to NULL
  *
- * @param blind_tag 
+ * @param blind_tag
  */
 void add_skip_tag(SkipTag** blind_tag);
 
 /**
- * @brief Pops the Tag at index in owned list, destroys it and rearranges the remaining Tags' sprites
+ * @brief Pops the Tag at index in owned list, destroys it and rearranges the remaining Tags'
+ *         sprites
  *
  * @param tag_idx index of the Tag to remove in owned list
  */
