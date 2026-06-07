@@ -357,9 +357,12 @@ void sprite_object_slide_from_to(
     if (sprite_object == NULL)
         return;
 
-    if (from.x != UNDEFINED && from.y != UNDEFINED)
+    if (from.x != UNDEFINED)
     {
         sprite_object->x = int2fx(from.x);
+    }
+    if (from.y != UNDEFINED)
+    {
         sprite_object->y = int2fx(from.y);
     }
 
