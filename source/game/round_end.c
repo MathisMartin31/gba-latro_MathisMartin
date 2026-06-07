@@ -5,6 +5,7 @@
 #include "game.h"
 #include "game_variables.h"
 #include "layout.h"
+#include "skip_tag.h"
 #include "state_machine.h"
 #include "timer.h"
 #include "util.h"
@@ -28,7 +29,7 @@ enum RewardType
     REWARD_TYPE_HAND,
     REWARD_TYPE_INVESTMENT,
     REWARD_TYPE_INTEREST,
-    REWATD_TYPE_MAX
+    REWARD_TYPE_MAX
 };
 
 static const u32 TM_RESET_STATIC_VARS = 30;
@@ -426,6 +427,7 @@ static void game_round_end_display_rewards(void)
                 else
                 {
                     current_reward++;
+                    GBAL_FALLTHROUGH;
                 }
             }
             case REWARD_TYPE_INVESTMENT:
@@ -438,6 +440,7 @@ static void game_round_end_display_rewards(void)
                 else
                 {
                     current_reward++;
+                    GBAL_FALLTHROUGH;
                 }
             }
             case REWARD_TYPE_INTEREST:
@@ -450,6 +453,7 @@ static void game_round_end_display_rewards(void)
                 else
                 {
                     current_reward++;
+                    GBAL_FALLTHROUGH;
                 }
             }
             default:

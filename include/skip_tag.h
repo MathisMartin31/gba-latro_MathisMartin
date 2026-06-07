@@ -61,7 +61,7 @@ enum SkipTagTypes
     SKIP_TAG_TYPE_ECONOMY,
     MAX_SKIP_TAG_TYPES
 };
-// clang-format off
+// clang-format on
 
 typedef struct SkipTag
 {

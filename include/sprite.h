@@ -270,7 +270,7 @@ void sprite_object_bounce(SpriteObject* sprite_object, mm_word sound_id);
  * @param from starting position, current SpriteObject position will be used if
  *              any dimension is set to UNDEFINED.
  * @param to target position
- * @param sound_id ID of sound from maxmod to play on executing shake. If **UNDEFINED**
+ * @param sound_id ID of sound from maxmod to play on executing slide. If **UNDEFINED**
  *        no sound will play.
  */
 void sprite_object_slide_from_to(

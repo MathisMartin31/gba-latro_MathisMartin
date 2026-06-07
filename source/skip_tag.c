@@ -237,8 +237,12 @@ enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipT
     static SkipTagCallback consumed_tag_effect = NULL;
     static bool tag_animation = false;
 
-    // Only process tags every 40 frames so we have time to process what's happening
-    // Check against 1 so that we catch the timer on the first frame, since it's
+    // Skip Tags will be fully processed over 60 frames (3 * TM_SKIP_TAG_ANIM_DURATION) so we have
+    // time to process what's happening:
+    //  - Detect triggered Tag, serves as a short pause
+    //  - Starting the little bouncy animation
+    //  - Delete triggered Tag
+    // We check against 1 so that we catch the timer on the first frame, since it's
     // incremented before calling this function
     if (timer % FRAMES(TM_SKIP_TAG_ANIM_DURATION) == 1)
     {

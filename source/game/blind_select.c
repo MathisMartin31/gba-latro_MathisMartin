@@ -186,7 +186,8 @@ void increment_blind(enum BlindState increment_reason)
             g_game_vars.current_blind = BLIND_TYPE_BIG;
             g_game_vars.blinds_states[SMALL_BLIND] = increment_reason;
             g_game_vars.blinds_states[BIG_BLIND] = BLIND_STATE_CURRENT;
-            blind_skip_tags[BLIND_TYPE_BIG]->sprite_object->ty -= int2fx(TILE_SIZE);
+            if (blind_skip_tags[BLIND_TYPE_BIG])
+                blind_skip_tags[BLIND_TYPE_BIG]->sprite_object->ty -= int2fx(TILE_SIZE);
             break;
         // defeated big blind: go to next boss
         case BLIND_TYPE_BIG:

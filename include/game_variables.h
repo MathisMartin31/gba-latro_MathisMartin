@@ -9,7 +9,6 @@
 #include "blind.h"
 #include "list.h"
 #include "random.h"
-#include "skip_tag.h"
 
 #include <tonc.h>
 
