@@ -36,34 +36,40 @@ static const Rect     GAME_OVER_ANIM_RECT             = {  4,   5,  25,  31};
 static const Rect     GAME_OVER_TEXT_TILES_SRC_RECT_1 = {  0,  20,   3,  21};
 static const Rect     GAME_OVER_TEXT_TILES_SRC_RECT_2 = {  0,  22,   3,  23};
 static const Rect     GAME_OVER_TEXT_TILES_SRC_RECT_3 = {  0,  24,   1,  25};
-static const BG_POINT GAME_OVER_TEXT_TILES_DEST_POS_1 = { 10,  20};
-static const BG_POINT GAME_OVER_TEXT_TILES_DEST_POS_2 = { 14,  20};
-static const BG_POINT GAME_OVER_TEXT_TILES_DEST_POS_3 = { 18,  20};
+static const BG_POINT GAME_OVER_TEXT_TILES_DEST_POS_1 = { 10,  21};
+static const BG_POINT GAME_OVER_TEXT_TILES_DEST_POS_2 = { 14,  21};
+static const BG_POINT GAME_OVER_TEXT_TILES_DEST_POS_3 = { 18,  21};
 
-static const Rect     DEFEATED_BY_FRAME_SRC_RECT      = { 26,  22,  31,  28};
-static const BG_POINT DEFEATED_BY_FRAME_DEST_POS      = { 20,  22};
-static const BG_POINT DEFEATED_BY_TOKEN_INIT_POS      = {171, 200};
+static const Rect     DEFEATED_BY_FRAME_SRC_RECT      = { 27,  22,  31,  28};
+static const BG_POINT DEFEATED_BY_FRAME_DEST_POS      = { 21,  23};
+static const BG_POINT DEFEATED_BY_TOKEN_INIT_POS      = {175, 207};
 
 static const BG_POINT NEW_RUN_BTN_3X3_SRC_POS         = { 26,  29};
 static const BG_POINT MAIN_MENU_BTN_3X3_SRC_POS       = { 29,  29};
-static const Rect     NEW_RUN_BTN_3X3_DEST_RECT       = {  5,  29,  14,  31};
-static const Rect     MAIN_MENU_BTN_3X3_DEST_RECT     = { 15,  29,  24,  31};
+static const Rect     NEW_RUN_BTN_3X3_DEST_RECT       = {  5,  29,  13,  31};
+static const Rect     MAIN_MENU_BTN_3X3_DEST_RECT     = { 14,  29,  24,  31};
+static const Rect     MAIN_MENU_SEED_OVERLAP_SRC_RECT = {  2,  29,   3,  29};
+static const BG_POINT MAIN_MENU_SEED_OVERLAP_DEST_POS = {  5,  29};
 
-static const BG_POINT BEST_HAND_TEXT_POS              = { 40,  64};
-static const BG_POINT BEST_HAND_VALUE_POS             = {118,  64};
-static const BG_POINT MOST_PLAYED_HAND_TEXT_POS       = { 40,  80};
-static const BG_POINT MOST_PLAYED_HAND_VALUE_POS      = {104,  80};
-static const BG_POINT SEED_TEXT_POS                   = { 64,  96};
+static const Rect     REUSE_SEED_BTN_OFF_SRC_RECT     = {  0,  30,   1,  31};
+static const Rect     REUSE_SEED_BTN_ON_SRC_RECT      = {  2,  30,   3,  31};
+static const BG_POINT REUSE_SEED_BTN_DEST_POS         = {  4,  11};
+
+static const BG_POINT BEST_HAND_VALUE_POS             = {126,  64};
+static const BG_POINT MOST_PLAYED_HAND_VALUE_POS      = {112,  80};
 static const BG_POINT SEED_VALUE_POS                  = {112,  96};
+
+static const BG_POINT ENDLESS_BTN_TEXT_POS            = { 72, 112};
+static const BG_POINT NEW_RUN_BTN_TEXT_POS            = { 48, 112};
+static const BG_POINT MAIN_MENU_BTN_TEXT_POS          = {120, 112};
 // clang-format on
 
-static const u32 GAME_OVER_ANIM_FRAMES = 16;
+static const u32 GAME_OVER_ANIM_FRAMES = 17;
 static const mm_byte GAME_OVER_SFX_VOL = 178;     // 70% of MM_SFX_FULL_VOLUME
 static const mm_word GAME_OVER_WHOOSH_RATE = 922; // 90% of MM_BASE_PITCH_RATE
 
 // Common Selection Grid structs and funcs
 
-/*
 static int game_over_get_row_size1(void)
 {
     return 1;
@@ -72,7 +78,6 @@ static int game_over_get_row_size2(void)
 {
     return 2;
 }
-*/
 
 static void reuse_seed_on_pressed(void);
 static void new_run_on_pressed(void);
@@ -114,31 +119,8 @@ enum GameOverWinRows
     GAME_OVER_WIN_ROW_MAX
 };
 
-static void game_over_win_new_run_row_on_key_transit(
-    SelectionGrid* selection_grid,
-    Selection* selection
-);
-static void game_over_win_seed_main_row_on_key_transit(
-    SelectionGrid* selection_grid,
-    Selection* selection
-);
-static void game_over_win_endless_row_on_key_transit(
-    SelectionGrid* selection_grid,
-    Selection* selection
-);
-static bool game_over_win_new_run_row_on_selection_changed(
-    SelectionGrid* selection_grid,
-    int row_idx,
-    const Selection* prev_selection,
-    const Selection* new_selection
-);
-static bool game_over_win_seed_main_row_on_selection_changed(
-    SelectionGrid* selection_grid,
-    int row_idx,
-    const Selection* prev_selection,
-    const Selection* new_selection
-);
-static bool game_over_win_endless_row_on_selection_changed(
+static void game_over_win_on_key_transit(SelectionGrid* selection_grid, Selection* selection);
+static bool game_over_win_on_selection_changed(
     SelectionGrid* selection_grid,
     int row_idx,
     const Selection* prev_selection,
@@ -149,63 +131,42 @@ static const SelectionGridRow game_over_win_selection_rows[] = {
     {
         0,
         game_over_get_row_size1,
-        game_over_win_new_run_row_on_selection_changed,
-        game_over_win_new_run_row_on_key_transit,
+        game_over_win_on_selection_changed,
+        game_over_win_on_key_transit,
         {.wrap = false, .has_h_exit_idx = true, .h_exit_idx = 1}
     }, {
         1,
         game_over_get_row_size2,
-        game_over_win_seed_main_row_on_selection_changed,
-        game_over_win_seed_main_row_on_key_transit,
+        game_over_win_on_selection_changed,
+        game_over_win_on_key_transit,
         {.wrap = false}
     }, {
         2,
         game_over_get_row_size1,
-        game_over_win_endless_row_on_selection_changed,
-        game_over_win_endless_row_on_key_transit,
+        game_over_win_on_selection_changed,
+        game_over_win_on_key_transit,
         {.wrap = false}
     }
 };
 
+static const Selection GAME_OVER_WIN_INIT_SEL = {0, GAME_OVER_WIN_ENDLESS_ROW};
 static SelectionGrid game_over_win_selection_grid = {
     game_over_win_selection_rows,
-    RUN_SETUP_DECK_ROW_MAX,
-    RUN_SETUP_CHOOSE_DECK_INIT_SEL
+    GAME_OVER_WIN_ROW_MAX,
+    GAME_OVER_WIN_INIT_SEL
 };
-
-/*
-static Button game_over_win_buttons[3][2] = {
-    {new_run_button},
-    {reuse_seed_button, main_menu_button},
-    {endless_button}
-};
-*/
 
 // LOSE Selection Grid
 
 enum GameOverLoseRows
 {
-    GAME_OVER_LOSE_NEW_RUN_ROW,
-    GAME_OVER_LOSE_SEED_MENU_ROW,
-    GAME_OVER_LOSE_ENDLESS_ROW,
+    GAME_OVER_LOSE_SEED_ROW,
+    GAME_OVER_LOSE_RUN_MENU_ROW,
     GAME_OVER_LOSE_ROW_MAX
 };
 
-static void game_over_lose_seed_row_on_key_transit(
-    SelectionGrid* selection_grid,
-    Selection* selection
-);
-static void game_over_lose_run_main_row_on_key_transit(
-    SelectionGrid* selection_grid,
-    Selection* selection
-);
-static bool game_over_lose_seed_row_on_selection_changed(
-    SelectionGrid* selection_grid,
-    int row_idx,
-    const Selection* prev_selection,
-    const Selection* new_selection
-);
-static bool game_over_lose_run_main_row_on_selection_changed(
+static void game_over_lose_on_key_transit(SelectionGrid* selection_grid, Selection* selection);
+static bool game_over_lose_on_selection_changed(
     SelectionGrid* selection_grid,
     int row_idx,
     const Selection* prev_selection,
@@ -214,36 +175,41 @@ static bool game_over_lose_run_main_row_on_selection_changed(
 
 static const SelectionGridRow game_over_lose_selection_rows[] = {
     {
-        0,
+        GAME_OVER_LOSE_SEED_ROW,
         game_over_get_row_size1,
-        game_over_lose_seed_row_on_selection_changed,
-        game_over_lose_seed_row_on_key_transit,
+        game_over_lose_on_selection_changed,
+        game_over_lose_on_key_transit,
         {.wrap = false}
     }, {
-        1,
+        GAME_OVER_LOSE_RUN_MENU_ROW,
         game_over_get_row_size2,
-        game_over_lose_run_main_row_on_selection_changed,
-        game_over_lose_run_main_row_on_key_transit,
+        game_over_lose_on_selection_changed,
+        game_over_lose_on_key_transit,
         {.wrap = false}
     }
 };
 
-/*
-static Button game_over_lose_buttons[2][2] = {
-    {reuse_seed_button},
-    {new_run_button, main_menu_button}
+static const Selection GAME_OVER_LOSE_INIT_SEL = {0, GAME_OVER_LOSE_RUN_MENU_ROW};
+static SelectionGrid game_over_lose_selection_grid = {
+    game_over_lose_selection_rows,
+    GAME_OVER_LOSE_ROW_MAX,
+    GAME_OVER_LOSE_INIT_SEL
 };
-*/
+
+// Internal Variables
 
 static enum EndCondition condition = END_CONDITION_NONE;
 static u32 timer = TM_ZERO;
 static bool reuse_seed = false;
+static bool continue_run = false;
 
 static void game_over_change_background(enum EndCondition init_condition)
 {
     condition = init_condition;
+    //condition = END_CONDITION_WIN;
     timer = TM_ZERO;
     reuse_seed = false;
+    continue_run = false;
 
     // Clears the round end menu
     toggle_windows(false, false);
@@ -282,12 +248,13 @@ static void game_over_change_background(enum EndCondition init_condition)
             main_bg_se_copy_rect(GAME_OVER_TEXT_TILES_SRC_RECT_2, GAME_OVER_TEXT_TILES_DEST_POS_2);
             main_bg_se_copy_rect(GAME_OVER_TEXT_TILES_SRC_RECT_3, GAME_OVER_TEXT_TILES_DEST_POS_3);
 
-            // Change side buttons to blind frame
-            main_bg_se_copy_rect(DEFEATED_BY_FRAME_SRC_RECT, DEFEATED_BY_FRAME_DEST_POS);
-
             // Move side buttons to the bottom in lieu of the "Endless" button
             main_bg_se_copy_expand_3x3_rect(NEW_RUN_BTN_3X3_DEST_RECT, NEW_RUN_BTN_3X3_SRC_POS);
+            main_bg_se_copy_rect(MAIN_MENU_SEED_OVERLAP_SRC_RECT, MAIN_MENU_SEED_OVERLAP_DEST_POS);
             main_bg_se_copy_expand_3x3_rect(MAIN_MENU_BTN_3X3_DEST_RECT, MAIN_MENU_BTN_3X3_SRC_POS);
+
+            // Change side buttons to blind frame
+            main_bg_se_copy_rect(DEFEATED_BY_FRAME_SRC_RECT, DEFEATED_BY_FRAME_DEST_POS);
 
             // Highlight New Run button
             button_set_highlight(&new_run_button, true);
@@ -320,10 +287,16 @@ void game_lose_on_init(void)
  */
 static inline void game_over_process_user_input()
 {
-    if (key_hit(SELECT_CARD))
+    switch (condition)
     {
-        play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
-        game_change_state(GAME_STATE_RUN_SETUP);
+        case END_CONDITION_WIN:
+            selection_grid_process_input(&game_over_win_selection_grid);
+            break;
+        case END_CONDITION_LOSS:
+            selection_grid_process_input(&game_over_lose_selection_grid);
+            break;
+        default:
+            break;
     }
 }
 
@@ -350,16 +323,9 @@ void game_over_on_update(void)
     }
     else if (timer == GAME_OVER_ANIM_FRAMES)
     {
-        // Highest scoring hand
-        tte_printf(
-            "#{P:%d,%d; cx:0x%X000}Best Hand",
-            BEST_HAND_TEXT_POS.x,
-            BEST_HAND_TEXT_POS.y,
-            TTE_WHITE_PB
-        );
         // TODO get value from game vars
         char best_hand_str[UINT_MAX_DIGITS + 1];
-        truncate_uint_to_suffixed_str(MAX_BASE36, 6, best_hand_str);
+        truncate_uint_to_suffixed_str(MAX_BASE36, 5, best_hand_str);
         tte_printf(
             "#{P:%d,%d; cx:0x%X000}%s",
             BEST_HAND_VALUE_POS.x,
@@ -368,13 +334,6 @@ void game_over_on_update(void)
             best_hand_str
         );
 
-        // Most played hand
-        tte_printf(
-            "#{P:%d,%d; cx:0x%X000}Most Pl.",
-            MOST_PLAYED_HAND_TEXT_POS.x,
-            MOST_PLAYED_HAND_TEXT_POS.y,
-            TTE_WHITE_PB
-        );
         // TODO get value from game vars
         tte_printf(
             "#{P:%d,%d; cx:0x%X000}Flush 5",
@@ -384,12 +343,6 @@ void game_over_on_update(void)
         );
 
         // Run's seed
-        tte_printf(
-            "#{P:%d,%d; cx:0x%X000}Seed",
-            SEED_TEXT_POS.x,
-            SEED_TEXT_POS.y,
-            TTE_WHITE_PB
-        );
         char seed_str[BASE36_MAX_DIGITS + 1] = {'\0'};
         u32_to_base36(g_game_vars.rng_info.seed, seed_str);
         tte_printf(
@@ -403,13 +356,32 @@ void game_over_on_update(void)
         switch (condition)
         {
             case END_CONDITION_WIN:
+                tte_printf(
+                    "#{P:%d,%d; cx:0x%X000}Endless Mode",
+                    ENDLESS_BTN_TEXT_POS.x,
+                    ENDLESS_BTN_TEXT_POS.y,
+                    TTE_WHITE_PB
+                );
                 break;
             case END_CONDITION_LOSS:
+                tte_printf(
+                    "#{P:%d,%d; cx:0x%X000}New Run",
+                    NEW_RUN_BTN_TEXT_POS.x,
+                    NEW_RUN_BTN_TEXT_POS.y,
+                    TTE_WHITE_PB
+                );
+                tte_printf(
+                    "#{P:%d,%d; cx:0x%X000}Main Menu",
+                    MAIN_MENU_BTN_TEXT_POS.x,
+                    MAIN_MENU_BTN_TEXT_POS.y,
+                    TTE_WHITE_PB
+                );
                 break;
             default:
                 break;
         }
     }
+
     game_over_process_user_input();
 }
 
@@ -419,26 +391,144 @@ void game_over_on_exit(void)
 
     play_regular_music();
     condition = END_CONDITION_NONE;
-    game_reset();
-    rng_shuffle_seed();
+
+    u32 previous_seed = g_game_vars.rng_info.seed;
+
+    if (!continue_run)
+        game_reset();
+
+    if (!reuse_seed)
+        rng_shuffle_seed();
+    else
+        g_game_vars.rng_info.seed = previous_seed;
 }
+
+// WIN SelectionGrid
+
+static Button* game_over_win_get_button_from_sel(const Selection* selection)
+{
+    switch (selection->y)
+    {
+        case GAME_OVER_WIN_NEW_RUN_ROW:
+            return &new_run_button;
+        case GAME_OVER_WIN_SEED_MENU_ROW:
+            if (selection->x == 0)
+                return &reuse_seed_button;
+            else
+                return &main_menu_button;
+        case GAME_OVER_WIN_ENDLESS_ROW:
+            return &endless_button;
+        default:
+            break;
+    }
+    return NULL;
+}
+
+static void game_over_win_on_key_transit(SelectionGrid* selection_grid, Selection* selection)
+{
+    if (key_hit(SELECT_CARD))
+        button_press(game_over_win_get_button_from_sel(selection));
+}
+
+static bool game_over_win_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+)
+{
+    bool proceed_selection = true;
+
+    // Remove highlight from previous button
+    if (row_idx == prev_selection->y)
+        button_set_highlight(game_over_win_get_button_from_sel(prev_selection), false);
+
+    // Highlight new button
+    if (row_idx == new_selection->y)
+    {
+        Selection shifted_selection = *new_selection;
+
+        // If we are landing on the second row from another one, always land on x = 1
+        // which corresponds to the "main menu" button, this makes the most sense
+        if (new_selection->y == GAME_OVER_WIN_SEED_MENU_ROW && prev_selection->y != new_selection->y)
+        {
+            shifted_selection.x = 1;
+            selection_grid->selection = shifted_selection;
+            proceed_selection = false;
+        }
+
+        button_set_highlight(game_over_win_get_button_from_sel(&shifted_selection), true);
+    }
+
+    return proceed_selection;
+}
+
+// LOSE SelectionGrid
+
+static Button* game_over_lose_get_button_from_sel(const Selection* selection)
+{
+    switch (selection->y)
+    {
+        case GAME_OVER_LOSE_SEED_ROW:
+            return &reuse_seed_button;
+        case GAME_OVER_LOSE_RUN_MENU_ROW:
+            if (selection->x == 0)
+                return &new_run_button;
+            else
+                return &main_menu_button;
+        default:
+            break;
+    }
+    return NULL;
+}
+
+static void game_over_lose_on_key_transit(SelectionGrid* selection_grid, Selection* selection)
+{
+    if (key_hit(SELECT_CARD))
+        button_press(game_over_lose_get_button_from_sel(selection));
+}
+
+static bool game_over_lose_on_selection_changed(
+    SelectionGrid* selection_grid,
+    int row_idx,
+    const Selection* prev_selection,
+    const Selection* new_selection
+)
+{
+    // Remove highlight from previous button
+    if (row_idx == prev_selection->y)
+        button_set_highlight(game_over_lose_get_button_from_sel(prev_selection), false);
+
+    // Highlight new button
+    if (row_idx == new_selection->y)
+        button_set_highlight(game_over_lose_get_button_from_sel(new_selection), true);
+
+    return true;
+}
+
+// Buttons
 
 static void reuse_seed_on_pressed(void)
 {
     reuse_seed = !reuse_seed;
+    main_bg_se_copy_rect(
+        reuse_seed ? REUSE_SEED_BTN_ON_SRC_RECT : REUSE_SEED_BTN_OFF_SRC_RECT,
+        REUSE_SEED_BTN_DEST_POS
+    );
 }
 
 static void new_run_on_pressed(void)
 {
-
+    game_change_state(GAME_STATE_RUN_SETUP);
 }
 
 static void main_menu_on_pressed(void)
 {
-
+    game_change_state(GAME_STATE_MAIN_MENU);
 }
 
 static void endless_on_pressed(void)
 {
-
+    continue_run = true;
+    game_change_state(GAME_STATE_SHOP);
 }
