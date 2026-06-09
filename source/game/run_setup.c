@@ -29,13 +29,13 @@
 #define BLUE_DISABLED_BTN_MAIN_COLOR_PAL_IDX 13
 #define BACK_BTN_MAIN_COLOR_PAL_IDX          14
 
-#define NEW_RUN_BTN_OUTLINE_COLOR_PAL_IDX    30
-#define RESUME_BTN_OUTLINE_COLOR_PAL_IDX     31
-#define CHANGE_DECK_BTN_OUTINE_COLOR_PAL_IDX 32
-#define SEED_CHECK_BTN_OUTLINE_COLOR_PAL_IDX 33
-#define SEED_DECK_BTN_OUTLINE_COLOR_PAL_IDX  34
-#define PLAY_BTN_OUTLINE_COLOR_PAL_IDX       35
-#define BACK_BTN_OUTLINE_COLOR_PAL_IDX       36
+#define NEW_RUN_BTN_OUTLINE_COLOR_PAL_IDX     30
+#define RESUME_BTN_OUTLINE_COLOR_PAL_IDX      31
+#define CHANGE_DECK_BTN_OUTLINE_COLOR_PAL_IDX 32
+#define SEED_CHECK_BTN_OUTLINE_COLOR_PAL_IDX  33
+#define SEED_DECK_BTN_OUTLINE_COLOR_PAL_IDX   34
+#define PLAY_BTN_OUTLINE_COLOR_PAL_IDX        35
+#define BACK_BTN_OUTLINE_COLOR_PAL_IDX        36
 
 #define KEYBOARD_1_BTN_OUTLINE_COLOR_PAL_IDX 40
 #define KEYBOARD_2_BTN_OUTLINE_COLOR_PAL_IDX 41
@@ -292,7 +292,7 @@ static SelectionGrid choose_deck_selection_grid = {
 static void change_deck_on_pressed(void);
 
 static Button change_deck_button = {
-    CHANGE_DECK_BTN_OUTINE_COLOR_PAL_IDX,
+    CHANGE_DECK_BTN_OUTLINE_COLOR_PAL_IDX,
     CHANGE_DECK_BTN_MAIN_COLOR_PAL_IDX,
     change_deck_on_pressed,
     NULL
@@ -566,6 +566,7 @@ enum RunSetupResumeRows
 
 void game_run_setup_change_background(void)
 {
+    tte_erase_screen();
     GRIT_CPY(pal_bg_mem, background_run_setup_gfxPal);
     GRIT_CPY(&tile_mem[MAIN_BG_CBB], background_run_setup_gfxTiles);
     GRIT_CPY(&se_mem[MAIN_BG_SBB], background_run_setup_gfxMap);
