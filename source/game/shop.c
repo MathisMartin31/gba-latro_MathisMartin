@@ -19,6 +19,7 @@
 #include "list.h"
 #include "random.h"
 #include "save.h"
+#include "skip_tag.h"
 #include "soundbank.h"
 #include "state_machine.h"
 #include "timer.h"
@@ -706,7 +707,7 @@ static void game_shop_show_card_desc(void)
         tte_erase_rect_wrapper(PLAYING_SCREEN_RECT);
         toggle_windows(false, true);
 
-        // Move all other Jokers offscreen
+        // Move all other Sprites offscreen
 
         JokerObject* joker_object = NULL;
 
@@ -725,6 +726,9 @@ static void game_shop_show_card_desc(void)
             if (joker_object != description_card)
                 joker_object->sprite_object->ty = int2fx(SHOP_JOKER_SPRITES_INIT_POS.y + TILE_SIZE);
         }
+
+        // Owned SkipTags
+        hide_owned_skip_tags_offscreen();
 
         // Set description_card new target position
 
@@ -817,7 +821,8 @@ static void game_shop_hide_card_desc(void)
             OWNED_CARDS_PANEL_3X3_SRC_POS
         );
 
-        // Move Jokers back to their positions
+        // Move Sprites back to their positions
+
         JokerObject* joker_object = NULL;
 
         // Owned Jokers
@@ -835,6 +840,9 @@ static void game_shop_hide_card_desc(void)
             if (joker_object != description_card)
                 joker_object->sprite_object->ty = int2fx(ITEM_SHOP_Y);
         }
+
+        // Owned SkipTags
+        unhide_owned_skip_tags_offscreen();
 
         description_card->sprite_object->tx = description_card_original_x_pos;
         description_card->sprite_object->ty = description_card_original_y_pos;

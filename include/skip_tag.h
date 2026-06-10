@@ -106,6 +106,10 @@ size_t get_skip_tag_registry_size(void);
 SkipTag* skip_tag_new(u8 tag_type);
 void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer);
 void skip_tag_destroy(SkipTag** tag);
+
+void hide_owned_skip_tags_offscreen(void);
+void unhide_owned_skip_tags_offscreen(void);
+
 SkipTag* roll_skip_tag(void);
 
 /**

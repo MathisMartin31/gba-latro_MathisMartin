@@ -17,6 +17,7 @@
 #include <tonc.h>
 
 #define MAX_NON_OVERLAPING_TAG_SPRITES 5
+#define SKIP_TAG_HIDE_X_OFFSET         20
 
 // clang-format off
 // Points                                         x    y
@@ -120,6 +121,28 @@ void skip_tag_destroy(SkipTag** tag)
 }
 
 // Misc functions
+
+void hide_owned_skip_tags_offscreen(void)
+{
+    SkipTag* tag;
+    ListItr tag_itr = list_itr_create(&g_game_vars.owned_skip_tags);
+
+    while ((tag = list_itr_next(&tag_itr)))
+    {
+        tag->sprite_object->tx += int2fx(SKIP_TAG_HIDE_X_OFFSET);
+    }
+}
+
+void unhide_owned_skip_tags_offscreen(void)
+{
+    SkipTag* tag;
+    ListItr tag_itr = list_itr_create(&g_game_vars.owned_skip_tags);
+
+    while ((tag = list_itr_next(&tag_itr)))
+    {
+        tag->sprite_object->tx = int2fx(OWNED_SKIP_TAGS_BASE_POS.x);
+    }
+}
 
 SkipTag* roll_skip_tag(void)
 {
