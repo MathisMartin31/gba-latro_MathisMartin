@@ -407,8 +407,7 @@ void game_init()
 
     game_shop_reset();
 
-    // DEBUG
-    //g_game_vars.hands = MAX_HANDS;
+    g_game_vars.hands = MAX_HANDS;
     g_game_vars.discards = MAX_DISCARDS;
     g_game_vars.timer = TM_ZERO;
     g_game_vars.current_blind = BLIND_TYPE_SMALL;

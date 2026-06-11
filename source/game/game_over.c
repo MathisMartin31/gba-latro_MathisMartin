@@ -2,6 +2,7 @@
 
 #include "affine_background.h"
 #include "audio_utils.h"
+#include "background_game_over_gfx.h"
 #include "button.h"
 #include "card.h"
 #include "game.h"
@@ -15,8 +16,6 @@
 #include "soundbank.h"
 #include "timer.h"
 #include "util.h"
-
-#include "background_game_over_gfx.h"
 
 #include <tonc.h>
 
@@ -89,19 +88,8 @@ static bool game_over_on_selection_changed(
 );
 
 static const SelectionGridRow game_over_selection_rows[] = {
-    {
-        GAME_OVER_SEED_ROW,
-        game_over_get_row_size1,
-        game_over_on_selection_changed,
-        game_over_on_key_transit,
-        {.wrap = false}
-    }, {
-        GAME_OVER_RUN_MENU_ROW,
-        game_over_get_row_size2,
-        game_over_on_selection_changed,
-        game_over_on_key_transit,
-        {.wrap = false}
-    }
+    {GAME_OVER_SEED_ROW,     game_over_get_row_size1, game_over_on_selection_changed, game_over_on_key_transit, {.wrap = false}},
+    {GAME_OVER_RUN_MENU_ROW, game_over_get_row_size2, game_over_on_selection_changed, game_over_on_key_transit, {.wrap = false}}
 };
 
 static const Selection GAME_OVER_INIT_SEL = {0, GAME_OVER_RUN_MENU_ROW};
@@ -247,10 +235,11 @@ void game_over_on_update(void)
         enum HandType most_played_hand = HIGH_CARD;
         for (enum HandType hand_type = PAIR; hand_type <= HAND_TYPE_MAX; hand_type++)
         {
-            if (g_game_vars.nb_played_hands[hand_type - 1] > g_game_vars.nb_played_hands[most_played_hand - 1])
+            if (g_game_vars.nb_played_hands[hand_type - 1] >
+                g_game_vars.nb_played_hands[most_played_hand - 1])
                 most_played_hand = hand_type;
         }
-    
+
         const char* hand_name_str = get_hand_type_name(most_played_hand);
         Rect hand_type_rect = MOST_PLAYED_HAND_VALUE_RECT;
         update_text_rect_to_center_str(&hand_type_rect, hand_name_str, SCREEN_LEFT);
