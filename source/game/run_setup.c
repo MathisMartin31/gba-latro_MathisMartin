@@ -18,6 +18,7 @@
 #include "state_machine.h"
 #include "util.h"
 
+#include <string.h>
 #include <tonc.h>
 
 // Palette Indices
@@ -577,6 +578,22 @@ void game_run_setup_on_init(void)
     state_machine_register(&run_setup_sm);
     game_run_setup_change_background();
 
+    // Apply the current use_seed value if seed is UNDEFINED
+    if (g_game_vars.rng_info.seed == UNDEFINED)
+    {
+        // Make the string empty instead of showing all zeroes
+        memset(seed_str, '\0', BASE36_MAX_DIGITS + 1);
+        seed_cursor_pos = 0;
+    }
+    // Or use previous Run's seed if it hasn't been reset
+    else
+    {
+        u32_to_base36(g_game_vars.rng_info.seed, seed_str);
+        seed_cursor_pos = BASE36_MAX_DIGITS;
+        use_seed = true;
+    }
+    toggle_seed_enabled(use_seed);
+
     // Rank doesn't matter, won't see it
     run_setup_deck = card_object_new(card_new(SPADES, ACE));
 
@@ -664,9 +681,9 @@ static void choose_deck_substate_init(void)
     // Set button highlights
     button_set_highlight(&change_deck_button, true);
     button_set_highlight(&choose_deck_bottom_buttons[RUN_SETUP_DECK_BB_USE_SEED], false);
-    toggle_seed_enabled(use_seed); // This just re-applies the current value
     button_set_highlight(&choose_deck_bottom_buttons[RUN_SETUP_DECK_BB_PLAY], false);
     button_set_highlight(&back_button, false);
+    toggle_seed_enabled(use_seed);
 
     // Print button text
     tte_printf(
@@ -1164,6 +1181,8 @@ static void play_on_pressed(void)
         rng_set_seed(base36_to_u32(seed_str));
     else
         rng_shuffle_seed();
+
+    use_seed = false;
 
     game_change_state(GAME_STATE_GAME_START);
 }

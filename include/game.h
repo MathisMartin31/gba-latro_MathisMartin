@@ -92,6 +92,7 @@ List* get_jokers_list(void);
 List* get_expired_jokers_list(void);
 List* get_discarded_jokers_list(void);
 
+Card* deck_pop(void);
 int get_deck_top(void);
 int get_num_discards_remaining(void);
 int get_num_hands_remaining(void);

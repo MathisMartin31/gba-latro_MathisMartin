@@ -36,6 +36,7 @@
 #include <maxmod.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define STRAIGHT_AND_FLUSH_SIZE_FOUR_FINGERS 4
 #define STRAIGHT_AND_FLUSH_SIZE_DEFAULT      5
@@ -265,10 +266,14 @@ static enum PlayState play_state = PLAY_STARTING;
 // Initialization of the global vars
 // clang-format off
 GameVariables g_game_vars = {
-    .timer = 0, .rng_info = {0, 0},
+    .timer = 0,
+    // Setting the seed to an invalid value so that the Run Setup screen knows we're not reusing a previous Run's seed
+    .rng_info = {UNDEFINED, 0},
 
     .round = 0, .ante = 0, .money = 0, .hand_size = DEFAULT_HAND_SIZE,
     .deck = DECK_TYPE_RED,
+
+    .best_played_hand = 0, .nb_played_hands = {0},
 
     .current_blind = BLIND_TYPE_SMALL,
     .next_boss_blind = BLIND_TYPE_BIG,
@@ -355,7 +360,7 @@ static inline void deck_push(Card* card)
     deck[++deck_top] = card;
 }
 
-static inline Card* deck_pop()
+Card* deck_pop(void)
 {
     if (deck_top < 0)
         return NULL;
@@ -402,6 +407,7 @@ void game_init()
 
     game_shop_reset();
 
+    // DEBUG
     //g_game_vars.hands = MAX_HANDS;
     g_game_vars.discards = MAX_DISCARDS;
     g_game_vars.timer = TM_ZERO;
@@ -413,6 +419,9 @@ void game_init()
     g_game_vars.money = STARTING_MONEY;
     g_game_vars.score = STARTING_SCORE;
     g_game_vars.round = 0;
+    g_game_vars.best_played_hand = 0;
+    for (int i = 0; i < HAND_TYPE_MAX; i++)
+        g_game_vars.nb_played_hands[i] = 0;
 
     // Initialize/reset unbeaten Boss/Showdown Blinds so they are all available
     init_unbeaten_blinds_list(false);
@@ -1156,8 +1165,11 @@ static void game_playing_execute_play_hand(void)
         return;
 
     set_hand_state(HAND_PLAY);
+
     --g_game_vars.hands;
     display_hands();
+
+    g_game_vars.nb_played_hands[get_hand_type() - 1]++;
 }
 
 static int game_playing_hand_row_get_size(void)
@@ -2167,6 +2179,10 @@ static inline void game_playing_process_input_and_state(void)
             lerped_temp_score = int2fx(temp_score);
             lerped_score = int2fx(g_game_vars.score);
 
+            // Register high score
+            if (temp_score > g_game_vars.best_played_hand)
+                g_game_vars.best_played_hand = temp_score;
+
             display_temp_score(temp_score);
 
             chips = 0;
@@ -2206,6 +2222,7 @@ static inline void game_playing_process_input_and_state(void)
         else
         {
             g_game_vars.score = u32_protected_add(g_game_vars.score, temp_score);
+
             temp_score = 0;
             lerped_temp_score = 0;
             lerped_score = 0;
@@ -2554,8 +2571,7 @@ void game_start(void)
     affine_background_change_background(AFFINE_BG_GAME);
     tte_colors_setup();
 
-    // DEBUG
-    g_game_vars.hands = 1; //MAX_HANDS;
+    g_game_vars.hands = MAX_HANDS;
     g_game_vars.discards = MAX_DISCARDS;
 
     // Fill the deck with all the cards. Later on this can be replaced with a more dynamic system

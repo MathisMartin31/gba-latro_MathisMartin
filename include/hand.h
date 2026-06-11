@@ -71,6 +71,10 @@ typedef struct ContainedHandTypes
 } ContainedHandTypes;
 // clang-format on
 
+// Misc Hand Functions
+
+const char* get_hand_type_name(enum HandType hand_type);
+
 // Hand Structure Manipulation
 
 /**
