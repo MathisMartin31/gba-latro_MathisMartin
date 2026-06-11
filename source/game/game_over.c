@@ -216,6 +216,7 @@ void game_over_on_update(void)
     if (timer == 1)
         tte_erase_screen();
 
+    // Move whole panel and Blind Token sprite up by a tile each frame
     if (timer < GAME_OVER_ANIM_FRAMES)
     {
         main_bg_se_move_rect_1_tile_vert(GAME_OVER_ANIM_RECT, SCREEN_UP);
@@ -226,6 +227,8 @@ void game_over_on_update(void)
             g_game_vars.playing_blind_token->pos.y - TILE_SIZE
         );
     }
+
+    // Print values and buttons text
     else if (timer == GAME_OVER_ANIM_FRAMES)
     {
         char best_hand_str[UINT_MAX_DIGITS + 1];
@@ -240,7 +243,7 @@ void game_over_on_update(void)
             best_hand_str
         );
 
-        // Get most played hand
+        // Most played hand
         enum HandType most_played_hand = HIGH_CARD;
         for (enum HandType hand_type = PAIR; hand_type <= HAND_TYPE_MAX; hand_type++)
         {
