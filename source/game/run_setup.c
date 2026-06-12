@@ -589,7 +589,8 @@ void game_run_setup_on_init(void)
         RUN_SETUP_DECK_SPRITE_T_Y
     );
 
-    card_object_update(run_setup_deck);
+    // Keep this update so there is no flicker on the first frame of the menu
+    sprite_object_update(run_setup_deck->sprite_object);
 
     /* Uncomment these lines when we figure out how to properly restore a game save
     is_saved_game_valid = is_game_data_valid();

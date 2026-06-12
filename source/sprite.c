@@ -301,6 +301,17 @@ IWRAM_CODE void sprite_object_update(SpriteObject* sprite_object)
     sprite_position(sprite_object->sprite, fx2int(sprite_object->x), fx2int(sprite_object->y));
 }
 
+IWRAM_CODE void sprite_object_update_all(void)
+{
+    SpriteObject* sprite_object = NULL;
+    for (int i = 0; i < MAX_SPRITE_OBJECTS; i++)
+    {
+        sprite_object = POOL_AT(SpriteObject, i);
+        if (POOL_VALID_AT(SpriteObject, i) && sprite_object != NULL)
+            sprite_object_update(sprite_object);
+    }
+}
+
 void sprite_object_shake(SpriteObject* sprite_object, mm_word sound_id)
 {
     if (sprite_object == NULL)
