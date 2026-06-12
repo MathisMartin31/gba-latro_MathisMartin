@@ -549,10 +549,11 @@ void game_update()
 
     g_game_vars.timer++;
 
-    sprite_object_update_all();
     jokers_update_loop();
 
     state_machine_update();
+
+    sprite_object_update_all();
 }
 
 void game_change_state(enum GameState new_game_state)
@@ -2258,9 +2259,6 @@ static inline void game_playing_discarded_cards_loop(void)
             discarded_card_object->sprite_object->ty = int2fx(112);
             discarded_card_object->sprite_object->x = int2fx(240);
             discarded_card_object->sprite_object->y = int2fx(80);
-
-            // Update immediately to avoid flickering sprites at position (0,0)
-            sprite_object_update(discarded_card_object->sprite_object);
         }
         else
         {

@@ -109,9 +109,6 @@ void game_main_menu_on_init(void)
     main_menu_ace->sprite_object->tscale = float2fx(0.8f);
     sprite_object_position(main_menu_ace->sprite_object, MAIN_MENU_ACE_T_X, MAIN_MENU_ACE_T_Y);
 
-    // Keep this update so there is no flicker on the first frame of the menu
-    sprite_object_update(main_menu_ace->sprite_object);
-
     // Select last highlighted button, Play button by default.
     // e.g. if we return from the options menu, we want the Options button to be highlighted.
     Selection sel_init = {last_highlighted_button, 0};
