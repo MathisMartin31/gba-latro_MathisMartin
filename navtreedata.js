@@ -27,18 +27,15 @@ var NAVTREE =
   [ "GBAlatro", "index.html", [
     [ "Developer Guide", "index.html", "index" ],
     [ "Balatro-GBA", "md_README.html", [
-      [ "Contributing", "md_README.html#autotoc_md39", null ],
-      [ "<strong>Credits:</strong>", "md_README.html#autotoc_md40", [
-        [ "Disclaimer", "md_README.html#autotoc_md32", null ],
-        [ "Please buy the official full version from these sources below:", "md_README.html#autotoc_md33", null ],
-        [ "Controls:", "md_README.html#autotoc_md36", [
-          [ "When on the hand row during round", "md_README.html#autotoc_md37", null ],
-          [ "When on the joker row in the shop or during round", "md_README.html#autotoc_md38", null ]
-        ] ],
-        [ "<strong>Game</strong>", "md_README.html#autotoc_md41", null ],
-        [ "<strong>Music</strong>", "md_README.html#autotoc_md42", null ],
-        [ "<strong>Imagery</strong>", "md_README.html#autotoc_md43", null ],
-        [ "<strong>Sounds</strong>", "md_README.html#autotoc_md44", null ]
+      [ "Contributing", "md_README.html#autotoc_md30", null ],
+      [ "<strong>Credits:</strong>", "md_README.html#autotoc_md31", [
+        [ "Disclaimer", "md_README.html#autotoc_md25", null ],
+        [ "Please buy the official full version from these sources below:", "md_README.html#autotoc_md26", null ],
+        [ "Controls:", "md_README.html#autotoc_md29", null ],
+        [ "<strong>Game</strong>", "md_README.html#autotoc_md32", null ],
+        [ "<strong>Music</strong>", "md_README.html#autotoc_md33", null ],
+        [ "<strong>Imagery</strong>", "md_README.html#autotoc_md34", null ],
+        [ "<strong>Sounds</strong>", "md_README.html#autotoc_md35", null ]
       ] ]
     ] ],
     [ "Data Structures", "annotated.html", [
@@ -68,7 +65,7 @@ var NAVTREEINDEX =
 [
 "affine__background_8c_source.html",
 "index.html#autotoc_md11",
-"splash__screen_8h.html#abef5b26c1b8c1a453134ae4d8662d4ed"
+"sprite_8h.html#a564c9484883d28c4904b382c2eec5db9"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
