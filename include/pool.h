@@ -54,17 +54,12 @@
         if (idx < 0 || idx >= (type##_pool.bitset)->cap)                \
             return NULL;                                                \
         return &type##_pool.objects[idx];                               \
-    }                                                                   \
-    bool pool_valid_at_##type(int idx)                                  \
-    {                                                                   \
-        return bitset_get_idx(type##_pool.bitset, idx);                 \
     }
 
-#define POOL_GET(type)           pool_get_##type()
-#define POOL_FREE(type, obj)     pool_free_##type(obj)
-#define POOL_IDX(type, obj)      pool_idx_##type(obj)      // the index of the object
-#define POOL_AT(type, idx)       pool_at_##type(idx)       // the object at
-#define POOL_VALID_AT(type, idx) pool_valid_at_##type(idx) // the object at idx is currently valid
+#define POOL_GET(type)       pool_get_##type()
+#define POOL_FREE(type, obj) pool_free_##type(obj)
+#define POOL_IDX(type, obj)  pool_idx_##type(obj) // the index of the object
+#define POOL_AT(type, idx)   pool_at_##type(idx)  // the object at
 
 #define POOL_ENTRY(name, capacity) POOL_DECLARE_TYPE(name);
 #include POOLS_DEF_FILE
