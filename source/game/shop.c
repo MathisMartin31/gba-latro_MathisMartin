@@ -93,6 +93,7 @@ BITSET_DEFINE(s_avail_jokers_bitset, MAX_DEFINABLE_JOKERS)
 
 enum GameShopStates
 {
+    GAME_SHOP_SKIP_TAGS,
     GAME_SHOP_INTRO,
     GAME_SHOP_ACTIVE,
     GAME_SHOP_SHOW_CARD_DESC,
@@ -101,6 +102,7 @@ enum GameShopStates
     GAME_SHOP_MAX
 };
 
+static void game_shop_redeem_skip_tags(void);
 static void game_shop_intro(void);
 static void game_shop_process_user_input(void);
 static void game_shop_show_card_desc(void);
@@ -108,6 +110,7 @@ static void game_shop_hide_card_desc(void);
 static void game_shop_outro(void);
 
 static StateInfo shop_state_actions[GAME_SHOP_MAX] = {
+    STATE_INFO_UPDATE_FN_ONLY(game_shop_redeem_skip_tags),
     STATE_INFO_UPDATE_FN_ONLY(game_shop_intro),
     STATE_INFO_UPDATE_FN_ONLY(game_shop_process_user_input),
     STATE_INFO_UPDATE_FN_ONLY(game_shop_show_card_desc),
@@ -181,6 +184,16 @@ JokerObject* game_shop_get_description_card(void)
     return description_card;
 }
 
+int game_shop_get_reroll_cost(void)
+{
+    return reroll_cost;
+}
+
+void game_shop_set_reroll_cost(int cost)
+{
+    reroll_cost = cost;
+}
+
 static inline void reset_shop_jokers(void)
 {
     int num_jokers = get_joker_registry_size();
@@ -238,12 +251,22 @@ void game_shop_on_init(void)
     timer = TM_ZERO;
 
     state_machine_register(&shop_sm);
-    state_machine_change_state(&shop_sm, GAME_SHOP_INTRO);
+    state_machine_change_state(&shop_sm, GAME_SHOP_SKIP_TAGS);
 
     // The selection grid is initialized outside of bounds and moved
     // to trigger the selection change so the initial selection is visible
     shop_selection_grid.selection = SHOP_INIT_SEL;
     selection_grid_move_selection_horz(&shop_selection_grid, 1);
+}
+
+static void game_shop_redeem_skip_tags(void)
+{
+    if (skip_tag_check_and_apply_for_event_loop(timer, SKIP_TAG_EVENT_ON_SHOP_INIT) ==
+        SKIP_TAG_EFFECT_END)
+    {
+        timer = TM_ZERO;
+        state_machine_change_state(&shop_sm, GAME_SHOP_INTRO);
+    }
 }
 
 /**

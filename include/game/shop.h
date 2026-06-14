@@ -16,6 +16,9 @@
  */
 void game_shop_reset(void);
 
+int game_shop_get_reroll_cost(void);
+void game_shop_set_reroll_cost(int cost);
+
 /**
  * @brief Get a pointer to the Card we are currently showing the description of.
  *

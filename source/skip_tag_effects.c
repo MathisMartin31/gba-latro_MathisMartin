@@ -28,6 +28,7 @@ REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_garbage)
 REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_coupon)
 REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_double)
 REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_juggle)
+REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_d6)
 REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_top_up)
 REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_speed)
 REGISTER_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_economy)
@@ -55,7 +56,7 @@ const SkipTagInfo skip_tag_registry[] =
     { SKIP_TAG_EVENT_ON_SHOP_INIT,   skip_tag_cond_true,       skip_tag_effect_coupon     }, // COUPON     = 16
     { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_double,     skip_tag_effect_double     }, // DOUBLE     = 17
     { SKIP_TAG_EVENT_ON_ROUND_START, skip_tag_cond_true,       skip_tag_effect_juggle     }, // JUGGLE     = 18
-    { SKIP_TAG_EVENT_NONE,           skip_tag_cond_d6,         skip_tag_effect_noop       }, // D6         = 19
+    { SKIP_TAG_EVENT_ON_SHOP_INIT,   skip_tag_cond_d6,         skip_tag_effect_d6         }, // D6         = 19
     { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_true,       skip_tag_effect_top_up     }, // TOP_UP     = 20
     { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_true,       skip_tag_effect_speed      }, // SPEED      = 21
     { SKIP_TAG_EVENT_NONE,           skip_tag_cond_true,       skip_tag_effect_noop       }, // 22
@@ -99,7 +100,7 @@ static bool skip_tag_cond_double(void)
 
 static bool skip_tag_cond_d6(void)
 {
-    return true;
+    return game_shop_get_reroll_cost() > 0;
 }
 
 // EFFECTS IMPLEMENTATION
@@ -148,6 +149,11 @@ static void skip_tag_effect_double(void)
 
 static void skip_tag_effect_juggle(void)
 {
+}
+
+static void skip_tag_effect_d6(void)
+{
+    game_shop_set_reroll_cost(0);
 }
 
 #define TOP_UP_TAG_JOKER_BONUS 2
