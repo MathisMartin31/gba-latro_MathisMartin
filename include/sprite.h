@@ -241,7 +241,7 @@ IWRAM_CODE void sprite_object_update(SpriteObject* sprite_object);
 /**
  * @brief Update all SpriteObjects, to be called once per frame in the main update loop.
  */
-IWRAM_CODE void sprite_object_update_all(void);
+void sprite_object_update_all(void);
 
 /**
  * @brief Shake SpriteObject on screen and play a sound
