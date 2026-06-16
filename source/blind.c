@@ -1,3 +1,8 @@
+/**
+ * @file blind.c
+ * @brief Implementation of functions relative to the behaviour and graphics of Blinds.
+ */
+
 #include "blind.h"
 
 #include "blind_gfx.h"
@@ -23,6 +28,11 @@
 #define BLIND_TOKENS_PER_SPRITESHEET 2
 #define BLIND_TOKEN_PALETTE_SIZE     8
 
+#define SMALL_BLIND_REWARD    3
+#define BIG_BLIND_REWARD      4
+#define BOSS_BLIND_REWARD     5
+#define SHOWDOWN_BLIND_REWARD 8
+
 static const unsigned int* blind_gfxTiles[] = {
 #define DEF_BLIND_GFX(idx) blind_gfx##idx##Tiles,
 #include "../include/def_blind_gfx_table.h"
@@ -45,37 +55,42 @@ static List unbeaten_showdown_blinds;
 static const u32 ante_lut[] = {100, 300, 800, 2000, 5000, 11000, 20000, 35000, 50000};
 
 // clang-format off
+/**
+ * @def _blind_type_map
+ * @brief Stores an instance of the Blind struct for each BlindType value, ordered in the same way.
+ *         Acts the same way the Joker registry does, and may need to go in its own file depending on how Blind effects are implemented
+ */
 static Blind _blind_type_map[BLIND_TYPE_MAX] = {
-    {BLIND_TYPE_SMALL,   FIX_ONE,          3},
-    {BLIND_TYPE_BIG,    (FIX_ONE * 3) / 2, 4},
-    {BLIND_TYPE_HOOK,    FIX_ONE * 2,      5},
-    {BLIND_TYPE_OX,      FIX_ONE * 2,      5},
-    {BLIND_TYPE_HOUSE,   FIX_ONE * 2,      5},
-    {BLIND_TYPE_WALL,    FIX_ONE * 2,      5}, // x4 score requirement will be part of the effect
-    {BLIND_TYPE_WHEEL,   FIX_ONE * 2,      5},
-    {BLIND_TYPE_ARM,     FIX_ONE * 2,      5},
-    {BLIND_TYPE_CLUB,    FIX_ONE * 2,      5},
-    {BLIND_TYPE_FISH,    FIX_ONE * 2,      5},
-    {BLIND_TYPE_PSYCHIC, FIX_ONE * 2,      5},
-    {BLIND_TYPE_GOAD,    FIX_ONE * 2,      5},
-    {BLIND_TYPE_WATER,   FIX_ONE * 2,      5},
-    {BLIND_TYPE_WINDOW,  FIX_ONE * 2,      5},
-    {BLIND_TYPE_MANACLE, FIX_ONE * 2,      5},
-    {BLIND_TYPE_EYE,     FIX_ONE * 2,      5},
-    {BLIND_TYPE_MOUTH,   FIX_ONE * 2,      5},
-    {BLIND_TYPE_PLANT,   FIX_ONE * 2,      5},
-    {BLIND_TYPE_SERPENT, FIX_ONE * 2,      5},
-    {BLIND_TYPE_PILLAR,  FIX_ONE * 2,      5},
-    {BLIND_TYPE_NEEDLE,  FIX_ONE * 2,      5}, // Same as the Wall with normal requirement
-    {BLIND_TYPE_HEAD,    FIX_ONE * 2,      5},
-    {BLIND_TYPE_TOOTH,   FIX_ONE * 2,      5},
-    {BLIND_TYPE_FLINT,   FIX_ONE * 2,      5},
-    {BLIND_TYPE_MARK,    FIX_ONE * 2,      5},
-    {BLIND_TYPE_ACORN,   FIX_ONE * 2,      8},
-    {BLIND_TYPE_LEAF,    FIX_ONE * 2,      8},
-    {BLIND_TYPE_VESSEL,  FIX_ONE * 2,      8}, // Same as the Wall with x6 requirement
-    {BLIND_TYPE_HEART,   FIX_ONE * 2,      8},
-    {BLIND_TYPE_BELL,    FIX_ONE * 2,      8}
+    { FIX_ONE         },
+    {(FIX_ONE * 3) / 2},
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    }, // x4 score requirement will be part of the effect
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    }, // Same as the Wall with normal requirement
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    }, // Same as the Wall with x6 requirement
+    { FIX_ONE * 2,    },
+    { FIX_ONE * 2,    }
 };
 // clang-format on
 
@@ -99,11 +114,19 @@ u32 blind_get_requirement(enum BlindType type, int ante)
 
 int blind_get_reward(enum BlindType type)
 {
-    return _blind_type_map[type].reward;
+    switch (type)
+    {
+        case BLIND_TYPE_SMALL:
+            return SMALL_BLIND_REWARD;
+        case BLIND_TYPE_BIG:
+            return BIG_BLIND_REWARD;
+        case BLIND_TYPE_BOSS ... (BLIND_TYPE_SHOWDOWN - 1):
+            return BOSS_BLIND_REWARD;
+        default:
+            return SHOWDOWN_BLIND_REWARD;
+    }
 }
 
-// Fills the unbeaten boss blinds lists
-// This must be called at the beginning of a run
 void init_unbeaten_blinds_list(bool showdown)
 {
     // create the lists when calling for the first time
@@ -221,13 +244,21 @@ void apply_blind_colors(enum BlindType type)
     );
 }
 
-static u32 get_layer_tile_index(int layer)
+/**
+ * @brief Get the starting tile index in tiles memory for the given BlindToken sprite layer
+ *
+ * @param the layer of the BlindToken, as an offset relative to `BLIND_BASE_LAYER`
+ *
+ * @returns the starting tile index of the BlindToken sprite at requested layer
+ * @sa BLIND_BASE_LAYER
+ */
+static u32 get_layer_tile_index(enum BlindTokenLayers layer)
 {
     // All Blind sprites are stored sequentially and correspond to their IDs
     return (BLIND_BASE_LAYER + layer) * BLIND_SPRITE_OFFSET;
 }
 
-void apply_blind_tiles(enum BlindType type, int layer)
+void apply_blind_tiles(enum BlindType type, enum BlindTokenLayers layer)
 {
     u32 spritesheet_idx = get_blind_spritesheet_idx(type);
     u32 sprite_idx = (type < BLIND_TYPE_MARK) ? type % BLIND_TOKENS_PER_SPRITESHEET : 0;
@@ -240,7 +271,7 @@ void apply_blind_tiles(enum BlindType type, int layer)
     apply_blind_colors(type);
 }
 
-Sprite* blind_token_new(enum BlindType type, int x, int y, int layer)
+Sprite* blind_token_new(enum BlindType type, int x, int y, enum BlindTokenLayers layer)
 {
     apply_blind_tiles(type, layer);
 
