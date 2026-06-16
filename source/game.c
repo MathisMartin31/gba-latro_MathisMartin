@@ -2490,8 +2490,8 @@ static inline void game_playing_ui_text_update(void)
     static int last_hand_max_size = -1;
     static int last_deck_size = -1;
 
-    if (g_game_vars.timer == 1 || last_hand_size != hand_nb_held_cards() || last_hand_max_size != g_game_vars.hand_size ||
-        last_deck_size != deck_get_size())
+    if (g_game_vars.timer == 1 || last_hand_size != hand_nb_held_cards() ||
+        last_hand_max_size != g_game_vars.hand_size || last_deck_size != deck_get_size())
     {
         if (background_legacy == BG_CARD_SELECTING)
         {
@@ -2554,8 +2554,8 @@ static inline void game_playing_process_flaming_score(void)
 static void game_playing_on_update(void)
 {
     // Background logic (thissss might be moved to the card'ssss logic later. I'm a sssssnake)
-    if (get_hand_state() == HAND_TAGS || get_hand_state() == HAND_DRAW || get_hand_state() == HAND_DISCARD ||
-        get_hand_state() == HAND_SELECT)
+    if (get_hand_state() == HAND_TAGS || get_hand_state() == HAND_DRAW ||
+        get_hand_state() == HAND_DISCARD || get_hand_state() == HAND_SELECT)
     {
         change_background(BG_CARD_SELECTING, false);
     }
