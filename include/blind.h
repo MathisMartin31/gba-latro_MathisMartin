@@ -27,10 +27,13 @@ enum BlindTokens
 
 /**
  * @def BlindTokenLayers
- * @brief Sprite IDs of the various Blind Tokens used in the game, expressed as an offset relative to `BLIND_BASE_LAYER`
+ * @brief Sprite IDs of the various Blind Tokens used in the game, expressed as an offset relative
+ *         to `BLIND_BASE_LAYER`
+ *
  * @sa BLIND_BASE_LAYER
  */
-enum BlindTokenLayers {
+enum BlindTokenLayers
+{
     PLAYING_BLIND_TOKEN_LAYER,
     ROUND_END_BLIND_TOKEN_LAYER,
     SMALL_BLIND_TOKEN_LAYER,
@@ -111,7 +114,8 @@ enum BlindType
 
 /**
  * @def BlindState
- * @brief All the possible states an Ante's Blinds can be in when viewed in the "Blind Select" screen.
+ * @brief All the possible states an Ante's Blinds can be in when viewed in the "Blind Select"
+ *         screen.
  */
 enum BlindState
 {
@@ -126,7 +130,8 @@ enum BlindState
  * @def Blind
  * @brief Data structure containing data about a BlindType.
  *
- * Only contains the score requirement multiplyier for now, but will contain infà about the BLind's effect when implemented.
+ * Only contains the score requirement multiplyier for now, but will contain infà about the BLind's
+ * effect when implemented.
  */
 typedef struct
 {
@@ -137,7 +142,8 @@ typedef struct
 void blind_init();
 
 /**
- * @brief Get the score required to beat a certain blind (either the Small, Big, or any Boss/Showdown blind) at a certain Ante.
+ * @brief Get the score required to beat a certain blind (either the Small, Big, or any
+ *         Boss/Showdown blind) at a certain Ante.
  *
  * @param type the `BlindType` value of the blind we need the score requirement of
  * @param ante the Ante at which the blind `type` is encountered
@@ -175,14 +181,16 @@ u16 blind_get_color(enum BlindType type, enum BlindColorIndex index);
 enum BlindType roll_blind_type(bool showdown);
 
 /**
- * @brief Remove the given Blind from the corresponding List so that we don't roll it again in the future.
+ * @brief Remove the given Blind from the corresponding List so that we don't roll it again in the
+ *         future.
  *
  * @param type the BlindType of the Boss/Showdown Blind we've just beaten.
  */
 void set_blind_beaten(enum BlindType type);
 
 /**
- * @brief Copy the palette associated with the given Blind and copy it in the right spot in the palette memory
+ * @brief Copy the palette associated with the given Blind and copy it in the right spot in the
+ *         palette memory
  *
  * @param type of the Blind whose palette we need
  */

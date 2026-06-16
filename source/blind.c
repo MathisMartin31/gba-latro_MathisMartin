@@ -46,7 +46,7 @@ static const unsigned short* blind_gfxPal[] = {
 };
 
 // Bitfields storing blinds we have yet to beat during the current run
-static List unbeaten_boss_blinds     = LIST_DEFAULT;
+static List unbeaten_boss_blinds = LIST_DEFAULT;
 static List unbeaten_showdown_blinds = LIST_DEFAULT;
 
 // Maps the ante number to the base blind requirement for that ante.
@@ -120,7 +120,7 @@ int blind_get_reward(enum BlindType type)
             return SMALL_BLIND_REWARD;
         case BLIND_TYPE_BIG:
             return BIG_BLIND_REWARD;
-        case BLIND_TYPE_BOSS ... (BLIND_TYPE_SHOWDOWN - 1):
+        case BLIND_TYPE_BOSS ...(BLIND_TYPE_SHOWDOWN - 1):
             return BOSS_BLIND_REWARD;
         default:
             return SHOWDOWN_BLIND_REWARD;
@@ -129,8 +129,8 @@ int blind_get_reward(enum BlindType type)
 
 /**
  * @brief Fill Lists of unbeaten Boss and Showdown Blinds so we can roll from them each Ante.
- *         By keeping track of what Blind we have beaten or not, we can ensure than until we've beaten
- *         all the Blinds in a single Run, we won't encounter the same one twice.
+ *         By keeping track of what Blind we have beaten or not, we can ensure than until we've
+ *         beaten all the Blinds in a single Run, we won't encounter the same one twice.
  *
  * This must be called at the beginning of a run.
  *
