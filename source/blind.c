@@ -61,36 +61,36 @@ static const u32 ante_lut[] = {100, 300, 800, 2000, 5000, 11000, 20000, 35000, 5
  *         Acts the same way the Joker registry does, and may need to go in its own file depending on how Blind effects are implemented
  */
 static Blind _blind_type_map[BLIND_TYPE_MAX] = {
-    { FIX_ONE         },
-    {(FIX_ONE * 3) / 2},
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    }, // x4 score requirement will be part of the effect
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    }, // Same as the Wall with normal requirement
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    }, // Same as the Wall with x6 requirement
-    { FIX_ONE * 2,    },
-    { FIX_ONE * 2,    }
+    {BLIND_TYPE_SMALL,    FIX_ONE         },
+    {BLIND_TYPE_BIG,     (FIX_ONE * 3) / 2},
+    {BLIND_TYPE_HOOK,     FIX_ONE * 2,    },
+    {BLIND_TYPE_OX,       FIX_ONE * 2,    },
+    {BLIND_TYPE_HOUSE,    FIX_ONE * 2,    },
+    {BLIND_TYPE_WALL,     FIX_ONE * 2,    }, // x4 score requirement will be part of the effect
+    {BLIND_TYPE_WHEEL,    FIX_ONE * 2,    },
+    {BLIND_TYPE_ARM,      FIX_ONE * 2,    },
+    {BLIND_TYPE_CLUB,     FIX_ONE * 2,    },
+    {BLIND_TYPE_FISH,     FIX_ONE * 2,    },
+    {BLIND_TYPE_PSYCHIC,  FIX_ONE * 2,    },
+    {BLIND_TYPE_GOAD,     FIX_ONE * 2,    },
+    {BLIND_TYPE_WATER,    FIX_ONE * 2,    },
+    {BLIND_TYPE_WINDOW,   FIX_ONE * 2,    },
+    {BLIND_TYPE_MANACLE,  FIX_ONE * 2,    },
+    {BLIND_TYPE_EYE,      FIX_ONE * 2,    },
+    {BLIND_TYPE_MOUTH,    FIX_ONE * 2,    },
+    {BLIND_TYPE_PLANT,    FIX_ONE * 2,    },
+    {BLIND_TYPE_SERPENT,  FIX_ONE * 2,    },
+    {BLIND_TYPE_PILLAR,   FIX_ONE * 2,    },
+    {BLIND_TYPE_NEEDLE,   FIX_ONE * 2,    }, // Same as the Wall with normal requirement
+    {BLIND_TYPE_HEAD,     FIX_ONE * 2,    },
+    {BLIND_TYPE_TOOTH,    FIX_ONE * 2,    },
+    {BLIND_TYPE_FLINT,    FIX_ONE * 2,    },
+    {BLIND_TYPE_MARK,     FIX_ONE * 2,    },
+    {BLIND_TYPE_ACORN,    FIX_ONE * 2,    },
+    {BLIND_TYPE_LEAF,     FIX_ONE * 2,    },
+    {BLIND_TYPE_VESSEL,   FIX_ONE * 2,    }, // Same as the Wall with x6 requirement
+    {BLIND_TYPE_HEART,    FIX_ONE * 2,    },
+    {BLIND_TYPE_BELL,     FIX_ONE * 2,    }
 };
 // clang-format on
 
