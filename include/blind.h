@@ -166,17 +166,6 @@ int blind_get_reward(enum BlindType type);
 u16 blind_get_color(enum BlindType type, enum BlindColorIndex index);
 
 /**
- * @brief Fill Lists of unbeaten Boss and Showdown Blinds so we can roll from them each Ante.
- *         By keeping track of what Blind we have beaten or not, we can ensure than until we've beaten
- *         all the Blinds in a single Run, we won't encounter the same one twice.
- *
- * This must be called at the beginning of a run.
- *
- * @param showdown toggle between the List for Showdown and regular Boss Blinds
- */
-void init_unbeaten_blinds_list(bool showdown);
-
-/**
  * @brief Choose a random Blind among the ones that haven't been beaten yet.
  *
  * @param showdown whether we want to roll a Showdown or a regular Boss Blind.
