@@ -130,6 +130,7 @@ enum BlindState
  */
 typedef struct
 {
+    u8 type;
     FIXED score_req_multipler;
 } Blind;
 
