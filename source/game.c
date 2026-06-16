@@ -199,10 +199,6 @@ void game_init()
     g_game_vars.best_hand_score = 0;
     for (int i = 0; i < HAND_TYPE_MAX; i++)
         g_game_vars.nb_played_hands[i] = 0;
-
-    // Initialize/reset unbeaten Boss/Showdown Blinds so they are all available
-    init_unbeaten_blinds_list(false);
-    init_unbeaten_blinds_list(true);
 }
 
 void game_reset()
