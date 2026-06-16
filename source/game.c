@@ -1049,7 +1049,9 @@ static inline void deck_shuffle(void)
 
 static void game_round_on_init(void)
 {
-    set_hand_state(HAND_DRAW);
+    g_game_vars.timer = TM_ZERO;
+    set_hand_state(HAND_TAGS);
+
     hand_set_nb_selected_cards(0);
     cards_drawn = 0;
 
@@ -2173,7 +2175,19 @@ static inline void played_cards_update_loop(void)
 
 static inline void game_playing_process_input_and_state(void)
 {
-    if (get_hand_state() == HAND_SELECT)
+    if (get_hand_state() == HAND_TAGS)
+    {
+        // Testing this in a general way but only the Juggler can apply here
+        if (skip_tag_check_and_apply_for_event_loop(
+                g_game_vars.timer,
+                SKIP_TAG_EVENT_ON_ROUND_START
+            ) == SKIP_TAG_EFFECT_END)
+        {
+            set_hand_state(HAND_DRAW);
+            g_game_vars.timer = TM_ZERO;
+        }
+    }
+    else if (get_hand_state() == HAND_SELECT)
     {
         game_playing_process_hand_select_input();
     }
@@ -2365,6 +2379,9 @@ static inline void cards_in_hand_update_loop(void)
 
             switch (get_hand_state())
             {
+                // Nothing to do here
+                case HAND_TAGS:
+                    break;
                 case HAND_DRAW:
                     hand_x = hand_x + (int2fx(i) - int2fx(get_hand_top()) / 2) *
                                           -HAND_SPACING_LUT[get_hand_top()];
@@ -2469,10 +2486,12 @@ static inline void cards_in_hand_update_loop(void)
 
 static inline void game_playing_ui_text_update(void)
 {
-    static int last_hand_size = 0;
-    static int last_deck_size = 0;
+    static int last_hand_size = -1;
+    static int last_hand_max_size = -1;
+    static int last_deck_size = -1;
 
-    if (last_hand_size != hand_nb_held_cards() || last_deck_size != deck_get_size())
+    if (g_game_vars.timer == 1 || last_hand_size != hand_nb_held_cards() || last_hand_max_size != g_game_vars.hand_size ||
+        last_deck_size != deck_get_size())
     {
         if (background_legacy == BG_CARD_SELECTING)
         {
@@ -2503,6 +2522,7 @@ static inline void game_playing_ui_text_update(void)
         display_deck_size_max();
 
         last_hand_size = hand_nb_held_cards();
+        last_hand_max_size = g_game_vars.hand_size;
         last_deck_size = deck_get_size();
     }
 }
@@ -2534,7 +2554,7 @@ static inline void game_playing_process_flaming_score(void)
 static void game_playing_on_update(void)
 {
     // Background logic (thissss might be moved to the card'ssss logic later. I'm a sssssnake)
-    if (get_hand_state() == HAND_DRAW || get_hand_state() == HAND_DISCARD ||
+    if (get_hand_state() == HAND_TAGS || get_hand_state() == HAND_DRAW || get_hand_state() == HAND_DISCARD ||
         get_hand_state() == HAND_SELECT)
     {
         change_background(BG_CARD_SELECTING, false);

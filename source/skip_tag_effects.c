@@ -2,6 +2,7 @@
 #include "game/blind_select.h"
 #include "game/shop.h"
 #include "game_variables.h"
+#include "hand.h"
 #include "joker.h"
 #include "round_end.h"
 #include "skip_tag.h"
@@ -16,6 +17,7 @@
 
 REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_true)
 REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_double)
+REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_juggle)
 REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_d6)
 REGISTER_SKIP_TAG_CONDITION_FUNC(skip_tag_cond_investment)
 
@@ -55,7 +57,7 @@ const SkipTagInfo skip_tag_registry[] =
     { SKIP_TAG_EVENT_NONE,           skip_tag_cond_true,       skip_tag_effect_noop       }, // 15
     { SKIP_TAG_EVENT_ON_SHOP_INIT,   skip_tag_cond_true,       skip_tag_effect_coupon     }, // COUPON     = 16
     { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_double,     skip_tag_effect_double     }, // DOUBLE     = 17
-    { SKIP_TAG_EVENT_ON_ROUND_START, skip_tag_cond_true,       skip_tag_effect_juggle     }, // JUGGLE     = 18
+    { SKIP_TAG_EVENT_ON_ROUND_START, skip_tag_cond_juggle,     skip_tag_effect_juggle     }, // JUGGLE     = 18
     { SKIP_TAG_EVENT_ON_SHOP_INIT,   skip_tag_cond_d6,         skip_tag_effect_d6         }, // D6         = 19
     { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_true,       skip_tag_effect_top_up     }, // TOP_UP     = 20
     { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_true,       skip_tag_effect_speed      }, // SPEED      = 21
@@ -96,6 +98,11 @@ static bool skip_tag_cond_double(void)
 {
     SkipTag* latest_tag = g_game_vars.owned_skip_tags.tail->data;
     return (latest_tag != NULL) && (latest_tag->type != SKIP_TAG_TYPE_DOUBLE);
+}
+
+static bool skip_tag_cond_juggle(void)
+{
+    return g_game_vars.hand_size < MAX_HAND_SIZE;
 }
 
 static bool skip_tag_cond_d6(void)
@@ -149,6 +156,8 @@ static void skip_tag_effect_double(void)
 
 static void skip_tag_effect_juggle(void)
 {
+    s32 new_hand_size = g_game_vars.hand_size + 3;
+    g_game_vars.hand_size = (new_hand_size > MAX_HAND_SIZE) ? MAX_HAND_SIZE : new_hand_size;
 }
 
 static void skip_tag_effect_d6(void)

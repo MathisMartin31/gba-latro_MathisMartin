@@ -546,6 +546,8 @@ void game_round_end_change_background(void)
 
 void game_round_end_on_init(void)
 {
+    // Reset hand size in case it was increased by the Juggle Tag
+    g_game_vars.hand_size = DEFAULT_HAND_SIZE;
     g_game_vars.timer = 0;
     g_game_vars.nb_unused_discards += g_game_vars.discards;
     state_machine_register(&round_end_sm);
