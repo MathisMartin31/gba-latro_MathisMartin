@@ -699,5 +699,5 @@ void game_start(void)
     display_money(); // Set the money display
     display_ante();
 
-    game_change_state(GAME_STATE_BLIND_SELECT);
+    game_change_state(GAME_STATE_SHOP);
 }
