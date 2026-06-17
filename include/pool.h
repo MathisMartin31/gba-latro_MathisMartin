@@ -21,8 +21,7 @@
     type* pool_get_##type();          \
     void pool_free_##type(type* obj); \
     int pool_idx_##type(type* obj);   \
-    type* pool_at_##type(int idx);    \
-    bool pool_valid_at_##type(int idx);
+    type* pool_at_##type(int idx);
 
 #define POOL_DEFINE_TYPE(type, capacity)                                \
     BITSET_DEFINE(type##_bitset, capacity)                              \

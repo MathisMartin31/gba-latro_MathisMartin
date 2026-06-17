@@ -240,6 +240,8 @@ IWRAM_CODE void sprite_object_update(SpriteObject* sprite_object);
 
 /**
  * @brief Update all SpriteObjects, to be called once per frame in the main update loop.
+ *
+ * TODO: try and put this function in IWRAM for performance purposes. Crashed the last time I tried.
  */
 void sprite_object_update_all(void);
 
