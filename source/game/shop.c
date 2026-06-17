@@ -712,8 +712,8 @@ static void game_shop_show_card_desc(void)
     // Anim start
     if (timer == 1)
     {
-        // This starts at 0, then gets incremented up to TM_SHOW_CARD_DESC_WAIT. Will be used to revert the animation
-        // if the B button is released midway through it
+        // This starts at 0, then gets incremented up to TM_SHOW_CARD_DESC_WAIT. Will be used to
+        // revert the animation if the B button is released midway through it
         show_description_anim_progress = 0;
 
         // Erase shop text and disable transparency window
@@ -828,7 +828,7 @@ static void game_shop_hide_card_desc(void)
         {
             main_bg_se_clear_rect(OWNED_CARDS_PANEL_ANIM_CLEAR);
         }
-        
+
         tte_erase_rect_wrapper(PLAYING_SCREEN_RECT);
 
         // Enable transparency window
