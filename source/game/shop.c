@@ -24,7 +24,6 @@
 #include "timer.h"
 #include "util.h"
 
-#include <stdlib.h>
 #include <string.h>
 
 // Timer defs
