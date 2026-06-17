@@ -195,7 +195,7 @@ static const Rect DECK_SIZE_RECT            = {200,     152,    240,       160  
 static const Rect ROUND_TEXT_RECT           = {48,      144,    UNDEFINED, UNDEFINED };
 static const Rect ANTE_TEXT_RECT            = {8,       144,    UNDEFINED, UNDEFINED };
 
-static const BG_POINT CARD_DRAW_POS         = {210,     118};
+static const BG_POINT CARD_DRAW_POS         = {208,     118};
 static const BG_POINT CARD_DISCARD_PNT      = {240,     70};
 static const BG_POINT HAND_START_POS        = {120,     90};
 static const BG_POINT HAND_PLAY_POS         = {120,     70};
