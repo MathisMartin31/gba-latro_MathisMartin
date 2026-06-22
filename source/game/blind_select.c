@@ -44,7 +44,6 @@ static void game_blind_select_print_blinds_reqs_and_rewards(void);
 static enum BlindType get_blind_type_from_token(enum BlindTokens blind);
 static void blind_tokens_init(void);
 static void blind_skip_tags_init(void);
-static void blind_skip_tags_update(void);
 
 enum BlindSelectState
 {
@@ -640,15 +639,6 @@ static void blind_skip_tags_init(void)
     skip_tag_set_sprite(blind_skip_tags[1], BIG_BLIND_SKIP_TAG_INIT_POS, BIG_BLIND_SKIP_TAG_LAYER);
 }
 
-static void blind_skip_tags_update(void)
-{
-    for (int i = 0; i < NB_SKIPPABLE_BLINDS; i++)
-    {
-        if (blind_skip_tags[i] != NULL)
-            sprite_object_update(blind_skip_tags[i]->sprite_object);
-    }
-}
-
 void game_blind_select_on_init(void)
 {
     timer = TM_ZERO;
@@ -676,7 +666,6 @@ void game_blind_select_on_init(void)
 void game_blind_select_on_update(void)
 {
     timer++;
-    blind_skip_tags_update();
 }
 
 void game_blind_select_on_exit(void)

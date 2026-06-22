@@ -550,17 +550,6 @@ static inline void jokers_update_loop(void)
     expired_jokers_update_loop();
 }
 
-static inline void owned_skip_tags_update_loop(void)
-{
-    ListItr itr = list_itr_create(&g_game_vars.owned_skip_tags);
-    SkipTag* tag;
-
-    while ((tag = list_itr_next(&itr)) && tag->sprite_object != NULL)
-    {
-        sprite_object_update(tag->sprite_object);
-    }
-}
-
 void game_update()
 {
     rng_update();
@@ -568,7 +557,6 @@ void game_update()
     g_game_vars.timer++;
 
     jokers_update_loop();
-    owned_skip_tags_update_loop();
 
     state_machine_update();
 
