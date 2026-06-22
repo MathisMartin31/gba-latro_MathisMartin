@@ -27,6 +27,7 @@ static const u32 BLIND_SELECT_BOSS_BLIND_PANEL_SHADOW_PID = 7;
 
 static const u32 TM_DISP_BLIND_PANEL_FINISH = 7;
 static const u32 TM_DISP_BLIND_PANEL_START = 1;
+static const u32 TM_BOSS_BLIND_REROLL_DURATION = 13;
 
 #define NB_SKIPPABLE_BLINDS 2
 
@@ -121,25 +122,26 @@ static void game_blind_select_start_anim_seq()
     if (timer == TM_SKIP_TAGS_ANIM_SEQ)
     {
         BG_POINT unused_pos = {UNDEFINED, UNDEFINED};
-        if (blind_skip_tags[0] != NULL)
+
+        // first index is the Small/Big Blind Tag, the second one is for whether the current blind
+        // corresponds to the Tag
+        static const BG_POINT
+            tag_sprites_target_positions[NB_SKIPPABLE_BLINDS][NB_SKIPPABLE_BLINDS] = {
+            {SMALL_BLIND_SKIP_TAG_LOW_POS, SMALL_BLIND_SKIP_TAG_HIGH_POS},
+            {BIG_BLIND_SKIP_TAG_LOW_POS,   BIG_BLIND_SKIP_TAG_HIGH_POS  }
+        };
+
+        for (int i = 0; i < NB_SKIPPABLE_BLINDS; i++)
         {
-            sprite_object_slide_from_to(
-                blind_skip_tags[0]->sprite_object,
-                unused_pos,
-                g_game_vars.current_blind == BLIND_TYPE_SMALL ? SMALL_BLIND_SKIP_TAG_HIGH_POS
-                                                              : SMALL_BLIND_SKIP_TAG_LOW_POS,
-                UNDEFINED
-            );
-        }
-        if (blind_skip_tags[1] != NULL)
-        {
-            sprite_object_slide_from_to(
-                blind_skip_tags[1]->sprite_object,
-                unused_pos,
-                g_game_vars.current_blind == BLIND_TYPE_BIG ? BIG_BLIND_SKIP_TAG_HIGH_POS
-                                                            : BIG_BLIND_SKIP_TAG_LOW_POS,
-                UNDEFINED
-            );
+            if (blind_skip_tags[i] != NULL)
+            {
+                sprite_object_slide_from_to(
+                    blind_skip_tags[i]->sprite_object,
+                    unused_pos,
+                    tag_sprites_target_positions[i][g_game_vars.current_blind == (enum BlindType)i],
+                    UNDEFINED
+                );
+            }
         }
     }
 
@@ -337,7 +339,7 @@ static void game_blind_select_reroll_boss_anim_seq(void)
 
     // Move Boss Blind panel 1 tile more up and down if needed
     bool is_boss_selected = g_game_vars.current_blind >= BLIND_TYPE_BOSS;
-    int panel_move_duration = 13 + (int)is_boss_selected;
+    int panel_move_duration = TM_BOSS_BLIND_REROLL_DURATION + (int)is_boss_selected;
 
     // Erase the Boss Blind's score req/reward
     if (timer == 1)

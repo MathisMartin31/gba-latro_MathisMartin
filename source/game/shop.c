@@ -751,7 +751,7 @@ static void game_shop_show_card_desc(void)
         }
 
         // Owned SkipTags
-        hide_owned_skip_tags_offscreen();
+        move_owned_skip_tags_offscreen(true);
 
         // Set description_card new target position
 
@@ -865,7 +865,7 @@ static void game_shop_hide_card_desc(void)
         }
 
         // Owned SkipTags
-        unhide_owned_skip_tags_offscreen();
+        move_owned_skip_tags_offscreen(false);
 
         description_card->sprite_object->tx = description_card_original_x_pos;
         description_card->sprite_object->ty = description_card_original_y_pos;

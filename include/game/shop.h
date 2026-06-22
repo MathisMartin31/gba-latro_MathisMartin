@@ -16,7 +16,18 @@
  */
 void game_shop_reset(void);
 
+/**
+ * @brief Get the current cost to reroll the items sold in the shop
+ *
+ * @return int
+ */
 int game_shop_get_reroll_cost(void);
+
+/**
+ * @brief Set the current cost to reroll the items sold in the shop to the given value
+ *
+ * @param cost new reroll price for the shop
+ */
 void game_shop_set_reroll_cost(int cost);
 
 /**
@@ -36,6 +47,8 @@ void game_shop_set_joker_avail(int joker_id, bool avail);
 
 /**
  * @brief Rolls a random Joker ID among the available ones
+ *
+ * @return the new, random Joker ID.
  */
 int game_shop_get_rand_available_joker_id(void);
 
@@ -43,6 +56,8 @@ int game_shop_get_rand_available_joker_id(void);
  * @brief Rolls a random Joker ID among the available ones with a given rarity
  *
  * @param joker_rarity
+ *
+ * @return the new, random Joker ID.
  */
 int game_shop_get_rand_available_joker_id_with_rarity(int joker_rarity);
 

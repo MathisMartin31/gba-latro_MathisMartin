@@ -258,10 +258,12 @@ void sprite_object_shake(SpriteObject* sprite_object, mm_word sound_id);
  * @brief Make SpriteObject bounce on screen and play a sound
  *
  * @param SpriteObject pointer to SpriteObject to make bounce. Cannot be **NULL**.
+ * @param strength how much does the sprite bounce, higher values yield a bigger bounce.
+ *        Recommended values are [0.5;2.0], although 1.0 is ideal.
  * @param sound_id ID of sound from maxmod to play on executing bounce. If **UNDEFINED**
  *        no sound will play.
  */
-void sprite_object_bounce(SpriteObject* sprite_object, mm_word sound_id);
+void sprite_object_bounce(SpriteObject* sprite_object, float strength, mm_word sound_id);
 
 /**
  * @brief Slide SpriteObject across the screen between two positions and play a sound
@@ -269,7 +271,7 @@ void sprite_object_bounce(SpriteObject* sprite_object, mm_word sound_id);
  * @param SpriteObject pointer to SpriteObject to move. Cannot be **NULL**.
  * @param from starting position, current SpriteObject position will be used if
  *              any dimension is set to UNDEFINED.
- * @param to target position
+ * @param to target position. Cannot be **UNDEFINED**.
  * @param sound_id ID of sound from maxmod to play on executing slide. If **UNDEFINED**
  *        no sound will play.
  */
@@ -284,7 +286,7 @@ void sprite_object_slide_from_to(
  * @brief Teleport SpriteObject to position and play a sound
  *
  * @param SpriteObject pointer to SpriteObject to move. Cannot be **NULL**.
- * @param to target position
+ * @param to target position. Cannot be **UNDEFINED**.
  * @param bounce whether a little animation is played at the target position
  * @param sound_id ID of sound from maxmod to play on move. If **UNDEFINED**
  *        no sound will play.

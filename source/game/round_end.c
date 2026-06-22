@@ -462,11 +462,16 @@ static void game_round_end_display_rewards(void)
     }
 }
 
+static inline s32 game_round_end_compute_total_cashout(void)
+{
+    return g_game_vars.hands + blind_get_reward(g_game_vars.current_blind) +
+           investment_reward * INVESTMENT_TAG_REWARD + calculate_interest_reward();
+}
+
 static inline void game_round_end_cashout(void)
 {
     // Reward the player
-    g_game_vars.money += g_game_vars.hands + blind_get_reward(g_game_vars.current_blind) +
-                         investment_reward * INVESTMENT_TAG_REWARD + calculate_interest_reward();
+    g_game_vars.money += game_round_end_compute_total_cashout();
     display_money();
 
     g_game_vars.hands = MAX_HANDS;       // Reset the hands to the maximum
@@ -486,9 +491,7 @@ static void game_round_end_display_cashout()
         // Put the "cash out" button onto the round end panel
         main_bg_se_copy_expand_3x3_rect(CASHOUT_DEST_RECT, CASHOUT_SRC_3X3_RECT_POS);
 
-        int cashout_amount = g_game_vars.hands + blind_get_reward(g_game_vars.current_blind) +
-                             investment_reward * INVESTMENT_TAG_REWARD +
-                             calculate_interest_reward();
+        int cashout_amount = game_round_end_compute_total_cashout();
 
         bool omit_space = cashout_amount >= 10;
         tte_printf(

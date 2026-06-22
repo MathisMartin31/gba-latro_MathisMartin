@@ -77,11 +77,6 @@ const SkipTagInfo* get_skip_tag_registry_entry(int tag_id)
     return &skip_tag_registry[tag_id];
 }
 
-size_t get_skip_tag_registry_size(void)
-{
-    return skip_tag_registry_size;
-}
-
 // CONDITIONS IMPLEMENTATION
 
 static bool skip_tag_cond_true(void)

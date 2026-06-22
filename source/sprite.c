@@ -332,12 +332,13 @@ void sprite_object_shake(SpriteObject* sprite_object, mm_word sound_id)
     play_sfx(sound_id, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
 }
 
-void sprite_object_bounce(SpriteObject* sprite_object, mm_word sound_id)
+#define SPRITE_OBJECT_DEFAULT_BOUNCE_STRENGTH (-0.4f)
+void sprite_object_bounce(SpriteObject* sprite_object, float strength, mm_word sound_id)
 {
     if (sprite_object == NULL)
         return;
 
-    sprite_object->vscale = float2fx(-0.4f);
+    sprite_object->vscale = float2fx(SPRITE_OBJECT_DEFAULT_BOUNCE_STRENGTH * strength);
     sprite_object->vrotation = float2fx(0.0f);
     sprite_object->rotation = float2fx(0.0f);
 
@@ -354,7 +355,7 @@ void sprite_object_slide_from_to(
     mm_word sound_id
 )
 {
-    if (sprite_object == NULL)
+    if (sprite_object == NULL || to.x == UNDEFINED || to.y == UNDEFINED)
         return;
 
     if (from.x != UNDEFINED)
@@ -375,9 +376,11 @@ void sprite_object_slide_from_to(
     play_sfx(sound_id, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
 }
 
+#define SPRITE_OBJECT_SNAP_BOUNCE_VSCALE    (-0.3f)
+#define SPRITE_OBJECT_SNAP_BOUNCE_VROTATION (-10.f)
 void sprite_object_snap_to(SpriteObject* sprite_object, BG_POINT to, bool bounce, mm_word sound_id)
 {
-    if (sprite_object == NULL)
+    if (sprite_object == NULL || to.x == UNDEFINED || to.y == UNDEFINED)
         return;
 
     sprite_object->x = int2fx(to.x);
@@ -387,8 +390,9 @@ void sprite_object_snap_to(SpriteObject* sprite_object, BG_POINT to, bool bounce
 
     if (bounce)
     {
-        sprite_object->vscale = float2fx(-0.3f);
-        sprite_object->vrotation = float2fx(-10.0f);
+        // set scale and rotation velocity to grow the card and rotate it slightly
+        sprite_object->vscale = float2fx(SPRITE_OBJECT_SNAP_BOUNCE_VSCALE);
+        sprite_object->vrotation = float2fx(SPRITE_OBJECT_SNAP_BOUNCE_VROTATION);
     }
 
     if (sound_id == UNDEFINED)

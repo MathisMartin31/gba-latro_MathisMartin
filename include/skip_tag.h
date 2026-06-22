@@ -13,7 +13,8 @@
 
 #define MAX_SKIP_TAGS 16
 
-#define SKIP_TAG_SPRITE_OFFSET 4
+// Number of tiles a Tag sprite is made of
+#define SKIP_TAG_SPRITE_SIZE 4
 // Put Tag sprites after the Jokers'
 #define SKIP_TAG_STARTING_LAYER    (JOKER_STARTING_LAYER + MAX_ACTIVE_JOKERS)
 #define SMALL_BLIND_SKIP_TAG_LAYER 0
@@ -22,7 +23,7 @@
 // The sprites for the ones we own will be stored after them.
 #define OWNED_SKIP_TAG_STARTING_LAYER 2
 // Tile ID for the starting index in the tile memory
-#define SKIP_TAG_TID (SKIP_TAG_STARTING_LAYER * SKIP_TAG_SPRITE_OFFSET)
+#define SKIP_TAG_TID (SKIP_TAG_STARTING_LAYER * SKIP_TAG_SPRITE_SIZE)
 
 #define INVESTMENT_TAG_REWARD 25
 
@@ -93,6 +94,14 @@ enum SkipTagEffect
 typedef bool (*SkipTagCondition)(void);
 typedef void (*SkipTagCallback)(void);
 
+/**
+ * @brief Data structure containing the info about a Skip Tag, namely:
+ *
+ *  - `event_type` the event for which the Tag will trigger (immediate, on round start, etc...)
+ *  - `tag_condition_func` a function returning whether the Tag should trigger. Indeed, not all tags
+ *    must trigger for their given event, e.g. the D6 Tag, only one of which can be consumed per shop.
+ *  - `tag_effect_func` the function that will actually do the Tag's work, like doubling money.
+ */
 typedef struct
 {
     enum SkipTagEvent event_type;
@@ -100,16 +109,58 @@ typedef struct
     SkipTagCallback tag_effect_func;
 } SkipTagInfo;
 
+/**
+ * @brief Get the registry entry info for the given Skip Tag
+ *
+ * @param tag_id ID of the Skip Tag we need the info of
+ *
+ * @return a pointer to the info structure for the given Skip Tag
+ * @sa SkipTagInfo
+ */
 const SkipTagInfo* get_skip_tag_registry_entry(int tag_id);
-size_t get_skip_tag_registry_size(void);
 
+/**
+ * @brief Create a new Skip Tag object for the given Tag ID and allocates space for it in the corresponding
+ *        memory pool.
+ *
+ * @param tag_type the ID of the Tag we want
+ *
+ * @return a pointer to a new SkipTag object
+ * @sa SkipTagTypes, SkipTag
+ */
 SkipTag* skip_tag_new(u8 tag_type);
+
+/**
+ * @brief Set the sprite for the given SkipTag, according to its internal ID.
+ *
+ * @param tag pointer to the SkipTag object
+ * @param pos position the new Sprite will immediately be shown at. Cannot be **UNDEFINED**
+ * @param layer sprite layer for the new Sprite
+ */
 void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer);
+
+/**
+ * @brief Destroy the given SkipTag, invalidate it in the corresponding memory pool and set the pointer
+ *        provided to NULL
+ * 
+ * @param tag pointer of pointer to the SkipTag we want to destroy
+ */
 void skip_tag_destroy(SkipTag** tag);
 
-void hide_owned_skip_tags_offscreen(void);
-void unhide_owned_skip_tags_offscreen(void);
+/**
+ * @brief Show or hide the owned SkipTag sprites by moving them offscreen to the right.
+ *
+ * @param hidden whether the sprites should be hidden or not
+ */
+void move_owned_skip_tags_offscreen(bool hidden);
 
+/**
+ * @brief Create a new SkipTag with a random ID, picked by taking the Ante into account, as some Tags
+ *        only appear from Ante 2 onwards.
+ *
+ * @return SkipTag pointer to the new SkipTag object
+ * @sa skip_tag_new
+ */
 SkipTag* roll_skip_tag(void);
 
 /**
@@ -136,6 +187,21 @@ void add_skip_tag(SkipTag** blind_tag);
  */
 void remove_skip_tag(int tag_idx);
 
+/**
+ * @brief Determines if a SkipTag needs to trigger for the given event and timer.
+ *
+ * Skip Tags will be fully processed over 60 frames (3 * TM_SKIP_TAG_ANIM_DURATION) so we have time
+ * to process what's happening:
+ *
+ *  - Detect triggered Tag, serves as a short pause
+ *  - Starting the little bouncy animation as the Tag triggers
+ *  - Delete triggered Tag
+ *
+ * @param timer value of the timer from the screen calling this function
+ * @param tag_event even for which the Tag is evaluated
+ * @return SkipTagEffect
+ * @sa SkipTagEffect
+ */
 enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_event);
 
 #endif // SKIP_TAGS_H

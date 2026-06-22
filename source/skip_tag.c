@@ -79,7 +79,7 @@ SkipTag* skip_tag_new(u8 tag_type)
 
 void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer)
 {
-    if (tag == NULL)
+    if (tag == NULL || pos.x == UNDEFINED || pos.y == UNDEFINED)
         return;
 
     // Set tags palette the first time we ask for a sprite
@@ -90,11 +90,11 @@ void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer)
         pb_init = true;
     }
 
-    int tile_index = SKIP_TAG_TID + (layer * SKIP_TAG_SPRITE_OFFSET);
+    int tile_index = SKIP_TAG_TID + (layer * SKIP_TAG_SPRITE_SIZE);
     memcpy32(
         &tile_mem[TILE_MEM_OBJ_CHARBLOCK0_IDX][tile_index],
-        &skip_tags_gfxTiles[tag->type * SKIP_TAG_SPRITE_OFFSET * TILE_SIZE],
-        SKIP_TAG_SPRITE_OFFSET * TILE_SIZE
+        &skip_tags_gfxTiles[tag->type * SKIP_TAG_SPRITE_SIZE * TILE_SIZE],
+        SKIP_TAG_SPRITE_SIZE * TILE_SIZE
     );
 
     // Recreate sprite
@@ -126,25 +126,15 @@ void skip_tag_destroy(SkipTag** tag)
 
 // Misc functions
 
-void hide_owned_skip_tags_offscreen(void)
+void move_owned_skip_tags_offscreen(bool hidden)
 {
     SkipTag* tag;
     ListItr tag_itr = list_itr_create(&g_game_vars.owned_skip_tags);
+    int tag_xpos = int2fx(OWNED_SKIP_TAGS_BASE_POS.x + (hidden ? SKIP_TAG_HIDE_X_OFFSET : 0));
 
     while ((tag = list_itr_next(&tag_itr)))
     {
-        tag->sprite_object->tx += int2fx(SKIP_TAG_HIDE_X_OFFSET);
-    }
-}
-
-void unhide_owned_skip_tags_offscreen(void)
-{
-    SkipTag* tag;
-    ListItr tag_itr = list_itr_create(&g_game_vars.owned_skip_tags);
-
-    while ((tag = list_itr_next(&tag_itr)))
-    {
-        tag->sprite_object->tx = int2fx(OWNED_SKIP_TAGS_BASE_POS.x);
+        tag->sprite_object->tx = tag_xpos;
     }
 }
 
@@ -178,10 +168,15 @@ static void rearrange_skip_tag_sprites(int nb_owned_tags, int tag_spacing)
     for (int idx = 0; idx < nb_owned_tags; idx++)
     {
         SkipTag* tmp_tag = list_get_at_idx(&g_game_vars.owned_skip_tags, idx);
+
+        if (tmp_tag == NULL)
+            continue;
+
         BG_POINT dest_pos = {
             OWNED_SKIP_TAGS_BASE_POS.x,
             OWNED_SKIP_TAGS_BASE_POS.y - idx * tag_spacing
         };
+
         sprite_object_slide_from_to(tmp_tag->sprite_object, unused_pos, dest_pos, UNDEFINED);
     }
 }
@@ -204,7 +199,7 @@ bool skip_tag_is_owned(u8 tag_type)
 
 void add_skip_tag(SkipTag** blind_tag)
 {
-    if (blind_tag == NULL)
+    if (blind_tag == NULL || *blind_tag == NULL)
         return;
 
     // Add to the back, so that the oldest (at the bottom) has the lowest sprite
@@ -264,13 +259,8 @@ enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipT
     static SkipTagCallback consumed_tag_effect = NULL;
     static bool tag_animation = false;
 
-    // Skip Tags will be fully processed over 60 frames (3 * TM_SKIP_TAG_ANIM_DURATION) so we have
-    // time to process what's happening:
-    //  - Detect triggered Tag, serves as a short pause
-    //  - Starting the little bouncy animation
-    //  - Delete triggered Tag
-    // We check against 1 so that we catch the timer on the first frame, since it's
-    // incremented before calling this function
+    // We check against 1 so that we catch the timer on the first frame, since it's incremented before
+    // calling this function
     if (timer % FRAMES(TM_SKIP_TAG_ANIM_DURATION) == 1)
     {
         if (consumed_tag != NULL && consumed_tag_effect != NULL)
@@ -287,7 +277,7 @@ enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipT
                 tag_pos,
                 OWNED_SKIP_TAG_STARTING_LAYER + applied_tag_idx
             );
-            sprite_object_bounce(consumed_tag->sprite_object, SFX_REDEEM_TAG);
+            sprite_object_bounce(consumed_tag->sprite_object, 1.0f, SFX_REDEEM_TAG);
 
             // Apply tag here so it matches the animation
             (*consumed_tag_effect)();
