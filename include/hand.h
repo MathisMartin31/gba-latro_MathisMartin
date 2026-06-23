@@ -237,12 +237,7 @@ int find_flush_in_played_cards(CardObject** played, int top, int min_len, bool* 
  * @return              The number of cards in the best straight found, or 0 if no straight meets
  *                       min_len.
  */
-int find_straight_in_played_cards(
-    CardObject** played,
-    int top,
-    int min_len,
-    bool* out_selection
-);
+int find_straight_in_played_cards(CardObject** played, int top, int min_len, bool* out_selection);
 
 /**
  * @brief This is used for the special case in "Four Fingers" where you can add a pair into a
