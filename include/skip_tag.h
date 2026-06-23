@@ -99,7 +99,8 @@ typedef void (*SkipTagCallback)(void);
  *
  *  - `event_type` the event for which the Tag will trigger (immediate, on round start, etc...)
  *  - `tag_condition_func` a function returning whether the Tag should trigger. Indeed, not all tags
- *    must trigger for their given event, e.g. the D6 Tag, only one of which can be consumed per shop.
+ *    must trigger for their given event, e.g. the D6 Tag, only one of which can be consumed per
+ *    shop.
  *  - `tag_effect_func` the function that will actually do the Tag's work, like doubling money.
  */
 typedef struct
@@ -120,8 +121,8 @@ typedef struct
 const SkipTagInfo* get_skip_tag_registry_entry(int tag_id);
 
 /**
- * @brief Create a new Skip Tag object for the given Tag ID and allocates space for it in the corresponding
- *        memory pool.
+ * @brief Create a new Skip Tag object for the given Tag ID and allocates space for it in the
+ *        corresponding memory pool.
  *
  * @param tag_type the ID of the Tag we want
  *
@@ -140,9 +141,9 @@ SkipTag* skip_tag_new(u8 tag_type);
 void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer);
 
 /**
- * @brief Destroy the given SkipTag, invalidate it in the corresponding memory pool and set the pointer
- *        provided to NULL
- * 
+ * @brief Destroy the given SkipTag, invalidate it in the corresponding memory pool and set the
+ *        pointer provided to NULL
+ *
  * @param tag pointer of pointer to the SkipTag we want to destroy
  */
 void skip_tag_destroy(SkipTag** tag);
@@ -155,8 +156,8 @@ void skip_tag_destroy(SkipTag** tag);
 void move_owned_skip_tags_offscreen(bool hidden);
 
 /**
- * @brief Create a new SkipTag with a random ID, picked by taking the Ante into account, as some Tags
- *        only appear from Ante 2 onwards.
+ * @brief Create a new SkipTag with a random ID, picked by taking the Ante into account, as some
+ *        Tags only appear from Ante 2 onwards.
  *
  * @return SkipTag pointer to the new SkipTag object
  * @sa skip_tag_new

@@ -346,11 +346,7 @@ static void skip_tag_trigger_for_event(void)
 
     // Set tiles to the "activated" ones, each with colors that correspond to their tag type
     consumed_tag->type += MAX_SKIP_TAG_TYPES;
-    skip_tag_set_sprite(
-        consumed_tag,
-        tag_pos,
-        OWNED_SKIP_TAG_STARTING_LAYER + applied_tag_idx
-    );
+    skip_tag_set_sprite(consumed_tag, tag_pos, OWNED_SKIP_TAG_STARTING_LAYER + applied_tag_idx);
     sprite_object_bounce(consumed_tag->sprite_object, 1.0f, SFX_REDEEM_TAG);
 
     // Apply tag here so it matches the animation
