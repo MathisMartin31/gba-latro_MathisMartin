@@ -298,8 +298,7 @@ static void game_blind_select_handle_input()
 
 static void game_blind_select_handle_immediate_tags(void)
 {
-    if (skip_tag_check_and_apply_for_event_loop(timer, SKIP_TAG_EVENT_IMMEDIATE) ==
-        SKIP_TAG_EFFECT_END)
+    if (skip_tag_check_and_apply_for_event_loop(SKIP_TAG_EVENT_IMMEDIATE) == SKIP_TAG_EFFECT_END)
     {
         timer = TM_ZERO;
         state_machine_change_state(&blind_select_sm, BLIND_SELECT);

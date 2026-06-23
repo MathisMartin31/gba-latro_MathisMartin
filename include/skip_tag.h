@@ -188,7 +188,7 @@ void add_skip_tag(SkipTag** blind_tag);
 void remove_skip_tag(int tag_idx);
 
 /**
- * @brief Determines if a SkipTag needs to trigger for the given event and timer.
+ * @brief Determines if a SkipTag needs to trigger for the given event.
  *
  * Skip Tags will be fully processed over 60 frames (3 * TM_SKIP_TAG_ANIM_DURATION) so we have time
  * to process what's happening:
@@ -197,11 +197,10 @@ void remove_skip_tag(int tag_idx);
  *  - Starting the little bouncy animation as the Tag triggers
  *  - Delete triggered Tag
  *
- * @param timer value of the timer from the screen calling this function
  * @param tag_event even for which the Tag is evaluated
  * @return SkipTagEffect
- * @sa SkipTagEffect
+ * @sa SkipTagEffect, SkipTagEvent
  */
-enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_event);
+enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(enum SkipTagEvent tag_event);
 
 #endif // SKIP_TAGS_H

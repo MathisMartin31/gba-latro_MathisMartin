@@ -261,8 +261,7 @@ void game_shop_on_init(void)
 
 static void game_shop_redeem_skip_tags(void)
 {
-    if (skip_tag_check_and_apply_for_event_loop(timer, SKIP_TAG_EVENT_ON_SHOP_INIT) ==
-        SKIP_TAG_EFFECT_END)
+    if (skip_tag_check_and_apply_for_event_loop(SKIP_TAG_EVENT_ON_SHOP_INIT) == SKIP_TAG_EFFECT_END)
     {
         timer = TM_ZERO;
         state_machine_change_state(&shop_sm, GAME_SHOP_INTRO);

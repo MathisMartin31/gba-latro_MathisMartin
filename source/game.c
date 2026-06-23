@@ -2166,10 +2166,8 @@ static inline void game_playing_process_input_and_state(void)
     if (get_hand_state() == HAND_TAGS)
     {
         // Testing this in a general way but only the Juggler can apply here
-        if (skip_tag_check_and_apply_for_event_loop(
-                g_game_vars.timer,
-                SKIP_TAG_EVENT_ON_ROUND_START
-            ) == SKIP_TAG_EFFECT_END)
+        if (skip_tag_check_and_apply_for_event_loop(SKIP_TAG_EVENT_ON_ROUND_START) ==
+            SKIP_TAG_EFFECT_END)
         {
             set_hand_state(HAND_DRAW);
             g_game_vars.timer = TM_ZERO;

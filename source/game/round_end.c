@@ -329,9 +329,7 @@ static inline void game_round_end_redeem_investment_tags(void)
     }
     else if (g_game_vars.timer > current_reward_start_time + TM_REWARD_DISPLAY_INTERVAL)
     {
-        switch (
-            skip_tag_check_and_apply_for_event_loop(g_game_vars.timer, SKIP_TAG_EVENT_ON_ROUND_END)
-        )
+        switch (skip_tag_check_and_apply_for_event_loop(SKIP_TAG_EVENT_ON_ROUND_END))
         {
             // Increment investment bonus by 1
             case SKIP_TAG_EFFECT_TRIGGER:

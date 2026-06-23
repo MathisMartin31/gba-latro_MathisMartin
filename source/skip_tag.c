@@ -9,10 +9,10 @@
 #include "pool.h"
 #include "skip_tags_gfx.h"
 #include "soundbank.h"
+#include "state_machine.h"
 #include "timer.h"
 #include "util.h"
 
-#include <stdio.h>
 #include <stdlib.h> //#include "random.h"
 #include <tonc.h>
 
@@ -252,72 +252,121 @@ void remove_skip_tag(int tag_idx)
     );
 }
 
-enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(int timer, enum SkipTagEvent tag_event)
+enum SkipTagEvalState
 {
-    static int applied_tag_idx = 0;
-    static SkipTag* consumed_tag = NULL;
-    static SkipTagCallback consumed_tag_effect = NULL;
-    static bool tag_animation = false;
+    SKIP_TAG_EVAL_STATE_SEARCH,
+    SKIP_TAG_EVAL_STATE_TRIGGER,
+    SKIP_TAG_EVAL_STATE_REMOVE,
+    SKIP_TAG_EVAL_STATE_MAX
+};
 
-    // We check against 1 so that we catch the timer on the first frame, since it's incremented before
-    // calling this function
-    if (timer % FRAMES(TM_SKIP_TAG_ANIM_DURATION) == 1)
+static void skip_tag_search_for_event(void);
+static void skip_tag_trigger_for_event(void);
+static void skip_tag_remove_for_event(void);
+
+static StateCallback tag_eval_state_fn[] = {
+    skip_tag_search_for_event,
+    skip_tag_trigger_for_event,
+    skip_tag_remove_for_event
+};
+static enum SkipTagEvalState tag_eval_state = SKIP_TAG_EVAL_STATE_MAX;
+
+static s32 tags_timer = TM_ZERO;
+
+static int applied_tag_idx = 0;
+static SkipTag* consumed_tag = NULL;
+static SkipTagCallback consumed_tag_effect = NULL;
+
+static enum SkipTagEvent tag_event = SKIP_TAG_EVENT_NONE;
+static enum SkipTagEffect tag_effect = SKIP_TAG_EFFECT_NONE;
+
+enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(enum SkipTagEvent checked_tag_event)
+{
+    // iInit only once, and the state machine will run by itself from the next frame onwards
+    if (tag_eval_state == SKIP_TAG_EVAL_STATE_MAX)
     {
-        if (consumed_tag != NULL && consumed_tag_effect != NULL)
-        {
-            BG_POINT tag_pos = {
-                fx2int(consumed_tag->sprite_object->x),
-                fx2int(consumed_tag->sprite_object->y)
-            };
-
-            // Set tiles to the "activated" ones, each with colors that correspond to their tag type
-            consumed_tag->type += MAX_SKIP_TAG_TYPES;
-            skip_tag_set_sprite(
-                consumed_tag,
-                tag_pos,
-                OWNED_SKIP_TAG_STARTING_LAYER + applied_tag_idx
-            );
-            sprite_object_bounce(consumed_tag->sprite_object, 1.0f, SFX_REDEEM_TAG);
-
-            // Apply tag here so it matches the animation
-            (*consumed_tag_effect)();
-
-            consumed_tag = NULL;
-            consumed_tag_effect = NULL;
-            tag_animation = true;
-
-            return SKIP_TAG_EFFECT_TRIGGER;
-        }
-
-        if (tag_animation)
-        {
-            tag_animation = false;
-            remove_skip_tag(applied_tag_idx);
-
-            return SKIP_TAG_EFFECT_NONE;
-        }
-
-        int nb_owned_tags = list_get_len(&g_game_vars.owned_skip_tags);
-
-        for (; applied_tag_idx < nb_owned_tags; applied_tag_idx++)
-        {
-            consumed_tag = list_get_at_idx(&g_game_vars.owned_skip_tags, applied_tag_idx);
-            const SkipTagInfo* info = get_skip_tag_registry_entry(consumed_tag->type);
-
-            if (info == NULL || info->event_type != tag_event)
-                continue;
-
-            // Return early in case the tag can trigger, will apply effect later
-            if (info->tag_condition_func())
-            {
-                consumed_tag_effect = info->tag_effect_func;
-                return SKIP_TAG_EFFECT_NONE;
-            }
-        }
-
+        tags_timer = TM_ZERO;
+        tag_event = checked_tag_event;
         applied_tag_idx = 0;
-        return SKIP_TAG_EFFECT_END;
+        tag_eval_state = SKIP_TAG_EVAL_STATE_SEARCH;
     }
 
-    return SKIP_TAG_EFFECT_NONE;
+    tag_effect = SKIP_TAG_EFFECT_NONE;
+
+    if (tags_timer % FRAMES(TM_SKIP_TAG_ANIM_DURATION) == TM_ZERO)
+        tag_eval_state_fn[tag_eval_state]();
+
+    tags_timer++;
+
+    if (tag_effect != SKIP_TAG_EFFECT_END)
+    {
+        return tag_effect;
+    }
+
+    tag_eval_state = SKIP_TAG_EVAL_STATE_MAX;
+    return SKIP_TAG_EFFECT_END;
+}
+
+static void skip_tag_search_for_event(void)
+{
+    int nb_owned_tags = list_get_len(&g_game_vars.owned_skip_tags);
+
+    for (; applied_tag_idx < nb_owned_tags; applied_tag_idx++)
+    {
+        consumed_tag = list_get_at_idx(&g_game_vars.owned_skip_tags, applied_tag_idx);
+
+        if (consumed_tag == NULL)
+            continue;
+
+        const SkipTagInfo* info = get_skip_tag_registry_entry(consumed_tag->type);
+
+        if (info == NULL || info->event_type != tag_event)
+            continue;
+
+        // Return early in case the tag can trigger, will apply effect later
+        if (info->tag_condition_func())
+        {
+            consumed_tag_effect = info->tag_effect_func;
+
+            tag_effect = SKIP_TAG_EFFECT_NONE;
+            tag_eval_state = SKIP_TAG_EVAL_STATE_TRIGGER;
+            return;
+        }
+    }
+
+    tag_effect = SKIP_TAG_EFFECT_END;
+}
+
+static void skip_tag_trigger_for_event(void)
+{
+    BG_POINT tag_pos = {
+        fx2int(consumed_tag->sprite_object->x),
+        fx2int(consumed_tag->sprite_object->y)
+    };
+
+    // Set tiles to the "activated" ones, each with colors that correspond to their tag type
+    consumed_tag->type += MAX_SKIP_TAG_TYPES;
+    skip_tag_set_sprite(
+        consumed_tag,
+        tag_pos,
+        OWNED_SKIP_TAG_STARTING_LAYER + applied_tag_idx
+    );
+    sprite_object_bounce(consumed_tag->sprite_object, 1.0f, SFX_REDEEM_TAG);
+
+    // Apply tag here so it matches the animation
+    (*consumed_tag_effect)();
+
+    consumed_tag = NULL;
+    consumed_tag_effect = NULL;
+
+    tag_effect = SKIP_TAG_EFFECT_TRIGGER;
+    tag_eval_state = SKIP_TAG_EVAL_STATE_REMOVE;
+}
+
+static void skip_tag_remove_for_event(void)
+{
+    remove_skip_tag(applied_tag_idx);
+
+    tag_effect = SKIP_TAG_EFFECT_NONE;
+    tag_eval_state = SKIP_TAG_EVAL_STATE_SEARCH;
 }
