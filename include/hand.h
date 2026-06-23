@@ -211,24 +211,48 @@ void sort_cards(void);
 // Hand Contents Analysis
 
 /**
- * Finds the largest flush (set of cards with the same suit) in the given array of played cards.
- * Marks the cards belonging to the best flush in the out_selection array.
+ * @brief Finds the largest flush (set of cards with the same suit) in the given array of played
+ *         cards. Marks the cards belonging to the best flush in the out_selection array.
  *
  * @param played        Array of pointers to CardObject representing played cards.
  * @param top           Index of the top of the played stack.
  * @param min_len       Minimum number of cards required for a flush.
  * @param out_selection Output array of bools; set to true for cards in the best flush, false
- * otherwise.
+ *                       otherwise.
+ *
  * @return              The number of cards in the best flush found, or 0 if no flush meets min_len.
  */
 int find_flush_in_played_cards(CardObject** played, int top, int min_len, bool* out_selection);
+
+/**
+ * Finds the largest straight (set of cards with sequential ranks) in the given array of played
+ * cards. Marks the cards belonging to the best straight in the out_selection array.
+ *
+ * @param played        Array of pointers to CardObject representing played cards.
+ * @param top           Index of the top of the played stack.
+ * @param min_len       Minimum number of cards required for a straight.
+ * @param out_selection Output array of bools; set to true for cards in the best straight, false
+ *                       otherwise.
+ *
+ * @return              The number of cards in the best straight found, or 0 if no straight meets
+ *                       min_len.
+ */
 int find_straight_in_played_cards(
     CardObject** played,
     int top,
-    bool shortcut_active,
     int min_len,
     bool* out_selection
 );
+
+/**
+ * @brief This is used for the special case in "Four Fingers" where you can add a pair into a
+ *         straight (e.g. AA234 should score all 5 cards)
+ *
+ * @param played    Array of pointers to CardObject representing played cards.
+ * @param top       Index of the top of the played stack.
+ * @param selection In/Out array of bools; cards from a straight are already set to true, so we
+ *                   add to those the leftover ones that form a pair with an already selected card.
+ */
 void select_paired_cards_in_hand(CardObject** played, int top, bool* selection);
 
 #endif
