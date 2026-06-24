@@ -130,7 +130,7 @@ enum BlindState
  * @def Blind
  * @brief Data structure containing data about a BlindType.
  *
- * Only contains the score requirement multiplyier for now, but will contain infà about the BLind's
+ * Only contains the score requirement multiplier for now, but will contain info about the Blind's
  * effect when implemented.
  */
 typedef struct
