@@ -58,7 +58,8 @@ static const u32 ante_lut[] = {100, 300, 800, 2000, 5000, 11000, 20000, 35000, 5
 /**
  * @def _blind_type_map
  * @brief Stores an instance of the Blind struct for each BlindType value, ordered in the same way.
- *         Acts the same way the Joker registry does, and may need to go in its own file depending on how Blind effects are implemented
+ *         Acts the same way the Joker registry does, and may need to go in its own file depending
+ *         on how Blind effects are implemented.
  */
 static Blind _blind_type_map[BLIND_TYPE_MAX] = {
     {BLIND_TYPE_SMALL,    FIX_ONE         },

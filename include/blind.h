@@ -13,7 +13,6 @@
 #define MAX_ANTE 8
 
 /**
- * @def BlindTokens
  * @brief The sprites that display the blinds when in "GAME_BLIND_SELECT" state.
  *         There are only 3 blinds per Ante, so we don't need more sprites than that
  */
@@ -26,7 +25,6 @@ enum BlindTokens
 };
 
 /**
- * @def BlindTokenLayers
  * @brief Sprite IDs of the various Blind Tokens used in the game, expressed as an offset relative
  *         to `BLIND_BASE_LAYER`
  *
