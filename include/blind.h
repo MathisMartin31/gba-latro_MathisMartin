@@ -128,7 +128,7 @@ enum BlindState
  * @def Blind
  * @brief Data structure containing data about a BlindType.
  *
- * Only contains the score requirement multiplyier for now, but will contain infà about the BLind's
+ * Only contains the score requirement multiplier for now, but will contain info about the Blind's
  * effect when implemented.
  */
 typedef struct
@@ -160,7 +160,7 @@ u32 blind_get_requirement(enum BlindType type, int ante);
 int blind_get_reward(enum BlindType type);
 
 /**
- * @brief Get a certain color from the palette associated with a given Blind.
+ * @brief Get the color associated with a given Blind.
  *
  * @param type the BlindType whose palette will be used
  * @param index of the color within the Blind's palette

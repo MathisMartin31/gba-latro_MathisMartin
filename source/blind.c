@@ -129,7 +129,8 @@ int blind_get_reward(enum BlindType type)
 }
 
 /**
- * @brief Fill Lists of unbeaten Boss and Showdown Blinds so we can roll from them each Ante.
+ * @brief Fill Lists of unbeaten Boss and Showdown Blinds
+ *
  *         By keeping track of what Blind we have beaten or not, we can ensure than until we've
  *         beaten all the Blinds in a single Run, we won't encounter the same one twice.
  *
