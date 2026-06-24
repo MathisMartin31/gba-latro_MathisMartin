@@ -162,7 +162,7 @@ u32 blind_get_requirement(enum BlindType type, int ante);
 int blind_get_reward(enum BlindType type);
 
 /**
- * @brief Get a certain color from the palette associated with a given Blind.
+ * @brief Get the color associated with a given Blind.
  *
  * @param type the BlindType whose palette will be used
  * @param index of the color within the Blind's palette
