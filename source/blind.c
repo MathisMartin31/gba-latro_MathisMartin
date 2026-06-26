@@ -56,7 +56,6 @@ static const u32 ANTE_LUT[] = {100, 300, 800, 2000, 5000, 11000, 20000, 35000, 5
 
 // clang-format off
 /**
- * @def s_blind_type_map
  * @brief Stores an instance of the Blind struct for each BlindType value, ordered in the same way.
  *         Acts the same way the Joker registry does, and may need to go in its own file depending
  *         on how Blind effects are implemented.
@@ -110,7 +109,7 @@ u32 blind_get_requirement(enum BlindType type, int ante)
     if (ante < 0 || ante > MAX_ANTE)
         ante = 0;
 
-    return fx2int(s_blind_type_map[type].score_req_multipler * ANTE_LUT[ante]);
+    return fx2int(s_blind_type_map[type].score_req_multiplier * ANTE_LUT[ante]);
 }
 
 int blind_get_reward(enum BlindType type)
@@ -131,7 +130,7 @@ int blind_get_reward(enum BlindType type)
 /**
  * @brief Fill Lists of unbeaten Boss and Showdown Blinds
  *
- *         By keeping track of what Blind we have beaten or not, we can ensure than until we've
+ *         By keeping track of what Blind we have beaten or not, we can ensure that until we've
  *         beaten all the Blinds in a single Run, we won't encounter the same one twice.
  *
  * This must be called at the beginning of a run.
@@ -152,6 +151,12 @@ static void init_unbeaten_blinds_list(bool showdown)
     {
         list_push_back(p_unbeaten_blinds, &s_blind_type_map[i]);
     }
+}
+
+void init_unbeaten_blinds_lists(void)
+{
+    init_unbeaten_blinds_list(false);
+    init_unbeaten_blinds_list(true);
 }
 
 enum BlindType roll_blind_type(bool showdown)
@@ -249,9 +254,9 @@ void apply_blind_colors(enum BlindType type)
 /**
  * @brief Get the starting tile index in tiles memory for the given BlindToken sprite layer
  *
- * @param the layer of the BlindToken, as an offset relative to `BLIND_BASE_LAYER`
+ * @param layer of the BlindToken, as an offset relative to `BLIND_BASE_LAYER`
  *
- * @returns the starting tile index of the BlindToken sprite at requested layer
+ * @return the starting tile index of the BlindToken sprite at requested layer
  * @sa BLIND_BASE_LAYER
  */
 static u32 get_layer_tile_index(enum BlindTokenLayers layer)

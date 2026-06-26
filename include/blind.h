@@ -13,6 +13,7 @@
 #define MAX_ANTE 8
 
 /**
+ * @enum BlindTokens
  * @brief The sprites that display the blinds when in "GAME_BLIND_SELECT" state.
  *         There are only 3 blinds per Ante, so we don't need more sprites than that
  */
@@ -25,6 +26,7 @@ enum BlindTokens
 };
 
 /**
+ * @enum BlindTokenLayers
  * @brief Sprite IDs of the various Blind Tokens used in the game, expressed as an offset relative
  *         to `BLIND_BASE_LAYER`
  *
@@ -40,7 +42,7 @@ enum BlindTokenLayers
 };
 
 /**
- * @def BlindColorIndex
+ * @enum BlindColorIndex
  * @brief Indices of the Blind sprites' colors as encoded in the files' palettes with Aseprite
  */
 enum BlindColorIndex
@@ -56,7 +58,7 @@ enum BlindColorIndex
 
 // clang-format off
 /**
- * @def BlindType
+ * @enum BlindType
  * @brief All Blind types in the game are listed here.
  *
  * Boss Blinds range from `BLIND_TYPE_BOSS` to `BLIND_TYPE_SHOWDOWN - 1`.
@@ -111,7 +113,7 @@ enum BlindType
 // clang-format on
 
 /**
- * @def BlindState
+ * @enum BlindState
  * @brief All the possible states an Ante's Blinds can be in when viewed in the "Blind Select"
  *         screen.
  */
@@ -125,7 +127,7 @@ enum BlindState
 };
 
 /**
- * @def Blind
+ * @struct Blind
  * @brief Data structure containing data about a BlindType.
  *
  * Only contains the score requirement multiplier for now, but will contain info about the Blind's
@@ -134,7 +136,7 @@ enum BlindState
 typedef struct
 {
     u8 type;
-    FIXED score_req_multipler;
+    FIXED score_req_multiplier;
 } Blind;
 
 void blind_init();
@@ -146,7 +148,7 @@ void blind_init();
  * @param type the `BlindType` value of the blind we need the score requirement of
  * @param ante the Ante at which the blind `type` is encountered
  *
- * @returns the required score to beat the requested blind
+ * @return the required score to beat the requested blind
  */
 u32 blind_get_requirement(enum BlindType type, int ante);
 
@@ -155,7 +157,7 @@ u32 blind_get_requirement(enum BlindType type, int ante);
  *
  * @param type the BlindType of the beaten Blind
  *
- * @returns 3 for the Small Blind, 4 for the Big one, 5 for Bosses and 8 for Showdowns
+ * @return 3 for the Small Blind, 4 for the Big one, 5 for Bosses and 8 for Showdowns
  */
 int blind_get_reward(enum BlindType type);
 
@@ -165,7 +167,7 @@ int blind_get_reward(enum BlindType type);
  * @param type the BlindType whose palette will be used
  * @param index of the color within the Blind's palette
  *
- * @returns the BGR555 value of the requested color
+ * @return the BGR555 value of the requested color
  */
 u16 blind_get_color(enum BlindType type, enum BlindColorIndex index);
 
@@ -174,9 +176,14 @@ u16 blind_get_color(enum BlindType type, enum BlindColorIndex index);
  *
  * @param showdown whether we want to roll a Showdown or a regular Boss Blind.
  *
- * @returns a BlindType value chosen at random
+ * @return a BlindType value chosen at random
  */
 enum BlindType roll_blind_type(bool showdown);
+
+/**
+ * @brief Initialize Boss and Showdown Blinds lists to roll from
+ */
+void init_unbeaten_blinds_lists(void);
 
 /**
  * @brief Remove the given Blind from the corresponding List so that we don't roll it again in the

@@ -223,6 +223,7 @@ void game_reset()
     list_clear(&s_expired_jokers_list);
 
     game_init();
+    init_unbeaten_blinds_lists();
 
     display_round();
     display_score(g_game_vars.score);
