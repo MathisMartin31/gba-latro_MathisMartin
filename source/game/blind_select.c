@@ -309,8 +309,8 @@ static void game_blind_select_display_blind_panel()
 
 static void game_blind_select_exit(void)
 {
-    reset_background();
-    game_change_state(GAME_STATE_PLAYING);
+    change_background(BG_NONE, false);
+    game_change_state(GAME_STATE_ROUND);
 }
 
 static Rect game_blind_select_get_req_score_rect(enum BlindTokens blind)
@@ -484,7 +484,7 @@ void game_blind_select_on_exit(void)
     sprite_destroy(&blind_select_tokens[BIG_BLIND]);
     sprite_destroy(&blind_select_tokens[BOSS_BLIND]);
 
-    reset_background();
+    change_background(BG_NONE, false);
     selection_y = 0;
 
     state_machine_remove(&blind_select_sm);
@@ -494,7 +494,7 @@ void game_blind_select_change_background(void)
 {
     for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
     {
-        obj_unhide(blind_select_tokens[i]->obj, 0);
+        obj_unhide(blind_select_tokens[i]->obj, ATTR0_REG);
     }
 
     // Default y position for the blind select tokens. 12 is the amount of tiles the background

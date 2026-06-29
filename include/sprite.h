@@ -239,6 +239,13 @@ void sprite_object_reset_transform(SpriteObject* sprite_object);
 IWRAM_CODE void sprite_object_update(SpriteObject* sprite_object);
 
 /**
+ * @brief Update all SpriteObjects, to be called once per frame in the main update loop.
+ *
+ * TODO: try and put this function in IWRAM for performance purposes. Crashed the last time I tried.
+ */
+void sprite_object_update_all(void);
+
+/**
  * @brief Shake SpriteObject on screen and play a sound
  *
  * @param SpriteObject pointer to SpriteObject to shake. Cannot be **NULL**.
@@ -363,6 +370,23 @@ INLINE void sprite_position(Sprite* sprite, int x, int y)
     sprite->pos.y = y;
 
     obj_set_pos(sprite->obj, x, y);
+}
+
+/**
+ * @brief Set sprite_object position. Inlined for efficiency
+ *
+ * @param sprite_object poitner to a SpriteObject to adjust the position of. A **NULL** check is not
+ *        performed, though the value cannot be **NULL**.
+ *
+ * @param x horizontal position in pixels
+ * @param y vertical position in pixels
+ */
+INLINE void sprite_object_position(SpriteObject* sprite_object, int x, int y)
+{
+    sprite_object->x = int2fx(x);
+    sprite_object->y = int2fx(y);
+    sprite_object->tx = int2fx(x);
+    sprite_object->ty = int2fx(y);
 }
 
 #endif // SPRITE_H
