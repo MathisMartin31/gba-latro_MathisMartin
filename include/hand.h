@@ -211,8 +211,13 @@ void sort_cards(void);
 // Hand Contents Analysis
 
 /**
- * @brief Finds the largest flush (set of cards with the same suit) in the given array of played
- *         cards. Marks the cards belonging to the best flush in the out_selection array.
+ * @brief Finds the best flush (set of cards with the same suit) in the given array of played
+ *         cards.
+ *
+ * Normally a Flush is made of 5 cards of the same suit, but this function takes into account
+ * the Four Fingers joker which allows for Flushes made of 4 cards only.
+ *
+ * The cards belonging to that flush will be marked as selected in the out_selection array.
  *
  * @param played        Array of pointers to CardObject representing played cards.
  * @param top           Index of the top of the played stack.
@@ -225,8 +230,13 @@ void sort_cards(void);
 int find_flush_in_played_cards(CardObject** played, int top, int min_len, bool* out_selection);
 
 /**
- * Finds the largest straight (set of cards with sequential ranks) in the given array of played
- * cards. Marks the cards belonging to the best straight in the out_selection array.
+ * @brief Finds the best straight in the given array of played cards.
+ *
+ * Normally, a Straight is a set of 5 cards with sequential ranks, but this function takes into
+ * account the Four Fingers and Shortcut jokers, which respectively allow for Straights made of
+ * 4 cards and with gaps of 1 rank between two cards.
+ *
+ * The cards belonging to that straight will be marked as selected in the out_selection array.
  *
  * @param played        Array of pointers to CardObject representing played cards.
  * @param top           Index of the top of the played stack.
