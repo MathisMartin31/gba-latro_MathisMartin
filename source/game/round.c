@@ -1390,7 +1390,7 @@ static inline void cards_in_hand_update_loop(void)
     }
 }
 
-static inline void game_playing_ui_text_update(void)
+static inline void game_round_ui_text_update(void)
 {
     static int last_hand_size = -1;
     static int last_hand_max_size = -1;
@@ -1399,29 +1399,33 @@ static inline void game_playing_ui_text_update(void)
     if (g_game_vars.timer == 1 || last_hand_size != hand_nb_held_cards() ||
         last_hand_max_size != g_game_vars.hand_size || last_deck_size != deck_get_size())
     {
-        if (background_legacy == BG_CARD_SELECTING)
+        // Hand size/max size
+        switch (get_current_background())
         {
-            // Hand size/max size
-            tte_printf(
-                "#{P:%d,%d; cx:0x%X000}%2d/%-2ld",
-                HAND_SIZE_RECT_SELECT.left,
-                HAND_SIZE_RECT_SELECT.top,
-                TTE_WHITE_PB,
-                hand_nb_held_cards(),
-                g_game_vars.hand_size
-            );
-        }
-        else if (background_legacy == BG_CARD_PLAYING)
-        {
-            // Hand size/max size
-            tte_printf(
-                "#{P:%d,%d; cx:0x%X000}%2d/%-2ld",
-                HAND_SIZE_RECT_PLAYING.left,
-                HAND_SIZE_RECT_PLAYING.top,
-                TTE_WHITE_PB,
-                hand_nb_held_cards(),
-                g_game_vars.hand_size
-            );
+            case BG_CARD_SELECTING:
+                tte_printf(
+                    "#{P:%d,%d; cx:0x%X000}%2d/%-2ld",
+                    HAND_SIZE_RECT_SELECT.left,
+                    HAND_SIZE_RECT_SELECT.top,
+                    TTE_WHITE_PB,
+                    hand_nb_held_cards(),
+                    g_game_vars.hand_size
+                );
+                break;
+
+            case BG_CARD_PLAYING:
+                tte_printf(
+                    "#{P:%d,%d; cx:0x%X000}%2d/%-2ld",
+                    HAND_SIZE_RECT_PLAYING.left,
+                    HAND_SIZE_RECT_PLAYING.top,
+                    TTE_WHITE_PB,
+                    hand_nb_held_cards(),
+                    g_game_vars.hand_size
+                );
+                break;
+
+            default:
+                break;
         }
 
         // Deck size/max size
