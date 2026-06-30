@@ -16,6 +16,7 @@
 #include "layout.h"
 #include "list.h"
 #include "selection_grid.h"
+#include "skip_tag.h"
 #include "soundbank.h"
 #include "timer.h"
 #include "util.h"
