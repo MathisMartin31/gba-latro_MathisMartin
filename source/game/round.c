@@ -1072,7 +1072,6 @@ static inline void game_round_process_input_and_state(void)
             lerped_temp_score = int2fx(temp_score);
             lerped_score = int2fx(g_game_vars.score);
 
-            // Register high score
             if (temp_score > g_game_vars.best_played_hand)
                 g_game_vars.best_played_hand = temp_score;
 
