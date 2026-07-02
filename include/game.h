@@ -76,7 +76,6 @@ List* get_jokers_list(void);
 List* get_expired_jokers_list(void);
 List* get_discarded_jokers_list(void);
 
-Card* deck_pop(void);
 int deck_get_size(void);
 int get_deck_top(void);
 void deck_push(Card* card);
