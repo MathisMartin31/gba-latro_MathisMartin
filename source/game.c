@@ -103,7 +103,7 @@ GameVariables g_game_vars = {
     .round = 0, .ante = 0, .money = 0, .hand_size = DEFAULT_HAND_SIZE,
     .deck = DECK_TYPE_RED,
 
-    .best_played_hand = 0, .nb_played_hands = {0},
+    .best_hand_score = 0, .nb_played_hands = {0},
 
     .current_blind = BLIND_TYPE_SMALL,
     .next_boss_blind = BLIND_TYPE_BIG,
@@ -196,7 +196,7 @@ void game_init()
     g_game_vars.mult = 0;
     g_game_vars.round = STARTING_ROUND;
 
-    g_game_vars.best_played_hand = 0;
+    g_game_vars.best_hand_score = 0;
     for (int i = 0; i < HAND_TYPE_MAX; i++)
         g_game_vars.nb_played_hands[i] = 0;
 

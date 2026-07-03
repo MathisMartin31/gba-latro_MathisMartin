@@ -40,7 +40,8 @@ enum HandType
     ROYAL_FLUSH,
     FIVE_OF_A_KIND,
     FLUSH_HOUSE,
-    FLUSH_FIVE
+    FLUSH_FIVE,
+    HAND_TYPE_MAX = FLUSH_FIVE
 };
 
 // clang-format off

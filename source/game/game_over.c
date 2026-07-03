@@ -49,8 +49,8 @@ static const Rect     REUSE_SEED_BTN_OFF_SRC_RECT     = { 28,  28,  29,  29};
 static const Rect     REUSE_SEED_BTN_ON_SRC_RECT      = { 30,  28,  31,  29};
 static const BG_POINT REUSE_SEED_BTN_DEST_POS         = {  4,  11};
 
-static const Rect     BEST_HAND_VALUE_RECT            = {126,  64, 166,  72};
-static const Rect     MOST_PLAYED_HAND_VALUE_RECT     = {112,  80, 168,  88};
+static const Rect     BEST_HAND_SCORE_RECT            = {126,  64, 166,  72};
+static const Rect     MOST_PLAYED_HAND_RECT           = {112,  80, 168,  88};
 static const BG_POINT SEED_VALUE_POS                  = {112,  96};
 
 static const BG_POINT NEW_RUN_BTN_TEXT_POS            = { 48, 112};
@@ -69,6 +69,10 @@ enum GameOverRows
     GAME_OVER_RUN_MENU_ROW,
     GAME_OVER_ROW_MAX
 };
+
+#define GAME_OVER_SEED_BTN_COL      0
+#define GAME_OVER_NEW_RUN_BTN_COL   0
+#define GAME_OVER_MAIN_MENU_BTN_COL 1
 
 static int game_over_get_row_size1(void)
 {
@@ -165,9 +169,15 @@ static void game_over_common_init(enum EndCondition init_condition)
 
     // Highlight New Run button
     game_over_selection_grid.selection = GAME_OVER_INIT_SEL;
-    button_set_highlight(&game_over_buttons[GAME_OVER_SEED_ROW][0], false);     // Seed
-    button_set_highlight(&game_over_buttons[GAME_OVER_RUN_MENU_ROW][0], true);  // New Run
-    button_set_highlight(&game_over_buttons[GAME_OVER_RUN_MENU_ROW][1], false); // Main Menu
+    button_set_highlight(&game_over_buttons[GAME_OVER_SEED_ROW][GAME_OVER_SEED_BTN_COL], false);
+    button_set_highlight(
+        &game_over_buttons[GAME_OVER_RUN_MENU_ROW][GAME_OVER_NEW_RUN_BTN_COL],
+        true
+    );
+    button_set_highlight(
+        &game_over_buttons[GAME_OVER_RUN_MENU_ROW][GAME_OVER_MAIN_MENU_BTN_COL],
+        false
+    );
 }
 
 void game_win_on_init(void)
@@ -220,8 +230,12 @@ void game_over_on_update(void)
     else if (timer == GAME_OVER_ANIM_FRAMES)
     {
         char best_hand_str[UINT_MAX_DIGITS + 1];
-        truncate_uint_to_suffixed_str(g_game_vars.best_played_hand, 5, best_hand_str);
-        Rect best_hand_rect = BEST_HAND_VALUE_RECT;
+        truncate_uint_to_suffixed_str(
+            g_game_vars.best_hand_score,
+            rect_width(&BEST_HAND_SCORE_RECT) / TTE_CHAR_SIZE,
+            best_hand_str
+        );
+        Rect best_hand_rect = BEST_HAND_SCORE_RECT;
         update_text_rect_to_center_str(&best_hand_rect, best_hand_str, SCREEN_LEFT);
         tte_printf(
             "#{P:%d,%d; cx:0x%X000}%s",
@@ -241,7 +255,7 @@ void game_over_on_update(void)
         }
 
         const char* hand_name_str = get_hand_type_name(most_played_hand);
-        Rect hand_type_rect = MOST_PLAYED_HAND_VALUE_RECT;
+        Rect hand_type_rect = MOST_PLAYED_HAND_RECT;
         update_text_rect_to_center_str(&hand_type_rect, hand_name_str, SCREEN_LEFT);
         tte_printf(
             "#{P:%d,%d; cx:0x%X000}%s",
@@ -319,11 +333,9 @@ static bool game_over_on_selection_changed(
     const Selection* new_selection
 )
 {
-    // Remove highlight from previous button
     if (row_idx == prev_selection->y)
         button_set_highlight(game_over_get_button_from_sel(prev_selection), false);
 
-    // Highlight new button
     if (row_idx == new_selection->y)
         button_set_highlight(game_over_get_button_from_sel(new_selection), true);
 

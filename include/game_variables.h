@@ -7,6 +7,7 @@
 #define GAME_VARIABLES_H
 
 #include "blind.h"
+#include "hand.h"
 #include "random.h"
 
 #include <tonc.h>
@@ -27,10 +28,6 @@
 #define MAX_DISCARDS 4
 
 #define DEFAULT_HAND_SIZE 8
-
-// There are 13 different hand types in total.
-// Should have been in hand.h but we'll avoid the extra dependency
-#define HAND_TYPE_MAX 13
 
 /**
  * @brief A central location for all game variables.
@@ -53,7 +50,7 @@ typedef struct
     s32 hand_size;
     s32 deck;
 
-    u32 best_played_hand;
+    u32 best_hand_score;
     u32 nb_played_hands[HAND_TYPE_MAX];
 
     // Blind variables
