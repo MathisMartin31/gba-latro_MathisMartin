@@ -51,9 +51,15 @@ static const Rect ROUND_END_BLIND_REWARD_RECT = {168,     96,     UNDEFINED, UND
 static const Rect CASHOUT_DEST_RECT           = {10,      8,      23,        10       };
 static const Rect CASHOUT_TEXT_RECT           = {88,      72,     UNDEFINED, UNDEFINED};
 static const Rect BLIND_TOKEN_TEXT_RECT       = {80,      72,     200,       160      };
-static const Rect ROUND_END_MENU_RECT         = {9,       7,      24,        20       }; 
+static const Rect ROUND_END_MENU_RECT         = {9,       7,      24,        20       };
+static const Rect POP_MENU_EXPAND_UP_RECT     = {9,       23,     18,        31       };
+static const Rect POP_MENU_EXPAND_RIGHT_RECT  = {11,      20,     18,        31       };
 
-static const BG_POINT CASHOUT_SRC_3X3_RECT_POS =   {5,  29};
+static const BG_POINT POP_MENU_EXPAND_UP_DEST_POS    = {9,  20};
+static const BG_POINT POP_MENU_EXPAND_RIGHT_DEST_POS = {17, 20};
+static const BG_POINT CASHOUT_SRC_3X3_RECT_POS       = {4,  29};
+static const BG_POINT BLIND_SCORE_REQ_RECT_POS       = {0,  29};
+static const BG_POINT BLIND_SCORE_REQ_DEST_POS       = {13, 11};
 // clang-format on
 
 static enum RewardType s_current_reward = REWARD_TYPE_HAND;
@@ -126,6 +132,10 @@ static void game_round_end_start(void)
             s_investment_total > 0 && g_game_vars.current_blind >= BLIND_TYPE_BOSS;
         s_interest_total = calculate_interest_reward();
         s_interest_reward = s_interest_total;
+
+        // Expand the pop up window, which was reduced to make space for other things during the round
+        main_bg_se_copy_rect(POP_MENU_EXPAND_UP_RECT, POP_MENU_EXPAND_UP_DEST_POS);
+        main_bg_se_copy_rect(POP_MENU_EXPAND_RIGHT_RECT, POP_MENU_EXPAND_RIGHT_DEST_POS);
     }
 }
 
@@ -185,14 +195,12 @@ static void game_round_end_display_finished_blind(void)
 static void game_round_end_display_score_min(void)
 {
     const int timer_offset = g_game_vars.timer - 1;
-    const int x_from = 0;
-    const int y_from = 29;
-    const int x_to = 13;
-    const int y_to = 11;
 
     memcpy16(
-        &se_mem[MAIN_BG_SBB][x_to + timer_offset + 32 * y_to],
-        &se_mem[MAIN_BG_SBB][x_from + timer_offset + 32 * y_from],
+        &se_mem[MAIN_BG_SBB]
+               [BLIND_SCORE_REQ_DEST_POS.x + timer_offset + 32 * BLIND_SCORE_REQ_DEST_POS.y],
+        &se_mem[MAIN_BG_SBB]
+               [BLIND_SCORE_REQ_RECT_POS.x + timer_offset + 32 * BLIND_SCORE_REQ_RECT_POS.y],
         1
     );
 

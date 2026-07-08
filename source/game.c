@@ -10,6 +10,7 @@
 #include "game/common_ui.h"
 #include "game/game_over.h"
 #include "game/joker_row.h"
+#include "game/item_description.h"
 #include "game/main_menu.h"
 #include "game/options_menu.h"
 #include "game/round.h"
@@ -278,7 +279,7 @@ static inline void held_jokers_update_loop(void)
     while ((joker = list_itr_next(&itr)))
     {
         // Let the Shop handle the position of this Joker
-        if (joker != game_shop_get_description_card())
+        if (joker != (JokerObject*)item_description_get_target())
             joker->tx = hand_x - int2fx(SPACING_LUT[jokers_top][i]);
         i++;
     }
@@ -697,5 +698,5 @@ void game_start(void)
     display_money(); // Set the money display
     display_ante();
 
-    game_change_state(GAME_STATE_BLIND_SELECT);
+    game_change_state(GAME_STATE_SHOP);
 }

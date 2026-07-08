@@ -87,7 +87,7 @@ static StateMachine blind_select_sm = STATE_MACHINE_DEFINE(state_info, BLIND_SEL
 
 // clang-format off
 // Points                                                x        y
-static const BG_POINT TOP_LEFT_PANEL_EMPTY_3W_ROW_POS = {29,      31};
+static const BG_POINT TOP_LEFT_PANEL_EMPTY_3W_ROW_POS = {0,       30};
 static const BG_POINT SMALL_BLIND_SKIP_TAG_INIT_POS   = {75,      170};
 static const BG_POINT BIG_BLIND_SKIP_TAG_INIT_POS     = {115,     170};
 static const BG_POINT SMALL_BLIND_SKIP_TAG_HIGH_POS   = {75,      132};

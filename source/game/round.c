@@ -10,6 +10,7 @@
 #include "button.h"
 #include "game.h"
 #include "game/common_ui.h"
+#include "game/item_description.h"
 #include "game/joker_row.h"
 #include "graphic_utils.h"
 #include "hand.h"
@@ -19,6 +20,7 @@
 #include "selection_grid.h"
 #include "skip_tag.h"
 #include "soundbank.h"
+#include "state_machine.h"
 #include "timer.h"
 #include "util.h"
 
@@ -66,8 +68,8 @@
 #define SCORE_FLAMES_ANIM_FREQ  5 // animation will run at 12FPS
 #define NUM_SCORE_FLAMES_FRAMES 8 // Chips and Mult flame frames are next to one another
 #define SCORE_FLAME_FRAME_WIDTH 3 // so we only need to offset to get the next ones
-static const Rect     SCORE_FLAME_RESET          = {26,      20,      28,     20};
-static const Rect     SCORE_FLAME_FRAMES_START   = {26,      21,      28,     21};
+static const Rect     SCORE_FLAME_RESET          = {19,      23,      21,     23};
+static const Rect     SCORE_FLAME_FRAMES_START   = {19,      24,      21,     24};
 static const BG_POINT SCORE_FLAME_CHIPS_POS      = {1,       9};
 static const BG_POINT SCORE_FLAME_MULT_POS       = {5,       9};
 
@@ -100,6 +102,72 @@ static const BG_POINT CARD_DISCARD_PNT           = {240,     70};
 static const BG_POINT HAND_START_POS             = {120,     90};
 static const BG_POINT HAND_PLAY_POS              = {120,     70};
 // clang-format on
+
+/*******************************************************************************
+ * ROUND STATE
+ ******************************************************************************/
+
+static void game_round_redeem_skip_tags_on_init(void);
+static void game_round_redeem_skip_tags_on_update(void);
+static void game_round_process_card_draw_on_init(void);
+static void game_round_process_card_draw_on_update(void);
+static void game_round_process_hand_select_input_on_init(void);
+static void game_round_process_hand_select_input_on_update(void);
+static void game_round_wait_for_item_desc_on_init(void);
+static void game_round_wait_for_item_desc_on_update(void);
+static void game_round_process_cards_shuffling_on_init(void);
+static void game_round_process_cards_shuffling_on_update(void);
+static void game_round_discard_cards_on_init(void);
+static void game_round_discard_cards_on_update(void);
+static void game_round_play_cards_on_init(void);
+static void game_round_play_cards_on_update(void);
+static void game_round_process_playing_on_init(void);
+static void game_round_process_playing_on_update(void);
+static void game_round_process_undiscard_on_init(void);
+static void game_round_process_undiscard_on_update(void);
+
+// clang-format off
+static StateInfo round_state_actions[HAND_MAX] = {
+    [HAND_TAGS] = STATE_INFO_INIT_UPDATE_FN(
+        game_round_redeem_skip_tags_on_init,
+        game_round_redeem_skip_tags_on_update
+    ),
+    [HAND_DRAW] = STATE_INFO_INIT_UPDATE_FN(
+        game_round_process_card_draw_on_init,
+        game_round_process_card_draw_on_update
+    ),
+    [HAND_SELECT] = STATE_INFO_INIT_UPDATE_FN(
+        game_round_process_hand_select_input_on_init,
+        game_round_process_hand_select_input_on_update
+    ),
+    [HAND_ITEM_DESC] = STATE_INFO_INIT_UPDATE_FN(
+        game_round_wait_for_item_desc_on_init,
+        game_round_wait_for_item_desc_on_update
+    ),
+    [HAND_SHUFFLING] = STATE_INFO_INIT_UPDATE_FN(
+        game_round_process_cards_shuffling_on_init,
+        game_round_process_cards_shuffling_on_update
+    ),
+    [HAND_DISCARD] = STATE_INFO_INIT_UPDATE_FN(
+        game_round_discard_cards_on_init,
+        game_round_discard_cards_on_update
+    ),
+    [HAND_PLAY] = STATE_INFO_INIT_UPDATE_FN(
+        game_round_play_cards_on_init,
+        game_round_play_cards_on_update
+    ),
+    [HAND_PLAYING] = STATE_INFO_INIT_UPDATE_FN(
+        game_round_process_playing_on_init,
+        game_round_process_playing_on_update
+    ),
+    [HAND_UNDISCARD] = STATE_INFO_INIT_UPDATE_FN(
+        game_round_process_undiscard_on_init,
+        game_round_process_undiscard_on_update
+    )
+};
+// clang-format on
+
+static StateMachine round_sm = STATE_MACHINE_DEFINE(round_state_actions, HAND_MAX);
 
 /*******************************************************************************
  * ROUND SELECTIONGRID
@@ -454,10 +522,11 @@ static inline void game_round_execute_discard(void)
     if (!can_discard_hand())
         return;
 
-    set_hand_state(HAND_DISCARD);
     --g_game_vars.discards;
     display_discards();
     compute_hand_value_info();
+
+    state_machine_change_state(&round_sm, HAND_DISCARD);
 }
 
 /**
@@ -498,12 +567,12 @@ static inline void game_round_execute_play_hand(void)
     if (!can_play_hand())
         return;
 
-    set_hand_state(HAND_PLAY);
-
     --g_game_vars.hands;
     display_hands();
 
     g_game_vars.nb_played_hands[get_hand_type() - 1]++;
+
+    state_machine_change_state(&round_sm, HAND_PLAY);
 }
 
 /**
@@ -713,11 +782,6 @@ static inline int hand_sel_idx_to_card_idx(int selection_index)
     return hand_nb_held_cards() - selection_index - 1;
 }
 
-static inline void game_round_process_hand_select_input(void)
-{
-    selection_grid_process_input(&game_round_selection_grid);
-}
-
 /**
  * @brief Evaluates if we have won or lost when we can no longer play so that we land on the correct
  *         Game Over screen
@@ -835,12 +899,13 @@ static inline void card_in_hand_loop_handle_discard_and_shuffling(
     {
         // This is never reached in the case of HAND_SHUFFLING. Not sure why but that's how it's
         // supposed to be.
-        set_hand_state(HAND_DRAW);
         s_sound_played = false;
         s_cards_discarded = 0;
         hand_set_nb_selected_cards(0);
-        g_game_vars.timer = TM_ZERO;
         *break_loop = true;
+
+        g_game_vars.timer = TM_ZERO;
+        state_machine_change_state(&round_sm, HAND_DRAW);
         return;
     };
 }
@@ -1054,82 +1119,6 @@ static inline bool game_round_is_over(void)
            g_game_vars.score >= blind_get_requirement(g_game_vars.current_blind, g_game_vars.ante);
 }
 
-static inline void game_round_process_input_and_state(void)
-{
-    if (get_hand_state() == HAND_TAGS)
-    {
-        // We're checking for scoring Tags in a general way here, but only the Juggler can
-        // really apply on round start
-        if (skip_tag_process_get_effect() == SKIP_TAG_EFFECT_END)
-        {
-            set_hand_state(HAND_DRAW);
-            g_game_vars.timer = TM_ZERO;
-        }
-    }
-    else if (get_hand_state() == HAND_SELECT)
-    {
-        game_round_process_hand_select_input();
-    }
-    else if (play_state == PLAY_ENDING)
-    {
-        if (g_game_vars.mult > 0)
-        {
-            // protect against score overflow
-            s_temp_score = u32_protected_mult(g_game_vars.chips, g_game_vars.mult);
-            s_lerped_temp_score = int2fx(s_temp_score);
-            s_lerped_score = int2fx(g_game_vars.score);
-
-            if (s_temp_score > g_game_vars.best_hand_score)
-                g_game_vars.best_hand_score = s_temp_score;
-
-            display_temp_score(s_temp_score);
-
-            g_game_vars.chips = 0;
-            g_game_vars.mult = 0;
-            display_mult();
-            display_chips();
-
-            static const int SCORE_CALC_SFX_PITCH_SHIFT = -102; // -10% OF MM_BASE_PITCH_RATE
-            static const int SCORE_CALC_SFX_VOLUME = 204;       // 80% MM_SFX_FULL_VOLUME
-
-            // The chips calculation SFX is the same as button
-            play_sfx(
-                SFX_BUTTON,
-                MM_BASE_PITCH_RATE + SCORE_CALC_SFX_PITCH_SHIFT,
-                SCORE_CALC_SFX_VOLUME
-            );
-        }
-    }
-    else if (play_state == PLAY_ENDED && g_game_vars.timer % FRAMES(TM_SCORE_LERP_INTERVAL) == 0)
-    {
-        /* Using fixed point in case the score is lower than NUM_SCORE_LERP_STEPS and then
-         * then the division rounds it down to 0 and it's never added to the total.
-         * The operation is equivalent to
-         * fxdiv(int2fx(temp_score * g_game_vars.game_speed), int2fx(NUM_SCORE_LERP_STEPS))
-         */
-        s_lerped_temp_score -= int2fx(s_temp_score * g_game_vars.game_speed) / NUM_SCORE_LERP_STEPS;
-        s_lerped_score += int2fx(s_temp_score * g_game_vars.game_speed) / NUM_SCORE_LERP_STEPS;
-
-        if (s_lerped_temp_score > 0)
-        {
-            // Set the score display first because it's more important
-            // in case there isn't enough time within the frame to display both
-            display_score(fx2uint(s_lerped_score));
-            display_temp_score(fx2uint(s_lerped_temp_score));
-        }
-        else
-        {
-            g_game_vars.score = u32_protected_add(g_game_vars.score, s_temp_score);
-            s_temp_score = 0;
-            s_lerped_temp_score = 0;
-            s_lerped_score = 0;
-
-            erase_temp_score();
-            display_score(g_game_vars.score);
-        }
-    }
-}
-
 /**
  * @brief Draw the next card at the top of the Deck and play a little Sprite animation to position
  *         it in our hand.
@@ -1159,24 +1148,6 @@ static inline void card_draw(void)
         MM_BASE_PITCH_RATE + s_cards_drawn * PITCH_STEP_DRAW_SFX,
         SFX_DEFAULT_VOLUME
     );
-}
-
-static inline void game_round_process_card_draw(void)
-{
-    if (get_hand_state() == HAND_DRAW && s_cards_drawn < g_game_vars.hand_size)
-    {
-        if (g_game_vars.timer % FRAMES(10) == 0) // Draw a card every 10 frames
-        {
-            s_cards_drawn++;
-            card_draw();
-        }
-    }
-    else if (get_hand_state() == HAND_DRAW)
-    {
-        set_hand_state(HAND_SELECT); // Change the hand state to select after drawing all the cards
-        s_cards_drawn = 0;
-        g_game_vars.timer = TM_ZERO;
-    }
 }
 
 static inline void game_round_discarded_cards_loop(void)
@@ -1287,9 +1258,6 @@ static inline void cards_in_hand_update_loop(void)
 
             switch (get_hand_state())
             {
-                // Nothing to do here
-                case HAND_TAGS:
-                    break;
                 case HAND_DRAW:
                     hand_x = hand_x + (int2fx(i) - int2fx(get_hand_top()) / 2) *
                                           -HAND_SPACING_LUT[get_hand_top()];
@@ -1325,6 +1293,9 @@ static inline void cards_in_hand_update_loop(void)
                                                                              // later to reference a
                                                                              // 2D LUT of positions
                     break;
+                // Cards in Hand Y position is managed by the item description state machine
+                case HAND_ITEM_DESC:
+                    return;
                 case HAND_SHUFFLING:
                     /* FALL THROUGH */
                 case HAND_DISCARD: // TODO: Add sound
@@ -1368,11 +1339,12 @@ static inline void cards_in_hand_update_loop(void)
 
                     if (i == 0 && s_discarded_card == false && g_game_vars.timer % FRAMES(10) == 0)
                     {
-                        set_hand_state(HAND_PLAYING);
                         s_cards_drawn = 0;
                         hand_set_nb_selected_cards(0);
-                        g_game_vars.timer = TM_ZERO;
                         s_scored_card_index = get_played_size();
+                        
+                        g_game_vars.timer = TM_ZERO;
+                        state_machine_change_state(&round_sm, HAND_PLAYING);
 
                         select_cards_in_played_hand();
                     }
@@ -1383,6 +1355,8 @@ static inline void cards_in_hand_update_loop(void)
                     hand_x = hand_x + (int2fx(i) - int2fx(get_hand_top()) / 2) *
                                           -HAND_SPACING_LUT[get_hand_top()];
                     hand_y += int2fx(24);
+                    break;
+                default:
                     break;
             }
 
@@ -1863,11 +1837,11 @@ static bool play_ended_played_cards_update(int played_idx)
             {
                 if (game_round_is_over())
                 {
-                    set_hand_state(HAND_SHUFFLING);
+                    state_machine_change_state(&round_sm, HAND_SHUFFLING);
                 }
                 else
                 {
-                    set_hand_state(HAND_DRAW);
+                    state_machine_change_state(&round_sm, HAND_DRAW);
                 }
 
                 play_state = PLAY_STARTING;
@@ -1986,15 +1960,12 @@ static inline void played_cards_update_loop(void)
 }
 
 /*******************************************************************************
- * FOUND STATE FUNCTIONS
+ * ROUND STATE FUNCTIONS
  ******************************************************************************/
 
 void game_round_on_init(void)
 {
     s_joker_scored_itr = list_itr_create(get_jokers_list());
-
-    g_game_vars.timer = TM_ZERO;
-    set_hand_state(HAND_TAGS);
 
     hand_set_nb_selected_cards(0);
     s_cards_drawn = 0;
@@ -2062,26 +2033,14 @@ void game_round_on_init(void)
      * otherwise or for the buttons.
      */
     game_round_selection_grid.selection = GAME_PLAYING_INIT_SEL;
+
+    state_machine_register(&round_sm);
+    state_machine_change_state(&round_sm, HAND_TAGS);
 }
 
 void game_round_on_update(void)
 {
-    // Background logic (thissss might be moved to the card'ssss logic later. I'm a sssssnake)
-    if (get_hand_state() == HAND_TAGS || get_hand_state() == HAND_DRAW ||
-        get_hand_state() == HAND_DISCARD || get_hand_state() == HAND_SELECT)
-    {
-        change_background(BG_CARD_SELECTING, false);
-    }
-    else if (get_hand_state() != HAND_SHUFFLING)
-    {
-        change_background(BG_CARD_PLAYING, false);
-    }
-
-    game_round_process_input_and_state();
-
     // Card logic
-
-    game_round_process_card_draw();
 
     game_round_discarded_cards_loop();
 
@@ -2095,3 +2054,217 @@ void game_round_on_update(void)
     // animate score flames if we exceed the score requirement
     game_round_process_flaming_score();
 }
+
+void game_round_on_exit(void)
+{
+    state_machine_remove(&round_sm);
+}
+
+/*******************************************************************************
+ * ROUND SUBSTATES FUNCTIONS
+ ******************************************************************************/
+
+static inline void game_round_redeem_skip_tags_on_init(void)
+{
+    set_hand_state(HAND_TAGS);
+    change_background(BG_CARD_SELECTING, false);
+}
+
+static inline void game_round_redeem_skip_tags_on_update(void)
+{
+    // We're checking for scoring Tags in a general way here, but only the Juggler can
+    // really apply on round start
+    if (skip_tag_process_get_effect() == SKIP_TAG_EFFECT_END)
+    {
+        state_machine_change_state(&round_sm, HAND_DRAW);
+    }
+}
+
+static inline void game_round_process_card_draw_on_init(void)
+{
+    set_hand_state(HAND_DRAW);
+    change_background(BG_CARD_SELECTING, false);
+}
+
+static inline void game_round_process_card_draw_on_update(void)
+{
+    if (s_cards_drawn < g_game_vars.hand_size)
+    {
+        if (g_game_vars.timer % FRAMES(10) == 0) // Draw a card every 10 frames
+        {
+            s_cards_drawn++;
+            card_draw();
+        }
+    }
+    else
+    {
+        s_cards_drawn = 0;
+        g_game_vars.timer = TM_ZERO;
+        state_machine_change_state(&round_sm, HAND_SELECT);
+    }
+}
+
+static inline void game_round_process_hand_select_input_on_init(void)
+{
+    set_hand_state(HAND_SELECT);
+    change_background(BG_CARD_SELECTING, false);
+}
+
+static inline void game_round_process_hand_select_input_on_update(void)
+{
+    selection_grid_process_input(&game_round_selection_grid);
+
+    static Item* tmp_item = NULL;
+    static List* tmp_list = NULL;
+
+    // Determine the Joker we would show the description of
+    switch (game_round_selection_grid.selection.y)
+    {
+        // Owned Jokers
+        case 0:
+        {
+            tmp_list = get_jokers_list();
+            tmp_item = list_get_at_idx(get_jokers_list(), game_round_selection_grid.selection.x);
+            break;
+        }
+
+            // TODO: handle Consumables and Vouchers when implemented
+
+        default:
+        {
+            tmp_list = NULL;
+            tmp_item = NULL;
+            break;
+        }
+    }
+
+    // Show description of selected card when pressing B.
+    if (tmp_item != NULL && key_held(DESELECT_CARDS))
+    {
+        item_description_set_target(tmp_item, tmp_list);
+        state_machine_change_state(&round_sm, HAND_ITEM_DESC);
+    }
+}
+
+static inline void game_round_wait_for_item_desc_on_init(void)
+{
+    set_hand_state(HAND_ITEM_DESC);
+}
+
+static inline void game_round_wait_for_item_desc_on_update(void)
+{
+    if (!item_description_is_shown())
+        state_machine_change_state(&round_sm, HAND_SELECT);
+}
+
+static inline void game_round_process_cards_shuffling_on_init(void)
+{
+    set_hand_state(HAND_SHUFFLING);
+}
+
+static inline void game_round_process_cards_shuffling_on_update(void)
+{
+
+}
+
+static inline void game_round_discard_cards_on_init(void)
+{
+    set_hand_state(HAND_DISCARD);
+    change_background(BG_CARD_SELECTING, false);
+}
+
+static inline void game_round_discard_cards_on_update(void)
+{
+
+}
+
+static inline void game_round_play_cards_on_init(void)
+{
+    set_hand_state(HAND_PLAY);
+    change_background(BG_CARD_PLAYING, false);
+}
+
+static inline void game_round_play_cards_on_update(void)
+{
+
+}
+
+static inline void game_round_process_playing_on_init(void)
+{
+    set_hand_state(HAND_PLAYING);
+    change_background(BG_CARD_PLAYING, false);
+}
+
+static inline void game_round_process_playing_on_update(void)
+{
+    if (play_state == PLAY_ENDING)
+    {
+        if (g_game_vars.mult > 0)
+        {
+            // protect against score overflow
+            s_temp_score = u32_protected_mult(g_game_vars.chips, g_game_vars.mult);
+            s_lerped_temp_score = int2fx(s_temp_score);
+            s_lerped_score = int2fx(g_game_vars.score);
+
+            if (s_temp_score > g_game_vars.best_hand_score)
+                g_game_vars.best_hand_score = s_temp_score;
+
+            display_temp_score(s_temp_score);
+
+            g_game_vars.chips = 0;
+            g_game_vars.mult = 0;
+            display_mult();
+            display_chips();
+
+            static const int SCORE_CALC_SFX_PITCH_SHIFT = -102; // -10% OF MM_BASE_PITCH_RATE
+            static const int SCORE_CALC_SFX_VOLUME = 204;       // 80% MM_SFX_FULL_VOLUME
+
+            // The chips calculation SFX is the same as button
+            play_sfx(
+                SFX_BUTTON,
+                MM_BASE_PITCH_RATE + SCORE_CALC_SFX_PITCH_SHIFT,
+                SCORE_CALC_SFX_VOLUME
+            );
+        }
+    }
+    else if (play_state == PLAY_ENDED && g_game_vars.timer % FRAMES(TM_SCORE_LERP_INTERVAL) == 0)
+    {
+        /* Using fixed point in case the score is lower than NUM_SCORE_LERP_STEPS and then
+         * then the division rounds it down to 0 and it's never added to the total.
+         * The operation is equivalent to
+         * fxdiv(int2fx(temp_score * g_game_vars.game_speed), int2fx(NUM_SCORE_LERP_STEPS))
+         */
+        s_lerped_temp_score -= int2fx(s_temp_score * g_game_vars.game_speed) / NUM_SCORE_LERP_STEPS;
+        s_lerped_score += int2fx(s_temp_score * g_game_vars.game_speed) / NUM_SCORE_LERP_STEPS;
+
+        if (s_lerped_temp_score > 0)
+        {
+            // Set the score display first because it's more important
+            // in case there isn't enough time within the frame to display both
+            display_score(fx2uint(s_lerped_score));
+            display_temp_score(fx2uint(s_lerped_temp_score));
+        }
+        else
+        {
+            g_game_vars.score = u32_protected_add(g_game_vars.score, s_temp_score);
+            s_temp_score = 0;
+            s_lerped_temp_score = 0;
+            s_lerped_score = 0;
+
+            erase_temp_score();
+            display_score(g_game_vars.score);
+        }
+    }
+}
+
+static inline void game_round_process_undiscard_on_init(void)
+{
+    set_hand_state(HAND_UNDISCARD);
+    change_background(BG_CARD_PLAYING, false);
+}
+
+static inline void game_round_process_undiscard_on_update(void)
+{
+
+}
+

@@ -8,6 +8,10 @@
 
 #include <stdbool.h>
 
+// Palette IDs
+#define ROUND_DESC_RARITY_MAIN_COLOR_PAL_IDX   32
+#define ROUND_DESC_RARITY_SHADOW_COLOR_PAL_IDX 33
+
 /**
  * @brief Checks whether the score that would result from the current Chips and Mult exceeds the
  *         current Blind's score requirement, and applies the flaming effect if needed.
@@ -68,5 +72,10 @@ void game_round_on_init(void);
  * @brief Round state update
  */
 void game_round_on_update(void);
+
+/**
+ * @brief Round state cleanup
+ */
+void game_round_on_exit(void);
 
 #endif // GAME_ROUND_H
