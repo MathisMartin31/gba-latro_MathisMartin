@@ -28,7 +28,7 @@
 #define POOL_DEFINE_TYPE(type, capacity, ram)                           \
     BITSET_DEFINE(type##_bitset, capacity)                              \
     ram##_DATA static type type##_storage[capacity];                    \
-    static type##Pool type##_pool = {                                   \
+    ram##_DATA static type##Pool type##_pool = {                        \
         .bitset = &type##_bitset,                                       \
         .objects = type##_storage,                                      \
     };                                                                  \
