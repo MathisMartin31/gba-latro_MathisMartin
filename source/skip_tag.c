@@ -212,10 +212,7 @@ void add_skip_tag(SkipTag** blind_tag)
 
     int nb_owned_tags = list_get_len(&_owned_skip_tags);
 
-    BG_POINT old_tag_pos = {
-        fx2int((*blind_tag)->x),
-        fx2int((*blind_tag)->y)
-    };
+    BG_POINT old_tag_pos = {fx2int((*blind_tag)->x), fx2int((*blind_tag)->y)};
     BG_POINT new_tag_pos = OWNED_SKIP_TAGS_BASE_POS;
 
     // If all the tags fix on the screen without issue,
@@ -341,10 +338,7 @@ static void skip_tag_search_for_event(void)
 
 static void skip_tag_trigger_for_event(void)
 {
-    BG_POINT tag_pos = {
-        fx2int(consumed_tag->x),
-        fx2int(consumed_tag->y)
-    };
+    BG_POINT tag_pos = {fx2int(consumed_tag->x), fx2int(consumed_tag->y)};
 
     // Set tiles to the "activated" ones, each with colors that correspond to their tag type
     consumed_tag->type += MAX_SKIP_TAG_TYPES;
