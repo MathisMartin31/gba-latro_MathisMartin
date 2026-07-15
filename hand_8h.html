@@ -194,12 +194,15 @@ Enumerations</h2></td></tr>
 , <br />
 &#160;&#160;<b>FLUSH_HOUSE</b>
 , <b>FLUSH_FIVE</b>
+, <b>HAND_TYPE_MAX</b> = FLUSH_FIVE
 <br />
  }</td></tr>
 <tr class="separator:a812eb479932da74350ebf90be87ccf13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a61e9e508c773e2efff4062ac5c24f6a2" id="r_a61e9e508c773e2efff4062ac5c24f6a2"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hand_8h.html#a61e9e508c773e2efff4062ac5c24f6a2">get_hand_type_name</a> (enum HandType hand_type)</td></tr>
+<tr class="separator:a61e9e508c773e2efff4062ac5c24f6a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02fbe6fa56d5eecb06498a94aa3f654f" id="r_a02fbe6fa56d5eecb06498a94aa3f654f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hand_8h.html#a02fbe6fa56d5eecb06498a94aa3f654f">set_hand_state</a> (enum HandState)</td></tr>
 <tr class="memdesc:a02fbe6fa56d5eecb06498a94aa3f654f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the hand state. Primarily used by the GAME_PLAYING game state.  <br /></td></tr>
 <tr class="separator:a02fbe6fa56d5eecb06498a94aa3f654f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -252,10 +255,13 @@ Functions</h2></td></tr>
 <tr class="memdesc:ae939d94185e29e1bbf44072c5d37c273"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sort the hand array according to the selected method to do that.  <br /></td></tr>
 <tr class="separator:ae939d94185e29e1bbf44072c5d37c273"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e66e88d21fed9071b1c725d987e28ab" id="r_a2e66e88d21fed9071b1c725d987e28ab"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hand_8h.html#a2e66e88d21fed9071b1c725d987e28ab">find_flush_in_played_cards</a> (<a class="el" href="structCardObject.html">CardObject</a> **played, int top, int min_len, bool *out_selection)</td></tr>
+<tr class="memdesc:a2e66e88d21fed9071b1c725d987e28ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the best flush (set of cards with the same suit) in the given array of played cards.  <br /></td></tr>
 <tr class="separator:a2e66e88d21fed9071b1c725d987e28ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa19d0e87853c3873feffccb195e6e51a" id="r_aa19d0e87853c3873feffccb195e6e51a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hand_8h.html#aa19d0e87853c3873feffccb195e6e51a">find_straight_in_played_cards</a> (<a class="el" href="structCardObject.html">CardObject</a> **played, int top, bool shortcut_active, int min_len, bool *out_selection)</td></tr>
-<tr class="separator:aa19d0e87853c3873feffccb195e6e51a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63dc3aad83b0d5cdb342bb4db62f67f1" id="r_a63dc3aad83b0d5cdb342bb4db62f67f1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hand_8h.html#a63dc3aad83b0d5cdb342bb4db62f67f1">find_straight_in_played_cards</a> (<a class="el" href="structCardObject.html">CardObject</a> **played, int top, int min_len, bool *out_selection)</td></tr>
+<tr class="memdesc:a63dc3aad83b0d5cdb342bb4db62f67f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the best straight in the given array of played cards.  <br /></td></tr>
+<tr class="separator:a63dc3aad83b0d5cdb342bb4db62f67f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab31c9562aa23120fd2f2f5bf25a37823" id="r_ab31c9562aa23120fd2f2f5bf25a37823"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hand_8h.html#ab31c9562aa23120fd2f2f5bf25a37823">select_paired_cards_in_hand</a> (<a class="el" href="structCardObject.html">CardObject</a> **played, int top, bool *selection)</td></tr>
+<tr class="memdesc:ab31c9562aa23120fd2f2f5bf25a37823"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is used for the special case in "Four Fingers" where you can add a pair into a straight (e.g. AA234 should score all 5 cards)  <br /></td></tr>
 <tr class="separator:ab31c9562aa23120fd2f2f5bf25a37823"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -331,7 +337,7 @@ Functions</h2></td></tr>
 
 <p>Determine the HandType and <a class="el" href="structContainedHandTypes.html">ContainedHandTypes</a> of the currently selected Cards, then print the <a class="el" href="structHand.html">Hand</a>'s name, chips, and mult on screen. </p>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00145">145</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00156">156</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -372,24 +378,27 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Finds the largest flush (set of cards with the same suit) in the given array of played cards. Marks the cards belonging to the best flush in the out_selection array.</p>
+
+<p>Finds the best flush (set of cards with the same suit) in the given array of played cards. </p>
+<p>Normally a Flush is made of 5 cards of the same suit, but this function takes into account the Four Fingers joker which allows for Flushes made of 4 cards only.</p>
+<p>The cards belonging to that flush will be marked as selected in the out_selection array.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">played</td><td>Array of pointers to <a class="el" href="structCardObject.html">CardObject</a> representing played cards. </td></tr>
     <tr><td class="paramname">top</td><td>Index of the top of the played stack. </td></tr>
     <tr><td class="paramname">min_len</td><td>Minimum number of cards required for a flush. </td></tr>
-    <tr><td class="paramname">out_selection</td><td>Output array of bools; set to true for cards in the best flush, false otherwise. </td></tr>
+    <tr><td class="paramname">out_selection</td><td>Output array of bools; set to true for cards in the best flush, false otherwise.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of cards in the best flush found, or 0 if no flush meets min_len. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00563">563</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00544">544</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
-<a id="aa19d0e87853c3873feffccb195e6e51a" name="aa19d0e87853c3873feffccb195e6e51a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa19d0e87853c3873feffccb195e6e51a">&#9670;&#160;</a></span>find_straight_in_played_cards()</h2>
+<a id="a63dc3aad83b0d5cdb342bb4db62f67f1" name="a63dc3aad83b0d5cdb342bb4db62f67f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63dc3aad83b0d5cdb342bb4db62f67f1">&#9670;&#160;</a></span>find_straight_in_played_cards()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -405,12 +414,6 @@ Functions</h2></td></tr>
           <td></td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>top</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>shortcut_active</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -432,7 +435,21 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00606">606</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p>Finds the best straight in the given array of played cards. </p>
+<p>Normally, a Straight is a set of 5 cards with sequential ranks, but this function takes into account the Four Fingers and Shortcut jokers, which respectively allow for Straights made of 4 cards and with gaps of 1 rank between two cards.</p>
+<p>The cards belonging to that straight will be marked as selected in the out_selection array.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">played</td><td>Array of pointers to <a class="el" href="structCardObject.html">CardObject</a> representing played cards. </td></tr>
+    <tr><td class="paramname">top</td><td>Index of the top of the played stack. </td></tr>
+    <tr><td class="paramname">min_len</td><td>Minimum number of cards required for a straight. </td></tr>
+    <tr><td class="paramname">out_selection</td><td>Output array of bools; set to true for cards in the best straight, false otherwise.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of cards in the best straight found, or 0 if no straight meets min_len. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00587">587</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -456,7 +473,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>ContainedHandTypes*</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="hand_8h.html#ae7bd4b295ad0106d523da0c57c798748" title="Determine the HandType and ContainedHandTypes of the currently selected Cards, then print the Hand&#39;s ...">compute_hand_value_info</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00124">124</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00135">135</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -479,7 +496,7 @@ Functions</h2></td></tr>
 <p>Get the hand array of Cards currently held in hand. </p>
 <dl class="section return"><dt>Returns</dt><dd>CardObject** </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00089">89</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00100">100</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -503,7 +520,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>enum HandState</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="hand_8h.html#a02fbe6fa56d5eecb06498a94aa3f654f" title="Set the hand state. Primarily used by the GAME_PLAYING game state.">set_hand_state</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00079">79</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00090">90</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -527,7 +544,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>int</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="hand_8h.html#aa5beb0f8bda5c454fea80be021e51df1" title="Get the hand array of Cards currently held in hand.">get_hand_array</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00094">94</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00105">105</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -551,7 +568,27 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>enum HandType</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="hand_8h.html#ae7bd4b295ad0106d523da0c57c798748" title="Determine the HandType and ContainedHandTypes of the currently selected Cards, then print the Hand&#39;s ...">compute_hand_value_info</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00119">119</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00130">130</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+
+</div>
+</div>
+<a id="a61e9e508c773e2efff4062ac5c24f6a2" name="a61e9e508c773e2efff4062ac5c24f6a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61e9e508c773e2efff4062ac5c24f6a2">&#9670;&#160;</a></span>get_hand_type_name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char * get_hand_type_name </td>
+          <td>(</td>
+          <td class="paramtype">enum HandType&#160;</td>
+          <td class="paramname"><em>hand_type</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00080">80</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -580,7 +617,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00283">283</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00294">294</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -602,7 +639,7 @@ Functions</h2></td></tr>
 
 <p>Deselect all cards in hand. </p>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00313">313</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00324">324</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -625,7 +662,7 @@ Functions</h2></td></tr>
 <p>Get the current number of selected Cards. </p>
 <dl class="section return"><dt>Returns</dt><dd><code>card_selections</code> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00109">109</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00120">120</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -649,7 +686,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd><code>hand_top + 1</code></dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="hand_8h.html#a41c74b16743c1e9a1b7409629d2a5c8e" title="Get the position in hand array of the last card obtained.">get_hand_top</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00104">104</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00115">115</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -677,7 +714,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00292">292</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00303">303</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -706,7 +743,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="hand_8h.html#aac8c352a03a71c29be4634442721a502" title="Get the current number of selected Cards.">hand_get_nb_selected_cards</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00114">114</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00125">125</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -728,7 +765,7 @@ Functions</h2></td></tr>
 
 <p>Destroy the sprites of the Cards held in hand and recreate then in the same order as the Cards in the hand array. This allows Cards to render properly when help in hand during the round or a Tarot/Spectral booster pack. </p>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00233">233</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00244">244</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -764,7 +801,17 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00757">757</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p>This is used for the special case in "Four Fingers" where you can add a pair into a straight (e.g. AA234 should score all 5 cards) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">played</td><td>Array of pointers to <a class="el" href="structCardObject.html">CardObject</a> representing played cards. </td></tr>
+    <tr><td class="paramname">top</td><td>Index of the top of the played stack. </td></tr>
+    <tr><td class="paramname">selection</td><td>In/Out array of bools; cards from a straight are already set to true, so we add to those the leftover ones that form a pair with an already selected card. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00731">731</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -787,7 +834,7 @@ Functions</h2></td></tr>
 <p>Set the hand state. Primarily used by the GAME_PLAYING game state. </p>
 <dl class="section see"><dt>See also</dt><dd>HandState </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00084">84</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00095">95</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -816,7 +863,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="hand_8h.html#a41c74b16743c1e9a1b7409629d2a5c8e" title="Get the position in hand array of the last card obtained.">get_hand_top</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00099">99</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00110">110</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -839,7 +886,7 @@ Functions</h2></td></tr>
 <p>Sort the hand array according to the selected method to do that. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="hand_8h.html#ae31189b3cd0a76afd9fea79b94ea017f" title="Switch to the given sort method. Can sort playing cards in two ways: by rank and suit....">hand_change_sort</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00269">269</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00280">280</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
@@ -878,7 +925,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00163">163</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hand_8c_source.html#l00174">174</a> of file <a class="el" href="hand_8c_source.html">hand.c</a>.</p>
 
 </div>
 </div>
