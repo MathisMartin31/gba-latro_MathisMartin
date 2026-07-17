@@ -315,14 +315,14 @@ static void game_blind_select_handle_immediate_tags(void)
 {
     if (skip_tag_check_and_apply_for_event_loop(SKIP_TAG_EVENT_IMMEDIATE) == SKIP_TAG_EFFECT_END)
     {
-        timer = TM_ZERO;
+        s_timer = TM_ZERO;
         state_machine_change_state(&blind_select_sm, BLIND_SELECT);
     }
 }
 
 void game_blind_select_reroll_boss_from_menu(void)
 {
-    timer = TM_ZERO;
+    s_timer = TM_ZERO;
     state_machine_change_state(&blind_select_sm, REROLL_BOSS_ANIM_SEQ);
 }
 
@@ -361,7 +361,7 @@ static void game_blind_select_reroll_boss_anim_seq_on_update(void)
     int panel_move_duration = TM_BOSS_BLIND_REROLL_DURATION + (int)is_boss_selected;
 
     // Move whole panel down
-    if (timer < panel_move_duration)
+    if (s_timer < panel_move_duration)
     {
         main_bg_se_move_rect_1_tile_vert(boss_blind_rect_down, SCREEN_DOWN);
         sprite_position(
@@ -372,7 +372,7 @@ static void game_blind_select_reroll_boss_anim_seq_on_update(void)
     }
 
     // Reroll Boss Blind
-    else if (timer == MENU_POP_OUT_ANIM_FRAMES)
+    else if (s_timer == MENU_POP_OUT_ANIM_FRAMES)
     {
         reroll_boss_blind(false);
         pal_bg_mem[BLIND_SELECT_BOSS_BLIND_PANEL_OUTLINE_PID] =
@@ -382,8 +382,8 @@ static void game_blind_select_reroll_boss_anim_seq_on_update(void)
     }
 
     // Move whole panel up after a short pause
-    else if (timer > MENU_POP_OUT_ANIM_FRAMES &&
-             timer < (MENU_POP_OUT_ANIM_FRAMES + panel_move_duration))
+    else if (s_timer > MENU_POP_OUT_ANIM_FRAMES &&
+             s_timer < (MENU_POP_OUT_ANIM_FRAMES + panel_move_duration))
     {
         main_bg_se_move_rect_1_tile_vert(BOSS_BLIND_REROLL_ANIM_RECT, SCREEN_UP);
         sprite_position(
@@ -394,7 +394,7 @@ static void game_blind_select_reroll_boss_anim_seq_on_update(void)
 
         // Just once if Boss Blind panel is raised, to compensate for the fact that the panel will
         // lack one row of tiles, copy a line on the first frame to fill that gap
-        if (timer == (MENU_POP_OUT_ANIM_FRAMES + 1) && is_boss_selected)
+        if (s_timer == (MENU_POP_OUT_ANIM_FRAMES + 1) && is_boss_selected)
         {
             main_bg_se_copy_rect_1_tile_vert(BOSS_BLIND_REROLL_DUP_LINE_RECT, SCREEN_DOWN);
         }
@@ -402,9 +402,9 @@ static void game_blind_select_reroll_boss_anim_seq_on_update(void)
 
     // Go back to applying skip tags, even if we rerolled through a Voucher because there will be no
     // Tags to activate and the state will immediately go back to blind selection
-    else if (timer >= (MENU_POP_OUT_ANIM_FRAMES + panel_move_duration))
+    else if (s_timer >= (MENU_POP_OUT_ANIM_FRAMES + panel_move_duration))
     {
-        timer = TM_ZERO;
+        s_timer = TM_ZERO;
         state_machine_change_state(&blind_select_sm, APPLY_BLIND_TAGS);
     }
 }

@@ -190,12 +190,12 @@ JokerObject* game_shop_get_description_card(void)
 
 int game_shop_get_reroll_cost(void)
 {
-    return reroll_cost;
+    return s_reroll_cost;
 }
 
 void game_shop_set_reroll_cost(int cost)
 {
-    reroll_cost = cost;
+    s_reroll_cost = cost;
 }
 
 void game_shop_reset(void)
@@ -248,7 +248,7 @@ static void game_shop_redeem_skip_tags(void)
 {
     if (skip_tag_check_and_apply_for_event_loop(SKIP_TAG_EVENT_ON_SHOP_INIT) == SKIP_TAG_EFFECT_END)
     {
-        timer = TM_ZERO;
+        s_timer = TM_ZERO;
         state_machine_change_state(&shop_sm, GAME_SHOP_INTRO);
     }
 }
