@@ -1059,8 +1059,7 @@ static inline void game_round_process_input_and_state(void)
     {
         // We're checking for scoring Tags in a general way here, but only the Juggler can
         // really apply on round start
-        if (skip_tag_check_and_apply_for_event_loop(SKIP_TAG_EVENT_ON_ROUND_START) ==
-            SKIP_TAG_EFFECT_END)
+        if (skip_tag_process_get_effect() == SKIP_TAG_EFFECT_END)
         {
             set_hand_state(HAND_DRAW);
             g_game_vars.timer = TM_ZERO;
@@ -2054,6 +2053,8 @@ void game_round_on_init(void)
     ); // Blind reward
 
     deck_shuffle(); // Shuffle the deck at the start of the round
+
+    skip_tag_process_init(SKIP_TAG_EVENT_ON_ROUND_START);
 
     /* Note that since cards_in_hand_update_loop() handles card highlight there's no need
      * to call a selection changed callback to highlight the initial card, this wouldn't work

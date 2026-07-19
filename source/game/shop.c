@@ -238,6 +238,8 @@ void game_shop_on_init(void)
     state_machine_register(&shop_sm);
     state_machine_change_state(&shop_sm, GAME_SHOP_SKIP_TAGS);
 
+    skip_tag_process_init(SKIP_TAG_EVENT_ON_SHOP_INIT);
+
     // The selection grid is initialized outside of bounds and moved
     // to trigger the selection change so the initial selection is visible
     shop_selection_grid.selection = SHOP_INIT_SEL;
@@ -246,7 +248,7 @@ void game_shop_on_init(void)
 
 static void game_shop_redeem_skip_tags(void)
 {
-    if (skip_tag_check_and_apply_for_event_loop(SKIP_TAG_EVENT_ON_SHOP_INIT) == SKIP_TAG_EFFECT_END)
+    if (skip_tag_process_get_effect() == SKIP_TAG_EFFECT_END)
     {
         s_timer = TM_ZERO;
         state_machine_change_state(&shop_sm, GAME_SHOP_INTRO);

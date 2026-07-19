@@ -251,119 +251,175 @@ void remove_skip_tag(int tag_idx)
     rearrange_skip_tag_sprites(list_get_len(&_owned_skip_tags), get_skip_tag_sprites_spacing());
 }
 
-enum SkipTagEvalState
+enum SkipTagProcessState
 {
-    SKIP_TAG_EVAL_STATE_SEARCH,
-    SKIP_TAG_EVAL_STATE_TRIGGER,
-    SKIP_TAG_EVAL_STATE_REMOVE,
-    SKIP_TAG_EVAL_STATE_MAX
+    SKIP_TAG_PROCESS_STATE_SEARCH,
+    SKIP_TAG_PROCESS_STATE_TRIGGER,
+    SKIP_TAG_PROCESS_STATE_REMOVE,
+
+    SKIP_TAG_PROCESS_STATE_MAX
 };
 
 static void skip_tag_search_for_event(void);
 static void skip_tag_trigger_for_event(void);
 static void skip_tag_remove_for_event(void);
 
-static StateCallback tag_eval_state_fn[] = {
-    skip_tag_search_for_event,
-    skip_tag_trigger_for_event,
-    skip_tag_remove_for_event
+static StateInfo tag_process_state_fn[SKIP_TAG_PROCESS_STATE_MAX] = {
+    STATE_INFO_UPDATE_FN_ONLY(skip_tag_search_for_event),
+    STATE_INFO_UPDATE_FN_ONLY(skip_tag_trigger_for_event),
+    STATE_INFO_UPDATE_FN_ONLY(skip_tag_remove_for_event)
 };
-static enum SkipTagEvalState tag_eval_state = SKIP_TAG_EVAL_STATE_MAX;
 
-static s32 tags_timer = TM_ZERO;
+static StateMachine tag_process_sm =
+    STATE_MACHINE_DEFINE(tag_process_state_fn, SKIP_TAG_PROCESS_STATE_MAX);
 
-static int applied_tag_idx = 0;
-static SkipTag* consumed_tag = NULL;
-static SkipTagCallback consumed_tag_effect = NULL;
-
-static enum SkipTagEvent tag_event = SKIP_TAG_EVENT_NONE;
-static enum SkipTagEffect tag_effect = SKIP_TAG_EFFECT_NONE;
-
-enum SkipTagEffect skip_tag_check_and_apply_for_event_loop(enum SkipTagEvent checked_tag_event)
+typedef struct
 {
-    // iInit only once, and the state machine will run by itself from the next frame onwards
-    if (tag_eval_state == SKIP_TAG_EVAL_STATE_MAX)
-    {
-        tags_timer = TM_ZERO;
-        tag_event = checked_tag_event;
-        applied_tag_idx = 0;
-        tag_eval_state = SKIP_TAG_EVAL_STATE_SEARCH;
-    }
+    // General info about the processing of tags
+    s32 tags_timer;
+    enum SkipTagProcessState tag_process_state;
+    enum SkipTagEvent tag_event;
+    enum SkipTagEffect tag_effect;
+} TagProcessInfo;
 
-    tag_effect = SKIP_TAG_EFFECT_NONE;
+static TagProcessInfo s_tag_process_info = {
+    .tags_timer = TM_ZERO,
+    .tag_process_state = SKIP_TAG_PROCESS_STATE_MAX,
+    .tag_event = SKIP_TAG_EVENT_NONE,
+    .tag_effect = SKIP_TAG_EFFECT_NONE,
+};
 
-    if (tags_timer % FRAMES(TM_SKIP_TAG_ANIM_DURATION) == TM_ZERO)
-        tag_eval_state_fn[tag_eval_state]();
-
-    tags_timer++;
-
-    if (tag_effect != SKIP_TAG_EFFECT_END)
-    {
-        return tag_effect;
-    }
-
-    tag_eval_state = SKIP_TAG_EVAL_STATE_MAX;
-    return SKIP_TAG_EFFECT_END;
+enum SkipTagEffect skip_tag_process_get_effect(void)
+{
+    return s_tag_process_info.tag_effect;
 }
+
+int skip_tag_process_get_timer(void)
+{
+    return s_tag_process_info.tags_timer;
+}
+
+void skip_tag_process_init(enum SkipTagEvent checked_tag_event)
+{
+    if (tag_process_sm.registered)
+        return;
+
+    s_tag_process_info.tags_timer = TM_ZERO;
+    s_tag_process_info.tag_process_state = SKIP_TAG_PROCESS_STATE_SEARCH;
+    s_tag_process_info.tag_event = checked_tag_event;
+    s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_NONE;
+
+    skip_tag_process_resume();
+}
+
+void skip_tag_process_pause(void)
+{
+    // We're keeping track of the state separately so that we can restore it when
+    // we resume the state machine processing
+    s_tag_process_info.tag_process_state = tag_process_sm.state;
+    s_tag_process_info.tags_timer = TM_ZERO;
+    state_machine_remove(&tag_process_sm);
+}
+
+void skip_tag_process_resume(void)
+{
+    if (s_tag_process_info.tag_process_state >= SKIP_TAG_PROCESS_STATE_MAX)
+        return;
+
+    state_machine_register(&tag_process_sm);
+    state_machine_change_state(&tag_process_sm, s_tag_process_info.tag_process_state);
+}
+
+SkipTag* s_consumed_tag = NULL;
+int s_consumed_tag_idx = 0;
+SkipTagCallback s_consumed_tag_effect_func = NULL;
 
 static void skip_tag_search_for_event(void)
 {
+    s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_NONE;
+
     int nb_owned_tags = list_get_len(&_owned_skip_tags);
 
-    for (; applied_tag_idx < nb_owned_tags; applied_tag_idx++)
+    for (; s_consumed_tag_idx < nb_owned_tags; s_consumed_tag_idx++)
     {
-        consumed_tag = list_get_at_idx(&_owned_skip_tags, applied_tag_idx);
+        s_consumed_tag = list_get_at_idx(&_owned_skip_tags, s_consumed_tag_idx);
 
-        if (consumed_tag == NULL)
+        if (s_consumed_tag == NULL)
             continue;
 
-        const SkipTagInfo* info = get_skip_tag_registry_entry(consumed_tag->type);
+        const SkipTagInfo* info = get_skip_tag_registry_entry(s_consumed_tag->type);
 
-        if (info == NULL || info->event_type != tag_event)
+        if (info == NULL || info->event_type != s_tag_process_info.tag_event)
             continue;
 
         // Return early in case the tag can trigger, will apply effect later
         if (info->tag_condition_func())
         {
-            consumed_tag_effect = info->tag_effect_func;
+            s_consumed_tag_effect_func = info->tag_effect_func;
 
-            tag_effect = SKIP_TAG_EFFECT_NONE;
-            tag_eval_state = SKIP_TAG_EVAL_STATE_TRIGGER;
+            s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_NONE;
+            state_machine_change_state(&tag_process_sm, SKIP_TAG_PROCESS_STATE_TRIGGER);
+
+            s_tag_process_info.tags_timer++;
             return;
         }
     }
 
-    tag_effect = SKIP_TAG_EFFECT_END;
+    s_consumed_tag_idx = 0;
+    s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_END;
+    s_tag_process_info.tag_process_state = SKIP_TAG_PROCESS_STATE_MAX;
+    skip_tag_process_pause();
+
+    s_tag_process_info.tags_timer++;
 }
 
 static void skip_tag_trigger_for_event(void)
 {
-    BG_POINT tag_pos = {fx2int(consumed_tag->x), fx2int(consumed_tag->y)};
+    s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_NONE;
+    if (s_tag_process_info.tags_timer % FRAMES(TM_SKIP_TAG_ANIM_DURATION) != TM_ZERO)
+    {
+        s_tag_process_info.tags_timer++;
+        return;
+    }
+
+    BG_POINT tag_pos = {fx2int(s_consumed_tag->x), fx2int(s_consumed_tag->y)};
 
     // Set tiles to the "activated" ones, each with colors that correspond to their tag type
-    consumed_tag->type += MAX_SKIP_TAG_TYPES;
-    skip_tag_set_sprite(consumed_tag, tag_pos, OWNED_SKIP_TAG_STARTING_LAYER + applied_tag_idx);
+    s_consumed_tag->type += MAX_SKIP_TAG_TYPES;
+    skip_tag_set_sprite(
+        s_consumed_tag,
+        tag_pos,
+        OWNED_SKIP_TAG_STARTING_LAYER + s_consumed_tag_idx
+    );
 
     // Reset rortation so that the sprite isn't too distorted when bouncing if
     // it's still moving from a previous animation
-    consumed_tag->rotation = 0;
-    consumed_tag->vrotation = 0;
-    sprite_object_bounce_grow((SpriteObject*)consumed_tag, 1.0f, SFX_REDEEM_TAG);
+    s_consumed_tag->rotation = 0;
+    s_consumed_tag->vrotation = 0;
+    sprite_object_bounce_grow((SpriteObject*)s_consumed_tag, 1.0f, SFX_REDEEM_TAG);
 
-    // Apply tag here so it matches the animation
-    (*consumed_tag_effect)();
+    s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_TRIGGER;
+    s_tag_process_info.tags_timer++;
+    state_machine_change_state(&tag_process_sm, SKIP_TAG_PROCESS_STATE_REMOVE);
 
-    consumed_tag = NULL;
-    consumed_tag_effect = NULL;
-
-    tag_effect = SKIP_TAG_EFFECT_TRIGGER;
-    tag_eval_state = SKIP_TAG_EVAL_STATE_REMOVE;
+    // Apply tag here so it matches the animation, but AFTER changing the processing state,
+    // else, with the Boss tag, the trigger state will be restored and `s_consumed_tag_effect_func`
+    // will be dereferenced after being set to NULL
+    (*s_consumed_tag_effect_func)();
+    s_consumed_tag = NULL;
+    s_consumed_tag_effect_func = NULL;
 }
 
 static void skip_tag_remove_for_event(void)
 {
-    remove_skip_tag(applied_tag_idx);
+    s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_NONE;
+    if (s_tag_process_info.tags_timer % FRAMES(TM_SKIP_TAG_ANIM_DURATION) != TM_ZERO)
+    {
+        s_tag_process_info.tags_timer++;
+        return;
+    }
 
-    tag_effect = SKIP_TAG_EFFECT_NONE;
-    tag_eval_state = SKIP_TAG_EVAL_STATE_SEARCH;
+    remove_skip_tag(s_consumed_tag_idx);
+    s_tag_process_info.tags_timer++;
+    state_machine_change_state(&tag_process_sm, SKIP_TAG_PROCESS_STATE_SEARCH);
 }

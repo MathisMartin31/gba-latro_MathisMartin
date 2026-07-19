@@ -307,6 +307,10 @@ static inline void game_round_end_print_reward(void)
             TTE_WHITE_PB,
             s_reward_text[s_current_reward]
         );
+
+        // Initialize processing for the Investment Tag
+        if (s_current_reward == REWARD_TYPE_INVESTMENT)
+            skip_tag_process_init(SKIP_TAG_EVENT_ON_ROUND_END);
     }
 
     // Increment the reward text until the reward variable is depleted
@@ -348,7 +352,7 @@ static inline void game_round_end_print_reward(void)
             {
                 // For the Investment Tag reward, updating the values on screen will rely on the Tag
                 // effect evaluation function
-                switch (skip_tag_check_and_apply_for_event_loop(SKIP_TAG_EVENT_ON_ROUND_END))
+                switch (skip_tag_process_get_effect())
                 {
                     // Increment investment bonus by 1
                     case SKIP_TAG_EFFECT_TRIGGER:

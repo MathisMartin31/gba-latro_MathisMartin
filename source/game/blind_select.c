@@ -36,7 +36,8 @@ static int s_timer;
 static void game_blind_select_start_anim_seq(void);
 static void game_blind_select_start_anim_seq_reposition_tag_sprites(void);
 static void game_blind_select_handle_input(void);
-static void game_blind_select_handle_immediate_tags(void);
+static void game_blind_select_handle_immediate_tags_on_init(void);
+static void game_blind_select_handle_immediate_tags_on_update(void);
 static void game_blind_select_reroll_boss_anim_seq_on_init(void);
 static void game_blind_select_reroll_boss_anim_seq_on_update(void);
 static void game_blind_select_reroll_boss_anim_seq_on_exit(void);
@@ -68,7 +69,7 @@ enum BlindSelectState
 static StateInfo state_info[] = {
     STATE_INFO_UPDATE_FN_ONLY(game_blind_select_start_anim_seq),
     STATE_INFO_UPDATE_FN_ONLY(game_blind_select_handle_input),
-    STATE_INFO_UPDATE_FN_ONLY(game_blind_select_handle_immediate_tags),
+    STATE_INFO_INIT_UPDATE_FN(game_blind_select_handle_immediate_tags_on_init, game_blind_select_handle_immediate_tags_on_update),
     {
         .on_init   = game_blind_select_reroll_boss_anim_seq_on_init,
         .on_update = game_blind_select_reroll_boss_anim_seq_on_update,
@@ -311,9 +312,14 @@ static void game_blind_select_handle_input()
     }
 }
 
-static void game_blind_select_handle_immediate_tags(void)
+static void game_blind_select_handle_immediate_tags_on_init(void)
 {
-    if (skip_tag_check_and_apply_for_event_loop(SKIP_TAG_EVENT_IMMEDIATE) == SKIP_TAG_EFFECT_END)
+    skip_tag_process_init(SKIP_TAG_EVENT_IMMEDIATE);
+}
+
+static void game_blind_select_handle_immediate_tags_on_update(void)
+{
+    if (skip_tag_process_get_effect() == SKIP_TAG_EFFECT_END)
     {
         s_timer = TM_ZERO;
         state_machine_change_state(&blind_select_sm, BLIND_SELECT);
@@ -344,6 +350,7 @@ static inline void reroll_boss_blind(bool no_tiles)
 
 static void game_blind_select_reroll_boss_anim_seq_on_init(void)
 {
+    skip_tag_process_pause();
     game_blind_select_erase_blind_req_and_reward(BOSS_BLIND);
 }
 
@@ -411,6 +418,7 @@ static void game_blind_select_reroll_boss_anim_seq_on_update(void)
 
 static void game_blind_select_reroll_boss_anim_seq_on_exit(void)
 {
+    skip_tag_process_resume();
     game_blind_select_print_blinds_reqs_and_rewards();
 }
 
