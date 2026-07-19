@@ -197,7 +197,14 @@ void add_skip_tag(SkipTag** blind_tag);
 void remove_skip_tag(int tag_idx);
 
 /**
- * @brief Initialize the Skip Tag processing structure and state.
+ * @brief Initialize the Skip Tag processing structure and state, then launches the processing.
+ *
+ * Skip Tags will be fully processed over 61 frames (1 + 2 * TM_SKIP_TAG_ANIM_DURATION) so we have
+ * time to process what's happening:
+ *
+ *  - Detect triggered Tag, executed instantly but will take a full frame given how state machines work
+ *  - Starting the little bouncy animation as the Tag triggers
+ *  - Delete triggered Tag, serves as a little pause
  *
  * @param checked_tag_event the event for which the owned Tags will be evaluated
  *
@@ -205,23 +212,38 @@ void remove_skip_tag(int tag_idx);
  */
 void skip_tag_process_init(enum SkipTagEvent checked_tag_event);
 
+/**
+ * @brief Recover the effect of the Tag being processed, if any.
+ *
+ * This function must be called every frame after `skip_tag_process_init` so that we stay up to date
+ * with the Tags processing.
+ *
+ * @return enum SkipTagEffect
+ *
+ * @sa skip_tag_process_init
+ */
 enum SkipTagEffect skip_tag_process_get_effect(void);
-int skip_tag_process_get_timer(void);
-void skip_tag_process_pause(void);
-void skip_tag_process_resume(void);
 
 /**
- * @brief Determines if a SkipTag needs to trigger for the event given at initialization.
+ * @brief Suspend the processing of Skip Tags.
  *
- * Skip Tags will be fully processed over 61 frames (1 + 2 * TM_SKIP_TAG_ANIM_DURATION) so we have time
- * to process what's happening:
+ * This is called automatically when Tags have finished processing for the current SkipTagEvent, but
+ * it can be invoked by a game state to temporarily pause the processing while doing some other
+ * thing, like showing an animation. Call `skip_tag_process_resume` to pick up processing where it
+ * was left.
  *
- *  - Detect triggered Tag, executed instantly
- *  - Starting the little bouncy animation as the Tag triggers
- *  - Delete triggered Tag, serves as a little pause
- *
- * @return SkipTagEffect
- * @sa skip_tag_process_init, SkipTagEffect, SkipTagEvent
+ * @sa skip_tag_process_resume
  */
+void skip_tag_process_pause(void);
+
+/**
+ * @brief Resume the processing of Skip Tags.
+ *
+ * After `skip_tag_process_pause` was called, use this function some time afterwards to resume Tag
+ * processing.
+ *
+ * @sa skip_tag_process_pause
+ */
+void skip_tag_process_resume(void);
 
 #endif // SKIP_TAGS_H

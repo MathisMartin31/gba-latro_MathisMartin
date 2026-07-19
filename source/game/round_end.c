@@ -411,8 +411,6 @@ static void game_round_end_display_rewards(void)
     }
     else if (g_game_vars.timer >= TM_DISPLAY_REWARDS_CONT_WAIT)
     {
-        bool do_print_reward = false;
-
         switch (s_current_reward)
         {
             // Falling immediately to the next case if we don't need to count the current reward
@@ -421,7 +419,6 @@ static void game_round_end_display_rewards(void)
             {
                 if (s_hand_reward > 0)
                 {
-                    do_print_reward = true;
                     break;
                 }
                 else
@@ -434,7 +431,6 @@ static void game_round_end_display_rewards(void)
             {
                 if (s_investment_tag_active)
                 {
-                    do_print_reward = true;
                     break;
                 }
                 else
@@ -447,7 +443,6 @@ static void game_round_end_display_rewards(void)
             {
                 if (s_interest_reward > 0)
                 {
-                    do_print_reward = true;
                     break;
                 }
                 else
@@ -457,11 +452,10 @@ static void game_round_end_display_rewards(void)
                 }
             }
             default:
-                break;
+                return;
         }
 
-        if (do_print_reward)
-            game_round_end_print_reward();
+        game_round_end_print_reward();
     }
 }
 

@@ -289,16 +289,6 @@ static TagProcessInfo s_tag_process_info = {
     .tag_effect = SKIP_TAG_EFFECT_NONE,
 };
 
-enum SkipTagEffect skip_tag_process_get_effect(void)
-{
-    return s_tag_process_info.tag_effect;
-}
-
-int skip_tag_process_get_timer(void)
-{
-    return s_tag_process_info.tags_timer;
-}
-
 void skip_tag_process_init(enum SkipTagEvent checked_tag_event)
 {
     if (tag_process_sm.registered)
@@ -310,6 +300,11 @@ void skip_tag_process_init(enum SkipTagEvent checked_tag_event)
     s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_NONE;
 
     skip_tag_process_resume();
+}
+
+enum SkipTagEffect skip_tag_process_get_effect(void)
+{
+    return s_tag_process_info.tag_effect;
 }
 
 void skip_tag_process_pause(void)
