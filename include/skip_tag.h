@@ -202,7 +202,8 @@ void remove_skip_tag(int tag_idx);
  * Skip Tags will be fully processed over 61 frames (1 + 2 * TM_SKIP_TAG_ANIM_DURATION) so we have
  * time to process what's happening:
  *
- *  - Detect triggered Tag, executed instantly but will take a full frame given how state machines work
+ *  - Detect triggered Tag, executed instantly but will take a full frame given how state machines
+ *    work
  *  - Starting the little bouncy animation as the Tag triggers
  *  - Delete triggered Tag, serves as a little pause
  *
