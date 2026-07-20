@@ -643,12 +643,11 @@ static void game_shop_show_card_desc(void)
         s_description_card->ty = int2fx(CARD_DESCRIPTION_SPRITE_POS.y);
     }
 
-    // First 12 anim frames
     if (s_timer <= TM_SHOW_CARD_DESC_WAIT)
     {
         s_show_description_anim_progress++;
 
-        // Hide Deck (last 5 frames only)
+        // Hide Deck (last frames only)
         if (TM_SHOW_CARD_DESC_WAIT - s_timer < TM_HIDE_DECK_WAIT)
             main_bg_se_move_rect_1_tile_vert(DECK_ANIM_RECT, SCREEN_DOWN);
         // Hide shop panel
@@ -760,10 +759,9 @@ static void game_shop_hide_card_desc(void)
         s_description_card->ty = s_description_card_original_y_pos;
     }
 
-    // First 12 anim frames
     if (s_timer <= s_show_description_anim_progress)
     {
-        // Show Deck (last 5 frames only)
+        // Show Deck (last frames only)
         if (s_show_description_anim_progress > TM_HIDE_DECK_WAIT &&
             s_timer < (s_show_description_anim_progress - (TM_HIDE_DECK_WAIT + 1)))
         {
