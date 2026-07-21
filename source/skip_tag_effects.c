@@ -1,5 +1,6 @@
 #include "game.h"
 #include "game/blind_select.h"
+#include "game/common_ui.h"
 #include "game/shop.h"
 #include "game_variables.h"
 #include "hand.h"

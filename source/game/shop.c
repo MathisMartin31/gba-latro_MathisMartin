@@ -302,7 +302,7 @@ static void game_shop_create_top_row_items(void)
             return;
         }
 
-        item->x = int2fx(SHOP_JOKER_SPRITES_INIT_POS.x + i * CARD_SPRITE_SIZE);
+        item->x = int2fx(SHOP_JOKER_SPRITES_INIT_POS.x + i * CARD_SPRITE_SIZE_PX);
         item->y = int2fx(SHOP_JOKER_SPRITES_INIT_POS.y);
         item->tx = item->x;
         item->ty = int2fx(ITEM_SHOP_Y);

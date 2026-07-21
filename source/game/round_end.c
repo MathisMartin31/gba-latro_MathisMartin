@@ -63,6 +63,7 @@ static int s_reward_y_offset = 1;
 static int s_blind_reward = 0;
 static int s_hand_reward = 0;
 static bool s_investment_tag_active = false;
+static int s_investment_total = 0;
 static int s_investment_reward = 0;
 static int s_interest_total = 0;
 static int s_interest_reward = 0;
@@ -119,9 +120,10 @@ static void game_round_end_start(void)
 
         s_blind_reward = blind_get_reward(g_game_vars.current_blind);
         s_hand_reward = g_game_vars.hands;
+        s_investment_total = skip_tag_count(SKIP_TAG_TYPE_INVESTMENT);
         s_investment_reward = 0;
-        s_investment_tag_active = skip_tag_is_owned(SKIP_TAG_TYPE_INVESTMENT) &&
-                                  g_game_vars.current_blind >= BLIND_TYPE_BOSS;
+        s_investment_tag_active =
+            s_investment_total > 0 && g_game_vars.current_blind >= BLIND_TYPE_BOSS;
         s_interest_total = calculate_interest_reward();
         s_interest_reward = s_interest_total;
     }
@@ -287,7 +289,7 @@ static const u8 s_reward_text_color[REWARD_TYPE_MAX] = {
 };
 static int* s_reward_values[REWARD_TYPE_MAX] = {
     [REWARD_TYPE_HAND] = &s_hand_reward,
-    [REWARD_TYPE_INVESTMENT] = &s_investment_reward,
+    [REWARD_TYPE_INVESTMENT] = &s_investment_total,
     [REWARD_TYPE_INTEREST] = &s_interest_reward
 };
 
@@ -357,13 +359,6 @@ static inline void game_round_end_print_reward(void)
                     // Increment investment bonus by 1
                     case SKIP_TAG_EFFECT_TRIGGER:
                         s_investment_reward++;
-                        tte_printf(
-                            "#{P:%lu,%d; cx:0x%X000}%d",
-                            ROUND_END_REWARD_TEXT_X,
-                            reward_y * TILE_SIZE,
-                            TTE_YELLOW_PB,
-                            s_investment_reward
-                        );
                         tte_printf(
                             "#{P:%lu, %d; cx:0x%X000}$%d",
                             ROUND_END_REWARD_AMOUNT_X,

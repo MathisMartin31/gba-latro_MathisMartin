@@ -1,4 +1,5 @@
 #include "card.h"
+#include "game/common_ui.h"
 #include "joker.h"
 #include "list.h"
 #include "skip_tag.h"

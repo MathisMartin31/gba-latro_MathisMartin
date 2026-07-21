@@ -13,7 +13,7 @@
  * @name Sprite system constants
  * @{
  */
-#define CARD_SPRITE_SIZE                  32
+#define CARD_SPRITE_SIZE_PX               32
 #define MAX_AFFINES                       32
 #define MAX_SPRITES                       128
 #define MAX_SPRITE_OBJECTS                16

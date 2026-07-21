@@ -98,7 +98,7 @@ void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer)
         pb_init = true;
     }
 
-    int tile_index = SKIP_TAG_TID + (layer * SKIP_TAG_SPRITE_SIZE);
+    int tile_index = get_sprite_tid(SKIP_TAG_SPRITE, layer);
     memcpy32(
         &tile_mem[TILE_MEM_OBJ_CHARBLOCK0_IDX][tile_index],
         &skip_tags_gfxTiles[tag->type * SKIP_TAG_SPRITE_SIZE * TILE_SIZE],
@@ -115,7 +115,7 @@ void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer)
         ATTR1_SIZE_16,
         tile_index,
         SKIP_TAGS_PB,
-        SKIP_TAG_STARTING_LAYER + layer
+        get_sprite_starting_layer(SKIP_TAG_SPRITE) + layer
     );
     sprite_object_set_sprite((SpriteObject*)tag, sprite);
     sprite_object_position((SpriteObject*)tag, pos.x, pos.y);
@@ -185,6 +185,8 @@ static void rearrange_skip_tag_sprites(int nb_owned_tags, int tag_spacing)
     }
 }
 
+// Unused for now, may be useful for upcoming tags
+GBAL_UNUSED
 bool skip_tag_is_owned(u8 tag_type)
 {
     SkipTag* tag;
@@ -199,6 +201,23 @@ bool skip_tag_is_owned(u8 tag_type)
     }
 
     return false;
+}
+
+int skip_tag_count(u8 tag_type)
+{
+    int count = 0;
+    SkipTag* tag;
+    ListItr tag_itr = list_itr_create(&_owned_skip_tags);
+
+    while ((tag = list_itr_next(&tag_itr)))
+    {
+        if (tag->type == tag_type)
+        {
+            count++;
+        }
+    }
+
+    return count;
 }
 
 void add_skip_tag(SkipTag** blind_tag)

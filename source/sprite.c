@@ -430,8 +430,8 @@ static Rect sprite_object_get_text_rect_under(SpriteObject* sprite_object)
     if (sprite_object_get_dimensions(sprite_object, &width, &height) == false)
     {
         // fallback
-        height = CARD_SPRITE_SIZE;
-        width = CARD_SPRITE_SIZE;
+        height = CARD_SPRITE_SIZE_PX;
+        width = CARD_SPRITE_SIZE_PX;
     }
 
     Rect ret_rect = {0};

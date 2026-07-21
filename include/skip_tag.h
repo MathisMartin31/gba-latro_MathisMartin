@@ -5,23 +5,25 @@
 #ifndef SKIP_TAGS_H
 #define SKIP_TAGS_H
 
+#include "game/common_ui.h"
 #include "graphic_utils.h"
 #include "joker.h"
 #include "sprite.h"
 
 #include <tonc.h>
 
-#define MAX_SKIP_TAGS 16
+/**
+ * @brief Sprite IDs of the Skip Tags, as an offset relative to SKIP_TAG_STARTING_LAYER
+ *
+ * @sa SpriteStartingLayers
+ */
+enum SkipTagLayers
+{
+    SMALL_BLIND_SKIP_TAG_LAYER,
+    BIG_BLIND_SKIP_TAG_LAYER,
+    OWNED_SKIP_TAG_STARTING_LAYER
+};
 
-// Number of tiles a Tag sprite is made of
-#define SKIP_TAG_SPRITE_SIZE 4
-// Put Tag sprites after the Jokers'
-#define SKIP_TAG_STARTING_LAYER    (JOKER_STARTING_LAYER + MAX_ACTIVE_JOKERS)
-#define SMALL_BLIND_SKIP_TAG_LAYER 0
-#define BIG_BLIND_SKIP_TAG_LAYER   1
-// There are max 2 skip tags visible in the Blind Select screen
-// The sprites for the ones we own will be stored after them.
-#define OWNED_SKIP_TAG_STARTING_LAYER 2
 // Tile ID for the starting index in the tile memory
 #define SKIP_TAG_TID (SKIP_TAG_STARTING_LAYER * SKIP_TAG_SPRITE_SIZE)
 
@@ -144,7 +146,8 @@ SkipTag* skip_tag_new(u8 tag_type);
  *
  * @param tag pointer to the SkipTag object
  * @param pos position the new Sprite will immediately be shown at. Cannot be **UNDEFINED**
- * @param layer sprite layer for the new Sprite
+ * @param layer sprite layer for the new Sprite, as an offset to the starting layer for the
+ *              SKIP_TAG sprite type
  */
 void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer);
 
@@ -179,6 +182,14 @@ SkipTag* roll_skip_tag(void);
  * @return true if tag type is present, false otherwise
  */
 bool skip_tag_is_owned(u8 tag_type);
+
+/**
+ * @brief Counts how many tags of a certain type we own.
+ *
+ * @param tag_type SkipTagType to count
+ * @return int
+ */
+int skip_tag_count(u8 tag_type);
 
 /**
  * @brief Adds the SkipTag to the owned list, snaps it into position and sets the original pointer

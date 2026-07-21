@@ -28,9 +28,9 @@ enum BlindTokens
 /**
  * @enum BlindTokenLayers
  * @brief Sprite IDs of the various Blind Tokens used in the game, expressed as an offset relative
- *         to `BLIND_BASE_LAYER`
+ *         to `BLIND_STARTING_LAYER`
  *
- * @sa BLIND_BASE_LAYER
+ * @sa SpriteStartingLayers
  */
 enum BlindTokenLayers
 {

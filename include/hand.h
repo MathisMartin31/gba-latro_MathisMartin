@@ -11,8 +11,6 @@
 
 #include <tonc.h>
 
-#define MAX_HAND_SIZE 16
-
 enum HandState
 {
     HAND_TAGS,

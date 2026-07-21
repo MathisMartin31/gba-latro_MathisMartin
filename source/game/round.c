@@ -9,6 +9,7 @@
 #include "background_gfx.h"
 #include "button.h"
 #include "game.h"
+#include "game/common_ui.h"
 #include "game/joker_row.h"
 #include "graphic_utils.h"
 #include "hand.h"
@@ -1195,7 +1196,7 @@ static inline void game_round_discarded_cards_loop(void)
             discarded_card_object = card_object_new(discard_pop());
 
             // Set the sprite for the discarded card object
-            card_object_set_sprite(discarded_card_object, 0);
+            card_object_set_sprite(discarded_card_object, CARD_UNDISCARD_SPRITE, 0);
             sprite_object_reset_transform((SpriteObject*)discarded_card_object);
 
             discarded_card_object->tx = int2fx(204);
@@ -1904,7 +1905,7 @@ static inline void played_cards_update_loop(void)
         if (card_object_get_sprite(s_played_hand[played_idx]) == NULL)
         {
             // Set the sprite for the played card object
-            card_object_set_sprite(s_played_hand[played_idx], played_idx + MAX_HAND_SIZE);
+            card_object_set_sprite(s_played_hand[played_idx], CARD_PLAYED_SPRITE, played_idx);
         }
 
         switch (play_state)
