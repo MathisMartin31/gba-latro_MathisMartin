@@ -202,16 +202,6 @@ void set_blind_beaten(enum BlindType type);
 void apply_blind_colors(enum BlindType type);
 
 /**
- * @brief Change the tiles of the BlindToken Sprite at a given layer to that of the given BlindType.
- *
- * @param type of the Blind we want to apply the tiles of.
- * @param layer the Sprite will be located at.
- *
- * @sa BlindTokenLayers
- */
-void apply_blind_tiles(enum BlindType type, enum BlindTokenLayers layer);
-
-/**
  * @brief Create a new BlindToken sprite.
  *
  * @param type of the Blind the token needs to represent

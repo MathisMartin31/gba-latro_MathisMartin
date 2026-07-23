@@ -342,7 +342,10 @@ static inline void reroll_boss_blind(bool no_tiles)
     }
     if (!no_tiles)
     {
-        apply_blind_tiles(g_game_vars.next_boss_blind, BOSS_BLIND_TOKEN_LAYER);
+        POINT pos = blind_select_tokens[BOSS_BLIND]->pos;
+        sprite_destroy(&blind_select_tokens[BOSS_BLIND]);
+        blind_select_tokens[BOSS_BLIND] =
+            blind_token_new(g_game_vars.next_boss_blind, pos.x, pos.y, BOSS_BLIND_TOKEN_LAYER);
     }
 }
 

@@ -114,24 +114,26 @@ void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer)
         pb_init = true;
     }
 
-    int tile_index = get_sprite_tid(SKIP_TAG_SPRITE, layer);
+    // Recreate sprite
+    if (tag->sprite)
+    {
+        sprite_destroy(&tag->sprite);
+    }
+
+    int tile_index = sprite_type_get_avail_tid(SKIP_TAG_SPRITE);
     memcpy32(
         &tile_mem[TILE_MEM_OBJ_CHARBLOCK0_IDX][tile_index],
         &skip_tags_gfxTiles[tag->type * SKIP_TAG_SPRITE_SIZE * TILE_SIZE],
         SKIP_TAG_SPRITE_SIZE * TILE_SIZE
     );
 
-    // Recreate sprite
-    if (tag->sprite)
-    {
-        sprite_destroy(&tag->sprite);
-    }
     Sprite* sprite = sprite_new(
+        SKIP_TAG_SPRITE,
         ATTR0_SQUARE | ATTR0_4BPP | ATTR0_AFF,
         ATTR1_SIZE_16,
         tile_index,
         SKIP_TAGS_PB,
-        get_sprite_starting_layer(SKIP_TAG_SPRITE) + layer
+        layer
     );
     sprite_object_set_sprite((SpriteObject*)tag, sprite);
     sprite_object_position((SpriteObject*)tag, pos.x, pos.y);

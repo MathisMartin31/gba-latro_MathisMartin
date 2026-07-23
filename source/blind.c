@@ -12,9 +12,10 @@
 #include "hand.h"
 #include "list.h"
 #include "random.h"
-#include "stdbool.h"
+#include "sprite.h"
 #include "util.h"
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <tonc.h>
 
@@ -246,9 +247,9 @@ void apply_blind_colors(enum BlindType type)
     );
 }
 
-void apply_blind_tiles(enum BlindType type, enum BlindTokenLayers layer)
+Sprite* blind_token_new(enum BlindType type, int x, int y, enum BlindTokenLayers layer)
 {
-    int tile_index = get_sprite_tid(BLIND_TOKEN_SPRITE, layer);
+    u32 tile_index = sprite_type_get_avail_tid(BLIND_TOKEN_SPRITE);
     u32 spritesheet_idx = get_blind_spritesheet_idx(type);
     u32 sprite_idx = (type < BLIND_TYPE_MARK) ? type % BLIND_TOKENS_PER_SPRITESHEET : 0;
     memcpy32(
@@ -256,20 +257,15 @@ void apply_blind_tiles(enum BlindType type, enum BlindTokenLayers layer)
         &blind_gfxTiles[spritesheet_idx][sprite_idx * BLIND_SPRITE_COPY_SIZE],
         BLIND_SPRITE_COPY_SIZE
     );
-
     apply_blind_colors(type);
-}
-
-Sprite* blind_token_new(enum BlindType type, int x, int y, enum BlindTokenLayers layer)
-{
-    apply_blind_tiles(type, layer);
 
     Sprite* sprite = sprite_new(
+        BLIND_TOKEN_SPRITE,
         ATTR0_SQUARE | ATTR0_4BPP,
         ATTR1_SIZE_32x32,
-        get_sprite_tid(BLIND_TOKEN_SPRITE, layer),
+        tile_index,
         get_blind_pb(type),
-        get_sprite_starting_layer(BLIND_TOKEN_SPRITE) + layer
+        layer
     );
     sprite_position(sprite, x, y);
 

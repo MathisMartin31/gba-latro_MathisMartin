@@ -10,67 +10,6 @@
 #include "game/shop.h"
 #include "layout.h"
 
-// Sprite Layers
-
-/**
- * @brief Tile index LUT for all sprite types. Filled at init by calling `common_ui_init`
- *
- * @sa common_ui_init
- */
-static int s_sprite_tids[MAX_SPRITE_TYPE] = {0};
-
-/**
- * @brief Starting layer LUT for all sprite types. Filled at init by calling `common_ui_init`
- *
- * @sa common_ui_init
- */
-static int s_sprite_starting_layers[MAX_SPRITE_TYPE] = {0};
-
-// clang-format off
-static const int s_sprite_counts[MAX_SPRITE_TYPE] = {
-    [CARD_SPRITE]            = MAX_HAND_SIZE,
-    [CARD_PLAYED_SPRITE]     = MAX_SELECTION_SIZE,
-    [CARD_UNDISCARD_SPRITE]  = 1,
-    [BLIND_TOKEN_SPRITE]     = MAX_BLIND_TOKEN,
-    [SKIP_TAG_SPRITE]        = MAX_SKIP_TAGS,
-    [JOKER_SPRITE]           = MAX_ACTIVE_JOKERS,
-    [DECK_SPRITE]            = 1
-};
-static const int s_sprite_sizes[MAX_SPRITE_TYPE] = {
-    [CARD_SPRITE]            = CARD_SPRITE_SIZE,
-    [CARD_PLAYED_SPRITE]     = CARD_SPRITE_SIZE,
-    [CARD_UNDISCARD_SPRITE]  = CARD_SPRITE_SIZE,
-    [BLIND_TOKEN_SPRITE]     = BLIND_SPRITE_SIZE,
-    [SKIP_TAG_SPRITE]        = SKIP_TAG_SPRITE_SIZE,
-    [JOKER_SPRITE]           = JOKER_SPRITE_SIZE,
-    [DECK_SPRITE]            = CARD_SPRITE_SIZE
-};
-// clang-format on
-
-void common_ui_init(void)
-{
-    // Start at CARD_PLAYED_SPRITE, since CARD_SPRITE is first and both the TID
-    // and starting layer are 0
-    for (enum SpriteType sprite_type = 1; sprite_type < MAX_SPRITE_TYPE; sprite_type++)
-    {
-        s_sprite_tids[sprite_type] =
-            s_sprite_tids[sprite_type - 1] +
-            s_sprite_counts[sprite_type - 1] * s_sprite_sizes[sprite_type - 1];
-        s_sprite_starting_layers[sprite_type] =
-            s_sprite_starting_layers[sprite_type - 1] + s_sprite_counts[sprite_type - 1];
-    }
-}
-
-int get_sprite_tid(enum SpriteType sprite_type, int layer)
-{
-    return s_sprite_tids[sprite_type] + layer * s_sprite_sizes[sprite_type];
-}
-
-int get_sprite_starting_layer(enum SpriteType sprite_type)
-{
-    return s_sprite_starting_layers[sprite_type];
-}
-
 // Backgrounds
 
 typedef void (*BackgroundRenderCallback)(void);

@@ -93,7 +93,6 @@ void init()
     // Initialize subsystems
     mmInitDefault((mm_addr)soundbank_bin, GBAL_MM_NUM_CHANNELS);
     load_options();
-    common_ui_init();
     affine_background_init();
     sprite_init();
     card_init();
