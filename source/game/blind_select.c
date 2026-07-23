@@ -29,8 +29,6 @@ static const u32 TM_DISP_BLIND_PANEL_FINISH = 7;
 static const u32 TM_DISP_BLIND_PANEL_START = 1;
 static const u32 TM_BOSS_BLIND_REROLL_DURATION = 13;
 
-#define NB_SKIPPABLE_BLINDS 2
-
 static int s_timer;
 
 static void game_blind_select_start_anim_seq(void);

@@ -5,8 +5,10 @@
 #include "skip_tag.h"
 
 #include "audio_utils.h"
+#include "game/blind_select.h"
 #include "game_variables.h"
 #include "joker.h"
+#include "mgba_logger.h"
 #include "pool.h"
 #include "skip_tags_gfx.h"
 #include "soundbank.h"
@@ -66,7 +68,7 @@ static const u8 all_skip_tags_roll_table[NB_SKIP_TAG_TYPES] = {
     SKIP_TAG_TYPE_ECONOMY
 };
 
-List _owned_skip_tags;
+static List _owned_skip_tags;
 
 List* get_owned_skip_tags(void)
 {
@@ -78,6 +80,11 @@ List* get_owned_skip_tags(void)
 SkipTag* skip_tag_new(u8 tag_type)
 {
     SkipTag* tag = POOL_GET(SkipTag);
+    if (tag == NULL)
+    {
+        MGBA_FUNC_ERROR("No more free space in mempool for new SkipTag object");
+        return tag;
+    }
 
     tag->type = tag_type;
     sprite_object_init((SpriteObject*)tag);
@@ -87,8 +94,17 @@ SkipTag* skip_tag_new(u8 tag_type)
 
 void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer)
 {
-    if (tag == NULL || pos.x == UNDEFINED || pos.y == UNDEFINED)
+    if (tag == NULL)
+    {
+        MGBA_FUNC_ERROR("Cannot set Sprite for a NULL SkipTag");
         return;
+    }
+
+    if (pos.x == UNDEFINED || pos.y == UNDEFINED)
+    {
+        MGBA_FUNC_ERROR("Cannot set SkipTag's Sprite X or Y position to UNDEFINED");
+        return;
+    }
 
     // Set tags palette the first time we ask for a sprite
     static bool pb_init = false;
@@ -123,8 +139,10 @@ void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer)
 
 void skip_tag_destroy(SkipTag** tag)
 {
-    if (*tag == NULL)
+    // Nothing to do
+    if (tag == NULL || *tag == NULL)
         return;
+
     sprite_object_destroy((SpriteObject*)(*tag));
     POOL_FREE(SkipTag, *tag);
     *tag = NULL;
@@ -223,13 +241,23 @@ int skip_tag_count(u8 tag_type)
 void add_skip_tag(SkipTag** blind_tag)
 {
     if (blind_tag == NULL || *blind_tag == NULL)
+    {
+        MGBA_FUNC_ERROR("Cannot add SkipTag to owned list from a NULL pointer or pointer of \
+            pointer");
         return;
+    }
 
     // Add to the back, so that the oldest (at the bottom) has the lowest sprite
-    // index and is thus shown on top of the others
-    list_push_back(&_owned_skip_tags, *blind_tag);
-
+    // index and is thus shown on top of the others.
+    // Limit number to MAX_SKIP_TAGS - NB_SKIPPABLE_BLINDS so we always have room in the memory
+    // pool to allocate the two tags in the Blind Select menu. Don't do anything, you just won't
+    // get the tag.
     int nb_owned_tags = list_get_len(&_owned_skip_tags);
+    if (nb_owned_tags >= MAX_SKIP_TAGS - NB_SKIPPABLE_BLINDS)
+        return;
+
+    list_push_back(&_owned_skip_tags, *blind_tag);
+    nb_owned_tags++;
 
     BG_POINT old_tag_pos = {fx2int((*blind_tag)->x), fx2int((*blind_tag)->y)};
     BG_POINT new_tag_pos = OWNED_SKIP_TAGS_BASE_POS;
@@ -344,9 +372,9 @@ void skip_tag_process_resume(void)
     state_machine_change_state(&tag_process_sm, s_tag_process_info.tag_process_state);
 }
 
-SkipTag* s_consumed_tag = NULL;
-int s_consumed_tag_idx = 0;
-SkipTagCallback s_consumed_tag_effect_func = NULL;
+static SkipTag* s_consumed_tag = NULL;
+static int s_consumed_tag_idx = 0;
+static SkipTagCallback s_consumed_tag_effect_func = NULL;
 
 static void skip_tag_search_for_event(void)
 {
@@ -406,7 +434,7 @@ static void skip_tag_trigger_for_event(void)
         OWNED_SKIP_TAG_STARTING_LAYER + s_consumed_tag_idx
     );
 
-    // Reset rortation so that the sprite isn't too distorted when bouncing if
+    // Reset rotation so that the sprite isn't too distorted when bouncing if
     // it's still moving from a previous animation
     s_consumed_tag->rotation = 0;
     s_consumed_tag->vrotation = 0;

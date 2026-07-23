@@ -8,6 +8,8 @@
 
 #include "blind.h"
 
+#define NB_SKIPPABLE_BLINDS 2
+
 /**
  * @brief Reroll the Boss Blind from inside the menu.
  *         This function is made to be used for both Vouchers and the Boss Skip Tag
