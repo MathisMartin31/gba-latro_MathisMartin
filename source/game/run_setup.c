@@ -918,7 +918,7 @@ static inline void reroll_seed_str(void)
     // Also, don't use the shuffled seed as is, or we'll just end up with sequential seeds when
     // rolling multiple times.
     rng_shuffle_seed();
-    u32 new_seed = rng_get_u32();
+    u32 new_seed = rng_get_u32(RNG_TYPE_MISC);
     rng_set_seed(new_seed);
     u32_to_base36(new_seed, s_seed_str);
     update_seed_text();

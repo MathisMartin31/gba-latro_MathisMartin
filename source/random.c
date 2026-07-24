@@ -23,9 +23,17 @@ void rng_update(void)
 
 void rng_set_seed(u32 seed)
 {
-    g_game_vars.rng_info.seed = seed % (MAX_BASE36 + 1);
-    g_game_vars.rng_info.step = 0;
+    // We store the seed to display it at the end of the run, but here it's only used to generate
+    // the independent rng sequences' initial states. We also avoid the seed 0 as the Xorshift32
+    // method used will stay stuck.
+    g_game_vars.rng_info.seed = (seed == 0 ? MAX_BASE36 : seed) % (MAX_BASE36 + 1);
     srand(g_game_vars.rng_info.seed);
+
+    // Generate rng states for all RngTypes categories using the given seed
+    for (enum RngType type = 0; type < RNG_TYPE_MAX; type++)
+    {
+        g_game_vars.rng_info.states[type] = rand();
+    }
 }
 
 void rng_shuffle_seed(void)
@@ -33,19 +41,19 @@ void rng_shuffle_seed(void)
     rng_set_seed(s_timer_acc);
 }
 
-u32 rng_get_u32(void)
+u32 rng_get_u32(enum RngType type)
 {
-    g_game_vars.rng_info.step++;
-    return rand();
+    // Xorshift32
+    uint32_t old_state = g_game_vars.rng_info.states[type];
+    old_state ^= old_state << 13;
+    old_state ^= old_state >> 17;
+    old_state ^= old_state << 5;
+
+    g_game_vars.rng_info.states[type] = old_state;
+    return old_state;
 }
 
 void rng_restore(RngInfo info)
 {
     g_game_vars.rng_info = info;
-
-    srand(g_game_vars.rng_info.seed);
-    for (u32 i = 0; i < g_game_vars.rng_info.step; i++)
-    {
-        (void)rng_get_u32();
-    }
 }

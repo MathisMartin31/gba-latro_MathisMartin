@@ -360,7 +360,7 @@ static int joker_roll_id(void)
     int joker_rarity = joker_get_random_rarity();
 
     int matching_joker_ids[jokers_avail_size];
-    int fallback_random_idx = rng_get_u32() % jokers_avail_size;
+    int fallback_random_idx = rng_get_u32(RNG_TYPE_SHOP_ITEMS) % jokers_avail_size;
     int fallback_random_joker_id = UNDEFINED;
     int match_count = 0;
 
@@ -379,8 +379,9 @@ static int joker_roll_id(void)
         }
     }
 
-    int selected_joker_id = (match_count > 0) ? matching_joker_ids[rng_get_u32() % match_count]
-                                              : fallback_random_joker_id;
+    int selected_joker_id = (match_count > 0)
+                              ? matching_joker_ids[rng_get_u32(RNG_TYPE_SHOP_ITEMS) % match_count]
+                              : fallback_random_joker_id;
 
     return selected_joker_id;
 }
@@ -538,7 +539,7 @@ Sprite* joker_object_get_sprite(JokerObject* joker_object)
 int joker_get_random_rarity()
 {
     int joker_rarity = 0;
-    int rarity_roll = rng_get_u32() % 100;
+    int rarity_roll = rng_get_u32(RNG_TYPE_SHOP_ITEMS) % 100;
     if (rarity_roll < COMMON_JOKER_CHANCE)
     {
         joker_rarity = COMMON_JOKER;

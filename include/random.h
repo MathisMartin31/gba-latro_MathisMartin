@@ -12,6 +12,17 @@
 
 #include <tonc.h>
 
+enum RngType
+{
+    RNG_TYPE_CARD_SHUFFLE,
+    RNG_TYPE_BLIND,
+    RNG_TYPE_SHOP_ITEMS,
+    RNG_TYPE_SKIP_TAGS,
+    RNG_TYPE_JOKER_EFFECTS,
+    RNG_TYPE_MISC,
+    RNG_TYPE_MAX
+};
+
 /**
  * @brief Information to track and restore RNG state
  */
@@ -19,8 +30,8 @@ typedef struct
 {
     /** Initial seed */
     u32 seed;
-    /** Position in the rng sequence. */
-    u32 step;
+    /** Individual states for independent rng sequences */
+    u32 states[RNG_TYPE_MAX];
 } RngInfo;
 
 /**
@@ -52,15 +63,20 @@ void rng_set_seed(u32 seed);
 void rng_shuffle_seed(void);
 
 /**
- * @brief Get the next "randomly" generated number in the sequence from the current seed.
+ * @brief Get the next "randomly" generated number in the sequence corresponding to the given type.
+ *
+ * @note Custom rng had to be implemented to be able to manage several independent sequences, since
+ *        `initstate` and `setstate` are POSIX and not available on GBA via devkitpro.
+ *
+ * @param type rng key to the sequence we need to pull a random number from
  *
  * @return u32
  */
-u32 rng_get_u32(void);
+u32 rng_get_u32(enum RngType type);
 
 /**
- * @brief Restore RNG info struct in the GameVariables. Sets the `seed` and seeks the
- *         position `step` in the rng sequence.
+ * @brief Restore RNG info struct in the GameVariables. Sets the `seed` and restores the state for
+ *         each independent sequence
  *
  * @param info RngInfo struct applied
  *
