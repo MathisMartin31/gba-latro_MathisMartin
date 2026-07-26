@@ -920,7 +920,7 @@ static inline void reroll_seed_str(void)
     rng_shuffle_seed();
     u32 new_seed = rng_get_u32(RNG_TYPE_MISC);
     rng_set_seed(new_seed);
-    u32_to_base36(new_seed, s_seed_str);
+    u32_to_base36(g_game_vars.rng_info.seed, s_seed_str);
     update_seed_text();
     s_seed_cursor_pos = BASE36_MAX_DIGITS;
 }

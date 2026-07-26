@@ -26,7 +26,8 @@ void rng_set_seed(u32 seed)
     // We store the seed to display it at the end of the run, but here it's only used to generate
     // the independent rng sequences' initial states. We also avoid the seed 0 as the Xorshift32
     // method used will stay stuck.
-    g_game_vars.rng_info.seed = (seed == 0 ? MAX_BASE36 : seed) % (MAX_BASE36 + 1);
+    u32 capped_seed = seed % (MAX_BASE36 + 1);
+    g_game_vars.rng_info.seed = (capped_seed == 0) ? MAX_BASE36 : capped_seed;
     srand(g_game_vars.rng_info.seed);
 
     // Generate rng states for all RngTypes categories using the given seed
