@@ -1,8 +1,8 @@
 #include "sprite_container.h"
 
-#include "sprite.h"
+#include "util.h"
 
-void layout_container_update(LayoutContainer* container)
+static inline void container_update(SpriteContainer* container)
 {
     POINT pos_size;
     int max_length;
@@ -54,4 +54,56 @@ void layout_container_update(LayoutContainer* container)
 
         start_pos += pos_size.y + spacing;
     }
+}
+
+void container_push_front(SpriteContainer* container, SpriteObject* sprite_object)
+{
+    GBAL_RETURN_IF_NULL_VOID(container);
+    list_push_front(container->contents, (void*)sprite_object);
+    container_update(container);
+}
+
+void container_push_back(SpriteContainer* container, SpriteObject* sprite_object)
+{
+    GBAL_RETURN_IF_NULL_VOID(container);
+    list_push_back(container->contents, (void*)sprite_object);
+    container_update(container);
+}
+
+void container_insert(SpriteContainer* container, SpriteObject* sprite_object, unsigned int idx)
+{
+    GBAL_RETURN_IF_NULL_VOID(container);
+    list_insert(container->contents, (void*)sprite_object, idx);
+    container_update(container);
+}
+
+bool container_swap(SpriteContainer* container, unsigned int idx_a, unsigned int idx_b)
+{
+    GBAL_RETURN_IF_NULL_RET(container, false);
+    bool res = list_swap(container->contents, idx_a, idx_b);
+    container_update(container);
+    return res;
+}
+
+bool container_remove_at_idx(SpriteContainer* container, unsigned int idx)
+{
+    GBAL_RETURN_IF_NULL_RET(container, false);
+    bool res = list_remove_at_idx(container->contents, idx);
+    container_update(container);
+    return res;
+}
+
+bool container_remove_data(SpriteContainer* container, SpriteObject* sprite_object)
+{
+    GBAL_RETURN_IF_NULL_RET(container, false);
+    bool res = list_remove_data(container->contents, (void*)sprite_object);
+    container_update(container);
+    return res;
+}
+
+void container_itr_remove_current_node(SpriteContainer* container, ListItr* itr)
+{
+    GBAL_RETURN_IF_NULL_VOID(container);
+    list_itr_remove_current_node(itr);
+    container_update(container);
 }
