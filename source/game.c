@@ -133,6 +133,17 @@ static List s_owned_jokers_list;
 static List s_discarded_jokers_list;
 static List s_expired_jokers_list;
 
+static const Rect s_held_jokers_rect = {72, 12, 104, 32};
+static const Rect s_held_jokers_pos_size = {4, 0, 24, 32};
+static LayoutContainer s_held_jokers_container = {
+    s_held_jokers_rect,
+    LAYOUT_DIR_HORIZONTAL,
+    LAYOUT_JUST_CENTER,
+    &s_owned_jokers_list,
+    s_held_jokers_pos_size,
+    6
+};
+
 // Stacks
 static Card* s_deck[MAX_DECK_SIZE] = {NULL};
 static int s_deck_top = -1;
@@ -259,31 +270,6 @@ static inline void discarded_jokers_update_loop(void)
     }
 }
 
-static inline void held_jokers_update_loop(void)
-{
-    static const int SPACING_LUT[MAX_JOKERS_HELD_SIZE][MAX_JOKERS_HELD_SIZE] = {
-        {0,  0,   0,   0,   0  },
-        {13, -13, 0,   0,   0  },
-        {26, 0,   -26, 0,   0  },
-        {39, 13,  -13, -39, 0  },
-        {40, 20,  0,   -20, -40}
-    };
-
-    FIXED hand_x = int2fx(HELD_JOKERS_POS.x);
-
-    ListItr itr = list_itr_create(&s_owned_jokers_list);
-    JokerObject* joker;
-    int jokers_top = list_get_len(&s_owned_jokers_list) - 1;
-    int i = 0;
-    while ((joker = list_itr_next(&itr)))
-    {
-        // Let the Shop handle the position of this Joker
-        if (joker != game_shop_get_description_card())
-            joker->tx = hand_x - int2fx(SPACING_LUT[jokers_top][i]);
-        i++;
-    }
-}
-
 bool joker_object_can_acquire(Item* joker_object)
 {
     GBAL_RETURN_IF_NULL_RET(joker_object, false);
@@ -327,7 +313,6 @@ static inline void expired_jokers_update_loop(void)
 
 static inline void jokers_update_loop(void)
 {
-    held_jokers_update_loop();
     discarded_jokers_update_loop();
     expired_jokers_update_loop();
 }
@@ -372,6 +357,11 @@ bool is_joker_owned(int joker_id)
     return false;
 }
 
+LayoutContainer* get_jokers_container(void)
+{
+    return &s_held_jokers_container;
+}
+
 List* get_jokers_list(void)
 {
     return &s_owned_jokers_list;
@@ -401,6 +391,7 @@ int get_straight_and_flush_size(void)
 void add_joker(JokerObject* joker_object)
 {
     list_push_back(&s_owned_jokers_list, joker_object);
+    layout_container_update(&s_held_jokers_container);
 
     // TODO: Extract to on_joker_added() callback
     // In case the player gets multiple Four Fingers Jokers,
@@ -435,6 +426,7 @@ void remove_owned_joker(int owned_joker_idx)
     // TODO: Move to site of joker_destroy()?
     joker_set_rollable(joker_object->joker->id, true);
     list_remove_at_idx(&s_owned_jokers_list, owned_joker_idx);
+    layout_container_update(&s_held_jokers_container);
 }
 
 int get_deck_top(void)
