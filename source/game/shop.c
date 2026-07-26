@@ -564,8 +564,8 @@ static void game_shop_process_user_input(void)
         // Owned Joker
         case 0:
         {
-            s_description_card_original_list = get_jokers_list();
-            tmp_card = list_get_at_idx(get_jokers_list(), shop_selection_grid.selection.x);
+            s_description_card_original_list = get_jokers_container()->contents;
+            tmp_card = list_get_at_idx(get_jokers_container()->contents, shop_selection_grid.selection.x);
             break;
         }
 
@@ -622,7 +622,7 @@ static void game_shop_show_card_desc(void)
         JokerObject* joker_object = NULL;
 
         // Owned Jokers
-        ListItr itr = list_itr_create(get_jokers_list());
+        ListItr itr = list_itr_create(get_jokers_container()->contents);
         while ((joker_object = list_itr_next(&itr)))
         {
             if (joker_object != s_description_card)
@@ -740,7 +740,7 @@ static void game_shop_hide_card_desc(void)
         JokerObject* joker_object = NULL;
 
         // Owned Jokers
-        ListItr itr = list_itr_create(get_jokers_list());
+        ListItr itr = list_itr_create(get_jokers_container()->contents);
         while ((joker_object = list_itr_next(&itr)))
         {
             if (joker_object != s_description_card)
@@ -814,7 +814,7 @@ static void game_shop_hide_card_desc(void)
     // At any point after the other prices have been printed, and while the card is still moving,
     // if we are NOT pressing A, print the price under it.
     else if (!owned_joker_price_printed && !key_held(SELECT_CARD) &&
-             s_description_card_original_list == get_jokers_list())
+             s_description_card_original_list == get_jokers_container()->contents)
     {
         owned_joker_price_printed = true;
         sprite_object_print_price_under(

@@ -1,6 +1,6 @@
 /**
  * @file sprite_container.h
- * @brief Definitions for the LayoutContainer data structure and its handling functions
+ * @brief Definitions for the SpriteContainer data structure and its handling functions
  */
 
 #ifndef SPRITE_CONTAINER_H
@@ -8,6 +8,7 @@
 
 #include "graphic_utils.h"
 #include "list.h"
+#include "sprite.h"
 
 enum LayoutDirection
 {
@@ -25,8 +26,13 @@ enum LayoutJustification
 /**
  * @brief A structure organizing a List of SpriteObjects
  */
-typedef struct LayoutContainer
+typedef struct SpriteContainer
 {
+    /**
+     * @brief List of SpriteObjects to organize
+     */
+    List* contents;
+
     /**
      * @brief A Rect holding the position and size of the Container as follows:
      *         `{left=posX, top=posY, right=width, bottom=height}`
@@ -44,11 +50,6 @@ typedef struct LayoutContainer
     enum LayoutJustification justification;
 
     /**
-     * @brief List of SpriteObjects to organize
-     */
-    List* contents;
-
-    /**
      * @brief The position and size of the object actually represented within their Sprite
      *
      * For the Skip Tags, the sprite is 16x16 ps, but the actual object is only 10x10, which means
@@ -64,25 +65,96 @@ typedef struct LayoutContainer
      *         whole Container.
      */
     int minimum_spacing;
-} LayoutContainer;
+} SpriteContainer;
+
+const static Rect DEFAULT_POS_SIZE_RECT = {0, 0, 1, 1};
+#define SPRITE_CONTAINER_DEFAULT               \
+    {.contents = NULL,                         \
+     .pos = DEFAULT_POS_SIZE_RECT,             \
+     .direction = LAYOUT_DIR_HORIZONTAL,       \
+     .justification = LAYOUT_JUST_CENTER,      \
+     .sprite_pos_size = DEFAULT_POS_SIZE_RECT, \
+     .minimum_spacing = 0}
 
 /**
- * @brief Parse the contents List and give a new target position to every SpriteObject inside
+ * Prepend an entry to the `head` of a @ref SpriteContainer contents
  *
- * Do not run this on every frame, only when the List's contents actually change
+ * @param container pointer to a @ref SpriteContainer
+ * @param sprite_object pointer to a SpriteObject to put into the @ref SpriteContainer
  *
- * @param container the LayoutContainer to update
+ * @sa list_push_front
  */
-void layout_container_update(LayoutContainer* container);
+void container_push_front(SpriteContainer* container, SpriteObject* sprite_object);
 
-#define LAYOUT_CONTAINER_DEFAULT             \
-    {                                        \
-        .pos = {0, 0, 1, 1},                 \
-        .direction = LAYOUT_DIR_HORIZONTAL,  \
-        .justification = LAYOUT_JUST_CENTER, \
-        .contents = NULL                     \
-        .real_pos_size = {0, 0, 1, 1}        \
-        .minimum_spacing = 0                 \
-}
+/**
+ * Append an entry to the `tail` of a @ref SpriteContainer contents
+ *
+ * @param container pointer to a @ref SpriteContainer
+ * @param sprite_object pointer to a SpriteObject to put into the @ref SpriteContainer
+ *
+ * @sa list_push_back
+ */
+void container_push_back(SpriteContainer* container, SpriteObject* sprite_object);
+
+/** Insert a SpriteObject into a @ref SpriteContainer a specific index
+ *
+ * @param container pointer to a @ref SpriteContainer
+ * @param sprite_object pointer to a SpriteObject to put into the @ref SpriteContainer
+ * @param idx desired index to insert
+ *
+ * @sa list_insert
+ */
+void container_insert(SpriteContainer* container, SpriteObject* sprite_object, unsigned int idx);
+
+/**
+ * Swap the data pointers at the specified indices of a @ref SpriteContainer
+ *
+ * If either indices are larger than the length of the underlying list, return false.
+ *
+ * @param container pointer to a @ref SpriteContainer
+ * @param idx_a desired index to swap with idx_b
+ * @param idx_b desired index to swap with idx_a
+ *
+ * @return true if successful, false otherwise
+ *
+ * @sa list_swap
+ */
+bool container_swap(SpriteContainer* container, unsigned int idx_a, unsigned int idx_b);
+
+/**
+ * Remove a SpriteContainer's underlying List node at the specified index
+ *
+ * @param container pointer to a @ref SpriteContainer
+ * @param idx index of the desired @ref ListNode in the container
+ *
+ * @return `true` if successfully removed, `false` if out-of-bounds
+ */
+bool container_remove_at_idx(SpriteContainer* container, unsigned int idx);
+
+/**
+ * Remove a SpriteContainer's underlying List's node with the matching pointer
+ *
+ * @param container pointer to a @ref SpriteContainer
+ * @param sprite_object pointer to a SpriteObject in node in container
+ *
+ * @return `true` if successfully removed, `false` otherwise
+ *
+ * @note When working with @ref ListItr, use @ref list_itr_remove_current_node()
+ */
+bool container_remove_data(SpriteContainer* container, SpriteObject* sprite_object);
+
+/**
+ * @brief Remove the current @ref ListNode from the iterator from the @ref SpriteContainer's underlying
+ *         @ref List.
+ *
+ * @param container pointer to the @ref SpriteContainer to which the iterator's @ref List belongs to
+ * @param itr pointer to the @ref ListItr
+ *
+ * @note When working with @ref ListItr, use this and not @ref container_remove_at_idx() as it will
+ * "break" the iterator.
+ *
+ * @sa list_itr_remove_current_node
+ */
+void container_itr_remove_current_node(SpriteContainer* container, ListItr* itr);
 
 #endif // SPRITE_CONTAINER_H
