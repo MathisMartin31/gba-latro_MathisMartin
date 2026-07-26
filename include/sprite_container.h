@@ -10,6 +10,8 @@
 #include "list.h"
 #include "sprite.h"
 
+const static Rect CARD_SPRITE_LOCAL_AABB = {4, 0, 28, 32};
+
 enum LayoutDirection
 {
     LAYOUT_DIR_HORIZONTAL,
@@ -34,8 +36,7 @@ typedef struct SpriteContainer
     List* contents;
 
     /**
-     * @brief A Rect holding the position and size of the Container as follows:
-     *         `{left=posX, top=posY, right=width, bottom=height}`
+     * @brief A Rect holding the position and size of the Container
      */
     Rect pos;
 
@@ -50,15 +51,15 @@ typedef struct SpriteContainer
     enum LayoutJustification justification;
 
     /**
-     * @brief The position and size of the object actually represented within their Sprite
+     * @brief A Rect representing the actual, local position/size of the art within their Sprite.
      *
      * For the Skip Tags, the sprite is 16x16 ps, but the actual object is only 10x10, which means
-     * that `real_pos_size` will be `{2, 2, 10, 10}`
+     * that `real_pos_size` will be `{3, 3, 13, 13}`, or `{4, 0, 28, 32}` for Jokers, Cards, etc
      *
-     * The Sprites should all be uniform within a single Container, hence why we'll save memory space
-     * by storing the information here instead of in each Sprite
+     * The Sprites should all be uniform within a single Container, hence why we'll save memory
+     * space by storing the information here instead of in each Sprite
      */
-    Rect sprite_pos_size;
+    Rect sprite_local_aabb;
 
     /**
      * @brief By how much do we need to space the Sprites, in case there are not enough to fill the
@@ -67,14 +68,17 @@ typedef struct SpriteContainer
     int minimum_spacing;
 } SpriteContainer;
 
+// clang-format off
 const static Rect DEFAULT_POS_SIZE_RECT = {0, 0, 1, 1};
-#define SPRITE_CONTAINER_DEFAULT               \
-    {.contents = NULL,                         \
-     .pos = DEFAULT_POS_SIZE_RECT,             \
-     .direction = LAYOUT_DIR_HORIZONTAL,       \
-     .justification = LAYOUT_JUST_CENTER,      \
-     .sprite_pos_size = DEFAULT_POS_SIZE_RECT, \
-     .minimum_spacing = 0}
+#define SPRITE_CONTAINER_DEFAULT {              \
+    .contents          = NULL,                  \
+    .pos               = DEFAULT_POS_SIZE_RECT, \
+    .direction         = LAYOUT_DIR_HORIZONTAL, \
+    .justification     = LAYOUT_JUST_CENTER,    \
+    .sprite_local_aabb = DEFAULT_POS_SIZE_RECT, \
+    .minimum_spacing   = 0                      \
+}
+// clang-format on
 
 /**
  * Prepend an entry to the `head` of a @ref SpriteContainer contents
@@ -144,8 +148,8 @@ bool container_remove_at_idx(SpriteContainer* container, unsigned int idx);
 bool container_remove_data(SpriteContainer* container, SpriteObject* sprite_object);
 
 /**
- * @brief Remove the current @ref ListNode from the iterator from the @ref SpriteContainer's underlying
- *         @ref List.
+ * @brief Remove the current @ref ListNode from the iterator from the @ref SpriteContainer's
+ *         underlying @ref List.
  *
  * @param container pointer to the @ref SpriteContainer to which the iterator's @ref List belongs to
  * @param itr pointer to the @ref ListItr

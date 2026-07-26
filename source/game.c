@@ -129,16 +129,14 @@ GameVariables g_game_vars = {
 };
 // clang-format on
 
-const static Rect s_owned_jokers_container_pos_size = {72, 12, 104, 32};
-const static Rect s_cards_sprite_pos_size = {4,  0,  24,  32};
 static List s_owned_jokers_list;
 static SpriteContainer s_owned_jokers_container = {
     .contents = &s_owned_jokers_list,
-    .pos = s_owned_jokers_container_pos_size,
+    .pos = OWNED_JOKERS_CONTAINER_RECT,
     .direction = LAYOUT_DIR_HORIZONTAL,
     .justification = LAYOUT_JUST_CENTER,
-    .sprite_pos_size = s_cards_sprite_pos_size,
-    .minimum_spacing = 6
+    .sprite_local_aabb = CARD_SPRITE_LOCAL_AABB,
+    .minimum_spacing = 8
 };
 
 static List s_discarded_jokers_list;
