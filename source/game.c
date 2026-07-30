@@ -181,7 +181,7 @@ void game_init()
     // TODO: Move this to an initialization of the play scoring states
 
     game_shop_reset();
-    
+
     g_game_vars.timer = TM_ZERO;
     g_game_vars.score = STARTING_SCORE;
     g_game_vars.chips = 0;
