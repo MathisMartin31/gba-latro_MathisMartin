@@ -301,9 +301,10 @@ void remove_all_skip_tags(void)
 
     while ((tag = list_itr_next(&itr)))
     {
-        list_itr_remove_current_node(&itr);
         skip_tag_destroy(&tag);
     }
+
+    list_clear(&_owned_skip_tags);
 }
 
 enum SkipTagProcessState

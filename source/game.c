@@ -181,24 +181,27 @@ void game_init()
     // TODO: Move this to an initialization of the play scoring states
 
     game_shop_reset();
-
+    
+    g_game_vars.timer = TM_ZERO;
+    g_game_vars.score = STARTING_SCORE;
+    g_game_vars.chips = 0;
+    g_game_vars.mult = 0;
     g_game_vars.hands = MAX_HANDS;
     g_game_vars.discards = MAX_DISCARDS;
-    g_game_vars.timer = TM_ZERO;
+    g_game_vars.money = STARTING_MONEY;
+    g_game_vars.hand_size = DEFAULT_HAND_SIZE;
+    g_game_vars.ante = STARTING_ANTE;
+    g_game_vars.round = STARTING_ROUND;
+    g_game_vars.deck = DECK_TYPE_RED;
+    for (int i = 0; i < HAND_TYPE_MAX; i++)
+        g_game_vars.nb_played_hands[i] = 0;
+    g_game_vars.best_hand_score = 0;
+    g_game_vars.nb_skipped_rounds = 0;
+    g_game_vars.nb_unused_discards = 0;
     g_game_vars.current_blind = BLIND_TYPE_SMALL;
     g_game_vars.blinds_states[0] = BLIND_STATE_CURRENT;
     g_game_vars.blinds_states[1] = BLIND_STATE_UPCOMING;
     g_game_vars.blinds_states[2] = BLIND_STATE_UPCOMING;
-    g_game_vars.ante = STARTING_ANTE;
-    g_game_vars.money = STARTING_MONEY;
-    g_game_vars.score = STARTING_SCORE;
-    g_game_vars.round = 0;
-    g_game_vars.chips = 0;
-    g_game_vars.mult = 0;
-    g_game_vars.round = STARTING_ROUND;
-    g_game_vars.best_hand_score = 0;
-    for (int i = 0; i < HAND_TYPE_MAX; i++)
-        g_game_vars.nb_played_hands[i] = 0;
 }
 
 void game_reset()
