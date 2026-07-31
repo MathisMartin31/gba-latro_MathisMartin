@@ -12,15 +12,40 @@
 
 #include <tonc.h>
 
-enum RngType
+/**
+ * @brief Keys to different independent RNG sequences
+ */
+enum RngSequence
 {
-    RNG_TYPE_CARD_SHUFFLE,
-    RNG_TYPE_BLIND,
-    RNG_TYPE_SHOP_ITEMS,
-    RNG_TYPE_SKIP_TAGS,
-    RNG_TYPE_JOKER_EFFECTS,
-    RNG_TYPE_MISC,
-    RNG_TYPE_MAX
+    RNG_SEQ_CARD_SHUFFLE,
+    RNG_SEQ_BLIND,
+    RNG_SEQ_SHOP_ITEMS,
+    RNG_SEQ_SKIP_TAGS,
+
+    /**
+     * @brief Used for rolling the Misprint Joker value.
+     *
+     * Each Joker with a random effect has its own indpendent RNG sequence
+     */
+    RNG_SEQ_JOKER_MISPRINT,
+
+    /**
+     * @brief Used to determine if the Reserved Parking Joker triggers.
+     */
+    RNG_SEQ_JOKER_RESERVED_PARKING,
+
+    /**
+     * @brief Used to determine if the Business Card Joker triggers.
+     */
+    RNG_SEQ_JOKER_BUSINESS_CARD,
+
+    /**
+     * @brief For non-gameplay related things such as sound effects or visual effects, so as to not
+     *         interfere with important stuff like Shop rolls or Joker effects.
+     */
+    RNG_SEQ_MISC,
+
+    RNG_SEQ_MAX
 };
 
 /**
@@ -31,7 +56,7 @@ typedef struct
     /** Initial seed */
     u32 seed;
     /** Individual states for independent rng sequences */
-    u32 states[RNG_TYPE_MAX];
+    u32 states[RNG_SEQ_MAX];
 } RngInfo;
 
 /**
@@ -65,14 +90,11 @@ void rng_shuffle_seed(void);
 /**
  * @brief Get the next "randomly" generated number in the sequence corresponding to the given type.
  *
- * @note Custom rng had to be implemented to be able to manage several independent sequences, since
- *        `initstate` and `setstate` are POSIX and not available on GBA via devkitpro.
- *
- * @param type rng key to the sequence we need to pull a random number from
+ * @param key key to the RNG sequence we need to pull a random number from
  *
  * @return u32
  */
-u32 rng_get_u32(enum RngType type);
+u32 rng_get_u32(enum RngSequence key);
 
 /**
  * @brief Restore RNG info struct in the GameVariables. Sets the `seed` and restores the state for

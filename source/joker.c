@@ -348,7 +348,7 @@ void joker_reset_rollable_jokers(void)
 /**
  * @brief Rolls a random Joker among the available ones
  */
-static int joker_roll_id(void)
+static int joker_roll_id(enum RngSequence key)
 {
     // Now determine how many jokers are available based on the rarity
     int jokers_avail_size = get_num_rollable_jokers();
@@ -360,7 +360,7 @@ static int joker_roll_id(void)
     int joker_rarity = joker_get_random_rarity();
 
     int matching_joker_ids[jokers_avail_size];
-    int fallback_random_idx = rng_get_u32(RNG_TYPE_SHOP_ITEMS) % jokers_avail_size;
+    int fallback_random_idx = rng_get_u32(key) % jokers_avail_size;
     int fallback_random_joker_id = UNDEFINED;
     int match_count = 0;
 
@@ -379,14 +379,13 @@ static int joker_roll_id(void)
         }
     }
 
-    int selected_joker_id = (match_count > 0)
-                              ? matching_joker_ids[rng_get_u32(RNG_TYPE_SHOP_ITEMS) % match_count]
-                              : fallback_random_joker_id;
+    int selected_joker_id = (match_count > 0) ? matching_joker_ids[rng_get_u32(key) % match_count]
+                                              : fallback_random_joker_id;
 
     return selected_joker_id;
 }
 
-Item* joker_object_roll_new(void)
+Item* joker_object_roll_new(enum RngSequence key)
 {
     if (no_rollable_jokers())
         return NULL;
@@ -407,7 +406,7 @@ Item* joker_object_roll_new(void)
     else
 #endif
     {
-        joker_id = joker_roll_id();
+        joker_id = joker_roll_id(key);
     }
 
     // If for some reason only no joker is left, don't make another
@@ -539,7 +538,7 @@ Sprite* joker_object_get_sprite(JokerObject* joker_object)
 int joker_get_random_rarity()
 {
     int joker_rarity = 0;
-    int rarity_roll = rng_get_u32(RNG_TYPE_SHOP_ITEMS) % 100;
+    int rarity_roll = rng_get_u32(RNG_SEQ_SHOP_ITEMS) % 100;
     if (rarity_roll < COMMON_JOKER_CHANCE)
     {
         joker_rarity = COMMON_JOKER;

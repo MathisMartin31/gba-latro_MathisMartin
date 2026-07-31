@@ -645,7 +645,7 @@ void deck_shuffle(void)
 {
     for (int i = s_deck_top; i > 0; i--)
     {
-        int j = rng_get_u32(RNG_TYPE_CARD_SHUFFLE) % (i + 1);
+        int j = rng_get_u32(RNG_SEQ_CARD_SHUFFLE) % (i + 1);
         Card* temp = s_deck[i];
         s_deck[i] = s_deck[j];
         s_deck[j] = temp;

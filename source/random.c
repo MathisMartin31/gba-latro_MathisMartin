@@ -21,6 +21,19 @@ void rng_update(void)
     s_timer_acc += (u32)REG_TM1D;
 }
 
+/**
+ * @brief Reset all independent RNG sequences to their initial states using the
+ *         provided custom seed.
+ */
+static void init_rng_states(void)
+{
+    srand(g_game_vars.rng_info.seed);
+    for (enum RngSequence key = 0; key < RNG_SEQ_MAX; key++)
+    {
+        g_game_vars.rng_info.states[key] = rand();
+    }
+}
+
 void rng_set_seed(u32 seed)
 {
     // We store the seed to display it at the end of the run, but here it's only used to generate
@@ -28,30 +41,34 @@ void rng_set_seed(u32 seed)
     // method used will stay stuck.
     u32 capped_seed = seed % (MAX_BASE36 + 1);
     g_game_vars.rng_info.seed = (capped_seed == 0) ? MAX_BASE36 : capped_seed;
-    srand(g_game_vars.rng_info.seed);
-
-    // Generate rng states for all RngTypes categories using the given seed
-    for (enum RngType type = 0; type < RNG_TYPE_MAX; type++)
-    {
-        g_game_vars.rng_info.states[type] = rand();
-    }
+    init_rng_states();
 }
 
 void rng_shuffle_seed(void)
 {
-    rng_set_seed(s_timer_acc);
+    srand(s_timer_acc);
+    rng_set_seed(rand());
 }
 
-u32 rng_get_u32(enum RngType type)
+/**
+ * @brief Transforms a given RNG state according to the Xorshift32 algorithm.
+ *
+ * Custom RNG had to be implemented to be able to manage several independent sequences, since
+ * `initstate` and `setstate` are POSIX and not available on GBA via devkitpro.
+ *
+ * @param state pointer to a 32-bit RNG state
+ */
+static inline void xorshift32(u32* state)
 {
-    // Xorshift32
-    uint32_t old_state = g_game_vars.rng_info.states[type];
-    old_state ^= old_state << 13;
-    old_state ^= old_state >> 17;
-    old_state ^= old_state << 5;
+    *(state) ^= *(state) << 13;
+    *(state) ^= *(state) >> 17;
+    *(state) ^= *(state) << 5;
+}
 
-    g_game_vars.rng_info.states[type] = old_state;
-    return old_state;
+u32 rng_get_u32(enum RngSequence key)
+{
+    xorshift32(&g_game_vars.rng_info.states[key]);
+    return g_game_vars.rng_info.states[key];
 }
 
 void rng_restore(RngInfo info)
