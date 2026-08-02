@@ -23,20 +23,10 @@ enum RngSequence
     RNG_SEQ_SKIP_TAGS,
 
     /**
-     * @brief Used for rolling the Misprint Joker value.
-     *
-     * Each Joker with a random effect has its own indpendent RNG sequence
+     * Each Joker with a random effect has its own independent RNG sequence
      */
     RNG_SEQ_JOKER_MISPRINT,
-
-    /**
-     * @brief Used to determine if the Reserved Parking Joker triggers.
-     */
     RNG_SEQ_JOKER_RESERVED_PARKING,
-
-    /**
-     * @brief Used to determine if the Business Card Joker triggers.
-     */
     RNG_SEQ_JOKER_BUSINESS_CARD,
 
     /**

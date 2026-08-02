@@ -23,7 +23,7 @@ void rng_update(void)
 
 /**
  * @brief Reset all independent RNG sequences to their initial states using the
- *         provided custom seed.
+ *         global custom seed.
  */
 static void init_rng_states(void)
 {
