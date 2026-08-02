@@ -256,6 +256,5 @@ bool joker_object_score(
 );
 
 Sprite* joker_object_get_sprite(JokerObject* joker_object);
-int joker_get_random_rarity();
 
 #endif // JOKER_H

@@ -346,6 +346,37 @@ void joker_reset_rollable_jokers(void)
 }
 
 /**
+ * @brief Get a random rarity a Joker will be rolled from
+ *
+ * @param key to the RNG sequence used
+ * @return a random Joker rarity
+ */
+static inline int joker_get_random_rarity(enum RngSequence key)
+{
+    int joker_rarity = 0;
+    int rarity_roll = rng_get_u32(key) % 100;
+    if (rarity_roll < COMMON_JOKER_CHANCE)
+    {
+        joker_rarity = COMMON_JOKER;
+    }
+    else if (rarity_roll < COMMON_JOKER_CHANCE + UNCOMMON_JOKER_CHANCE)
+    {
+        joker_rarity = UNCOMMON_JOKER;
+    }
+    else if (rarity_roll < COMMON_JOKER_CHANCE + UNCOMMON_JOKER_CHANCE + RARE_JOKER_CHANCE)
+    {
+        joker_rarity = RARE_JOKER;
+    }
+    else if (rarity_roll < COMMON_JOKER_CHANCE + UNCOMMON_JOKER_CHANCE + RARE_JOKER_CHANCE +
+                               LEGENDARY_JOKER_CHANCE)
+    {
+        joker_rarity = LEGENDARY_JOKER;
+    }
+
+    return joker_rarity;
+}
+
+/**
  * @brief Rolls a random Joker among the available ones
  */
 static int joker_roll_id(enum RngSequence key)
@@ -357,7 +388,7 @@ static int joker_roll_id(enum RngSequence key)
         return UNDEFINED;
 
     // Roll for what rarity the joker will be
-    int joker_rarity = joker_get_random_rarity();
+    int joker_rarity = joker_get_random_rarity(key);
 
     int matching_joker_ids[jokers_avail_size];
     int fallback_random_idx = rng_get_u32(key) % jokers_avail_size;
@@ -533,31 +564,6 @@ Sprite* joker_object_get_sprite(JokerObject* joker_object)
     if (joker_object == NULL)
         return NULL;
     return sprite_object_get_sprite((SpriteObject*)joker_object);
-}
-
-int joker_get_random_rarity()
-{
-    int joker_rarity = 0;
-    int rarity_roll = rng_get_u32(RNG_SEQ_SHOP_ITEMS) % 100;
-    if (rarity_roll < COMMON_JOKER_CHANCE)
-    {
-        joker_rarity = COMMON_JOKER;
-    }
-    else if (rarity_roll < COMMON_JOKER_CHANCE + UNCOMMON_JOKER_CHANCE)
-    {
-        joker_rarity = UNCOMMON_JOKER;
-    }
-    else if (rarity_roll < COMMON_JOKER_CHANCE + UNCOMMON_JOKER_CHANCE + RARE_JOKER_CHANCE)
-    {
-        joker_rarity = RARE_JOKER;
-    }
-    else if (rarity_roll < COMMON_JOKER_CHANCE + UNCOMMON_JOKER_CHANCE + RARE_JOKER_CHANCE +
-                               LEGENDARY_JOKER_CHANCE)
-    {
-        joker_rarity = LEGENDARY_JOKER;
-    }
-
-    return joker_rarity;
 }
 
 static int s_get_num_spritesheets()
