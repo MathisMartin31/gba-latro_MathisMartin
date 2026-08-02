@@ -427,11 +427,8 @@ static void skip_tag_search_for_event(void)
 static void skip_tag_trigger_for_event(void)
 {
     s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_NONE;
-    if (s_tag_process_info.tags_timer % FRAMES(TM_SKIP_TAG_ANIM_DURATION) != TM_ZERO)
-    {
-        s_tag_process_info.tags_timer++;
+    if (s_tag_process_info.tags_timer++ % FRAMES(TM_SKIP_TAG_ANIM_DURATION) != TM_ZERO)
         return;
-    }
 
     BG_POINT tag_pos = {fx2int(s_consumed_tag->x), fx2int(s_consumed_tag->y)};
 
@@ -465,11 +462,8 @@ static void skip_tag_trigger_for_event(void)
 static void skip_tag_remove_for_event(void)
 {
     s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_NONE;
-    if (s_tag_process_info.tags_timer % FRAMES(TM_SKIP_TAG_ANIM_DURATION) != TM_ZERO)
-    {
-        s_tag_process_info.tags_timer++;
+    if (s_tag_process_info.tags_timer++ % FRAMES(TM_SKIP_TAG_ANIM_DURATION) != TM_ZERO)
         return;
-    }
 
     remove_skip_tag(s_consumed_tag_idx);
     s_tag_process_info.tags_timer++;
