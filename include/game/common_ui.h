@@ -7,6 +7,7 @@
 #define COMMON_UI_H
 
 #include <stdbool.h>
+#include <tonc.h>
 
 /**
  * @brief Indices of the palettes for the different type of sprites
@@ -68,7 +69,7 @@ void common_ui_init(void);
  * @param layer
  * @return index in tiles memory where to put the sprite
  */
-int get_sprite_tid(enum SpriteType sprite_type, int layer);
+int get_sprite_tid(enum SpriteType sprite_type, s16 layer);
 
 /**
  * @brief Get the starting layer of a certain type of sprite
