@@ -95,7 +95,7 @@ SkipTag* skip_tag_new(u8 tag_type)
     return tag;
 }
 
-void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer)
+void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, s16 layer)
 {
     GBAL_RETURN_IF_NULL_VOID(tag);
 

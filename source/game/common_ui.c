@@ -61,7 +61,7 @@ void common_ui_init(void)
     }
 }
 
-int get_sprite_tid(enum SpriteType sprite_type, int layer)
+int get_sprite_tid(enum SpriteType sprite_type, s16 layer)
 {
     return s_sprite_tids[sprite_type] + layer * s_sprite_sizes[sprite_type];
 }

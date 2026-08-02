@@ -149,7 +149,7 @@ SkipTag* skip_tag_new(u8 tag_type);
  * @param layer sprite layer for the new Sprite, as an offset to the starting layer for the
  *              SKIP_TAG sprite type
  */
-void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, int layer);
+void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, s16 layer);
 
 /**
  * @brief Destroy the given SkipTag, invalidate it in the corresponding memory pool and set the

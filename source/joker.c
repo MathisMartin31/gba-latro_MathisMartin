@@ -207,8 +207,8 @@ JokerObject* joker_object_new(Joker* joker)
 
     sprite_object_init((SpriteObject*)joker_object);
 
-    int layer = 0;
-    for (int i = 0; i < MAX_JOKER_OBJECTS; i++)
+    s16 layer = 0;
+    for (s16 i = 0; i < MAX_JOKER_OBJECTS; i++)
     {
         if (!s_used_layers[i])
         {
