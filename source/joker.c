@@ -113,7 +113,7 @@ static void s_joker_pb_remove_sprite_user(int pb);
 static int s_joker_pb_get_num_sprite_users(int joker_pb);
 static int s_get_unused_joker_pb(void);
 static int s_allocate_pb_if_needed(u8 joker_id);
-static int s_joker_get_random_rarity(enum RngSequence key);
+static int joker_get_random_rarity(enum RngSequence key);
 
 void joker_init()
 {
@@ -358,7 +358,7 @@ static int joker_roll_id(enum RngSequence key)
         return UNDEFINED;
 
     // Roll for what rarity the joker will be
-    int joker_rarity = s_joker_get_random_rarity(key);
+    int joker_rarity = joker_get_random_rarity(key);
 
     int matching_joker_ids[jokers_avail_size];
     int fallback_random_idx = rng_get_u32(key) % jokers_avail_size;
@@ -425,7 +425,7 @@ Item* joker_object_roll_new(enum RngSequence key)
  * @param key to the RNG sequence used
  * @return a random Joker rarity
  */
-static inline int s_joker_get_random_rarity(enum RngSequence key)
+static inline int joker_get_random_rarity(enum RngSequence key)
 {
     int joker_rarity = 0;
     int rarity_roll = rng_get_u32(key) % 100;

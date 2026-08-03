@@ -24,6 +24,12 @@ void rng_update(void)
     s_timer_acc += (u32)REG_TM1D;
 }
 
+void rng_shuffle_seed(void)
+{
+    srand(s_timer_acc);
+    rng_set_seed(rand());
+}
+
 void rng_set_seed(u32 seed)
 {
     // We store the seed to display it at the end of the run, but here it's only used to generate
@@ -45,12 +51,6 @@ static inline void s_init_rng_states(void)
     {
         g_game_vars.rng_info.states[key] = rand();
     }
-}
-
-void rng_shuffle_seed(void)
-{
-    srand(s_timer_acc);
-    rng_set_seed(rand());
 }
 
 u32 rng_get_u32(enum RngSequence key)
