@@ -29,6 +29,8 @@ static const u32 TM_DISP_BLIND_PANEL_FINISH = 7;
 static const u32 TM_DISP_BLIND_PANEL_START = 1;
 static const u32 TM_BOSS_BLIND_REROLL_DURATION = 13;
 
+static const u8 SHOWDOWN_BLIND_FREQUENCY = 8;
+
 static int s_timer;
 
 static void game_blind_select_start_anim_seq(void);
@@ -333,8 +335,9 @@ void game_blind_select_reroll_boss_from_menu(void)
 static inline void reroll_boss_blind(bool no_tiles)
 {
     // Showdown blinds only show up on ante 8, 16, etc...
-    g_game_vars.next_boss_blind =
-        roll_blind_type((g_game_vars.ante % 8 == 0) && (g_game_vars.ante > 0));
+    g_game_vars.next_boss_blind = roll_blind_type(
+        (g_game_vars.ante % SHOWDOWN_BLIND_FREQUENCY == 0) && (g_game_vars.ante > 0)
+    );
     // Apply new blind immediately if Boss Blind is selected, as increment_blind will not be called
     if (g_game_vars.current_blind >= BLIND_TYPE_BOSS)
     {

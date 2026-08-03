@@ -388,6 +388,7 @@ static SkipTagCallback s_consumed_tag_effect_func = NULL;
 static void skip_tag_search_for_event(void)
 {
     s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_NONE;
+    s_tag_process_info.tags_timer++;
 
     int nb_owned_tags = list_get_len(&_owned_skip_tags);
 
@@ -407,11 +408,8 @@ static void skip_tag_search_for_event(void)
         if (info->tag_condition_func())
         {
             s_consumed_tag_effect_func = info->tag_effect_func;
-
             s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_NONE;
             state_machine_change_state(&tag_process_sm, SKIP_TAG_PROCESS_STATE_TRIGGER);
-
-            s_tag_process_info.tags_timer++;
             return;
         }
     }
@@ -420,8 +418,6 @@ static void skip_tag_search_for_event(void)
     s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_END;
     s_tag_process_info.tag_process_state = SKIP_TAG_PROCESS_STATE_MAX;
     skip_tag_process_pause();
-
-    s_tag_process_info.tags_timer++;
 }
 
 static void skip_tag_trigger_for_event(void)
@@ -448,7 +444,6 @@ static void skip_tag_trigger_for_event(void)
     play_sfx(SFX_REDEEM_TAG, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
 
     s_tag_process_info.tag_effect = SKIP_TAG_EFFECT_TRIGGER;
-    s_tag_process_info.tags_timer++;
     state_machine_change_state(&tag_process_sm, SKIP_TAG_PROCESS_STATE_REMOVE);
 
     // Apply tag here so it matches the animation, but AFTER changing the processing state,
@@ -466,6 +461,5 @@ static void skip_tag_remove_for_event(void)
         return;
 
     remove_skip_tag(s_consumed_tag_idx);
-    s_tag_process_info.tags_timer++;
     state_machine_change_state(&tag_process_sm, SKIP_TAG_PROCESS_STATE_SEARCH);
 }
