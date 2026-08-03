@@ -46,7 +46,7 @@ typedef struct
 } RngInfo;
 
 /**
- * @brief Starts counting CPU cycles, this will be used by rng_shuffle_seed to
+ * @brief Starts counting CPU cycles, which will be used by rng_shuffle_seed to
  *         generate a more random seed. To be called once on game start.
  */
 void rng_init(void);
@@ -66,10 +66,15 @@ void rng_update(void);
 void rng_set_seed(u32 seed);
 
 /**
- * @brief Uses the CPU cycles counter to randomize the RNG seed as much as possible.
- *         This will be called by the main menu and the game over screens so that
- *         the next run's seed isn't the same as the last's.
- *         rng_start_sampling needs to have been called, and will stop the profiling.
+ * @brief Sets a new randomized seed for the RNG using a source of entropy.
+ *
+ * This needs to be called at least once before generating anything random but not on the very
+ * first cycle because it uses a CPU timer for entropy.
+ *
+ * This would also be used to generate the new seed when starting a new non-player-seeded run
+ *
+ * @note `rng_init` needs to have been called, so that the CPU profiling can provide entropy.
+ * @sa rng_init
  */
 void rng_shuffle_seed(void);
 
