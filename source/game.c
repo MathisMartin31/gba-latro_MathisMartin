@@ -278,7 +278,7 @@ static inline void held_jokers_update_loop(void)
     while ((joker = list_itr_next(&itr)))
     {
         // Let the Shop handle the position of this Joker
-        if (joker != game_shop_get_description_card())
+        if (joker != (JokerObject*)game_shop_get_description_item())
             joker->tx = hand_x - int2fx(SPACING_LUT[jokers_top][i]);
         i++;
     }
@@ -696,5 +696,5 @@ void game_start(void)
     display_money(); // Set the money display
     display_ante();
 
-    game_change_state(GAME_STATE_BLIND_SELECT);
+    game_change_state(GAME_STATE_SHOP);
 }
