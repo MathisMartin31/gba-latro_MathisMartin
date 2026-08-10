@@ -346,14 +346,6 @@ void joker_reset_rollable_jokers(void)
     }
 }
 
-/**
- * @brief Rolls a random Joker among the available ones
- *
- * @param joker_rarity passed here so that we can roll a Joker with a given rarity
- * @param key to the RNG sequence used
- *
- * @return random Joker ID
- */
 int joker_roll_id(int joker_rarity, enum RngSequence key)
 {
     // Now determine how many jokers are available based on the rarity
@@ -409,7 +401,7 @@ Item* joker_object_roll_new(enum RngSequence key)
     else
 #endif
     {
-        joker_id = joker_roll_id(joker_get_random_rarity(), key);
+        joker_id = joker_roll_id(joker_get_random_rarity(key), key);
     }
 
     // If for some reason only no joker is left, don't make another

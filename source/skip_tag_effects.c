@@ -143,7 +143,7 @@ static void skip_tag_effect_top_up(void)
 
     for (int i = 0; i < available_joker_slots; i++)
     {
-        int joker_id = joker_roll_id(COMMON_JOKER);
+        int joker_id = joker_roll_id(COMMON_JOKER, RNG_SEQ_TAG_TOP_UP);
 
         // Something went wrong, maybe there are no more Common Jokers available
         if (joker_id == UNDEFINED)
