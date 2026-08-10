@@ -65,8 +65,8 @@ var NAVTREEINDEX =
 [
 "affine__background_8c_source.html",
 "globals_m.html",
-"round_8c.html#ac922f137d1d3ab206c5583954ba346fd",
-"structSpriteObject.html#a2a19dbfcd2235def5967609ab0c7901a"
+"round_8c.html#a767cef821019cc29984d70192460b977",
+"structSaveOptions.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
