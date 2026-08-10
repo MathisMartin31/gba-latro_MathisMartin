@@ -17,11 +17,11 @@
 void shop_reset(void);
 
 /**
- * @brief Get a pointer to the Card we are currently showing the description of.
+ * @brief Get a pointer to the Item we are currently showing the description of.
  *
- * @return JokerObject*
+ * @return Item*
  */
-JokerObject* shop_get_description_card(void);
+Item* shop_get_description_item(void);
 
 /**
  * @brief Change to the shop background
