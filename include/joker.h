@@ -209,7 +209,7 @@ void joker_object_add_to_owned(Item* joker_object);
  */
 void joker_object_dispose(Item** joker_object);
 
- /**
+/**
  * @brief Rolls a random Joker among the available ones of a certain rarity
  *
  * @param joker_rarity the rarity of the joker we want to roll
