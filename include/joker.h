@@ -209,14 +209,15 @@ void joker_object_add_to_owned(Item* joker_object);
  */
 void joker_object_dispose(Item** joker_object);
 
-/**
+ /**
  * @brief Rolls a random Joker among the available ones of a certain rarity
  *
  * @param joker_rarity the rarity of the joker we want to roll
+ * @param key to the RNG sequence used
  *
- * @return rolled joker ID
+ * @return rolled Joker ID
  */
-int joker_roll_id(int joker_rarity);
+int joker_roll_id(int joker_rarity, enum RngSequence key);
 
 /**
  * @brief Set whether a Joker is available to be rolled for the shop, packs, etc.
