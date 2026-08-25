@@ -29,8 +29,6 @@ static const u32 TM_DISP_BLIND_PANEL_FINISH = 7;
 static const u32 TM_DISP_BLIND_PANEL_START = 1;
 static const u32 TM_BOSS_BLIND_REROLL_DURATION = 13;
 
-static const u8 SHOWDOWN_BLIND_FREQUENCY = 8;
-
 static int s_timer;
 
 static void game_blind_select_start_anim_seq(void);
@@ -101,7 +99,8 @@ static const Rect BLIND_SKIP_BTN_GRAY_RECT            = {0,       24,     4,    
 static const Rect BLIND_SKIP_BTN_PREANIM_DEST_RECT    = {9,       29,     19,     31};
 static const Rect SINGLE_BLIND_SEL_REQ_SCORE_RECT     = {80,      120,    104,    128};
 static const Rect SINGLE_BLIND_SELECT_RECT            = {9,       7,      13,     31};
-static const Rect BOSS_BLIND_REROLL_ANIM_RECT         = {19,      7,      24,     31};
+static const Rect BOSS_BLIND_REROLL_ANIM_DOWN_RECT    = {19,      6,      24,     31};
+static const Rect BOSS_BLIND_REROLL_ANIM_UP_RECT      = {19,      7,      24,     31};
 static const Rect BOSS_BLIND_REROLL_DUP_LINE_RECT     = {19,      30,     24,     30};
 // clang-format on
 
@@ -203,8 +202,6 @@ void increment_blind(enum BlindState increment_reason)
             g_game_vars.current_blind = BLIND_TYPE_BIG;
             g_game_vars.blinds_states[SMALL_BLIND] = increment_reason;
             g_game_vars.blinds_states[BIG_BLIND] = BLIND_STATE_CURRENT;
-            if (blind_skip_tags[BLIND_TYPE_BIG])
-                blind_skip_tags[BLIND_TYPE_BIG]->ty -= int2fx(TILE_SIZE);
             break;
         // defeated big blind: go to next boss
         case BLIND_TYPE_BIG:
@@ -275,6 +272,8 @@ static void game_blind_select_handle_input()
                 {
                     g_game_vars.nb_skipped_rounds++;
                     add_skip_tag(&blind_skip_tags[g_game_vars.current_blind]);
+                    if (blind_skip_tags[BLIND_TYPE_BIG])
+                        blind_skip_tags[BLIND_TYPE_BIG]->ty -= int2fx(TILE_SIZE);
 
                     play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
                     increment_blind(BLIND_STATE_SKIPPED);
@@ -314,12 +313,12 @@ static void game_blind_select_handle_input()
 
 static void game_blind_select_handle_immediate_tags_on_init(void)
 {
-    skip_tag_process_init(SKIP_TAG_EVENT_IMMEDIATE);
+    skip_tag_process_start(SKIP_TAG_EVENT_IMMEDIATE);
 }
 
 static void game_blind_select_handle_immediate_tags_on_update(void)
 {
-    if (skip_tag_process_get_effect() == SKIP_TAG_EFFECT_END)
+    if (skip_tag_process_get_proc_stage() == SKIP_TAG_PROCESS_STAGE_END)
     {
         s_timer = TM_ZERO;
         state_machine_change_state(&blind_select_sm, BLIND_SELECT);
@@ -332,20 +331,18 @@ void game_blind_select_reroll_boss_from_menu(void)
     state_machine_change_state(&blind_select_sm, REROLL_BOSS_ANIM_SEQ);
 }
 
-static inline void reroll_boss_blind(bool no_tiles)
+/**
+ * @brief Roll a random Boss Blind amongst the ones we haven't beaten yet
+ */
+static inline void reroll_boss_blind(void)
 {
     // Showdown blinds only show up on ante 8, 16, etc...
-    g_game_vars.next_boss_blind = roll_blind_type(
-        (g_game_vars.ante % SHOWDOWN_BLIND_FREQUENCY == 0) && (g_game_vars.ante > 0)
-    );
+    g_game_vars.next_boss_blind =
+        roll_blind_type((g_game_vars.ante % MAX_ANTE == 0) && (g_game_vars.ante > 0));
     // Apply new blind immediately if Boss Blind is selected, as increment_blind will not be called
     if (g_game_vars.current_blind >= BLIND_TYPE_BOSS)
     {
         g_game_vars.current_blind = g_game_vars.next_boss_blind;
-    }
-    if (!no_tiles)
-    {
-        apply_blind_tiles(g_game_vars.next_boss_blind, BOSS_BLIND_TOKEN_LAYER);
     }
 }
 
@@ -355,50 +352,47 @@ static void game_blind_select_reroll_boss_anim_seq_on_init(void)
     game_blind_select_erase_blind_req_and_reward(BOSS_BLIND);
 }
 
+static inline void s_reroll_boss_anim_move_blind_panel(enum ScreenVertDir dir)
+{
+    main_bg_se_move_rect_1_tile_vert(
+        dir == SCREEN_DOWN ? BOSS_BLIND_REROLL_ANIM_DOWN_RECT : BOSS_BLIND_REROLL_ANIM_UP_RECT,
+        dir
+    );
+    sprite_position(
+        blind_select_tokens[BOSS_BLIND],
+        blind_select_tokens[BOSS_BLIND]->pos.x,
+        blind_select_tokens[BOSS_BLIND]->pos.y + dir * TILE_SIZE
+    );
+}
+
+static inline void s_reroll_boss_anim_reroll_boss_blind(void)
+{
+    reroll_boss_blind();
+    apply_blind_tiles(g_game_vars.next_boss_blind, BOSS_BLIND_TOKEN_LAYER);
+    pal_bg_mem[BLIND_SELECT_BOSS_BLIND_PANEL_OUTLINE_PID] =
+        blind_get_color(g_game_vars.next_boss_blind, BLIND_BACKGROUND_MAIN_COLOR_INDEX);
+    pal_bg_mem[BLIND_SELECT_BOSS_BLIND_PANEL_SHADOW_PID] =
+        blind_get_color(g_game_vars.next_boss_blind, BLIND_BACKGROUND_SHADOW_COLOR_INDEX);
+}
+
 static void game_blind_select_reroll_boss_anim_seq_on_update(void)
 {
-    static const Rect boss_blind_rect_down = {
-        BOSS_BLIND_REROLL_ANIM_RECT.left,
-        BOSS_BLIND_REROLL_ANIM_RECT.top - 1, // Because of the possibly raised boss blind
-        BOSS_BLIND_REROLL_ANIM_RECT.right,
-        BOSS_BLIND_REROLL_ANIM_RECT.bottom
-    };
-
     // Move Boss Blind panel 1 tile more up and down if needed
     bool is_boss_selected = g_game_vars.current_blind >= BLIND_TYPE_BOSS;
     int panel_move_duration = TM_BOSS_BLIND_REROLL_DURATION + (int)is_boss_selected;
 
-    // Move whole panel down
     if (s_timer < panel_move_duration)
-    {
-        main_bg_se_move_rect_1_tile_vert(boss_blind_rect_down, SCREEN_DOWN);
-        sprite_position(
-            blind_select_tokens[BOSS_BLIND],
-            blind_select_tokens[BOSS_BLIND]->pos.x,
-            blind_select_tokens[BOSS_BLIND]->pos.y + TILE_SIZE
-        );
-    }
+        s_reroll_boss_anim_move_blind_panel(SCREEN_DOWN);
 
     // Reroll Boss Blind
     else if (s_timer == MENU_POP_OUT_ANIM_FRAMES)
-    {
-        reroll_boss_blind(false);
-        pal_bg_mem[BLIND_SELECT_BOSS_BLIND_PANEL_OUTLINE_PID] =
-            blind_get_color(g_game_vars.next_boss_blind, BLIND_BACKGROUND_MAIN_COLOR_INDEX);
-        pal_bg_mem[BLIND_SELECT_BOSS_BLIND_PANEL_SHADOW_PID] =
-            blind_get_color(g_game_vars.next_boss_blind, BLIND_BACKGROUND_SHADOW_COLOR_INDEX);
-    }
+        s_reroll_boss_anim_reroll_boss_blind();
 
     // Move whole panel up after a short pause
     else if (s_timer > MENU_POP_OUT_ANIM_FRAMES &&
              s_timer < (MENU_POP_OUT_ANIM_FRAMES + panel_move_duration))
     {
-        main_bg_se_move_rect_1_tile_vert(BOSS_BLIND_REROLL_ANIM_RECT, SCREEN_UP);
-        sprite_position(
-            blind_select_tokens[BOSS_BLIND],
-            blind_select_tokens[BOSS_BLIND]->pos.x,
-            blind_select_tokens[BOSS_BLIND]->pos.y - TILE_SIZE
-        );
+        s_reroll_boss_anim_move_blind_panel(SCREEN_UP);
 
         // Just once if Boss Blind panel is raised, to compensate for the fact that the panel will
         // lack one row of tiles, copy a line on the first frame to fill that gap
@@ -468,7 +462,7 @@ static void game_blind_select_selected_anim_seq_on_exit(void)
 {
     for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
     {
-        obj_hide(blind_select_tokens[i]->obj);
+        sprite_hide(blind_select_tokens[i]);
     }
 
     // Destroy the current blind's skip tag if we are starting Small or Big blind.
@@ -618,7 +612,7 @@ static void game_blind_select_print_blinds_reqs_and_rewards(void)
 static void blind_tokens_init()
 {
     if (g_game_vars.current_blind == BLIND_TYPE_SMALL)
-        reroll_boss_blind(true);
+        reroll_boss_blind();
 
     sprite_destroy(&blind_select_tokens[SMALL_BLIND]);
     sprite_destroy(&blind_select_tokens[BIG_BLIND]);
@@ -660,12 +654,19 @@ static void blind_skip_tags_init(void)
     blind_skip_tags[0] = roll_skip_tag();
     blind_skip_tags[1] = roll_skip_tag();
 
-    skip_tag_set_sprite(
-        blind_skip_tags[0],
-        SMALL_BLIND_SKIP_TAG_INIT_POS,
-        SMALL_BLIND_SKIP_TAG_LAYER
+    skip_tag_set_sprite(blind_skip_tags[0], SMALL_BLIND_SKIP_TAG_LAYER);
+    skip_tag_set_sprite(blind_skip_tags[1], BIG_BLIND_SKIP_TAG_LAYER);
+
+    sprite_object_position(
+        (SpriteObject*)blind_skip_tags[0],
+        SMALL_BLIND_SKIP_TAG_INIT_POS.x,
+        SMALL_BLIND_SKIP_TAG_INIT_POS.y
     );
-    skip_tag_set_sprite(blind_skip_tags[1], BIG_BLIND_SKIP_TAG_INIT_POS, BIG_BLIND_SKIP_TAG_LAYER);
+    sprite_object_position(
+        (SpriteObject*)blind_skip_tags[1],
+        BIG_BLIND_SKIP_TAG_INIT_POS.x,
+        BIG_BLIND_SKIP_TAG_INIT_POS.y
+    );
 }
 
 void game_blind_select_on_init(void)

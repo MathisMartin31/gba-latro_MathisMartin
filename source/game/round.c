@@ -1060,7 +1060,7 @@ static inline void game_round_process_input_and_state(void)
     {
         // We're checking for scoring Tags in a general way here, but only the Juggler can
         // really apply on round start
-        if (skip_tag_process_get_effect() == SKIP_TAG_EFFECT_END)
+        if (skip_tag_process_get_proc_stage() == SKIP_TAG_PROCESS_STAGE_END)
         {
             set_hand_state(HAND_DRAW);
             g_game_vars.timer = TM_ZERO;
@@ -1196,7 +1196,11 @@ static inline void game_round_discarded_cards_loop(void)
             discarded_card_object = card_object_new(discard_pop());
 
             // Set the sprite for the discarded card object
-            card_object_set_sprite(discarded_card_object, CARD_UNDISCARD_SPRITE, 0);
+            card_object_set_sprite(
+                discarded_card_object,
+                CARD_SPRITE,
+                MAX_HAND_SIZE + MAX_SELECTION_SIZE
+            );
             sprite_object_reset_transform((SpriteObject*)discarded_card_object);
 
             discarded_card_object->tx = int2fx(204);
@@ -1287,8 +1291,8 @@ static inline void cards_in_hand_update_loop(void)
 
             switch (get_hand_state())
             {
-                // Nothing to do here
                 case HAND_TAGS:
+                    // Nothing to do here
                     break;
                 case HAND_DRAW:
                     hand_x = hand_x + (int2fx(i) - int2fx(get_hand_top()) / 2) *
@@ -1378,8 +1382,8 @@ static inline void cards_in_hand_update_loop(void)
                     }
 
                     break;
-                // Don't need to do anything here, just wait for the player to select cards
                 case HAND_PLAYING:
+                    // Don't need to do anything here, just wait for the player to select cards
                     hand_x = hand_x + (int2fx(i) - int2fx(get_hand_top()) / 2) *
                                           -HAND_SPACING_LUT[get_hand_top()];
                     hand_y += int2fx(24);
@@ -1401,6 +1405,7 @@ static inline void game_round_ui_text_update(void)
     if (g_game_vars.timer == 1 || s_last_hand_size != hand_nb_held_cards() ||
         s_last_hand_max_size != g_game_vars.hand_size || s_last_deck_size != deck_get_size())
     {
+        // TODO: Clean this code up a bit
         // Print hand size/max size at correct height depending on background state
         switch (get_current_background())
         {
@@ -1905,7 +1910,11 @@ static inline void played_cards_update_loop(void)
         if (card_object_get_sprite(s_played_hand[played_idx]) == NULL)
         {
             // Set the sprite for the played card object
-            card_object_set_sprite(s_played_hand[played_idx], CARD_PLAYED_SPRITE, played_idx);
+            card_object_set_sprite(
+                s_played_hand[played_idx],
+                CARD_SPRITE,
+                MAX_HAND_SIZE + played_idx
+            );
         }
 
         switch (play_state)
@@ -1993,7 +2002,6 @@ void game_round_on_init(void)
 {
     s_joker_scored_itr = list_itr_create(get_jokers_list());
 
-    g_game_vars.timer = TM_ZERO;
     set_hand_state(HAND_TAGS);
 
     hand_set_nb_selected_cards(0);
@@ -2055,7 +2063,7 @@ void game_round_on_init(void)
 
     deck_shuffle(); // Shuffle the deck at the start of the round
 
-    skip_tag_process_init(SKIP_TAG_EVENT_ON_ROUND_START);
+    skip_tag_process_start(SKIP_TAG_EVENT_ON_ROUND_START);
 
     /* Note that since cards_in_hand_update_loop() handles card highlight there's no need
      * to call a selection changed callback to highlight the initial card, this wouldn't work

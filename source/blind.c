@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <tonc.h>
 
-#define BLIND_SPRITE_COPY_SIZE (BLIND_SPRITE_SIZE * TILE_SIZE)
+#define BLIND_SPRITE_COPY_SIZE (BLIND_SPRITE_TILES * TILE_SIZE)
 
 #define BLIND_TOKENS_PER_SPRITESHEET 2
 #define BLIND_TOKEN_PALETTE_SIZE     8
@@ -248,7 +248,7 @@ void apply_blind_colors(enum BlindType type)
 
 void apply_blind_tiles(enum BlindType type, enum BlindTokenLayers layer)
 {
-    int tile_index = get_sprite_tid(BLIND_TOKEN_SPRITE, layer);
+    int tile_index = sprite_get_tid(BLIND_TOKEN_SPRITE, layer);
     u32 spritesheet_idx = get_blind_spritesheet_idx(type);
     u32 sprite_idx = (type < BLIND_TYPE_MARK) ? type % BLIND_TOKENS_PER_SPRITESHEET : 0;
     memcpy32(
@@ -267,9 +267,9 @@ Sprite* blind_token_new(enum BlindType type, int x, int y, enum BlindTokenLayers
     Sprite* sprite = sprite_new(
         ATTR0_SQUARE | ATTR0_4BPP,
         ATTR1_SIZE_32x32,
-        get_sprite_tid(BLIND_TOKEN_SPRITE, layer),
+        sprite_get_tid(BLIND_TOKEN_SPRITE, layer),
         get_blind_pb(type),
-        get_sprite_starting_layer(BLIND_TOKEN_SPRITE) + layer
+        sprite_get_starting_layer(BLIND_TOKEN_SPRITE) + layer
     );
     sprite_position(sprite, x, y);
 

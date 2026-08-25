@@ -23,6 +23,31 @@
 /** @} */
 
 /**
+ * @name Sprite sizes in number of tiles
+ * @{
+ */
+#define CARD_SPRITE_TILES     16
+#define JOKER_SPRITE_TILES    16
+#define BLIND_SPRITE_TILES    16
+#define SKIP_TAG_SPRITE_TILES 4
+/** @} */
+
+/**
+ * @brief The different types of sprites in the game.
+ *
+ * Defining sprite types allows to easily rearrange, expand, and get the info about sprites
+ */
+enum SpriteType
+{
+    CARD_SPRITE,
+    BLIND_TOKEN_SPRITE,
+    SKIP_TAG_SPRITE,
+    JOKER_SPRITE,
+    DECK_SPRITE,
+    MAX_SPRITE_TYPE
+};
+
+/**
  * @brief Sprite struct for GBA hardware specifics
  */
 typedef struct
@@ -114,6 +139,23 @@ typedef struct
      */
     bool focused;
 } SpriteObject;
+
+/**
+ * @brief Get the tile index of a certain SpriteType at a certain layer
+ *
+ * @param sprite_type
+ * @param layer
+ * @return index in tiles memory where to put the sprite
+ */
+int sprite_get_tid(enum SpriteType sprite_type, s16 layer);
+
+/**
+ * @brief Get the starting layer of a certain type of sprite
+ *
+ * @param sprite_type
+ * @return int
+ */
+int sprite_get_starting_layer(enum SpriteType sprite_type);
 
 /**
  * @brief Allocate and retrieve a pointer to a valid Sprite

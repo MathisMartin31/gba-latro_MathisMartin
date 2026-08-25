@@ -247,7 +247,7 @@ void game_shop_on_init(void)
     state_machine_register(&shop_sm);
     state_machine_change_state(&shop_sm, GAME_SHOP_SKIP_TAGS);
 
-    skip_tag_process_init(SKIP_TAG_EVENT_ON_SHOP_INIT);
+    skip_tag_process_start(SKIP_TAG_EVENT_ON_SHOP_INIT);
 
     // The selection grid is initialized outside of bounds and moved
     // to trigger the selection change so the initial selection is visible
@@ -257,7 +257,7 @@ void game_shop_on_init(void)
 
 static void game_shop_redeem_skip_tags(void)
 {
-    if (skip_tag_process_get_effect() == SKIP_TAG_EFFECT_END)
+    if (skip_tag_process_get_proc_stage() == SKIP_TAG_PROCESS_STAGE_END)
     {
         s_timer = TM_ZERO;
         state_machine_change_state(&shop_sm, GAME_SHOP_INTRO);
@@ -668,8 +668,7 @@ static void game_shop_show_card_desc_on_init(void)
             joker_object->ty = int2fx(SHOP_JOKER_SPRITES_INIT_POS.y + TILE_SIZE);
     }
 
-    // Owned SkipTags
-    move_owned_skip_tags_offscreen(true);
+    set_owned_skip_tags_moved_offscreen(true);
 
     // Set description_card new target position
 
@@ -783,7 +782,7 @@ static void game_shop_hide_card_desc_on_init(void)
             joker_object->ty = int2fx(ITEM_SHOP_Y);
     }
 
-    move_owned_skip_tags_offscreen(false);
+    set_owned_skip_tags_moved_offscreen(false);
 
     s_description_card->tx = s_description_card_original_x_pos;
     s_description_card->ty = s_description_card_original_y_pos;

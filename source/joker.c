@@ -222,7 +222,7 @@ JokerObject* joker_object_new(Joker* joker)
 
     joker_object->type = ITEM_TYPE_JOKER;
 
-    int tile_index = get_sprite_tid(JOKER_SPRITE, layer);
+    int tile_index = sprite_get_tid(JOKER_SPRITE, layer);
     int joker_spritesheet_idx = s_joker_get_spritesheet_idx(joker->id);
     int joker_idx = s_joker_get_sprite_idx_in_sheet(joker->id, joker_spritesheet_idx);
     int joker_pb = s_allocate_pb_if_needed(joker->id);
@@ -230,8 +230,8 @@ JokerObject* joker_object_new(Joker* joker)
 
     memcpy32(
         &tile_mem[TILE_MEM_OBJ_CHARBLOCK0_IDX][tile_index],
-        &joker_gfxTiles[joker_spritesheet_idx][joker_idx * TILE_SIZE * JOKER_SPRITE_SIZE],
-        TILE_SIZE * JOKER_SPRITE_SIZE
+        &joker_gfxTiles[joker_spritesheet_idx][joker_idx * TILE_SIZE * JOKER_SPRITE_TILES],
+        TILE_SIZE * JOKER_SPRITE_TILES
     );
 
     sprite_object_set_sprite(
@@ -241,7 +241,7 @@ JokerObject* joker_object_new(Joker* joker)
             ATTR1_SIZE_32,
             tile_index,
             joker_pb,
-            get_sprite_starting_layer(JOKER_SPRITE) + layer
+            sprite_get_starting_layer(JOKER_SPRITE) + layer
         )
     );
 
@@ -254,7 +254,7 @@ void joker_object_destroy(JokerObject** joker_object)
         return;
 
     s16 layer = sprite_get_layer(joker_object_get_sprite(*joker_object)) -
-                get_sprite_starting_layer(JOKER_SPRITE);
+                sprite_get_starting_layer(JOKER_SPRITE);
     s_used_layers[layer] = false;
     s_joker_pb_remove_sprite_user(sprite_get_pb(joker_object_get_sprite(*joker_object)));
     if (s_joker_pb_get_num_sprite_users((sprite_get_pb(joker_object_get_sprite(*joker_object)))) ==
@@ -303,7 +303,6 @@ void joker_object_add_to_owned(Item* joker_object)
     GBAL_RETURN_IF_NULL_VOID(joker_object);
     ITEM_RETURN_IF_UNEXPECTED_TYPE_VOID(joker_object, ITEM_TYPE_JOKER);
 
-    joker_object->ty = int2fx(HELD_JOKERS_POS.y);
     add_joker((JokerObject*)joker_object);
 }
 

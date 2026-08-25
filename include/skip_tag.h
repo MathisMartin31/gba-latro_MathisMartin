@@ -70,7 +70,7 @@ enum SkipTagTypes
 typedef struct SkipTag
 {
     SpriteObject;
-    u8 type;
+    enum SkipTagTypes type;
 
 } SkipTag;
 
@@ -81,16 +81,14 @@ enum SkipTagEvent
                                    // (e.g. Boss, Charm, Double,...)
     SKIP_TAG_EVENT_ON_ROUND_START, // Triggers when starting a new round (Juggler)
     SKIP_TAG_EVENT_ON_ROUND_END,   // Triggers when beating a round (Investment)
-    SKIP_TAG_EVENT_ON_SHOP_INIT,   // Triggers when entering the Shop (e.g. Coupon, D6,...)
-    SKIP_TAG_EVENT_ON_SHOP_REROLL  // Triggers when rolling items for sale in the Shop
-                                   // (Foil, Holographic, Negative, Polychrome)
+    SKIP_TAG_EVENT_ON_SHOP_INIT    // Triggers when entering the Shop (e.g. Coupon, D6,...)
 };
 
-enum SkipTagEffect
+enum SkipTagProcStage
 {
-    SKIP_TAG_EFFECT_NONE,
-    SKIP_TAG_EFFECT_TRIGGER,
-    SKIP_TAG_EFFECT_END
+    SKIP_TAG_PROCESS_STAGE_NONE,
+    SKIP_TAG_PROCESS_STAGE_TRIGGER,
+    SKIP_TAG_PROCESS_STAGE_END
 };
 
 // SkipTagCallbacks will attempt to either return whether the SkipTag can be activated or trigger it
@@ -114,14 +112,14 @@ typedef struct
 } SkipTagInfo;
 
 /**
- * @brief Get the registry entry info for the given Skip Tag
+ * @brief Get the registry entry info for the given Skip Tag type
  *
- * @param tag_id ID of the Skip Tag we need the info of
+ * @param tag_type type of the Skip Tag we need the info of
  *
  * @return a pointer to the info structure for the given Skip Tag
  * @sa SkipTagInfo
  */
-const SkipTagInfo* get_skip_tag_registry_entry(int tag_id);
+const SkipTagInfo* get_skip_tag_registry_entry(enum SkipTagTypes tag_type);
 
 /**
  * @brief Get the owned skip tags list
@@ -139,17 +137,16 @@ List* get_owned_skip_tags(void);
  * @return a pointer to a new SkipTag object
  * @sa SkipTagTypes, SkipTag
  */
-SkipTag* skip_tag_new(u8 tag_type);
+SkipTag* skip_tag_new(enum SkipTagTypes tag_type);
 
 /**
  * @brief Set the sprite for the given SkipTag, according to its internal ID.
  *
  * @param tag pointer to the SkipTag object
- * @param pos position the new Sprite will immediately be shown at. Cannot be **UNDEFINED**
  * @param layer sprite layer for the new Sprite, as an offset to the starting layer for the
  *              SKIP_TAG sprite type
  */
-void skip_tag_set_sprite(SkipTag* tag, BG_POINT pos, s16 layer);
+void skip_tag_set_sprite(SkipTag* tag, s16 layer);
 
 /**
  * @brief Destroy the given SkipTag, invalidate it in the corresponding memory pool and set the
@@ -162,9 +159,9 @@ void skip_tag_destroy(SkipTag** tag);
 /**
  * @brief Show or hide the owned SkipTag sprites by moving them offscreen to the right.
  *
- * @param hidden whether the sprites should be hidden or not
+ * @param move_offscreen true to move the sprites offscreen, false to return them onscreen
  */
-void move_owned_skip_tags_offscreen(bool hidden);
+void set_owned_skip_tags_moved_offscreen(bool move_offscreen);
 
 /**
  * @brief Create a new SkipTag with a random ID, picked by taking the Ante into account, as some
@@ -181,7 +178,7 @@ SkipTag* roll_skip_tag(void);
  * @param tag_type SkipTagType to check
  * @return true if tag type is present, false otherwise
  */
-bool skip_tag_is_owned(u8 tag_type);
+bool skip_tag_is_owned(enum SkipTagTypes tag_type);
 
 /**
  * @brief Counts how many tags of a certain type we own.
@@ -189,7 +186,7 @@ bool skip_tag_is_owned(u8 tag_type);
  * @param tag_type SkipTagType to count
  * @return int
  */
-int skip_tag_count(u8 tag_type);
+int skip_tag_count(enum SkipTagTypes tag_type);
 
 /**
  * @brief Adds the SkipTag to the owned list, snaps it into position and sets the original pointer
@@ -213,33 +210,26 @@ void remove_skip_tag(int tag_idx);
 void remove_all_skip_tags(void);
 
 /**
- * @brief Initialize the Skip Tag processing structure and state, then launches the processing.
+ * @brief Recover the current stage of the Tag processing.
  *
- * Skip Tags will be fully processed over 61 frames (1 + 2 * TM_SKIP_TAG_ANIM_DURATION) so we have
- * time to process what's happening:
+ * @return enum SkipTagProcStage
+ */
+enum SkipTagProcStage skip_tag_process_get_proc_stage(void);
+
+/**
+ * @brief Start Skip Tag processing for the specified event.
  *
- *  - Detect triggered Tag, executed instantly but will take a full frame given how state machines
- *    work
- *  - Starting the little bouncy animation as the Tag triggers
- *  - Delete triggered Tag, serves as a little pause
+ * Processing will occur in its own substate and will run independently until it either completes,
+ * or is paused/resumed with the associated functions.
+ *
+ * During this time, `skip_tag_process_get_proc_stage` may be called on every frame so that the
+ * calling game can stay up to date with the Tags processing stage.
  *
  * @param checked_tag_event the event for which the owned Tags will be evaluated
  *
- * @sa SkipTagEvent
+ * @sa skip_tag_process_pause, skip_tag_process_resume, skip_tag_process_get_proc_stage
  */
-void skip_tag_process_init(enum SkipTagEvent checked_tag_event);
-
-/**
- * @brief Recover the effect of the Tag being processed, if any.
- *
- * This function must be called every frame after `skip_tag_process_init` so that we stay up to date
- * with the Tags processing.
- *
- * @return enum SkipTagEffect
- *
- * @sa skip_tag_process_init
- */
-enum SkipTagEffect skip_tag_process_get_effect(void);
+void skip_tag_process_start(enum SkipTagEvent checked_tag_event);
 
 /**
  * @brief Suspend the processing of Skip Tags.
@@ -256,8 +246,7 @@ void skip_tag_process_pause(void);
 /**
  * @brief Resume the processing of Skip Tags.
  *
- * After `skip_tag_process_pause` was called, use this function some time afterwards to resume Tag
- * processing.
+ * After `skip_tag_process_pause` was called, use this function to resume Tag processing.
  *
  * @sa skip_tag_process_pause
  */
