@@ -32,53 +32,6 @@ enum SpritePaletteBanks
 #define MAX_BLIND_TOKEN    5
 #define MAX_SKIP_TAGS      16
 
-// Sprite sizes in number of tiles
-#define CARD_SPRITE_SIZE     16
-#define JOKER_SPRITE_SIZE    16
-#define BLIND_SPRITE_SIZE    16
-#define SKIP_TAG_SPRITE_SIZE 4
-
-/**
- * @brief The different types of sprites in the game.
- *
- * Defining sprite types allows to easily rearrange, expand, and get the info about sprites
- */
-enum SpriteType
-{
-    CARD_SPRITE,
-    CARD_PLAYED_SPRITE,
-    CARD_UNDISCARD_SPRITE,
-    BLIND_TOKEN_SPRITE,
-    SKIP_TAG_SPRITE,
-    JOKER_SPRITE,
-    DECK_SPRITE,
-    MAX_SPRITE_TYPE
-};
-
-/**
- * @brief Initialize the tile indices and starting layers' LUT. To be ran onces at init.
- *
- * @sa s_sprite_tids, s_sprite_starting_layers
- */
-void common_ui_init(void);
-
-/**
- * @brief Get the tile index of a certain SpriteType at a certain layer
- *
- * @param sprite_type
- * @param layer
- * @return index in tiles memory where to put the sprite
- */
-int get_sprite_tid(enum SpriteType sprite_type, s16 layer);
-
-/**
- * @brief Get the starting layer of a certain type of sprite
- *
- * @param sprite_type
- * @return int
- */
-int get_sprite_starting_layer(enum SpriteType sprite_type);
-
 /**
  * @brief Enum of possible backgrounds to render with @ref change_background
  */

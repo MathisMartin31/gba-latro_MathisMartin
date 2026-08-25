@@ -53,13 +53,13 @@ const SkipTagInfo skip_tag_registry[MAX_SKIP_TAG_TYPES] =
 
 static const size_t skip_tag_registry_size = NUM_ELEM_IN_ARR(skip_tag_registry);
 
-const SkipTagInfo* get_skip_tag_registry_entry(int tag_id)
+const SkipTagInfo* get_skip_tag_registry_entry(enum SkipTagTypes tag_type)
 {
-    if (tag_id < 0 || (size_t)tag_id >= skip_tag_registry_size)
+    if (tag_type < 0 || (size_t)tag_type >= skip_tag_registry_size)
     {
         return NULL;
     }
-    return &skip_tag_registry[tag_id];
+    return &skip_tag_registry[tag_type];
 }
 
 // CONDITIONS IMPLEMENTATION

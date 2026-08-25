@@ -44,11 +44,14 @@ typedef struct
 
     // Variables visible by the player
 
+    // Round variables
     u32 score;
     u32 chips;
     u32 mult;
     s32 hands;
     s32 discards;
+
+    // Run variables
     s32 money;
     s32 hand_size;
     s32 ante;
@@ -56,7 +59,7 @@ typedef struct
     s32 deck;
     u32 nb_played_hands[HAND_TYPE_MAX];
 
-    // Hidden run variables
+    // Hidden variables
 
     u32 best_hand_score;
     u32 nb_skipped_rounds;

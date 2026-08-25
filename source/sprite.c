@@ -32,6 +32,47 @@ static bool free_affines[MAX_AFFINES] = {false};
 
 static List sprite_objects_list = LIST_DEFAULT;
 
+/**
+ * @brief Tile index LUT for all sprite types. Filled at init by calling `sprite_init`
+ *
+ * @sa sprite_init
+ */
+static int s_sprite_tids[MAX_SPRITE_TYPE] = {0};
+
+/**
+ * @brief Starting layer LUT for all sprite types. Filled at init by calling `sprite_init`
+ *
+ * @sa sprite_init
+ */
+static int s_sprite_starting_layers[MAX_SPRITE_TYPE] = {0};
+
+// clang-format off
+static const int s_sprite_counts[MAX_SPRITE_TYPE] = {
+    [CARD_SPRITE]        = MAX_HAND_SIZE + MAX_SELECTION_SIZE + 1,
+    [BLIND_TOKEN_SPRITE] = MAX_BLIND_TOKEN,
+    [SKIP_TAG_SPRITE]    = MAX_SKIP_TAGS,
+    [JOKER_SPRITE]       = MAX_ACTIVE_JOKERS,
+    [DECK_SPRITE]        = 1
+};
+static const int s_sprite_sizes[MAX_SPRITE_TYPE] = {
+    [CARD_SPRITE]        = CARD_SPRITE_TILES,
+    [BLIND_TOKEN_SPRITE] = BLIND_SPRITE_TILES,
+    [SKIP_TAG_SPRITE]    = SKIP_TAG_SPRITE_TILES,
+    [JOKER_SPRITE]       = JOKER_SPRITE_TILES,
+    [DECK_SPRITE]        = CARD_SPRITE_TILES
+};
+// clang-format on
+
+int sprite_get_tid(enum SpriteType sprite_type, s16 layer)
+{
+    return s_sprite_tids[sprite_type] + layer * s_sprite_sizes[sprite_type];
+}
+
+int sprite_get_starting_layer(enum SpriteType sprite_type)
+{
+    return s_sprite_starting_layers[sprite_type];
+}
+
 // Sprite methods
 Sprite* sprite_new(u16 a0, u16 a1, u32 tid, u32 pb, s16 sprite_index)
 {
@@ -154,6 +195,17 @@ bool sprite_get_dimensions(Sprite* sprite, int* width, int* height)
 void sprite_init()
 {
     oam_init(obj_buffer, MAX_SPRITES);
+
+    // Start at 1, since CARD_SPRITE being first means and both the TID
+    // and starting layer stay at 0
+    for (enum SpriteType sprite_type = 1; sprite_type < MAX_SPRITE_TYPE; sprite_type++)
+    {
+        s_sprite_tids[sprite_type] =
+            s_sprite_tids[sprite_type - 1] +
+            s_sprite_counts[sprite_type - 1] * s_sprite_sizes[sprite_type - 1];
+        s_sprite_starting_layers[sprite_type] =
+            s_sprite_starting_layers[sprite_type - 1] + s_sprite_counts[sprite_type - 1];
+    }
 }
 
 void sprite_draw()

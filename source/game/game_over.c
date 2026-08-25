@@ -155,7 +155,6 @@ static void game_over_common_init(enum EndCondition init_condition)
         card_destroy(&card);
     }
 
-    // Destro all owned Skip Tags
     remove_all_skip_tags();
 
     // Clears the round end menu
