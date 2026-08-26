@@ -1195,12 +1195,8 @@ static inline void game_round_discarded_cards_loop(void)
         {
             discarded_card_object = card_object_new(discard_pop());
 
-            // Set the sprite for the discarded card object
-            card_object_set_sprite(
-                discarded_card_object,
-                CARD_SPRITE,
-                MAX_HAND_SIZE + MAX_SELECTION_SIZE
-            );
+            // Set the sprite for the discarded card object. Reuse Id 0 to save a sprite
+            card_object_set_sprite(discarded_card_object, CARD_SPRITE, 0);
             sprite_object_reset_transform((SpriteObject*)discarded_card_object);
 
             discarded_card_object->tx = int2fx(204);

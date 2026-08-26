@@ -48,7 +48,7 @@ static int s_sprite_starting_layers[MAX_SPRITE_TYPE] = {0};
 
 // clang-format off
 static const int s_sprite_counts[MAX_SPRITE_TYPE] = {
-    [CARD_SPRITE]        = MAX_HAND_SIZE + MAX_SELECTION_SIZE + 1,
+    [CARD_SPRITE]        = MAX_HAND_SIZE + MAX_SELECTION_SIZE,
     [BLIND_TOKEN_SPRITE] = MAX_BLIND_TOKEN,
     [SKIP_TAG_SPRITE]    = MAX_SKIP_TAGS,
     [JOKER_SPRITE]       = MAX_ACTIVE_JOKERS,
