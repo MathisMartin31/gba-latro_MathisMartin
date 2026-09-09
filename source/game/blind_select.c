@@ -325,7 +325,7 @@ static void blind_select_handle_immediate_tags_on_update(void)
     }
 }
 
-void game_blind_select_reroll_boss_from_menu(void)
+void blind_select_reroll_boss_from_menu(void)
 {
     s_timer = TM_ZERO;
     state_machine_change_state(&blind_select_sm, REROLL_BOSS_ANIM_SEQ);
@@ -669,7 +669,7 @@ static void blind_skip_tags_init(void)
     );
 }
 
-void game_blind_select_on_init(void)
+void blind_select_on_init(void)
 {
     s_timer = TM_ZERO;
     state_machine_register(&blind_select_sm);

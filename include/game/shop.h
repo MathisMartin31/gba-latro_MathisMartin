@@ -21,14 +21,14 @@ void shop_reset(void);
  *
  * @return int
  */
-int game_shop_get_reroll_cost(void);
+int shop_get_reroll_cost(void);
 
 /**
  * @brief Set the current cost to reroll the items sold in the shop to the given value
  *
  * @param cost new reroll price for the shop
  */
-void game_shop_set_reroll_cost(int cost);
+void shop_set_reroll_cost(int cost);
 
 /**
  * @brief Get a pointer to the Card we are currently showing the description of.

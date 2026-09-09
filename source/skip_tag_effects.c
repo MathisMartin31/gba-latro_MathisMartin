@@ -87,7 +87,7 @@ static bool skip_tag_cond_juggle(void)
 
 static bool skip_tag_cond_d6(void)
 {
-    return game_shop_get_reroll_cost() > 0;
+    return shop_get_reroll_cost() > 0;
 }
 
 // EFFECTS IMPLEMENTATION
@@ -98,7 +98,7 @@ static void skip_tag_effect_noop(void)
 
 static void skip_tag_effect_boss(void)
 {
-    game_blind_select_reroll_boss_from_menu();
+    blind_select_reroll_boss_from_menu();
 }
 
 static void skip_tag_effect_handy(void)
@@ -131,7 +131,7 @@ static void skip_tag_effect_juggle(void)
 
 static void skip_tag_effect_d6(void)
 {
-    game_shop_set_reroll_cost(0);
+    shop_set_reroll_cost(0);
 }
 
 #define TOP_UP_TAG_JOKER_BONUS 2
