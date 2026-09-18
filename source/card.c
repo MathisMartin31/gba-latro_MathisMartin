@@ -121,9 +121,9 @@ void card_object_destroy(CardObject** card_object)
     *card_object = NULL;
 }
 
-void card_object_set_sprite(CardObject* card_object, enum SpriteType sprite_type, s16 layer)
+void card_object_set_sprite(CardObject* card_object, s16 layer)
 {
-    int tile_index = sprite_get_tid(sprite_type, layer);
+    int tile_index = sprite_get_tid(CARD_SPRITE, layer);
     const unsigned int* card_tiles = s_more_readable ? deck_big_gfxTiles : deck_gfxTiles;
     memcpy32(
         &tile_mem[TILE_MEM_OBJ_CHARBLOCK0_IDX][tile_index],
@@ -135,19 +135,14 @@ void card_object_set_sprite(CardObject* card_object, enum SpriteType sprite_type
         ATTR1_SIZE_32,
         tile_index,
         CARD_PB,
-        sprite_get_starting_layer(sprite_type) + layer
+        sprite_get_starting_layer(CARD_SPRITE) + layer
     );
     sprite_object_set_sprite((SpriteObject*)card_object, sprite);
 }
 
-void card_object_set_sprite_face_down(
-    CardObject* card_object,
-    enum DeckType deck,
-    enum SpriteType sprite_type,
-    s16 layer
-)
+void card_object_set_sprite_face_down(CardObject* card_object, enum DeckType deck, s16 layer)
 {
-    int tile_index = sprite_get_tid(sprite_type, layer);
+    int tile_index = sprite_get_tid(DECK_SPRITE, layer);
     memcpy32(
         &tile_mem[TILE_MEM_OBJ_CHARBLOCK0_IDX][tile_index],
         &decks_face_down_gfxTiles[DECK_SPRITE_LUT[deck] * TILE_SIZE],
@@ -158,7 +153,7 @@ void card_object_set_sprite_face_down(
         ATTR1_SIZE_32,
         tile_index,
         DECK_PB,
-        sprite_get_starting_layer(sprite_type) + layer
+        sprite_get_starting_layer(DECK_SPRITE) + layer
     );
     sprite_object_set_sprite((SpriteObject*)card_object, sprite);
 }

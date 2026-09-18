@@ -1199,7 +1199,7 @@ static inline void round_discarded_cards_loop(void)
             discarded_card_object = card_object_new(discard_pop());
 
             // Set the sprite for the discarded card object. Reuse Id 0 to save a sprite
-            card_object_set_sprite(discarded_card_object, CARD_SPRITE, 0);
+            card_object_set_sprite(discarded_card_object, 0);
             sprite_object_reset_transform((SpriteObject*)discarded_card_object);
 
             discarded_card_object->tx = int2fx(204);
@@ -2041,12 +2041,9 @@ static inline void played_cards_update_loop(void)
 
         if (card_object_get_sprite(s_played_hand[played_idx]) == NULL)
         {
-            // Set the sprite for the played card object
-            card_object_set_sprite(
-                s_played_hand[played_idx],
-                CARD_SPRITE,
-                MAX_HAND_SIZE + played_idx
-            );
+            // Offset the index so played cards don't overlap with the hand
+            // and for example get overwritten when it the hand is reordered
+            card_object_set_sprite(s_played_hand[played_idx], MAX_HAND_SIZE + played_idx);
         }
 
         switch (play_state)

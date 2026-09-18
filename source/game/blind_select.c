@@ -99,8 +99,8 @@ static const Rect BLIND_SKIP_BTN_GRAY_RECT            = {0,       24,     4,    
 static const Rect BLIND_SKIP_BTN_PREANIM_DEST_RECT    = {9,       29,     19,     31};
 static const Rect SINGLE_BLIND_SEL_REQ_SCORE_RECT     = {80,      120,    104,    128};
 static const Rect SINGLE_BLIND_SELECT_RECT            = {9,       7,      13,     31};
-static const Rect BOSS_BLIND_REROLL_ANIM_DOWN_RECT    = {19,      6,      24,     31};
-static const Rect BOSS_BLIND_REROLL_ANIM_UP_RECT      = {19,      7,      24,     31};
+static const Rect BOSS_BLIND_PANEL_MOVE_DOWN_RECT     = {19,      6,      24,     31};
+static const Rect BOSS_BLIND_PANEL_MOVE_UP_RECT       = {19,      7,      24,     31};
 static const Rect BOSS_BLIND_REROLL_DUP_LINE_RECT     = {19,      30,     24,     30};
 // clang-format on
 
@@ -333,6 +333,7 @@ void blind_select_reroll_boss_from_menu(void)
 
 /**
  * @brief Roll a random Boss Blind amongst the ones we haven't beaten yet
+ * and set g_game_vars.next_boss_blind to it.
  */
 static inline void reroll_boss_blind(void)
 {
@@ -352,10 +353,10 @@ static void blind_select_reroll_boss_anim_seq_on_init(void)
     blind_select_erase_blind_req_and_reward(BOSS_BLIND);
 }
 
-static inline void blind_select_reroll_boss_anim_move_blind_panel(enum ScreenVertDir dir)
+static inline void blind_select_move_boss_blind_panel(enum ScreenVertDir dir)
 {
     main_bg_se_move_rect_1_tile_vert(
-        dir == SCREEN_DOWN ? BOSS_BLIND_REROLL_ANIM_DOWN_RECT : BOSS_BLIND_REROLL_ANIM_UP_RECT,
+        dir == SCREEN_DOWN ? BOSS_BLIND_PANEL_MOVE_DOWN_RECT : BOSS_BLIND_PANEL_MOVE_UP_RECT,
         dir
     );
     sprite_position(
@@ -365,7 +366,7 @@ static inline void blind_select_reroll_boss_anim_move_blind_panel(enum ScreenVer
     );
 }
 
-static inline void blind_select_reroll_boss_anim_reroll_boss_blind(void)
+static inline void blind_select_reroll_boss_anim_do_reroll(void)
 {
     reroll_boss_blind();
     apply_blind_tiles(g_game_vars.next_boss_blind, BOSS_BLIND_TOKEN_LAYER);
@@ -382,17 +383,17 @@ static void blind_select_reroll_boss_anim_seq_on_update(void)
     int panel_move_duration = TM_BOSS_BLIND_REROLL_DURATION + (int)is_boss_selected;
 
     if (s_timer < panel_move_duration)
-        blind_select_reroll_boss_anim_move_blind_panel(SCREEN_DOWN);
+        blind_select_move_boss_blind_panel(SCREEN_DOWN);
 
     // Reroll Boss Blind
     else if (s_timer == MENU_POP_OUT_ANIM_FRAMES)
-        blind_select_reroll_boss_anim_reroll_boss_blind();
+        blind_select_reroll_boss_anim_do_reroll();
 
     // Move whole panel up after a short pause
     else if (s_timer > MENU_POP_OUT_ANIM_FRAMES &&
              s_timer < (MENU_POP_OUT_ANIM_FRAMES + panel_move_duration))
     {
-        blind_select_reroll_boss_anim_move_blind_panel(SCREEN_UP);
+        blind_select_move_boss_blind_panel(SCREEN_UP);
 
         // Just once if Boss Blind panel is raised, to compensate for the fact that the panel will
         // lack one row of tiles, copy a line on the first frame to fill that gap
