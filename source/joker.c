@@ -196,11 +196,12 @@ u32 joker_object_get_rarity_colors(Item* joker_object)
     GBAL_RETURN_IF_NULL_RET(info, 0);
     u8 rarity = joker->rarity;
 
-    // +1 to account for the transparency
-    // odd indices are the main colors, even ones are the shadows
-    u32 colors =
-        card_rarity_pal_gfxPal[1 + 2 * rarity] | (card_rarity_pal_gfxPal[1 + 2 * rarity + 1] << 16);
-    return colors;
+    // +1 to account for the mandatory transparency in Asperite color palettes
+    u32 pal_base = 1 + 2 * rarity;
+    u32 low = card_rarity_pal_gfxPal[pal_base];            // even indices are the shadows
+    u32 high = card_rarity_pal_gfxPal[pal_base + 1] << 16; // odd ones are the main colors
+
+    return low | high;
 }
 
 int joker_get_buy_price(const Joker* joker)

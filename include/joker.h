@@ -231,6 +231,15 @@ void joker_object_add_to_owned(Item* joker_object);
  */
 void joker_object_dispose(Item** joker_object);
 
+/**
+ * @brief Print the description of the requested Joker centered within the specified Rect
+ *
+ * @param joker_object Joker to print the description of
+ * @param dest_rect Rectangular region the description must fit in. In case the text is too big, it
+ *                   will overflow downwards while still respecting left and right boundaries.
+ *
+ * @return the number of lines the description was actually printed on
+ */
 int joker_object_print_description(Item* joker_object, Rect dest_rect);
 
 /**
