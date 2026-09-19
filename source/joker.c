@@ -110,7 +110,7 @@ static void s_joker_pb_remove_sprite_user(int pb);
 static int s_joker_pb_get_num_sprite_users(int joker_pb);
 static int s_get_unused_joker_pb(void);
 static int s_allocate_pb_if_needed(u8 joker_id);
-static int joker_get_random_rarity(enum RngSequence key);
+static enum JokerRarity joker_get_random_rarity(enum RngSequence key);
 
 void joker_init()
 {
@@ -165,7 +165,7 @@ u32 joker_get_score_effect(
     return jinfo->joker_effect_func(joker, scored_card, joker_event, joker_effect);
 }
 
-const char* joker_get_rarity_string(u8 rarity)
+const char* joker_get_rarity_string(enum JokerRarity rarity)
 {
     if (rarity >= MAX_RARITIES)
         return NULL;
@@ -173,7 +173,7 @@ const char* joker_get_rarity_string(u8 rarity)
     return JOKER_RARITY_STRINGS_LUT[rarity];
 }
 
-u16 joker_get_rarity_color(u8 rarity, bool main_color)
+u16 joker_get_rarity_color(enum JokerRarity rarity, bool main_color)
 {
     if (rarity >= MAX_RARITIES)
         return 0x0;
@@ -342,7 +342,7 @@ void joker_reset_rollable_jokers(void)
     }
 }
 
-int joker_roll_id(int joker_rarity, enum RngSequence key)
+int joker_roll_id(enum JokerRarity joker_rarity, enum RngSequence key)
 {
     // Now determine how many jokers are available based on the rarity
     int jokers_avail_size = get_num_rollable_jokers();
@@ -415,9 +415,9 @@ Item* joker_object_roll_new(enum RngSequence key)
  * @param key to the RNG sequence used
  * @return a random Joker rarity
  */
-static inline int joker_get_random_rarity(enum RngSequence key)
+static inline enum JokerRarity joker_get_random_rarity(enum RngSequence key)
 {
-    int joker_rarity = 0;
+    enum JokerRarity joker_rarity = 0;
     int rarity_roll = rng_get_u32(key) % 100;
     if (rarity_roll < COMMON_JOKER_CHANCE)
     {

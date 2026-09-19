@@ -196,8 +196,7 @@ void sprite_init()
 {
     oam_init(obj_buffer, MAX_SPRITES);
 
-    // Start at 1, since CARD_SPRITE being first means and both the TID
-    // and starting layer stay at 0
+    // Start at 1, since the first element has a TID and starting layer of 0
     for (enum SpriteType sprite_type = 1; sprite_type < MAX_SPRITE_TYPE; sprite_type++)
     {
         s_sprite_tids[sprite_type] =
@@ -399,12 +398,14 @@ void sprite_object_update_all(void)
     }
 }
 
+#define SPRITE_SHAKE_VSCALE    0.3f
+#define SPRITE_SHAKE_VROTATION 8.0f
 void sprite_object_shake(SpriteObject* sprite_object, mm_word sound_id)
 {
     GBAL_RETURN_IF_NULL_VOID(sprite_object);
 
-    sprite_object->vscale = float2fx(0.3f);
-    sprite_object->vrotation = float2fx(8.0f); // Rotate the card when it's scored
+    sprite_object->vscale = float2fx(SPRITE_SHAKE_VSCALE);
+    sprite_object->vrotation = float2fx(SPRITE_SHAKE_VROTATION); // Rotate the card when it's scored
 
     if (sound_id == UNDEFINED)
         return; // If no sound ID is provided, do nothing
@@ -418,10 +419,11 @@ void sprite_object_bounce(SpriteObject* sprite_object, FIXED strength)
     sprite_object->vscale = strength;
 }
 
+#define SPRITE_SWAY_VROTATION -10.0f
 void sprite_object_sway(SpriteObject* sprite_object)
 {
     GBAL_RETURN_IF_NULL_VOID(sprite_object);
-    sprite_object->vrotation = float2fx(-10.f);
+    sprite_object->vrotation = float2fx(SPRITE_SWAY_VROTATION);
 }
 
 void sprite_object_set_target(SpriteObject* sprite_object, BG_POINT to)

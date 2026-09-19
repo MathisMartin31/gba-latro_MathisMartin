@@ -219,11 +219,16 @@ enum SkipTagProcStage skip_tag_process_get_proc_stage(void);
 /**
  * @brief Start Skip Tag processing for the specified event.
  *
- * Processing will occur in its own substate and will run independently until it either completes,
- * or is paused/resumed with the associated functions.
+ * The "processing" of a Tag refers to the selection of the triggered Tag, the triggering of the
+ * associated effect itself, the little bounce animation that comes with it and finally the removal
+ * of the Tag.
+ *
+ * Processing will occur in its own state machine and will run independently until it either
+ * completes, or is paused/resumed with the associated functions.
  *
  * During this time, `skip_tag_process_get_proc_stage` may be called on every frame so that the
- * calling game can stay up to date with the Tags processing stage.
+ * calling state machine can stay up to date with the Tags processing stage and wait for it to
+ * finish or perform relevant actions.
  *
  * @param checked_tag_event the event for which the owned Tags will be evaluated
  *

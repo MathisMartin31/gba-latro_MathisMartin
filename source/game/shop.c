@@ -119,11 +119,7 @@ static StateInfo shop_state_actions[GAME_SHOP_MAX] = {
     [GAME_SHOP_INTRO]          = STATE_INFO_UPDATE_FN_ONLY(shop_intro),
     [GAME_SHOP_ACTIVE]         = STATE_INFO_UPDATE_FN_ONLY(shop_process_user_input),
     [GAME_SHOP_SHOW_CARD_DESC] = STATE_INFO_INIT_UPDATE_FN(shop_show_card_desc_on_init, shop_show_card_desc_on_update),
-    [GAME_SHOP_HIDE_CARD_DESC] = {
-        .on_init   = shop_hide_card_desc_on_init,
-        .on_update = shop_hide_card_desc_on_update,
-        .on_exit   = shop_hide_card_desc_on_exit
-    },
+    [GAME_SHOP_HIDE_CARD_DESC] = STATE_INFO_ALL_FN        (shop_hide_card_desc_on_init, shop_hide_card_desc_on_update, shop_hide_card_desc_on_exit),
     [GAME_SHOP_EXIT]           = STATE_INFO_UPDATE_FN_ONLY(shop_outro),
 };
 // clang-format on

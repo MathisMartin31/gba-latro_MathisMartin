@@ -36,7 +36,7 @@ DECLARE_SKIP_TAG_EFFECT_FUNC(skip_tag_effect_economy)
 
 // The index of a skip tag in the registry matches its ID.
 // clang-format off
-const SkipTagInfo skip_tag_registry[MAX_SKIP_TAG_TYPES] = 
+const SkipTagInfo skip_tag_registry[] = 
 {
     [SKIP_TAG_TYPE_INVESTMENT] = { SKIP_TAG_EVENT_ON_ROUND_END,   skip_tag_cond_investment, skip_tag_effect_noop    },
     [SKIP_TAG_TYPE_BOSS]       = { SKIP_TAG_EVENT_IMMEDIATE,      skip_tag_cond_true,       skip_tag_effect_boss    },

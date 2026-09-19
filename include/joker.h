@@ -16,20 +16,25 @@
 
 #define MAX_DEFINABLE_JOKERS 150
 
-#define BASE_EDITION     0
-#define FOIL_EDITION     1
-#define HOLO_EDITION     2
-#define POLY_EDITION     3
-#define NEGATIVE_EDITION 4
+// Pack these enums into a u8 so that the Joker struct uses as little memory as possible
+enum JokerEdition : u8
+{
+    BASE_EDITION,
+    FOIL_EDITION,
+    HOLO_EDITION,
+    POLY_EDITION,
+    NEGATIVE_EDITION,
+    MAX_EDITIONS
+};
 
-#define MAX_EDITIONS 5
-
-#define COMMON_JOKER    0
-#define UNCOMMON_JOKER  1
-#define RARE_JOKER      2
-#define LEGENDARY_JOKER 3
-
-#define MAX_RARITIES (LEGENDARY_JOKER + 1)
+enum JokerRarity : u8
+{
+    COMMON_JOKER,
+    UNCOMMON_JOKER,
+    RARE_JOKER,
+    LEGENDARY_JOKER,
+    MAX_RARITIES
+};
 
 // Percent chance to get a joker of each rarity
 // Note that this deviates slightly from the Balatro wiki to allow legendary
@@ -86,10 +91,10 @@ enum JokerEvent
 
 typedef struct
 {
-    u8 id;       // Unique ID for the joker, used to identify different jokers
-    u8 modifier; // base, foil, holo, poly, negative
+    u8 id;                      // Unique ID for the joker, used to identify different jokers
+    enum JokerEdition modifier; // base, foil, holo, poly, negative
     u8 value;
-    u8 rarity;
+    enum JokerRarity rarity;
 
     // General purpose values that are interpreted differently for each Joker (scaling, last
     // retriggered card, etc...)
@@ -131,7 +136,7 @@ typedef int (*JokerDescFunc)(Joker* joker, Rect dest_rect);
 typedef struct
 {
     const char* name;
-    u8 rarity;
+    enum JokerRarity rarity;
     u8 base_value;
     bool is_desc_dynamic; // Is the little variable description at the bottom dynamic?
                           // Only used by the Misprint joker for now
@@ -157,7 +162,7 @@ u32 joker_get_score_effect(
     JokerEffect** joker_effect
 );
 
-const char* joker_get_rarity_string(u8 rarity);
+const char* joker_get_rarity_string(enum JokerRarity rarity);
 
 /**
  * @brief Get Joker rarity panel color.
@@ -176,7 +181,7 @@ const char* joker_get_rarity_string(u8 rarity);
  * @param main_color Whether we want the main or shadow color
  * @return u16 value of the color, not a pointer
  */
-u16 joker_get_rarity_color(u8 rarity, bool main_color);
+u16 joker_get_rarity_color(enum JokerRarity rarity, bool main_color);
 
 int joker_get_sell_value(const Joker* joker);
 
@@ -217,7 +222,7 @@ void joker_object_dispose(Item** joker_object);
  *
  * @return rolled Joker ID
  */
-int joker_roll_id(int joker_rarity, enum RngSequence key);
+int joker_roll_id(enum JokerRarity joker_rarity, enum RngSequence key);
 
 /**
  * @brief Set whether a Joker is available to be rolled for the shop, packs, etc.

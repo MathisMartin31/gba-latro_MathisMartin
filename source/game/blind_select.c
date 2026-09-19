@@ -68,16 +68,8 @@ static StateInfo state_info[] = {
     [START_ANIM_SEQ]            = STATE_INFO_UPDATE_FN_ONLY(blind_select_start_anim_seq),
     [BLIND_SELECT]              = STATE_INFO_UPDATE_FN_ONLY(blind_select_handle_input),
     [APPLY_BLIND_TAGS]          = STATE_INFO_INIT_UPDATE_FN(blind_select_handle_immediate_tags_on_init, blind_select_handle_immediate_tags_on_update),
-    [REROLL_BOSS_ANIM_SEQ]      = {
-        .on_init   = blind_select_reroll_boss_anim_seq_on_init,
-        .on_update = blind_select_reroll_boss_anim_seq_on_update,
-        .on_exit   = blind_select_reroll_boss_anim_seq_on_exit
-    },
-    [BLIND_SELECTED_ANIM_SEQ]   = {
-        .on_init   = blind_select_selected_anim_seq_on_init,
-        .on_update = blind_select_selected_anim_seq_on_update,
-        .on_exit   = blind_select_selected_anim_seq_on_exit
-    },
+    [REROLL_BOSS_ANIM_SEQ]      = STATE_INFO_ALL_FN        (blind_select_reroll_boss_anim_seq_on_init,  blind_select_reroll_boss_anim_seq_on_update, blind_select_reroll_boss_anim_seq_on_exit),
+    [BLIND_SELECTED_ANIM_SEQ]   = STATE_INFO_ALL_FN        (blind_select_selected_anim_seq_on_init,     blind_select_selected_anim_seq_on_update,    blind_select_selected_anim_seq_on_exit),
     [DISPLAY_BLIND_PANEL]       = STATE_INFO_UPDATE_FN_ONLY(blind_select_display_blind_panel),
     [BLIND_SELECT_EXIT]         = STATE_INFO_UPDATE_FN_ONLY(blind_select_exit),
 };
@@ -179,8 +171,10 @@ static inline void blind_select_erase_blind_req_and_reward(enum BlindTokens blin
     // To account for overflow
     blind_req_and_reward_rect.right += TILE_SIZE;
 
-    blind_req_and_reward_rect.left += blind * rect_width(&SINGLE_BLIND_SELECT_RECT) * TILE_SIZE;
-    blind_req_and_reward_rect.right += blind * rect_width(&SINGLE_BLIND_SELECT_RECT) * TILE_SIZE;
+    // Position the rect over the right Blind
+    int score_rect_x_offset = blind * rect_width(&SINGLE_BLIND_SELECT_RECT) * TILE_SIZE;
+    blind_req_and_reward_rect.left += score_rect_x_offset;
+    blind_req_and_reward_rect.right += score_rect_x_offset;
 
     tte_erase_rect_wrapper(blind_req_and_reward_rect);
 }
@@ -349,6 +343,9 @@ static inline void reroll_boss_blind(void)
 
 static void blind_select_reroll_boss_anim_seq_on_init(void)
 {
+    // We need to pause the Tags processing to let the reroll animation play and finish.
+    // Otherwise, if chaining Boss Tags, the next animation would start to play before the previous
+    // one finishes, causing glitches
     skip_tag_process_pause();
     blind_select_erase_blind_req_and_reward(BOSS_BLIND);
 }
@@ -523,8 +520,9 @@ static Rect blind_select_get_req_score_rect(enum BlindTokens blind)
 {
     Rect blind_req_score_rect = SINGLE_BLIND_SEL_REQ_SCORE_RECT;
 
-    blind_req_score_rect.left += blind * rect_width(&SINGLE_BLIND_SELECT_RECT) * TILE_SIZE;
-    blind_req_score_rect.right += blind * rect_width(&SINGLE_BLIND_SELECT_RECT) * TILE_SIZE;
+    int score_rect_x_offset = blind * rect_width(&SINGLE_BLIND_SELECT_RECT) * TILE_SIZE;
+    blind_req_score_rect.left += score_rect_x_offset;
+    blind_req_score_rect.right += score_rect_x_offset;
 
     if (g_game_vars.blinds_states[blind] == BLIND_STATE_CURRENT)
     {
