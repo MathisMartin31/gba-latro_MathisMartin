@@ -65,6 +65,20 @@ enum ItemType
 };
 
 /**
+ * @brief Structure containing the main and shadow colors associated with an Item's subtype
+ *
+ * Examples of main colors are red for Rare Jokers or purple for Tarot cards.
+ * Shadow colors are always a darker tone of the main color.
+ *
+ * @sa get_subtype_colors
+ */
+typedef struct ItemSubtypeColors
+{
+    u16 main;
+    u16 shadow;
+} ItemSubtypeColors;
+
+/**
  * @brief A generic interface for all items that can appear in the shop or be in the inventory.
  * This uses first member struct inheritance - other structs are meant to inherit it by
  * making their first member field Item.
@@ -104,7 +118,7 @@ typedef struct ItemFuncs
     int (*get_sell_price)(Item* item);
     const char* (*get_name)(Item* item);
     const char* (*get_subtype_str)(Item* item);
-    uint32_t (*get_subtype_colors)(Item* item);
+    ItemSubtypeColors (*get_subtype_colors)(Item* item);
     bool (*can_acquire)(Item* item);
     void (*acquire)(Item* item);
     void (*dispose)(Item** item);
@@ -179,9 +193,11 @@ const char* item_get_subtype_string(Item* item);
  *
  * @param item The item whose subtype's color to return.
  *
- * @return values of both main and shadow colors encoded into a single u32 (main first)
+ * @return struct containing values of both main and shadow colors
+ *
+ * @sa ItemSubtypeColors
  */
-uint32_t item_get_subtype_colors(Item* item);
+ItemSubtypeColors item_get_subtype_colors(Item* item);
 
 /**
  * @brief Acquires the item, adding to inventory if applicable.

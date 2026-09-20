@@ -663,20 +663,42 @@ static void shop_show_item_desc_on_update(void)
     // Anim end
     else if (s_timer == TM_SHOW_ITEM_DESC_WAIT + 1)
     {
-        // Compute needed space for the description
+        static const char undef_str[] = "UNKNOWN";
+
+        // Print the Item's name
+        const char* item_name = item_get_name(s_description_item);
+        if (item_name == NULL)
+        {
+            MGBA_FUNC_WARN(
+                "Could not retrieve name of Item of type %d",
+                s_description_item->type,
+            );
+            item_name = undef_str;
+        }
+
+        tte_printf(
+            TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
+            ITEM_NAME_TEXT_RECT.left * TILE_SIZE,
+            ITEM_NAME_TEXT_RECT.top * TILE_SIZE,
+            (rect_width(&ITEM_NAME_TEXT_RECT) - strlen(item_name)) / 2,
+            "",
+            item_name
+        );
+
+        // Compute needed space for the description and print it
         int nb_printed_lines = item_print_description(s_description_item, ITEM_DESC_TEXT_RECT);
         int desc_bottom_offset = ITEM_DESC_MAX_TEXT_HEIGHT - nb_printed_lines;
 
-        // Print Rarity/Type and change color or the panel
-        // Do it before drawing the panel so the color is already set
+        // Print Rarity/Type and change the panel's color before drawing it so the color is already
+        // set, in case there is any lag
         const char* subtype_str = item_get_subtype_string(s_description_item);
         if (subtype_str == NULL)
         {
             MGBA_FUNC_WARN(
-                "Could not retrieve subtype name string of Item of type %d and id %d",
-                s_description_item->type,
-                s_description_item->id
+                "Could not retrieve subtype name string of Item of type %d",
+                s_description_item->type
             );
+            subtype_str = undef_str;
         }
 
         tte_printf(
@@ -687,34 +709,15 @@ static void shop_show_item_desc_on_update(void)
             "",
             subtype_str
         );
-        u32 item_colors = item_get_subtype_colors(s_description_item);
-        pal_bg_mem[SHOP_DESC_RARITY_MAIN_COLOR_PAL_IDX] = item_colors & UINT16_MAX;
-        pal_bg_mem[SHOP_DESC_RARITY_SHADOW_COLOR_PAL_IDX] = (item_colors >> 16) & UINT16_MAX;
+
+        ItemSubtypeColors item_colors = item_get_subtype_colors(s_description_item);
+        pal_bg_mem[SHOP_DESC_RARITY_MAIN_COLOR_PAL_IDX] = item_colors.main;
+        pal_bg_mem[SHOP_DESC_RARITY_SHADOW_COLOR_PAL_IDX] = item_colors.shadow;
 
         // Draw description panel
         Rect actual_dest_rect = ITEM_DESC_9_PTCH_TO_RECT;
         actual_dest_rect.bottom -= desc_bottom_offset;
         main_bg_se_copy_expand_9_patch(actual_dest_rect, &ITEM_DESC_9_PTCH_SRC);
-
-        // Print joker name
-        const char* item_name = item_get_name(s_description_item);
-        if (item_name == NULL)
-        {
-            MGBA_FUNC_WARN(
-                "Could not retrieve name of Item of type %d and id %d",
-                s_description_item->type,
-                s_description_item->id
-            );
-        }
-
-        tte_printf(
-            TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
-            ITEM_NAME_TEXT_RECT.left * TILE_SIZE,
-            ITEM_NAME_TEXT_RECT.top * TILE_SIZE,
-            (rect_width(&ITEM_NAME_TEXT_RECT) - strlen(item_name)) / 2,
-            "",
-            item_name ? item_name : ""
-        );
     }
 
     // Actively wait for the B button to be released

@@ -71,7 +71,7 @@ static int item_get_sell_price_unimplemented(Item* item)
         "Unimplemented get_sell_price function called for item type type %d",
         (item)->type
     );
-    return 0;
+    return UNDEFINED;
 }
 
 static void item_acquire_unimplemented(Item* item)

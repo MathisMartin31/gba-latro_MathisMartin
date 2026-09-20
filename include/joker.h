@@ -171,8 +171,20 @@ u32 joker_get_score_effect(
     JokerEffect** joker_effect
 );
 
+/**
+ * @brief Get Joker name
+ *
+ * @param joker_object the Joker we want to get the name of
+ * @return const string containing the name of the Joker, NULL if joker data is invalid
+ */
 const char* joker_object_get_name(Item* joker_object);
 
+/**
+ * @brief Get Joker rarity string (i.e. "Common", "Uncommon" etc)
+ *
+ * @param joker_object the Joker we want to get the rarity of
+ * @return const string containing the Joker's rarity, NULL if joker data is invalid
+ */
 const char* joker_object_get_rarity_string(Item* joker_object);
 
 /**
@@ -189,9 +201,11 @@ const char* joker_object_get_rarity_string(Item* joker_object);
  *  - 13,14 -> Voucher
  *
  * @param joker_object pointer to a JokerObject we need the rarity's color of
- * @return value of both main and shadow colors, encoded into a single u32 (main first)
+ * @return struct containing values of both main and shadow colors
+ *
+ * @sa item_get_subtype_colors
  */
-u32 joker_object_get_rarity_colors(Item* joker_object);
+ItemSubtypeColors joker_object_get_rarity_colors(Item* joker_object);
 
 JokerObject* joker_object_new(Joker* joker);
 void joker_object_destroy(JokerObject** joker_object);

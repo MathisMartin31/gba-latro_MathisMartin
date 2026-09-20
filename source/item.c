@@ -65,15 +65,18 @@ const char* item_get_subtype_string(Item* item)
     return item_funcs->get_subtype_str(item);
 }
 
-uint32_t item_get_subtype_colors(Item* item)
+ItemSubtypeColors item_get_subtype_colors(Item* item)
 {
-    GBAL_RETURN_IF_NULL_RET(item, 0);
+    ItemSubtypeColors colors = {0};
+
+    GBAL_RETURN_IF_NULL_RET(item, colors);
 
     ItemFuncs* item_funcs = get_item_type_funcs(item->type);
-    GBAL_RETURN_IF_NULL_RET(item_funcs, 0);
-    GBAL_RETURN_IF_NULL_RET(item_funcs->get_subtype_colors, 0);
+    GBAL_RETURN_IF_NULL_RET(item_funcs, colors);
+    GBAL_RETURN_IF_NULL_RET(item_funcs->get_subtype_colors, colors);
 
-    return item_funcs->get_subtype_colors(item);
+    colors = item_funcs->get_subtype_colors(item);
+    return colors;
 }
 
 void item_acquire(Item* item)
