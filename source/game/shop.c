@@ -131,6 +131,9 @@ static StateMachine shop_sm = STATE_MACHINE_DEFINE(shop_state_actions, GAME_SHOP
 
 // Shop SelectionGrid
 
+#define SHOP_GRID_OWNED_ROW    0
+#define SHOP_GRID_FOR_SALE_ROW 1
+
 static int shop_top_row_get_size(void);
 static bool shop_top_row_on_selection_changed(
     SelectionGrid* selection_grid,
@@ -184,11 +187,9 @@ static int s_reroll_cost = REROLL_BASE_COST;
 
 // Variables relative to the Card we are showing the description of
 
-// TODO: Change this to item once it has description printing API.
 static Item* s_description_item = NULL;
 static FIXED s_description_item_original_x_pos = UNDEFINED;
 static FIXED s_description_item_original_y_pos = UNDEFINED;
-static List* s_description_item_original_list = NULL;
 static int s_show_description_anim_progress = 0;
 
 Item* shop_get_description_item(void)
@@ -589,26 +590,26 @@ static void shop_process_user_input(void)
 {
     selection_grid_process_input(&shop_selection_grid);
 
-    static JokerObject* tmp_card = NULL;
+    static Item* new_description_item = NULL;
 
-    // Determine the Joker we would show the description of
+    // Determine the Item we would show the description of
     switch (shop_selection_grid.selection.y)
     {
-        // Owned Joker
-        case 0:
+        case SHOP_GRID_OWNED_ROW:
         {
-            s_description_item_original_list = get_jokers_list();
-            tmp_card = list_get_at_idx(get_jokers_list(), shop_selection_grid.selection.x);
+            new_description_item =
+                list_get_at_idx(get_jokers_list(), shop_selection_grid.selection.x);
             break;
         }
 
-        // Jokers for sale
-        case 1:
+        case SHOP_GRID_FOR_SALE_ROW:
         {
-            s_description_item_original_list = &s_shop_items_list;
-            tmp_card = (shop_selection_grid.selection.x > 0)
-                         ? list_get_at_idx(&s_shop_items_list, shop_selection_grid.selection.x - 1)
-                         : NULL;
+            // Ignore the "Next Round" button when selecting descripted Item: get it at
+            // selection.x - 1 in the list to account for this next round button being ignored.
+            new_description_item =
+                (shop_selection_grid.selection.x != NEXT_ROUND_BTN_SEL_X)
+                    ? list_get_at_idx(&s_shop_items_list, shop_selection_grid.selection.x - 1)
+                    : NULL;
             break;
         }
 
@@ -616,16 +617,15 @@ static void shop_process_user_input(void)
 
         default:
         {
-            s_description_item_original_list = NULL;
-            tmp_card = NULL;
+            new_description_item = NULL;
             break;
         }
     }
 
     // Show description of selected card when pressing B
-    if (tmp_card != NULL && key_held(DESELECT_CARDS))
+    if (new_description_item != NULL && key_held(DESELECT_CARDS))
     {
-        s_description_item = (Item*)tmp_card;
+        s_description_item = new_description_item;
         s_description_item_original_x_pos = s_description_item->tx;
         s_description_item_original_y_pos = s_description_item->ty;
 
@@ -689,22 +689,25 @@ static void shop_show_item_desc_on_update(void)
     // Anim end
     else if (s_timer == TM_SHOW_ITEM_DESC_WAIT + 1)
     {
-        // Compute needed space for the description
+        // Print the Item's name
+        const char* item_name = item_get_name(s_description_item);
+        tte_printf(
+            TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
+            ITEM_NAME_TEXT_RECT.left * TILE_SIZE,
+            ITEM_NAME_TEXT_RECT.top * TILE_SIZE,
+            (rect_width(&ITEM_NAME_TEXT_RECT) - strlen(item_name)) / 2,
+            "",
+            item_name
+        );
+
+        // Compute needed space for the description and print it
         int nb_printed_lines = item_print_description(s_description_item, ITEM_DESC_TEXT_RECT);
         int desc_bottom_offset = ITEM_DESC_MAX_TEXT_HEIGHT - nb_printed_lines;
 
-        // Print Rarity/Type and change color or the panel
-        // Do it before drawing the panel so the color is already set
-        const char* subtype_str = item_get_subtype_string(s_description_item);
-        if (subtype_str == NULL)
-        {
-            MGBA_FUNC_WARN(
-                "Could not retrieve subtype name string of Item of type %d and id %d",
-                s_description_item->type,
-                s_description_item->id
-            );
-        }
-
+        // Print Rarity/Type and change the panel's color before drawing it so the color is already
+        // set, in case there is any lag
+        ItemDescSubtypeInfo item_subtype_info = item_get_subtype_info(s_description_item);
+        const char* subtype_str = item_subtype_info.name_str;
         tte_printf(
             TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
             ITEM_DESC_TEXT_RECT.left * TILE_SIZE,
@@ -713,34 +716,14 @@ static void shop_show_item_desc_on_update(void)
             "",
             subtype_str
         );
-        u32 item_colors = item_get_subtype_colors(s_description_item);
-        pal_bg_mem[SHOP_DESC_RARITY_MAIN_COLOR_PAL_IDX] = item_colors & UINT16_MAX;
-        pal_bg_mem[SHOP_DESC_RARITY_SHADOW_COLOR_PAL_IDX] = (item_colors >> 16) & UINT16_MAX;
+
+        pal_bg_mem[SHOP_DESC_RARITY_MAIN_COLOR_PAL_IDX] = item_subtype_info.main_color;
+        pal_bg_mem[SHOP_DESC_RARITY_SHADOW_COLOR_PAL_IDX] = item_subtype_info.shadow_color;
 
         // Draw description panel
         Rect actual_dest_rect = ITEM_DESC_9_PTCH_TO_RECT;
         actual_dest_rect.bottom -= desc_bottom_offset;
         main_bg_se_copy_expand_9_patch(actual_dest_rect, &ITEM_DESC_9_PTCH_SRC);
-
-        // Print joker name
-        const char* item_name = item_get_name(s_description_item);
-        if (item_name == NULL)
-        {
-            MGBA_FUNC_WARN(
-                "Could not retrieve name of Item of type %d and id %d",
-                s_description_item->type,
-                s_description_item->id
-            );
-        }
-
-        tte_printf(
-            TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
-            ITEM_NAME_TEXT_RECT.left * TILE_SIZE,
-            ITEM_NAME_TEXT_RECT.top * TILE_SIZE,
-            (rect_width(&ITEM_NAME_TEXT_RECT) - strlen(item_name)) / 2,
-            "",
-            item_name ? item_name : ""
-        );
     }
 
     // Actively wait for the B button to be released
@@ -820,8 +803,12 @@ static void shop_hide_item_desc_on_update(void)
 
 static void shop_hide_item_desc_on_exit(void)
 {
+    // TODO: Do the following in a less hacky way
+
     // Need to account for the description_card being selected if it came from the shop.
-    if (s_description_item_original_list == &s_shop_items_list)
+    // Temporarily lower the target position of the Item so that the price is printed in the
+    // appropriate place
+    if (!item_is_owned(s_description_item))
         s_description_item->ty += int2fx(TILE_SIZE);
 
     // Print price under shop Jokers
@@ -832,7 +819,8 @@ static void shop_hide_item_desc_on_exit(void)
         item_print_buy_price_under(item);
     }
 
-    if (s_description_item_original_list == &s_shop_items_list)
+    // Revert what we just did so the Item still appears selected
+    if (!item_is_owned(s_description_item))
         s_description_item->ty -= int2fx(TILE_SIZE);
 
     // Print Reroll prince
@@ -847,8 +835,8 @@ static void shop_hide_item_desc_on_exit(void)
     // Print Deck size that was erased
     display_deck_size_max();
 
-    // if we are NOT pressing A, print the price under the description card if it's a card we owned.
-    if (!key_held(SELECT_CARD) && s_description_item_original_list == get_jokers_list())
+    // if we are NOT pressing A, print the price under the description card if it's a card we own.
+    if (!key_held(SELECT_CARD) && item_is_owned(s_description_item))
     {
         sprite_object_print_price_under(
             (SpriteObject*)s_description_item,

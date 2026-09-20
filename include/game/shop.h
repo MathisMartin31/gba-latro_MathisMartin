@@ -33,7 +33,7 @@ void shop_set_reroll_cost(int cost);
 /**
  * @brief Get a pointer to the Card we are currently showing the description of.
  *
- * @return Item*
+ * @return Item pointer, NULL if no description is currently being shown
  */
 Item* shop_get_description_item(void);
 
