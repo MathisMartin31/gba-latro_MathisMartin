@@ -19,7 +19,7 @@ void shop_reset(void);
 /**
  * @brief Get a pointer to the Item we are currently showing the description of.
  *
- * @return Item*
+ * @return Item pointer, NULL if no description is currently being shown
  */
 Item* shop_get_description_item(void);
 

@@ -180,32 +180,14 @@ u32 joker_get_score_effect(
 const char* joker_object_get_name(Item* joker_object);
 
 /**
- * @brief Get Joker rarity string (i.e. "Common", "Uncommon" etc)
+ * @brief Get Joker rarity name and associated panel color.
  *
- * @param joker_object the Joker we want to get the rarity of
- * @return const string containing the Joker's rarity, NULL if joker data is invalid
+ * @param joker_object pointer to a JokerObject we need the rarity's info of
+ * @return struct containing values of all info on this Joker's rarity
+ *
+ * @sa item_get_subtype_info
  */
-const char* joker_object_get_rarity_string(Item* joker_object);
-
-/**
- * @brief Get Joker rarity panel color.
- *
- * The colors are organized in the `card_rarity_pal_gfx.png` file which is organized like this:
- *  - 0     -> transparency
- *  - 1,2   -> Common Joker
- *  - 3,4   -> Uncommon Joker
- *  - 5,6   -> Rare Joker
- *  - 7,8   -> Legendary Joker / Tarot Card
- *  - 9,10  -> Planet Card
- *  - 11,12 -> Spectral Card
- *  - 13,14 -> Voucher
- *
- * @param joker_object pointer to a JokerObject we need the rarity's color of
- * @return struct containing values of both main and shadow colors
- *
- * @sa item_get_subtype_colors
- */
-ItemSubtypeColors joker_object_get_rarity_colors(Item* joker_object);
+ItemSubtypeInfo joker_object_get_rarity_info(Item* joker_object);
 
 JokerObject* joker_object_new(Joker* joker);
 void joker_object_destroy(JokerObject** joker_object);

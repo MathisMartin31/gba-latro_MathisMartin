@@ -167,47 +167,53 @@ u32 joker_get_score_effect(
 
 const char* joker_object_get_name(Item* joker_object)
 {
-    GBAL_RETURN_IF_NULL_RET(joker_object, NULL);
+    GBAL_RETURN_IF_NULL_RET(joker_object, ITEM_NAME_DEFAULT);
+    ITEM_RETURN_IF_UNEXPECTED_TYPE_RET(joker_object, ITEM_TYPE_JOKER, ITEM_NAME_DEFAULT);
+
     Joker* joker = ((JokerObject*)joker_object)->joker;
+    GBAL_RETURN_IF_NULL_RET(joker, ITEM_NAME_DEFAULT);
+
     const JokerInfo* info = get_joker_registry_entry(joker->id);
-    GBAL_RETURN_IF_NULL_RET(info, NULL);
+    GBAL_RETURN_IF_NULL_RET(info, ITEM_NAME_DEFAULT);
 
     return info->name;
 }
 
-const char* joker_object_get_rarity_string(Item* joker_object)
+ItemSubtypeInfo joker_object_get_rarity_info(Item* joker_object)
 {
-    GBAL_RETURN_IF_NULL_RET(joker_object, NULL);
+    ItemSubtypeInfo subtype_info = ITEM_SUBTYPE_INFO_DEFAULT;
+
+    GBAL_RETURN_IF_NULL_RET(joker_object, subtype_info);
+    ITEM_RETURN_IF_UNEXPECTED_TYPE_RET(joker_object, ITEM_TYPE_JOKER, subtype_info);
+
     Joker* joker = ((JokerObject*)joker_object)->joker;
+    GBAL_RETURN_IF_NULL_RET(joker, subtype_info);
+
     const JokerInfo* info = get_joker_registry_entry(joker->id);
-    GBAL_RETURN_IF_NULL_RET(info, NULL);
+    GBAL_RETURN_IF_NULL_RET(info, subtype_info);
 
     u8 rarity = joker->rarity;
     if (rarity >= MAX_RARITIES)
-        return NULL;
-
-    return JOKER_RARITY_STRINGS_LUT[rarity];
-}
-
-ItemSubtypeColors joker_object_get_rarity_colors(Item* joker_object)
-{
-    ItemSubtypeColors colors = {0};
-
-    GBAL_RETURN_IF_NULL_RET(joker_object, colors);
-    Joker* joker = ((JokerObject*)joker_object)->joker;
-    const JokerInfo* info = get_joker_registry_entry(joker->id);
-    GBAL_RETURN_IF_NULL_RET(info, colors);
-
-    u8 rarity = joker->rarity;
-    if (rarity >= MAX_RARITIES)
-        return colors;
+    {
+        MGBA_FUNC_ERROR(
+            "Invalid Joker rarity value %d, should not exceed %d",
+            rarity,
+            MAX_RARITIES
+        );
+        return subtype_info;
+    }
 
     // +1 to account for the mandatory transparency in Asperite color palettes
     u32 pal_base = 1 + 2 * rarity;
-    colors.main = card_rarity_pal_gfxPal[pal_base];       // even indices are the shadows
-    colors.shadow = card_rarity_pal_gfxPal[pal_base + 1]; // odd ones are the main colors
+    subtype_info.main = card_rarity_pal_gfxPal[pal_base];       // even indices are the shadows
+    subtype_info.shadow = card_rarity_pal_gfxPal[pal_base + 1]; // odd ones are the main colors
+    strncpy(
+        subtype_info.name_str,
+        JOKER_RARITY_STRINGS_LUT[rarity],
+        ITEM_SUBTYPE_NAME_MAX_LENGTH - 1 // leave space for the null-character
+    );
 
-    return colors;
+    return subtype_info;
 }
 
 int joker_get_buy_price(const Joker* joker)
@@ -305,7 +311,12 @@ void joker_object_dispose(Item** joker_object_item)
 int joker_object_print_description(Item* joker_object_item, Rect dest_rect)
 {
     GBAL_RETURN_IF_NULL_RET(joker_object_item, 0);
-    Joker* joker = ((JokerObject*)joker_object_item)->joker;
+    ITEM_RETURN_IF_UNEXPECTED_TYPE_RET(joker_object_item, ITEM_TYPE_JOKER, 0);
+
+    JokerObject* joker_object = (JokerObject*)(joker_object_item);
+    GBAL_RETURN_IF_NULL_RET(joker_object->joker, 0);
+
+    Joker* joker = joker_object->joker;
     const JokerInfo* info = get_joker_registry_entry(joker->id);
     GBAL_RETURN_IF_NULL_RET(info, 0);
 

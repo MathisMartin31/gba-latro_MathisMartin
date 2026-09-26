@@ -65,18 +65,45 @@ enum ItemType
 };
 
 /**
- * @brief Structure containing the main and shadow colors associated with an Item's subtype
- *
- * Examples of main colors are red for Rare Jokers or purple for Tarot cards.
- * Shadow colors are always a darker tone of the main color.
- *
- * @sa get_subtype_colors
+ * @brief Default Item name, for the sake of consistency
  */
-typedef struct ItemSubtypeColors
+#define ITEM_NAME_DEFAULT "UNDEFINED"
+
+/**
+ * @brief Maximum buffer size for an Item's subtype name
+ */
+#define ITEM_SUBTYPE_NAME_MAX_LENGTH 17 // 16 printable chars + '\0'
+
+/**
+ * @brief Default subtype info struct declaration
+ */
+// clang-format off
+#define ITEM_SUBTYPE_INFO_DEFAULT {.main = 0, .shadow = 0, .name_str = ITEM_NAME_DEFAULT}
+// clang-format on
+
+/**
+ * @brief Structure containing the main and shadow colors, and the name string associated with an
+ *         Item's subtype
+ *
+ * Shadow colors are always a darker tone of the main color.
+ * The colors are organized in the `card_rarity_pal_gfx.png` file which is organized like this:
+ *  - 0     -> transparency
+ *  - 1,2   -> Common Joker (blue)
+ *  - 3,4   -> Uncommon Joker (green)
+ *  - 5,6   -> Rare Joker (red)
+ *  - 7,8   -> Legendary Joker / Tarot Card (purple)
+ *  - 9,10  -> Planet Card (blue with a tint of green)
+ *  - 11,12 -> Spectral Card (deep blue)
+ *  - 13,14 -> Voucher (red with a tint of orange)
+ *
+ * @sa get_subtype_info
+ */
+typedef struct ItemSubtypeInfo
 {
     u16 main;
     u16 shadow;
-} ItemSubtypeColors;
+    char name_str[ITEM_SUBTYPE_NAME_MAX_LENGTH];
+} ItemSubtypeInfo;
 
 /**
  * @brief A generic interface for all items that can appear in the shop or be in the inventory.
@@ -115,17 +142,15 @@ typedef struct ItemFuncs
      */
     Item* (*roll_new)(enum RngSequence key);
     int (*get_buy_price)(Item* item);
-    int (*get_sell_price)(Item* item);
     const char* (*get_name)(Item* item);
-    const char* (*get_subtype_str)(Item* item);
-    ItemSubtypeColors (*get_subtype_colors)(Item* item);
+    ItemSubtypeInfo (*get_subtype_info)(Item* item);
     bool (*can_acquire)(Item* item);
     void (*acquire)(Item* item);
     void (*dispose)(Item** item);
-    int (*print_desc)(Item* item, Rect dest_rect);
-    // TODO: void (*print_description)(Item* item); // or something of the form
+    int (*print_description)(Item* item, Rect dest_rect);
 
     // Optional implementation functions will be added here
+    int (*get_sell_price)(Item* item);
 } ItemFuncs;
 
 /**
@@ -176,28 +201,18 @@ int item_get_sell_price(Item* item);
 const char* item_get_name(Item* item);
 
 /**
- * @brief Returns the name of the Item's subtype (rarity for Jokers, just the type otherwise)
+ * @brief Returns the colors and name of the Item's subtype
  *
- * Matches @ref ItemFuncs.get_subtype_str()
+ * Matches @ref ItemFuncs.get_subtype_info()
  *
- * @param item The item whose subtype's name to return.
+ * @param item The item whose subtype's color and name to return.
  *
- * @return const char*
+ * @return Struct containing values of main and shadow colors, as well as the name of the subtype.
+ *          In case of an error, all colors will be 0 and the name "UNDEFINED"
+ *
+ * @sa ItemSubtypeInfo
  */
-const char* item_get_subtype_string(Item* item);
-
-/**
- * @brief Returns the colors of the Item's subtype
- *
- * Matches @ref ItemFuncs.get_subtype_colors()
- *
- * @param item The item whose subtype's color to return.
- *
- * @return struct containing values of both main and shadow colors
- *
- * @sa ItemSubtypeColors
- */
-ItemSubtypeColors item_get_subtype_colors(Item* item);
+ItemSubtypeInfo item_get_subtype_info(Item* item);
 
 /**
  * @brief Acquires the item, adding to inventory if applicable.
@@ -228,9 +243,23 @@ bool item_can_acquire(Item* item);
  * @brief Destroys an item, freeing underlying resources, and manages rollable items sets if needed.
  * To be used when destroying items from the inventory, shop, or packs.
  *
+ * Matches @ref ItemFuncs.dispose()
+ *
  * @param item A pointer to an item for destruction.
  */
 void item_dispose(Item** item);
+
+/**
+ * @brief Prints the item's description inside the given rectangle
+ *
+ * @param item The item to print the description of
+ * @param dest_rect the target rectangle the description needs to fit in
+ *
+ * Matches @ref ItemFuncs.print_description()
+ *
+ * @return the number of lines used by the description
+ */
+int item_print_description(Item* item, Rect dest_rect);
 
 /**
  * @brief Prints the buy price under the item
@@ -239,15 +268,5 @@ void item_dispose(Item** item);
  * @param item The item to print under
  */
 void item_print_buy_price_under(Item* item);
-
-/**
- * @brief Prints the item's description inside the given rectangle
- *
- * @param item The item to print the description of
- * @param dest_rect the target rectangle the description needs to fit in
- *
- * @return the number of lines used by the description
- */
-int item_print_description(Item* item, Rect dest_rect);
 
 #endif // ITEM_H

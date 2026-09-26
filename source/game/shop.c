@@ -181,7 +181,6 @@ static int s_reroll_cost = REROLL_BASE_COST;
 
 // Variables relative to the Card we are showing the description of
 
-// TODO: Change this to item once it has description printing API.
 static Item* s_description_item = NULL;
 static FIXED s_description_item_original_x_pos = UNDEFINED;
 static FIXED s_description_item_original_y_pos = UNDEFINED;
@@ -663,16 +662,13 @@ static void shop_show_item_desc_on_update(void)
     // Anim end
     else if (s_timer == TM_SHOW_ITEM_DESC_WAIT + 1)
     {
-        static const char undef_str[] = "UNKNOWN";
+        static const char undef_str[] = ITEM_NAME_DEFAULT;
 
         // Print the Item's name
         const char* item_name = item_get_name(s_description_item);
         if (item_name == NULL)
         {
-            MGBA_FUNC_WARN(
-                "Could not retrieve name of Item of type %d",
-                s_description_item->type,
-            );
+            MGBA_FUNC_WARN("Could not retrieve name of Item of type %d", s_description_item->type);
             item_name = undef_str;
         }
 
@@ -691,14 +687,14 @@ static void shop_show_item_desc_on_update(void)
 
         // Print Rarity/Type and change the panel's color before drawing it so the color is already
         // set, in case there is any lag
-        const char* subtype_str = item_get_subtype_string(s_description_item);
-        if (subtype_str == NULL)
+        ItemSubtypeInfo item_subtype_info = item_get_subtype_info(s_description_item);
+        const char* subtype_str = item_subtype_info.name_str;
+        if (strcmp(subtype_str, undef_str) == 0)
         {
             MGBA_FUNC_WARN(
                 "Could not retrieve subtype name string of Item of type %d",
                 s_description_item->type
             );
-            subtype_str = undef_str;
         }
 
         tte_printf(
@@ -710,9 +706,8 @@ static void shop_show_item_desc_on_update(void)
             subtype_str
         );
 
-        ItemSubtypeColors item_colors = item_get_subtype_colors(s_description_item);
-        pal_bg_mem[SHOP_DESC_RARITY_MAIN_COLOR_PAL_IDX] = item_colors.main;
-        pal_bg_mem[SHOP_DESC_RARITY_SHADOW_COLOR_PAL_IDX] = item_colors.shadow;
+        pal_bg_mem[SHOP_DESC_RARITY_MAIN_COLOR_PAL_IDX] = item_subtype_info.main;
+        pal_bg_mem[SHOP_DESC_RARITY_SHADOW_COLOR_PAL_IDX] = item_subtype_info.shadow;
 
         // Draw description panel
         Rect actual_dest_rect = ITEM_DESC_9_PTCH_TO_RECT;
