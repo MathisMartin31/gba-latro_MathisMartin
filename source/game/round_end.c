@@ -56,29 +56,70 @@ static const Rect ROUND_END_MENU_RECT         = {9,       7,      24,        20 
 static const BG_POINT CASHOUT_SRC_3X3_RECT_POS =   {5,  29};
 // clang-format on
 
-static const char* s_reward_text[REWARD_TYPE_MAX] = {
-    [REWARD_TYPE_HAND] = "Hands",
-    [REWARD_TYPE_INVESTMENT] = "Boss",
-    [REWARD_TYPE_INTEREST] = "Interest"
+/**
+ * @brief Data struct for the different types of rewards.
+ * Contains both constant info (display, reward amount), and variables used during the round end
+ * animation
+ */
+typedef struct RewardTypeData
+{
+    /**
+     * @brief the name of the reward (i.e. "Hands")
+     */
+    const char* text;
+
+    /**
+     * @brief the color the name of the reward is printed with
+     */
+    const u8 text_color;
+
+    /**
+     * @brief how many dollars one instance of reward gives the player
+     */
+    const int multiplier;
+
+    /**
+     * @brief number of instances of a reward earned by the player during the last round
+     */
+    int total;
+
+    /**
+     * @brief number of instances left to count
+     */
+    int remaining;
+} RewardTypeData;
+
+// clang-format off
+static RewardTypeData s_reward_data[] = {
+    [REWARD_TYPE_HAND] = {
+        .text = "Hands",
+        .text_color = TTE_BLUE_PB,
+        .multiplier = 1,
+        .total = 0,
+        .remaining = 0
+    },
+    [REWARD_TYPE_INVESTMENT] = {
+        .text = "Boss",
+        .text_color = TTE_YELLOW_PB,
+        .multiplier = INVESTMENT_TAG_REWARD,
+        .total = 0,
+        .remaining = 0
+    },
+    [REWARD_TYPE_INTEREST] = {
+        .text = "Interest",
+        .text_color = TTE_YELLOW_PB,
+        .multiplier = 1,
+        .total = 0,
+        .remaining = 0
+    }
 };
-static const u8 s_reward_text_color[REWARD_TYPE_MAX] = {
-    [REWARD_TYPE_HAND] = TTE_BLUE_PB,
-    [REWARD_TYPE_INVESTMENT] = TTE_YELLOW_PB,
-    [REWARD_TYPE_INTEREST] = TTE_YELLOW_PB
-};
-static const int s_reward_multiplier[REWARD_TYPE_MAX] = {
-    [REWARD_TYPE_HAND] = 1,
-    [REWARD_TYPE_INVESTMENT] = INVESTMENT_TAG_REWARD,
-    [REWARD_TYPE_INTEREST] = 1
-};
+// clang-format on
 
 static enum RewardType s_current_reward = 0;
 static u32 s_current_reward_start_time = TM_DISPLAY_REWARDS_CONT_WAIT;
 static int s_reward_y_offset = 1;
 
 static int s_blind_reward = 0;
-static int s_reward_total[REWARD_TYPE_MAX] = {0};
-static int s_reward_remaining[REWARD_TYPE_MAX] = {0};
 static int s_cashout = 0;
 
 static int calculate_interest_reward(void);
@@ -135,17 +176,17 @@ static void round_end_start(void)
         s_reward_y_offset = 1;
 
         s_blind_reward = blind_get_reward(g_game_vars.current_blind);
-        s_reward_total[REWARD_TYPE_HAND] = g_game_vars.hands;
-        s_reward_total[REWARD_TYPE_INVESTMENT] = g_game_vars.current_blind >= BLIND_TYPE_BOSS
-                                                   ? skip_tag_count(SKIP_TAG_TYPE_INVESTMENT)
-                                                   : 0;
-        s_reward_total[REWARD_TYPE_INTEREST] = calculate_interest_reward();
+        s_reward_data[REWARD_TYPE_HAND].total = g_game_vars.hands;
+        s_reward_data[REWARD_TYPE_INVESTMENT].total = g_game_vars.current_blind >= BLIND_TYPE_BOSS
+                                                        ? skip_tag_count(SKIP_TAG_TYPE_INVESTMENT)
+                                                        : 0;
+        s_reward_data[REWARD_TYPE_INTEREST].total = calculate_interest_reward();
 
         s_cashout = blind_get_reward(g_game_vars.current_blind);
         for (enum RewardType i = 0; i < REWARD_TYPE_MAX; i++)
         {
-            s_reward_remaining[i] = s_reward_total[i];
-            s_cashout += s_reward_total[i] * s_reward_multiplier[i];
+            s_reward_data[i].remaining = s_reward_data[i].total;
+            s_cashout += s_reward_data[i].total * s_reward_data[i].multiplier;
         }
     }
 }
@@ -298,7 +339,7 @@ static inline void round_end_print_separator_ellipsis(void)
     tte_printf("#{P:%d,%d; cx:0x%X000}.", x, y, TTE_WHITE_PB);
 }
 
-static inline bool s_increment_reward_condition(void)
+static inline bool s_should_increment_curr_reward(void)
 {
     switch (s_current_reward)
     {
@@ -318,7 +359,7 @@ static inline bool s_increment_reward_condition(void)
     }
 }
 
-static inline void round_end_print_reward(void)
+static inline void round_end_print_current_reward(void)
 {
     int reward_y = ROUND_END_REWARDS_ELLIPSIS_POS.y + s_reward_y_offset;
     if (g_game_vars.timer == s_current_reward_start_time)
@@ -329,10 +370,10 @@ static inline void round_end_print_reward(void)
             "#{P:%lu,%d; cx:0x%X000}%d #{cx:0x%X000}%s",
             ROUND_END_REWARD_TEXT_X,
             reward_y * TILE_SIZE,
-            s_reward_text_color[s_current_reward],
-            s_reward_total[s_current_reward],
+            s_reward_data[s_current_reward].text_color,
+            s_reward_data[s_current_reward].total,
             TTE_WHITE_PB,
-            s_reward_text[s_current_reward]
+            s_reward_data[s_current_reward].text
         );
 
         if (s_current_reward == REWARD_TYPE_INVESTMENT)
@@ -342,20 +383,22 @@ static inline void round_end_print_reward(void)
     // Increment the reward text until the reward variable is depleted
     else if (g_game_vars.timer > s_current_reward_start_time + TM_REWARD_DISPLAY_INTERVAL)
     {
-        if (!s_increment_reward_condition())
+        if (!s_should_increment_curr_reward())
             return;
 
-        s_reward_remaining[s_current_reward]--;
+        s_reward_data[s_current_reward].remaining--;
+        int accumulated_reward =
+            s_reward_data[s_current_reward].total - s_reward_data[s_current_reward].remaining;
+
         tte_printf(
             "#{P:%lu, %d; cx:0x%X000}$%d",
             ROUND_END_REWARD_AMOUNT_X,
             reward_y * TILE_SIZE,
             TTE_YELLOW_PB,
-            (s_reward_total[s_current_reward] - s_reward_remaining[s_current_reward]) *
-                s_reward_multiplier[s_current_reward]
+            accumulated_reward * s_reward_data[s_current_reward].multiplier
         );
 
-        if (s_reward_remaining[s_current_reward] <= 0)
+        if (s_reward_data[s_current_reward].remaining <= 0)
         {
             s_current_reward++;
             s_reward_y_offset++;
@@ -385,20 +428,11 @@ static void round_end_display_rewards(void)
     else if (g_game_vars.timer >= TM_DISPLAY_REWARDS_CONT_WAIT)
     {
         // Go to the next reward if the current one has no remaining money to give
-        while (s_current_reward < REWARD_TYPE_MAX)
-        {
-            if (s_reward_remaining[s_current_reward] <= 0)
-            {
-                s_current_reward++;
-            }
-            else
-            {
-                break;
-            }
-        }
+        while (s_current_reward < REWARD_TYPE_MAX && s_reward_data[s_current_reward].remaining <= 0)
+            s_current_reward++;
 
         if (s_current_reward < REWARD_TYPE_MAX)
-            round_end_print_reward();
+            round_end_print_current_reward();
     }
 }
 
@@ -498,8 +532,8 @@ void round_end_on_exit(void)
 {
     for (enum RewardType i = 0; i < REWARD_TYPE_MAX; i++)
     {
-        s_reward_total[i] = 0;
-        s_reward_remaining[i] = 0;
+        s_reward_data[i].total = 0;
+        s_reward_data[i].remaining = 0;
     }
     s_blind_reward = 0;
     s_cashout = 0;

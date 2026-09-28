@@ -62,14 +62,21 @@ enum BlindSelectState
     BLIND_SELECT_MAX,
 };
 
-// TODO: this will be refactored into common state machine
 // clang-format off
 static StateInfo state_info[] = {
     [START_ANIM_SEQ]            = STATE_INFO_UPDATE_FN_ONLY(blind_select_start_anim_seq),
     [BLIND_SELECT]              = STATE_INFO_UPDATE_FN_ONLY(blind_select_handle_input),
-    [APPLY_BLIND_TAGS]          = STATE_INFO_INIT_UPDATE_FN(blind_select_handle_immediate_tags_on_init, blind_select_handle_immediate_tags_on_update),
-    [REROLL_BOSS_ANIM_SEQ]      = STATE_INFO_ALL_FN        (blind_select_reroll_boss_anim_seq_on_init,  blind_select_reroll_boss_anim_seq_on_update, blind_select_reroll_boss_anim_seq_on_exit),
-    [BLIND_SELECTED_ANIM_SEQ]   = STATE_INFO_ALL_FN        (blind_select_selected_anim_seq_on_init,     blind_select_selected_anim_seq_on_update,    blind_select_selected_anim_seq_on_exit),
+    [APPLY_BLIND_TAGS]          = STATE_INFO_INIT_UPDATE_FN(
+        blind_select_handle_immediate_tags_on_init,
+        blind_select_handle_immediate_tags_on_update),
+    [REROLL_BOSS_ANIM_SEQ]      = STATE_INFO_ALL_FN(
+        blind_select_reroll_boss_anim_seq_on_init,
+        blind_select_reroll_boss_anim_seq_on_update,
+        blind_select_reroll_boss_anim_seq_on_exit),
+    [BLIND_SELECTED_ANIM_SEQ]   = STATE_INFO_ALL_FN(
+        blind_select_selected_anim_seq_on_init,
+        blind_select_selected_anim_seq_on_update,
+        blind_select_selected_anim_seq_on_exit),
     [DISPLAY_BLIND_PANEL]       = STATE_INFO_UPDATE_FN_ONLY(blind_select_display_blind_panel),
     [BLIND_SELECT_EXIT]         = STATE_INFO_UPDATE_FN_ONLY(blind_select_exit),
 };
