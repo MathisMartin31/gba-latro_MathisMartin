@@ -167,21 +167,21 @@ u32 joker_get_score_effect(
 
 const char* joker_object_get_name(Item* joker_object)
 {
-    GBAL_RETURN_IF_NULL_RET(joker_object, ITEM_NAME_DEFAULT);
-    ITEM_RETURN_IF_UNEXPECTED_TYPE_RET(joker_object, ITEM_TYPE_JOKER, ITEM_NAME_DEFAULT);
+    GBAL_RETURN_IF_NULL_RET(joker_object, ITEM_NAME_UNDEFINED);
+    ITEM_RETURN_IF_UNEXPECTED_TYPE_RET(joker_object, ITEM_TYPE_JOKER, ITEM_NAME_UNDEFINED);
 
     Joker* joker = ((JokerObject*)joker_object)->joker;
-    GBAL_RETURN_IF_NULL_RET(joker, ITEM_NAME_DEFAULT);
+    GBAL_RETURN_IF_NULL_RET(joker, ITEM_NAME_UNDEFINED);
 
     const JokerInfo* info = get_joker_registry_entry(joker->id);
-    GBAL_RETURN_IF_NULL_RET(info, ITEM_NAME_DEFAULT);
+    GBAL_RETURN_IF_NULL_RET(info, ITEM_NAME_UNDEFINED);
 
     return info->name;
 }
 
-ItemSubtypeInfo joker_object_get_rarity_info(Item* joker_object)
+ItemDescSubtypeInfo joker_object_get_rarity_info(Item* joker_object)
 {
-    ItemSubtypeInfo subtype_info = ITEM_SUBTYPE_INFO_DEFAULT;
+    ItemDescSubtypeInfo subtype_info = ITEM_SUBTYPE_INFO_DEFAULT;
 
     GBAL_RETURN_IF_NULL_RET(joker_object, subtype_info);
     ITEM_RETURN_IF_UNEXPECTED_TYPE_RET(joker_object, ITEM_TYPE_JOKER, subtype_info);
@@ -205,13 +205,9 @@ ItemSubtypeInfo joker_object_get_rarity_info(Item* joker_object)
 
     // +1 to account for the mandatory transparency in Asperite color palettes
     u32 pal_base = 1 + 2 * rarity;
-    subtype_info.main = card_rarity_pal_gfxPal[pal_base];       // even indices are the shadows
-    subtype_info.shadow = card_rarity_pal_gfxPal[pal_base + 1]; // odd ones are the main colors
-    strncpy(
-        subtype_info.name_str,
-        JOKER_RARITY_STRINGS_LUT[rarity],
-        ITEM_SUBTYPE_NAME_MAX_LENGTH - 1 // leave space for the null-character
-    );
+    subtype_info.main_color = card_rarity_pal_gfxPal[pal_base];       // even indices for shadows
+    subtype_info.shadow_color = card_rarity_pal_gfxPal[pal_base + 1]; // odd ones for main colors
+    subtype_info.name_str = JOKER_RARITY_STRINGS_LUT[rarity];
 
     return subtype_info;
 }
@@ -244,6 +240,7 @@ JokerObject* joker_object_new(Joker* joker)
     joker_object->joker = joker;
 
     joker_object->type = ITEM_TYPE_JOKER;
+    joker_object->is_owned = false;
 
     int tile_index = JOKER_TID + layer * JOKER_SPRITE_OFFSET;
 
@@ -349,6 +346,7 @@ void joker_object_add_to_owned(Item* joker_object)
     GBAL_RETURN_IF_NULL_VOID(joker_object);
     ITEM_RETURN_IF_UNEXPECTED_TYPE_VOID(joker_object, ITEM_TYPE_JOKER);
 
+    joker_object->is_owned = true;
     joker_object->ty = int2fx(HELD_JOKERS_POS.y);
     add_joker((JokerObject*)joker_object);
 }

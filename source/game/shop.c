@@ -184,7 +184,6 @@ static int s_reroll_cost = REROLL_BASE_COST;
 static Item* s_description_item = NULL;
 static FIXED s_description_item_original_x_pos = UNDEFINED;
 static FIXED s_description_item_original_y_pos = UNDEFINED;
-static List* s_description_item_original_list = NULL;
 static int s_show_description_anim_progress = 0;
 
 Item* shop_get_description_item(void)
@@ -566,21 +565,19 @@ static void shop_process_user_input(void)
 
     static JokerObject* tmp_card = NULL;
 
-    // Determine the Joker we would show the description of
+    // Determine the Item we would show the description of
     switch (shop_selection_grid.selection.y)
     {
-        // Owned Joker
+        // Owned Item
         case 0:
         {
-            s_description_item_original_list = get_jokers_list();
             tmp_card = list_get_at_idx(get_jokers_list(), shop_selection_grid.selection.x);
             break;
         }
 
-        // Jokers for sale
+        // Item for sale
         case 1:
         {
-            s_description_item_original_list = &s_shop_items_list;
             tmp_card = (shop_selection_grid.selection.x > 0)
                          ? list_get_at_idx(&s_shop_items_list, shop_selection_grid.selection.x - 1)
                          : NULL;
@@ -591,7 +588,6 @@ static void shop_process_user_input(void)
 
         default:
         {
-            s_description_item_original_list = NULL;
             tmp_card = NULL;
             break;
         }
@@ -662,16 +658,8 @@ static void shop_show_item_desc_on_update(void)
     // Anim end
     else if (s_timer == TM_SHOW_ITEM_DESC_WAIT + 1)
     {
-        static const char undef_str[] = ITEM_NAME_DEFAULT;
-
         // Print the Item's name
         const char* item_name = item_get_name(s_description_item);
-        if (item_name == NULL)
-        {
-            MGBA_FUNC_WARN("Could not retrieve name of Item of type %d", s_description_item->type);
-            item_name = undef_str;
-        }
-
         tte_printf(
             TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
             ITEM_NAME_TEXT_RECT.left * TILE_SIZE,
@@ -687,16 +675,8 @@ static void shop_show_item_desc_on_update(void)
 
         // Print Rarity/Type and change the panel's color before drawing it so the color is already
         // set, in case there is any lag
-        ItemSubtypeInfo item_subtype_info = item_get_subtype_info(s_description_item);
+        ItemDescSubtypeInfo item_subtype_info = item_get_subtype_info(s_description_item);
         const char* subtype_str = item_subtype_info.name_str;
-        if (strcmp(subtype_str, undef_str) == 0)
-        {
-            MGBA_FUNC_WARN(
-                "Could not retrieve subtype name string of Item of type %d",
-                s_description_item->type
-            );
-        }
-
         tte_printf(
             TTE_WHITE_TAG "#{P:%d,%d}%*s%s",
             ITEM_DESC_TEXT_RECT.left * TILE_SIZE,
@@ -706,8 +686,8 @@ static void shop_show_item_desc_on_update(void)
             subtype_str
         );
 
-        pal_bg_mem[SHOP_DESC_RARITY_MAIN_COLOR_PAL_IDX] = item_subtype_info.main;
-        pal_bg_mem[SHOP_DESC_RARITY_SHADOW_COLOR_PAL_IDX] = item_subtype_info.shadow;
+        pal_bg_mem[SHOP_DESC_RARITY_MAIN_COLOR_PAL_IDX] = item_subtype_info.main_color;
+        pal_bg_mem[SHOP_DESC_RARITY_SHADOW_COLOR_PAL_IDX] = item_subtype_info.shadow_color;
 
         // Draw description panel
         Rect actual_dest_rect = ITEM_DESC_9_PTCH_TO_RECT;
@@ -791,7 +771,7 @@ static void shop_hide_item_desc_on_update(void)
 static void shop_hide_item_desc_on_exit(void)
 {
     // Need to account for the description_card being selected if it came from the shop.
-    if (s_description_item_original_list == &s_shop_items_list)
+    if (!s_description_item->is_owned)
         s_description_item->ty += int2fx(TILE_SIZE);
 
     // Print price under shop Jokers
@@ -802,7 +782,8 @@ static void shop_hide_item_desc_on_exit(void)
         item_print_buy_price_under(item);
     }
 
-    if (s_description_item_original_list == &s_shop_items_list)
+    // Revert what we just did so the Item still appears selected
+    if (!s_description_item->is_owned)
         s_description_item->ty -= int2fx(TILE_SIZE);
 
     // Print Reroll prince
@@ -817,8 +798,8 @@ static void shop_hide_item_desc_on_exit(void)
     // Print Deck size that was erased
     display_deck_size_max();
 
-    // if we are NOT pressing A, print the price under the description card if it's a card we owned.
-    if (!key_held(SELECT_CARD) && s_description_item_original_list == get_jokers_list())
+    // if we are NOT pressing A, print the price under the description card if it's a card we own.
+    if (!key_held(SELECT_CARD) && s_description_item->is_owned)
     {
         sprite_object_print_price_under(
             (SpriteObject*)s_description_item,

@@ -67,18 +67,13 @@ enum ItemType
 /**
  * @brief Default Item name, for the sake of consistency
  */
-#define ITEM_NAME_DEFAULT "UNDEFINED"
-
-/**
- * @brief Maximum buffer size for an Item's subtype name
- */
-#define ITEM_SUBTYPE_NAME_MAX_LENGTH 17 // 16 printable chars + '\0'
+#define ITEM_NAME_UNDEFINED "UNDEFINED"
 
 /**
  * @brief Default subtype info struct declaration
  */
 // clang-format off
-#define ITEM_SUBTYPE_INFO_DEFAULT {.main = 0, .shadow = 0, .name_str = ITEM_NAME_DEFAULT}
+#define ITEM_SUBTYPE_INFO_DEFAULT {.main_color = 0, .shadow_color = 0, .name_str = ITEM_NAME_UNDEFINED}
 // clang-format on
 
 /**
@@ -98,12 +93,12 @@ enum ItemType
  *
  * @sa get_subtype_info
  */
-typedef struct ItemSubtypeInfo
+typedef struct ItemDescSubtypeInfo
 {
-    u16 main;
-    u16 shadow;
-    char name_str[ITEM_SUBTYPE_NAME_MAX_LENGTH];
-} ItemSubtypeInfo;
+    u16 main_color;
+    u16 shadow_color;
+    const char* name_str;
+} ItemDescSubtypeInfo;
 
 /**
  * @brief A generic interface for all items that can appear in the shop or be in the inventory.
@@ -129,6 +124,12 @@ typedef struct Item
      * @brief The item type - used to dispatch the function implementations for inheriting types.
      */
     enum ItemType type;
+
+    /**
+     * @brief Whether the item is currently held - used in cases where a behaviour needs to be
+     * different for Items still in the Shop and the ones we have bought.
+     */
+    bool is_owned;
 } Item;
 
 /**
@@ -143,13 +144,13 @@ typedef struct ItemFuncs
     Item* (*roll_new)(enum RngSequence key);
     int (*get_buy_price)(Item* item);
     const char* (*get_name)(Item* item);
-    ItemSubtypeInfo (*get_subtype_info)(Item* item);
+    ItemDescSubtypeInfo (*get_subtype_info)(Item* item);
     bool (*can_acquire)(Item* item);
     void (*acquire)(Item* item);
     void (*dispose)(Item** item);
     int (*print_description)(Item* item, Rect dest_rect);
 
-    // Optional implementation functions will be added here
+    // Optional implementation functions - not required to appear in the shop
     int (*get_sell_price)(Item* item);
 } ItemFuncs;
 
@@ -196,7 +197,7 @@ int item_get_sell_price(Item* item);
  *
  * @param item The item whose name to return.
  *
- * @return const char*
+ * @return The item name. In case of error ITEM_NAME_UNDEFINED, will not be NULL
  */
 const char* item_get_name(Item* item);
 
@@ -210,9 +211,9 @@ const char* item_get_name(Item* item);
  * @return Struct containing values of main and shadow colors, as well as the name of the subtype.
  *          In case of an error, all colors will be 0 and the name "UNDEFINED"
  *
- * @sa ItemSubtypeInfo
+ * @sa ItemDescSubtypeInfo
  */
-ItemSubtypeInfo item_get_subtype_info(Item* item);
+ItemDescSubtypeInfo item_get_subtype_info(Item* item);
 
 /**
  * @brief Acquires the item, adding to inventory if applicable.

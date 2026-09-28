@@ -187,7 +187,7 @@ const char* joker_object_get_name(Item* joker_object);
  *
  * @sa item_get_subtype_info
  */
-ItemSubtypeInfo joker_object_get_rarity_info(Item* joker_object);
+ItemDescSubtypeInfo joker_object_get_rarity_info(Item* joker_object);
 
 JokerObject* joker_object_new(Joker* joker);
 void joker_object_destroy(JokerObject** joker_object);

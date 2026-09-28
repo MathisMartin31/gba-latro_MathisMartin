@@ -64,22 +64,26 @@ int item_get_sell_price(Item* item)
 
 const char* item_get_name(Item* item)
 {
-    GBAL_RETURN_IF_NULL_RET(item, ITEM_NAME_DEFAULT);
+    GBAL_RETURN_IF_NULL_RET(item, ITEM_NAME_UNDEFINED);
 
     ItemFuncs* item_funcs = get_item_type_funcs(item->type);
-    GBAL_RETURN_IF_NULL_RET(item_funcs, ITEM_NAME_DEFAULT);
+    GBAL_RETURN_IF_NULL_RET(item_funcs, ITEM_NAME_UNDEFINED);
     if (item_funcs->get_name == NULL)
     {
         MGBA_FUNC_ERROR("Unimplemented 'get_name' function called for item type %d", item->type);
-        return ITEM_NAME_DEFAULT;
+        return ITEM_NAME_UNDEFINED;
     }
 
-    return item_funcs->get_name(item);
+    // Guarantees no implementation ever returns NULL
+    const char* item_name = item_funcs->get_name(item);
+    GBAL_RETURN_IF_NULL_RET(item_name, ITEM_NAME_UNDEFINED);
+
+    return item_name;
 }
 
-ItemSubtypeInfo item_get_subtype_info(Item* item)
+ItemDescSubtypeInfo item_get_subtype_info(Item* item)
 {
-    ItemSubtypeInfo error_info = ITEM_SUBTYPE_INFO_DEFAULT;
+    ItemDescSubtypeInfo error_info = ITEM_SUBTYPE_INFO_DEFAULT;
 
     GBAL_RETURN_IF_NULL_RET(item, error_info);
 
@@ -94,7 +98,14 @@ ItemSubtypeInfo item_get_subtype_info(Item* item)
         return error_info;
     }
 
-    return item_funcs->get_subtype_info(item);
+    ItemDescSubtypeInfo ret_info = item_funcs->get_subtype_info(item);
+    if (ret_info.name_str == NULL)
+    {
+        MGBA_FUNC_ERROR("Item of type %d returned NULL as description subtype name", item->type);
+        ret_info.name_str = ITEM_NAME_UNDEFINED;
+    }
+
+    return ret_info;
 }
 
 void item_acquire(Item* item)
