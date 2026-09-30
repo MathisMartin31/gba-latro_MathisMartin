@@ -58,8 +58,9 @@ static const BG_POINT CASHOUT_SRC_3X3_RECT_POS =   {5,  29};
 
 /**
  * @brief Data struct for the different types of rewards.
+ *
  * Contains both constant info (display, reward amount), and variables used during the round end
- * animation
+ * animation.
  */
 typedef struct RewardTypeData
 {
@@ -74,17 +75,22 @@ typedef struct RewardTypeData
     const u8 text_color;
 
     /**
-     * @brief how many dollars one instance of reward gives the player
+     * @brief how many dollars the player recieves every time a certain type of reward is counted
+     * towards the total cashout. Equal to 1 most of the time, but the Investment Tag gives $5 per
+     * Tag redeemed so the multiplier will be 5 there
+     *
+     * @note make this not const if "To the Moon" is ever implemented, since it increases the
+     * Interest multiplier from 1 to 2
      */
     const int multiplier;
 
     /**
-     * @brief number of instances of a reward earned by the player during the last round
+     * @brief how many times the reward was earned by the player during the last round
      */
-    int total;
+    int count;
 
     /**
-     * @brief number of instances left to count
+     * @brief how many times the reward still needs to be counted for this End of Round
      */
     int remaining;
 } RewardTypeData;
@@ -95,21 +101,21 @@ static RewardTypeData s_reward_data[] = {
         .text = "Hands",
         .text_color = TTE_BLUE_PB,
         .multiplier = 1,
-        .total = 0,
+        .count = 0,
         .remaining = 0
     },
     [REWARD_TYPE_INVESTMENT] = {
         .text = "Boss",
         .text_color = TTE_YELLOW_PB,
         .multiplier = INVESTMENT_TAG_REWARD,
-        .total = 0,
+        .count = 0,
         .remaining = 0
     },
     [REWARD_TYPE_INTEREST] = {
         .text = "Interest",
         .text_color = TTE_YELLOW_PB,
         .multiplier = 1,
-        .total = 0,
+        .count = 0,
         .remaining = 0
     }
 };
@@ -176,17 +182,17 @@ static void round_end_start(void)
         s_reward_y_offset = 1;
 
         s_blind_reward = blind_get_reward(g_game_vars.current_blind);
-        s_reward_data[REWARD_TYPE_HAND].total = g_game_vars.hands;
-        s_reward_data[REWARD_TYPE_INVESTMENT].total = g_game_vars.current_blind >= BLIND_TYPE_BOSS
+        s_reward_data[REWARD_TYPE_HAND].count = g_game_vars.hands;
+        s_reward_data[REWARD_TYPE_INVESTMENT].count = g_game_vars.current_blind >= BLIND_TYPE_BOSS
                                                         ? skip_tag_count(SKIP_TAG_TYPE_INVESTMENT)
                                                         : 0;
-        s_reward_data[REWARD_TYPE_INTEREST].total = calculate_interest_reward();
+        s_reward_data[REWARD_TYPE_INTEREST].count = calculate_interest_reward();
 
         s_cashout = blind_get_reward(g_game_vars.current_blind);
         for (enum RewardType i = 0; i < REWARD_TYPE_MAX; i++)
         {
-            s_reward_data[i].remaining = s_reward_data[i].total;
-            s_cashout += s_reward_data[i].total * s_reward_data[i].multiplier;
+            s_reward_data[i].remaining = s_reward_data[i].count;
+            s_cashout += s_reward_data[i].count * s_reward_data[i].multiplier;
         }
     }
 }
@@ -371,7 +377,7 @@ static inline void round_end_print_current_reward(void)
             ROUND_END_REWARD_TEXT_X,
             reward_y * TILE_SIZE,
             s_reward_data[s_current_reward].text_color,
-            s_reward_data[s_current_reward].total,
+            s_reward_data[s_current_reward].count,
             TTE_WHITE_PB,
             s_reward_data[s_current_reward].text
         );
@@ -388,7 +394,7 @@ static inline void round_end_print_current_reward(void)
 
         s_reward_data[s_current_reward].remaining--;
         int accumulated_reward =
-            s_reward_data[s_current_reward].total - s_reward_data[s_current_reward].remaining;
+            s_reward_data[s_current_reward].count - s_reward_data[s_current_reward].remaining;
 
         tte_printf(
             "#{P:%lu, %d; cx:0x%X000}$%d",
@@ -532,7 +538,7 @@ void round_end_on_exit(void)
 {
     for (enum RewardType i = 0; i < REWARD_TYPE_MAX; i++)
     {
-        s_reward_data[i].total = 0;
+        s_reward_data[i].count = 0;
         s_reward_data[i].remaining = 0;
     }
     s_blind_reward = 0;
