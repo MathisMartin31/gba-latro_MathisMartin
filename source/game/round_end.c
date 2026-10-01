@@ -76,8 +76,8 @@ typedef struct RewardTypeData
 
     /**
      * @brief how many dollars the player recieves every time a certain type of reward is counted
-     * towards the total cashout. Equal to 1 most of the time, but the Investment Tag gives $5 per
-     * Tag redeemed so the multiplier will be 5 there
+     * towards the total cashout. Equal to 1 most of the time, but the Investment Tag increments
+     * by a full reward amount per tag so the the multiplier is a full amount.
      *
      * @note make this not const if "To the Moon" is ever implemented, since it increases the
      * Interest multiplier from 1 to 2
