@@ -128,6 +128,9 @@ static StateMachine shop_sm = STATE_MACHINE_DEFINE(shop_state_actions, GAME_SHOP
 
 // Shop SelectionGrid
 
+#define SHOP_GRID_OWNED_ROW    0
+#define SHOP_GRID_FOR_SALE_ROW 1
+
 static int shop_top_row_get_size(void);
 static bool shop_top_row_on_selection_changed(
     SelectionGrid* selection_grid,
@@ -568,16 +571,15 @@ static void shop_process_user_input(void)
     // Determine the Item we would show the description of
     switch (shop_selection_grid.selection.y)
     {
-        // Owned Item
-        case 0:
+        case SHOP_GRID_OWNED_ROW:
         {
             tmp_card = list_get_at_idx(get_jokers_list(), shop_selection_grid.selection.x);
             break;
         }
 
-        // Item for sale
-        case 1:
+        case SHOP_GRID_FOR_SALE_ROW:
         {
+            // Ignore the first element, as it is the "Next Round" button
             tmp_card = (shop_selection_grid.selection.x > 0)
                          ? list_get_at_idx(&s_shop_items_list, shop_selection_grid.selection.x - 1)
                          : NULL;
@@ -770,8 +772,12 @@ static void shop_hide_item_desc_on_update(void)
 
 static void shop_hide_item_desc_on_exit(void)
 {
+    // TODO: Do the following in a less hacky way
+
     // Need to account for the description_card being selected if it came from the shop.
-    if (!s_description_item->is_owned)
+    // Temporarily lower the target position of the Item so that the price is printed in the
+    // appropriate place
+    if (!item_is_owned(s_description_item))
         s_description_item->ty += int2fx(TILE_SIZE);
 
     // Print price under shop Jokers
@@ -783,7 +789,7 @@ static void shop_hide_item_desc_on_exit(void)
     }
 
     // Revert what we just did so the Item still appears selected
-    if (!s_description_item->is_owned)
+    if (!item_is_owned(s_description_item))
         s_description_item->ty -= int2fx(TILE_SIZE);
 
     // Print Reroll prince

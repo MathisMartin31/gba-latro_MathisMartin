@@ -263,6 +263,15 @@ void item_dispose(Item** item);
 int item_print_description(Item* item, Rect dest_rect);
 
 /**
+ * @brief Returns whether or not the given Item is in the player's possession
+ *
+ * @param item the Item to test
+ *
+ * @return true if the item is owned, false otherwise
+ */
+bool item_is_owned(Item* item);
+
+/**
  * @brief Prints the buy price under the item
  * Relies on the fact item is a SpriteObject
  *

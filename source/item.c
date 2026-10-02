@@ -23,7 +23,10 @@ Item* item_roll_new(enum ItemType item_type, enum RngSequence key)
         return NULL;
     }
 
-    return item_funcs->roll_new(key);
+    Item* ret_item = item_funcs->roll_new(key);
+    ret_item->is_owned = false;
+
+    return ret_item;
 }
 
 int item_get_buy_price(Item* item)
@@ -111,6 +114,7 @@ ItemDescSubtypeInfo item_get_subtype_info(Item* item)
 void item_acquire(Item* item)
 {
     GBAL_RETURN_IF_NULL_VOID(item);
+    item->is_owned = true;
 
     ItemFuncs* item_funcs = get_item_type_funcs(item->type);
     GBAL_RETURN_IF_NULL_VOID(item_funcs);
@@ -153,12 +157,6 @@ void item_dispose(Item** item)
     item_funcs->dispose(item);
 }
 
-void item_print_buy_price_under(Item* item)
-{
-    GBAL_RETURN_IF_NULL_VOID(item);
-    sprite_object_print_price_under((SpriteObject*)item, item_get_buy_price(item));
-}
-
 int item_print_description(Item* item, Rect dest_rect)
 {
     GBAL_RETURN_IF_NULL_RET(item, 0);
@@ -174,4 +172,16 @@ int item_print_description(Item* item, Rect dest_rect)
     }
 
     return item_funcs->print_description(item, dest_rect);
+}
+
+bool item_is_owned(Item* item)
+{
+    GBAL_RETURN_IF_NULL_RET(item, false);
+    return item->is_owned;
+}
+
+void item_print_buy_price_under(Item* item)
+{
+    GBAL_RETURN_IF_NULL_VOID(item);
+    sprite_object_print_price_under((SpriteObject*)item, item_get_buy_price(item));
 }

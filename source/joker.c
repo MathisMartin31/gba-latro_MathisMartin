@@ -238,9 +238,7 @@ JokerObject* joker_object_new(Joker* joker)
     }
 
     joker_object->joker = joker;
-
     joker_object->type = ITEM_TYPE_JOKER;
-    joker_object->is_owned = false;
 
     int tile_index = JOKER_TID + layer * JOKER_SPRITE_OFFSET;
 
@@ -346,7 +344,6 @@ void joker_object_add_to_owned(Item* joker_object)
     GBAL_RETURN_IF_NULL_VOID(joker_object);
     ITEM_RETURN_IF_UNEXPECTED_TYPE_VOID(joker_object, ITEM_TYPE_JOKER);
 
-    joker_object->is_owned = true;
     joker_object->ty = int2fx(HELD_JOKERS_POS.y);
     add_joker((JokerObject*)joker_object);
 }
