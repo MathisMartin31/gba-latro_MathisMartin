@@ -115,6 +115,7 @@ static void shop_outro(void);
 
 // clang-format off
 static StateInfo shop_state_actions[GAME_SHOP_MAX] = {
+    [GAME_SHOP_SKIP_TAGS]      = STATE_INFO_UPDATE_FN_ONLY(shop_redeem_skip_tags),
     [GAME_SHOP_INTRO]          = STATE_INFO_UPDATE_FN_ONLY(shop_intro),
     [GAME_SHOP_ACTIVE]         = STATE_INFO_UPDATE_FN_ONLY(shop_process_user_input),
     [GAME_SHOP_SHOW_ITEM_DESC] = STATE_INFO_INIT_UPDATE_FN(

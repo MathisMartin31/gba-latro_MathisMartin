@@ -165,16 +165,12 @@ u32 joker_get_score_effect(
     return jinfo->joker_effect_func(joker, scored_card, joker_event, joker_effect);
 }
 
-const char* joker_get_rarity_string(enum JokerRarity rarity)
+const char* joker_object_get_name(Item* joker_object)
 {
-    GBAL_RETURN_IF_NULL_RET(joker_object, ITEM_NAME_UNDEFINED);
-    ITEM_RETURN_IF_UNEXPECTED_TYPE_RET(joker_object, ITEM_TYPE_JOKER, ITEM_NAME_UNDEFINED);
-
+    GBAL_RETURN_IF_NULL_RET(joker_object, NULL);
     Joker* joker = ((JokerObject*)joker_object)->joker;
-    GBAL_RETURN_IF_NULL_RET(joker, ITEM_NAME_UNDEFINED);
-
     const JokerInfo* info = get_joker_registry_entry(joker->id);
-    GBAL_RETURN_IF_NULL_RET(info, ITEM_NAME_UNDEFINED);
+    GBAL_RETURN_IF_NULL_RET(info, NULL);
 
     return info->name;
 }
