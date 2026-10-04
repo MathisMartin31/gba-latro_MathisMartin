@@ -16,17 +16,7 @@
 
 #define MAX_DEFINABLE_JOKERS 150
 
-// Pack these enums into a u8 so that the Joker struct uses as little memory as possible
-enum JokerEdition : u8
-{
-    BASE_EDITION,
-    FOIL_EDITION,
-    HOLO_EDITION,
-    POLY_EDITION,
-    NEGATIVE_EDITION,
-    MAX_EDITIONS
-};
-
+// Pack the enum into a u8 so that the Joker struct uses as little memory as possible
 enum JokerRarity : u8
 {
     COMMON_JOKER,
@@ -91,8 +81,7 @@ enum JokerEvent
 
 typedef struct
 {
-    u8 id;                      // Unique ID for the joker, used to identify different jokers
-    enum JokerEdition modifier; // base, foil, holo, poly, negative
+    u8 id; // Unique ID for the joker, used to identify different jokers
     u8 value;
     enum JokerRarity rarity;
 
