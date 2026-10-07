@@ -157,6 +157,13 @@ Card* deck_pop(void)
     return s_deck[s_deck_top--];
 }
 
+Card* deck_get_card_at_idx(int card_idx)
+{
+    if (card_idx > s_deck_top)
+        return NULL;
+    return s_deck[card_idx];
+}
+
 void display_ante(void)
 {
     tte_printf(

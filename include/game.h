@@ -86,6 +86,7 @@ int deck_get_size(void);
 int get_deck_top(void);
 void deck_push(Card* card);
 Card* deck_pop(void);
+Card* deck_get_card_at_idx(int card_idx);
 void deck_shuffle(void);
 int get_num_discards_remaining(void);
 int get_num_hands_remaining(void);

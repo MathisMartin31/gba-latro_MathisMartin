@@ -7,16 +7,22 @@
 #include "state_machine.h"
 
 // Palette indices
-#define TAB_MAIN_COLOR_PAL_IDX          1
-#define HANDS_TAB_OUTLINE_COLOR_PAL_IDX 2
-#define DECK_TAB_OUTLINE_COLOR_PAL_IDX  3
+#define TAB_MAIN_COLOR_PAL_IDX                  1
+#define HANDS_TAB_OUTLINE_COLOR_PAL_IDX         2
+#define DECK_TAB_OUTLINE_COLOR_PAL_IDX          3
+#define DECK_SUITS_NORMAL_COLORS_PAL_IDX        16
+#define DECK_SUITS_HIGH_CONTRAST_COLORS_PAL_IDX 24
 
 #define HAND_LEVELS_NB_HANDS_SHOWN 7
+#define DECK_SUITS_NB_COLORS       8
 
 // TODO: Rects and Points
 // clang-format off
-static const BG_POINT PAUSE_MENU_CLEAR_SRC_POS            = { 1,  1};
-static const Rect     PAUSE_MENU_CLEAR_DEST_RECT          = { 1,  3, 28, 17};
+
+// Hand Levels
+
+static const BG_POINT PAUSE_MENU_CLEAR_BOTTOM_SRC_POS     = { 4, 31};
+static const Rect     PAUSE_MENU_CLEAR_BOTTOM_DEST_RECT   = { 1, 18, 28, 18};
 
 static const Rect     HAND_LEVELS_LVL_TEXT_SRC_RECT       = { 6, 24,  9, 27};
 static const BG_POINT HAND_LEVELS_LVL_TEXT_DEST_POS       = { 1,  3};
@@ -25,15 +31,15 @@ static const BG_POINT HAND_LEVELS_LVL_BOX_DEST_POS        = { 5,  3};
 
 static const Rect     HAND_LEVELS_NAME_BOX_SRC_COL        = {12, 24, 12, 27};
 static const BG_POINT HAND_LEVELS_NAME_BOX_DEST_POS       = { 8,  3};
-static const u16      HAND_LEVELS_NAME_BOX_DEST_LENGTH    =   7;
+static const u16      HAND_LEVELS_NAME_BOX_DEST_LENGTH    = 7;
 
 static const BG_POINT HAND_LEVELS_CHIPS_BOX_SRC_3W_ROW    = {13, 24};
 static const Rect     HAND_LEVELS_CHIPS_BOX_DEST_RECT     = {15,  3, 19,  3};
-static const int      HAND_LEVELS_CHIPS_BOX_DEST_HEIGHT   =   4;
+static const int      HAND_LEVELS_CHIPS_BOX_DEST_HEIGHT   = 4;
 
 static const Rect     HAND_LEVELS_MULT_BOX_SRC_COL        = {16, 24, 16, 27};
 static const BG_POINT HAND_LEVELS_MULT_BOX_DEST_POS       = {20,  3};
-static const u16      HAND_LEVELS_MULT_BOX_DEST_LENGTH    =   3;
+static const u16      HAND_LEVELS_MULT_BOX_DEST_LENGTH    = 3;
 
 static const Rect     HAND_LEVELS_NB_USES_SRC_RECT        = {17, 24, 22, 27};
 static const BG_POINT HAND_LEVELS_NB_USES_DEST_POS        = {23,  3};
@@ -53,7 +59,35 @@ static const Rect     HAND_LEVELS_ARROW_DOWN_ON_SRC_RECR  = {23, 26, 24, 27};
 static const Rect     HAND_LEVELS_ARROW_DOWN_OFF_SRC_RECR = {25, 26, 26, 27};
 static const BG_POINT HAND_LEVELS_ARROW_DOWN_DEST_POS     = {14, 17};
 
+// Peek Deck
+
+static const BG_POINT PAUSE_MENU_CLEAR_TOP_SRC_POS        = { 1,  1};
+static const Rect     PAUSE_MENU_CLEAR_TOP_DEST_RECT      = { 1,  3, 28,  3};
+
+static const Rect     PEEK_DECK_TOP_BAR_SRC_RECT          = { 0, 20, 27, 23};
+static const BG_POINT PEEK_DECK_TOP_BAR_DEST_POS          = { 1,  4};
+
+static const Rect     PEEK_DECK_SIDE_BAR_SRC_RECT         = { 0, 24,  0, 31};
+static const BG_POINT PEEK_DECK_SIDE_BAR_DEST_POS         = { 1,  8};
+
+static const BG_POINT PEEK_DECK_SUIT_ROWS_SRC_3W_ROW      = { 1, 24};
+static const Rect     PEEK_DECK_SUIT_ROWS_DEST_RECT       = { 2,  8, 28,  8};
+static const int      PEEK_DECK_SUIT_ROWS_DEST_HEIGHT     = 8;
+
+static const Rect     PEEK_DECK_BOTTOM_BAR_SRC_RECT       = { 4, 28, 31, 30};
+static const BG_POINT PEEK_DECK_BOTTOM_BAR_DEST_POS       = { 1, 16};
+
+// Printing text
+
 static const BG_POINT HAND_LEVELS_TEXT_POS                = {32, 32};
+
+static const BG_POINT PEEK_DECK_RANK_TEXT_POS             = { 3,  6};
+static const BG_POINT PEEK_DECK_BODY_TEXT_POS             = { 3,  8};
+static const BG_POINT PEEK_DECK_SUIT_TEXT_POS             = { 4, 17};
+
+static const int      PEEK_DECK_RANK_BODY_TEXT_SPACING    = 2;
+static const int      PEEK_DECK_SUIT_TEXT_SPACING         = 7;
+static const int      PEEK_DECK_TEXT_MAX_VALUE            = 9;
 // clang-format on
 
 enum PauseMenuState
@@ -106,6 +140,7 @@ static void pause_menu_handle_tab_change(enum PauseMenuState new_state);
 static void hand_levels_print_info(void);
 static void hand_levels_handle_vert_scroll(enum ScreenVertDir page_dir);
 static void hand_levels_update_arrows(void);
+static void peek_deck_print_info(void);
 
 /**
  * @brief Lists the Hand Types to display, in the right order and without any gaps.
@@ -128,6 +163,15 @@ static u8 s_nb_hand_types = HAND_TYPE_NORMAL_MAX;
 static u8 s_hand_levels_offset = 0;
 
 /**
+ * @brief Represents how many of each card there are in the Deck
+ *
+ * A value of `s_deck_distribution[CLUBS][JACK] = 3` means we have 3 Jacks of Clubs
+ */
+static u8 s_deck_distribution[NUM_SUITS][NUM_RANKS] = {{0}};
+static u8 s_suit_distribution[NUM_SUITS] = {0};
+static u8 s_rank_distribution[NUM_RANKS] = {0};
+
+/**
  * @brief If true, do not update background Tiles, as they are already arranged as needed when
  * loaded from the ROM via GRIT_CPY
  */
@@ -138,6 +182,15 @@ void pause_menu_show(void)
     GRIT_CPY(pal_bg_mem, background_pause_menu_gfxPal);
     GRIT_CPY(&tile_mem[MAIN_BG_CBB], background_pause_menu_gfxTiles);
     GRIT_CPY(&se_mem[MAIN_BG_SBB], background_pause_menu_gfxMap);
+
+    if (get_cards_high_contrast())
+    {
+        memcpy16(
+            &pal_bg_mem[DECK_SUITS_NORMAL_COLORS_PAL_IDX],
+            &pal_bg_mem[DECK_SUITS_HIGH_CONTRAST_COLORS_PAL_IDX],
+            DECK_SUITS_NB_COLORS
+        );
+    }
 
     pause_menu_compute_data_on_display();
 
@@ -168,6 +221,8 @@ static void hand_level_state_init(void)
         first_show = false;
         return;
     }
+
+    main_bg_se_copy_expand_tile(PAUSE_MENU_CLEAR_BOTTOM_DEST_RECT, PAUSE_MENU_CLEAR_BOTTOM_SRC_POS);
 
     main_bg_se_copy_rect(HAND_LEVELS_LVL_TEXT_SRC_RECT, HAND_LEVELS_LVL_TEXT_DEST_POS);
     main_bg_se_copy_rect(HAND_LEVELS_LVL_BOX_SRC_RECT, HAND_LEVELS_LVL_BOX_DEST_POS);
@@ -223,7 +278,24 @@ static void peek_deck_state_init(void)
     tte_erase_screen();
     main_bg_se_copy_rect(HAND_LEVELS_ARROW_UP_OFF_SRC_RECR, HAND_LEVELS_ARROW_UP_DEST_POS);
     main_bg_se_copy_rect(HAND_LEVELS_ARROW_DOWN_OFF_SRC_RECR, HAND_LEVELS_ARROW_DOWN_DEST_POS);
-    main_bg_se_copy_expand_tile(PAUSE_MENU_CLEAR_DEST_RECT, PAUSE_MENU_CLEAR_SRC_POS);
+    main_bg_se_copy_expand_tile(PAUSE_MENU_CLEAR_TOP_DEST_RECT, PAUSE_MENU_CLEAR_TOP_SRC_POS);
+
+    main_bg_se_copy_rect(PEEK_DECK_TOP_BAR_SRC_RECT, PEEK_DECK_TOP_BAR_DEST_POS);
+    main_bg_se_copy_rect(PEEK_DECK_SIDE_BAR_SRC_RECT, PEEK_DECK_SIDE_BAR_DEST_POS);
+
+    Rect suit_rows_dest_rect = PEEK_DECK_SUIT_ROWS_DEST_RECT;
+    BG_POINT suit_rows_src_pos = PEEK_DECK_SUIT_ROWS_SRC_3W_ROW;
+    for (int i = 0; i < PEEK_DECK_SUIT_ROWS_DEST_HEIGHT; i++)
+    {
+        main_bg_se_copy_expand_3w_row(suit_rows_dest_rect, suit_rows_src_pos);
+        suit_rows_dest_rect.top++;
+        suit_rows_dest_rect.bottom++;
+        suit_rows_src_pos.y++;
+    }
+
+    main_bg_se_copy_rect(PEEK_DECK_BOTTOM_BAR_SRC_RECT, PEEK_DECK_BOTTOM_BAR_DEST_POS);
+
+    peek_deck_print_info();
 }
 
 /**
@@ -244,15 +316,18 @@ static void pause_menu_update(void)
         return;
     }
 
-    enum ScreenVertDir page_dir = 0;
+    if (pause_menu_sm.state == PAUSE_MENU_STATE_HAND_LEVELS)
+    {
+        enum ScreenVertDir page_dir = 0;
 
-    if (key_hit(KEY_UP))
-        page_dir = SCREEN_UP;
-    else if (key_hit(KEY_DOWN))
-        page_dir = SCREEN_DOWN;
+        if (key_hit(KEY_UP))
+            page_dir = SCREEN_UP;
+        else if (key_hit(KEY_DOWN))
+            page_dir = SCREEN_DOWN;
 
-    if (page_dir != 0)
-        hand_levels_handle_vert_scroll(page_dir);
+        if (page_dir != 0)
+            hand_levels_handle_vert_scroll(page_dir);
+    }
 }
 
 /**
@@ -330,6 +405,73 @@ static inline void hand_levels_print_info(void)
     };
 }
 
+static inline void print_card_count_at_pos(u8 count, BG_POINT pos, int suit)
+{
+    if (count <= PEEK_DECK_TEXT_MAX_VALUE)
+    {
+        tte_printf(
+            "#{P:%d,%d}%s%d",
+            pos.x * TILE_SIZE,
+            pos.y * TILE_SIZE,
+            (count == 0) ? TTE_BLACK_TAG : TTE_WHITE_TAG,
+            count
+        );
+    }
+    else
+    {
+        // TODO: copy "+9" tile with correct background depending on suit
+    }
+}
+
+/**
+ * @brief Print all the relevant information about the contents of the Deck.
+ *
+ * @sa s_deck_distribution
+ */
+static inline void peek_deck_print_info(void)
+{
+    for (int rank = 0; rank < NUM_RANKS; rank++)
+    {
+        BG_POINT pos = {
+            PEEK_DECK_RANK_TEXT_POS.x + (NUM_RANKS - rank - 1) * PEEK_DECK_RANK_BODY_TEXT_SPACING,
+            PEEK_DECK_RANK_TEXT_POS.y
+        };
+        print_card_count_at_pos(s_rank_distribution[rank], pos, NUM_SUITS);
+    }
+
+    for (int suit = 0; suit < NUM_SUITS; suit++)
+    {
+        for (int rank = 0; rank < NUM_RANKS; rank++)
+        {
+            BG_POINT pos = {
+                PEEK_DECK_BODY_TEXT_POS.x +
+                    (NUM_RANKS - rank - 1) * PEEK_DECK_RANK_BODY_TEXT_SPACING,
+                PEEK_DECK_BODY_TEXT_POS.y +
+                    (NUM_SUITS - suit - 1) * PEEK_DECK_RANK_BODY_TEXT_SPACING
+            };
+            print_card_count_at_pos(s_deck_distribution[suit][rank], pos, suit);
+        }
+    }
+
+    for (int suit = 0; suit < NUM_SUITS; suit++)
+    {
+        BG_POINT pos = {
+            PEEK_DECK_SUIT_TEXT_POS.x + (NUM_SUITS - suit - 1) * PEEK_DECK_SUIT_TEXT_SPACING,
+            PEEK_DECK_SUIT_TEXT_POS.y
+        };
+        u8 count = s_suit_distribution[suit];
+        tte_printf(
+            "#{P:%d,%d}%s%*s%d",
+            pos.x * TILE_SIZE,
+            pos.y * TILE_SIZE,
+            (count == 0) ? TTE_BLACK_TAG : TTE_WHITE_TAG,
+            (count <= 9) ? 1 : 0,
+            "",
+            count
+        );
+    }
+}
+
 /**
  * @brief This function changes the state of the menu to the new one, as determined during input
  * ptocessing, and highlights the corresponding Tab at the top of the screen
@@ -353,6 +495,8 @@ static inline void pause_menu_handle_tab_change(enum PauseMenuState new_state)
  */
 static inline void pause_menu_compute_data_on_display(void)
 {
+    // Hand Levels
+
     s_nb_hand_types = 0;
     s_hand_levels_offset = 0;
 
@@ -371,5 +515,41 @@ static inline void pause_menu_compute_data_on_display(void)
 
         if (hand_type > NONE)
             hand_type--;
+    }
+
+    // Peek Deck
+
+    for (int suit = 0; suit < NUM_SUITS; suit++)
+        for (int rank = 0; rank < NUM_RANKS; rank++)
+            s_deck_distribution[suit][rank] = 0;
+
+    int deck_size = get_deck_top() + 1;
+    for (int idx = 0; idx < deck_size; idx++)
+    {
+        Card* card = deck_get_card_at_idx(idx);
+        if (card == NULL)
+        {
+            MGBA_FUNC_ERROR("Could not get Card from deck at index %d", idx);
+            continue;
+        }
+        s_deck_distribution[card->suit][card->rank]++;
+    }
+
+    for (int suit = 0; suit < NUM_SUITS; suit++)
+    {
+        s_suit_distribution[suit] = 0;
+        for (int rank = 0; rank < NUM_RANKS; rank++)
+        {
+            s_suit_distribution[suit] += s_deck_distribution[suit][rank];
+        }
+    }
+
+    for (int rank = 0; rank < NUM_RANKS; rank++)
+    {
+        s_rank_distribution[rank] = 0;
+        for (int suit = 0; suit < NUM_SUITS; suit++)
+        {
+            s_rank_distribution[rank] += s_deck_distribution[suit][rank];
+        }
     }
 }
