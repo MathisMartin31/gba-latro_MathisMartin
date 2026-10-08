@@ -305,7 +305,6 @@ static void select_on_pressed(void)
 {
     blind_select_erase_all_blind_reqs_and_rewards();
 
-    play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
     s_timer = TM_ZERO;
     ++g_game_vars.round;
     display_round();
@@ -322,7 +321,6 @@ static void skip_on_pressed(void)
     if (blind_skip_tags[BLIND_TYPE_BIG])
         blind_skip_tags[BLIND_TYPE_BIG]->ty -= int2fx(TILE_SIZE);
 
-    play_sfx(SFX_BUTTON, MM_BASE_PITCH_RATE, BUTTON_SFX_VOLUME);
     increment_blind(BLIND_STATE_SKIPPED);
 
     change_background(BG_BLIND_SELECT, true);
