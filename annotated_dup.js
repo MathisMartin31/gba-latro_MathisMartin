@@ -13,6 +13,7 @@ var annotated_dup =
     [ "Hand", "structHand.html", null ],
     [ "HandValues", "structHandValues.html", null ],
     [ "Item", "structItem.html", "structItem" ],
+    [ "ItemDescSubtypeInfo", "structItemDescSubtypeInfo.html", null ],
     [ "ItemFuncs", "structItemFuncs.html", "structItemFuncs" ],
     [ "Joker", "structJoker.html", null ],
     [ "JokerEffect", "structJokerEffect.html", null ],
@@ -24,6 +25,7 @@ var annotated_dup =
     [ "ListNode", "structListNode.html", "structListNode" ],
     [ "MusicPlayerState", "structMusicPlayerState.html", null ],
     [ "NinePatchRect", "structNinePatchRect.html", null ],
+    [ "RewardTypeData", "structRewardTypeData.html", "structRewardTypeData" ],
     [ "RngInfo", "structRngInfo.html", "structRngInfo" ],
     [ "SaveGame", "structSaveGame.html", null ],
     [ "SaveHeader", "structSaveHeader.html", null ],
@@ -31,8 +33,11 @@ var annotated_dup =
     [ "SelectionGrid", "structSelectionGrid.html", null ],
     [ "SelectionGridRow", "structSelectionGridRow.html", null ],
     [ "SelGridRowAttributes", "structSelGridRowAttributes.html", "structSelGridRowAttributes" ],
+    [ "SkipTag", "structSkipTag.html", null ],
+    [ "SkipTagInfo", "structSkipTagInfo.html", null ],
     [ "Sprite", "structSprite.html", "structSprite" ],
     [ "SpriteObject", "structSpriteObject.html", "structSpriteObject" ],
     [ "StateInfo", "structStateInfo.html", null ],
-    [ "StateMachine", "structStateMachine.html", "structStateMachine" ]
+    [ "StateMachine", "structStateMachine.html", "structStateMachine" ],
+    [ "TagProcessInfo", "structTagProcessInfo.html", null ]
 ];
