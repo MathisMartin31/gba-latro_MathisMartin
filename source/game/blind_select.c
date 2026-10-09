@@ -19,14 +19,17 @@
 
 #include <maxmod.h>
 
-// Palette indices have been reorganized in a neater way in Aseprite.
-// Check the background_blind_select_gfx.png file to learn more before changing anything.
-static const u8 BLIND_SELECT_BOSS_BLIND_PANEL_OUTLINE_PID = 32;
-static const u8 BLIND_SELECT_BOSS_BLIND_PANEL_SHADOW_PID = 33;
-static const u8 BLIND_SELECT_MAIN_COLOR_PID = 22;
-static const u8 BLIND_SELECT_OUTLINE_COLOR_PAL_IDX = 34;
-static const u8 BLIND_SKIP_MAIN_COLOR_PAL_IDX = 19;
-static const u8 BLIND_SKIP_OUTLINE_COLOR_PAL_IDX = 35;
+// Palette indices for colors that change at runtime start at 32
+// while indices 0 to 31 are for static colors.
+// The indexing is determined by background_blind_select_gfx.png
+static const u8 BLIND_SELECT_BTN_MAIN_COLOR_PAL_IDX = 22;
+static const u8 BLIND_SELECT_BTN_OUTLINE_COLOR_PAL_IDX = 34;
+
+static const u8 BLIND_SKIP_BTN_MAIN_COLOR_PAL_IDX = 19;
+static const u8 BLIND_SKIP_BTN_OUTLINE_COLOR_PAL_IDX = 35;
+
+static const u8 BOSS_BLIND_PANEL_OUTLINE_PAL_IDX = 32;
+static const u8 BOSS_BLIND_PANEL_SHADOW_PAL_IDX = 33;
 
 static const u32 TM_DISP_BLIND_PANEL_FINISH = 7;
 static const u32 TM_DISP_BLIND_PANEL_START = 1;
@@ -159,8 +162,8 @@ static void select_on_pressed(void);
 static void skip_on_pressed(void);
 
 static Button blind_select_buttons[] = {
-    {BLIND_SELECT_OUTLINE_COLOR_PAL_IDX, BLIND_SELECT_MAIN_COLOR_PID,   select_on_pressed, NULL},
-    {BLIND_SKIP_OUTLINE_COLOR_PAL_IDX,   BLIND_SKIP_MAIN_COLOR_PAL_IDX, skip_on_pressed,   NULL}
+    {BLIND_SELECT_BTN_OUTLINE_COLOR_PAL_IDX, BLIND_SELECT_BTN_MAIN_COLOR_PAL_IDX, select_on_pressed, NULL},
+    {BLIND_SKIP_BTN_OUTLINE_COLOR_PAL_IDX,   BLIND_SKIP_BTN_MAIN_COLOR_PAL_IDX,   skip_on_pressed,   NULL}
 };
 
 static Sprite* blind_select_tokens[NUM_BLINDS_PER_ANTE] = {NULL};
@@ -413,9 +416,9 @@ static inline void blind_select_reroll_boss_anim_do_reroll(void)
 {
     reroll_boss_blind();
     apply_blind_tiles(g_game_vars.next_boss_blind, BOSS_BLIND_TOKEN_LAYER);
-    pal_bg_mem[BLIND_SELECT_BOSS_BLIND_PANEL_OUTLINE_PID] =
+    pal_bg_mem[BOSS_BLIND_PANEL_OUTLINE_PAL_IDX] =
         blind_get_color(g_game_vars.next_boss_blind, BLIND_BACKGROUND_MAIN_COLOR_INDEX);
-    pal_bg_mem[BLIND_SELECT_BOSS_BLIND_PANEL_SHADOW_PID] =
+    pal_bg_mem[BOSS_BLIND_PANEL_SHADOW_PAL_IDX] =
         blind_get_color(g_game_vars.next_boss_blind, BLIND_BACKGROUND_SHADOW_COLOR_INDEX);
 }
 
@@ -780,9 +783,9 @@ void blind_select_change_background(void)
     GRIT_CPY(&se_mem[MAIN_BG_SBB], background_blind_select_gfxMap);
 
     // Copy boss blind colors to blind select palette
-    pal_bg_mem[BLIND_SELECT_BOSS_BLIND_PANEL_OUTLINE_PID] =
+    pal_bg_mem[BOSS_BLIND_PANEL_OUTLINE_PAL_IDX] =
         blind_get_color(g_game_vars.next_boss_blind, BLIND_BACKGROUND_MAIN_COLOR_INDEX);
-    pal_bg_mem[BLIND_SELECT_BOSS_BLIND_PANEL_SHADOW_PID] =
+    pal_bg_mem[BOSS_BLIND_PANEL_SHADOW_PAL_IDX] =
         blind_get_color(g_game_vars.next_boss_blind, BLIND_BACKGROUND_SHADOW_COLOR_INDEX);
 
     for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
