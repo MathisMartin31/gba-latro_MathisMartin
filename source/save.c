@@ -34,8 +34,6 @@
 #define CHECK_HASH_SIZE 7
 #define GIT_HASH_START  17 // starts after "GBALATRO-VERSION:" in the gbalatro_version var
 
-#define SAVE_LABEL_SIZE 16
-
 // clang-format off
 /**
  * @brief SaveHeader for validation checks to be packed and written to SRAM for validation.
@@ -115,74 +113,38 @@ static const SaveOptions SaveOptions_default = {
 // clang-format on
 
 /**
- * @brief JokerObjectSaveData will hold the minimal amount of data necessary to reconstruct a Joker.
- *         The `id` is a u8 in the base Joker struct, but I made it a u32 here to keep
- *         a better aligment when looking at the save file in a hex viewer.
- */
-typedef struct JokerObjectSaveData
-{
-    u32 id;
-    u32 persistent_state;
-} JokerObjectSaveData;
-
-// clang-format off
-/**
- * @brief SaveGame will contain the data about the current run to be saved to SRAM.
- *         GameVariables was used for this purpose at first, but some data needed to be shared but
- *         not saved, so it couldn't be dumped "as is" anymore and this struct had to be created.
- *
- * word | Byte 0 | Byte 1 | Byte 2 | Byte 3 | name         | purpose
- * -----|--------|--------|--------|--------|--------------|------------------------------------------------------------------
- * 0    | '-'    | 'I'    | 'N'    | 'T'    | TAG          | Spells "-INTERNAL DATA -"
- * 1    | 'E'    | 'R'    | 'N'    | 'A'    | -            | -
- * 2    | 'L'    | ' '    | 'D'    | 'A'    | -            | -
- * 3    | 'T'    | 'A'    | ' '    | '-'    | -            | -
- * 4    | T[0]   | T[1]   | T[2]   | T[3]   | GLOB TIMER   | The global timer used for animations thoughout the game
- * 5    | RNG[0] | RNG[1] | RNG[2] | RNG[3] | RNG INFO     | RNG Info struct, containing the seed used for RNG, either randomly shuffled or chosen by the player
- * 6    | RNG[4] | RNG[5] | RNG[6] | RNG[7] | -            | at game start, and the current position in the RNG sequence for the given seed, since the start of the run
- * 7    | RND[0] | RND[1] | RND[2] | RND[3] | ROUND        | What Round we are about to start
- * 8    | ANT[0] | ANT[1] | ANT[2] | ANT[3] | ANTE         | What Ante we are on
- * 9    | MNY[0] | MNY[1] | MNY[2] | MNY[3] | MONEY        | How much money we currently have left
- * 10   | UNDEF  | UNDEF  | UNDEF  | UNDEF  | PADDING      | Some padding
- * 11   | UNDEF  | UNDEF  | UNDEF  | UNDEF  | -            | -
- * 12   | '-'    | ' '    | 'O'    | 'W'    | TAG          | Spells "- OWNED JOKERS -"
- * 13   | 'N'    | 'E'    | 'D'    | ' '    | -            | -
- * 14   | 'J'    | 'O'    | 'K'    | 'E'    | -            | -
- * 15   | 'R'    | 'S'    | ' '    | '-'    | -            | -
- * 16   | ID[0]  | ID[1]  | ID[2]  | ID[3]  | JOKER DATA 0 | Minimal necessary data to reconstruct a JokerObject
- * 17   | STT[0] | STT[1] | STT[2] | STT[3] | -            | Contains the Joker's `id` and `persistent_state`
- * ...  | ...    | ...    | ...    | ...    | ...          | ...
- * ...  | ...    | ...    | ...    | ...    | ...          | ...
- * ??   | '_'    | 'E'    | 'N'    | 'D'    | END_TAG      | Spells "_END", marks the end of the savefile
- */
-// clang-format on
-typedef struct SaveGame
-{
-    char tag_internal[SAVE_LABEL_SIZE];
-    s32 timer;
-    RngInfo rng_info;
-    int round;
-    int ante;
-    int money;
-    s32 padding[2];
-
-    char tag_jokers[SAVE_LABEL_SIZE];
-    JokerObjectSaveData jokers_data[MAX_JOKERS_HELD_SIZE];
-
-    char tag_end[4];
-} SaveGame;
-
-/**
  * @brief Default value for the SaveGame struct, with tags already set.
  */
 static const SaveGame SaveGame_default = {
     .tag_internal = "-INTERNAL DATA -",
+
+    .game_state = GAME_STATE_BLIND_SELECT,
+
     .timer = 0,
     .rng_info = {0, {0}},
-    .round = 0,
-    .ante = 0,
+
     .money = 0,
-    .padding = {UNDEFINED, UNDEFINED},
+    .hand_size = 0,
+    .ante = 0,
+    .round = 0,
+    .deck = DECK_TYPE_RED,
+    .nb_played_hands = {0},
+
+    .best_hand_score = 0,
+    .nb_skipped_rounds = 0,
+    .nb_unused_discards = 0,
+
+    .current_blind = BLIND_TYPE_SMALL,
+    .next_boss_blind = BLIND_TYPE_BIG,
+    .blinds_states = {0},
+
+    .padding0 = {UNDEFINED},
+
+    .tag_cards = "-PLAYING CARDS -",
+    .nb_playing_cards = UNDEFINED,
+    .playing_cards = {},
+
+    .padding1 = {UNDEFINED},
 
     .tag_jokers = "- OWNED JOKERS -",
     .jokers_data = {},
@@ -338,17 +300,51 @@ bool is_game_data_valid(void)
     return get_save_header(&header) && (header.valid_sections & SAVE_SECTION_FLAG_GAME);
 }
 
-void save_game(void)
+void save_game(enum GameState state)
 {
     SaveGame game = SaveGame_default;
 
     // Fixed data
 
+    game.game_state = state;
+
     game.timer = g_game_vars.timer;
     game.rng_info = g_game_vars.rng_info;
-    game.round = g_game_vars.round;
-    game.ante = g_game_vars.ante;
+
     game.money = g_game_vars.money;
+    game.hand_size = g_game_vars.hand_size;
+    game.ante = g_game_vars.ante;
+    game.round = g_game_vars.round;
+    game.deck = g_game_vars.deck;
+    for (enum HandType hand_type = 0; hand_type < HAND_TYPE_MAX; hand_type++)
+        game.nb_played_hands[hand_type] = g_game_vars.nb_played_hands[hand_type];
+
+    game.best_hand_score = g_game_vars.best_hand_score;
+    game.nb_skipped_rounds = g_game_vars.nb_skipped_rounds;
+    game.nb_unused_discards = g_game_vars.nb_unused_discards;
+
+    game.current_blind = g_game_vars.current_blind;
+    game.next_boss_blind = g_game_vars.next_boss_blind;
+    for (enum BlindTokens blind = 0; blind < NUM_BLINDS_PER_ANTE; blind++)
+        game.blinds_states[blind] = g_game_vars.blinds_states[blind];
+
+    for (int idx = 0; idx < MAX_DECK_SIZE; idx++)
+    {
+        Card* card = deck_get_at_idx(idx);
+
+        // No more valid cards mean we've arrived at the end of the Deck
+        if (card == NULL)
+        {
+            game.nb_playing_cards = idx;
+            break;
+        }
+
+        game.playing_cards[idx].suit = card->suit;
+        game.playing_cards[idx].rank = card->rank;
+    }
+
+    if (game.nb_playing_cards == UNDEFINED)
+        game.nb_playing_cards = MAX_DECK_SIZE;
 
     // Lists
 
@@ -373,23 +369,70 @@ void save_game(void)
 
     write_sram(GAME_ADDRESS, (const u8*)&game, sizeof(game));
     set_save_header(SAVE_SECTION_FLAG_GAME);
+
+    MGBA_FUNC_ERROR("GAME SAVED");
 }
 
-void load_game(void)
+void get_game_saved_data(SaveGame* game_data)
 {
+    GBAL_RETURN_IF_NULL(game_data, RET_NONE);
+
     SaveHeader header;
 
     if (!get_save_header(&header) || !(header.valid_sections & SAVE_SECTION_FLAG_GAME))
         return;
 
-    SaveGame game = SaveGame_default;
-    read_sram(GAME_ADDRESS, (u8*)&game, sizeof(game));
+    read_sram(GAME_ADDRESS, (u8*)game_data, sizeof(*game_data));
+}
 
-    g_game_vars.timer = game.timer;
-    rng_restore(game.rng_info);
-    g_game_vars.round = game.round;
-    g_game_vars.ante = game.ante;
-    g_game_vars.money = game.money;
+void load_game(SaveGame* game_data)
+{
+    GBAL_RETURN_IF_NULL(game_data, RET_NONE);
 
-    // TODO: load Jokers from stored minimal data
+    game_reset();
+
+    g_game_vars.timer = game_data->timer;
+    rng_restore(game_data->rng_info);
+
+    g_game_vars.money = game_data->money;
+    g_game_vars.hand_size = game_data->hand_size;
+    g_game_vars.ante = game_data->ante;
+    g_game_vars.round = game_data->round;
+    g_game_vars.deck = game_data->deck;
+    for (enum HandType hand_type = 0; hand_type < HAND_TYPE_MAX; hand_type++)
+        g_game_vars.nb_played_hands[hand_type] = game_data->nb_played_hands[hand_type];
+
+    g_game_vars.best_hand_score = game_data->best_hand_score;
+    g_game_vars.nb_skipped_rounds = game_data->nb_skipped_rounds;
+    g_game_vars.nb_unused_discards = game_data->nb_unused_discards;
+
+    g_game_vars.current_blind = game_data->current_blind;
+    g_game_vars.next_boss_blind = game_data->next_boss_blind;
+    for (enum BlindTokens blind = 0; blind < NUM_BLINDS_PER_ANTE; blind++)
+        g_game_vars.blinds_states[blind] = game_data->blinds_states[blind];
+
+    // TODO: load Items from stored minimal data
+
+    // Deck
+
+    for (int i = 0; i < game_data->nb_playing_cards; i++)
+    {
+        Card saved_card = game_data->playing_cards[i];
+        Card* card = card_new(saved_card.suit, saved_card.rank);
+        deck_push(card);
+    }
+
+    MGBA_FUNC_ERROR("GAME LOADED");
+
+    display_score(0);
+    display_chips();
+    display_mult();
+    display_hands();
+    display_discards();
+    display_money();
+    display_ante();
+    display_round();
+    display_deck_size_max();
+
+    game_change_state(game_data->game_state);
 }

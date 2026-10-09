@@ -677,6 +677,8 @@ static void blind_skip_tags_init(void)
 
 void blind_select_on_init(void)
 {
+    MGBA_FUNC_ERROR("BLIND SELECT");
+
     s_timer = TM_ZERO;
     state_machine_register(&blind_select_sm);
     state_machine_change_state(&blind_select_sm, START_ANIM_SEQ);

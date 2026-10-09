@@ -241,6 +241,10 @@ void shop_change_background(void)
 
 void shop_on_init(void)
 {
+    MGBA_FUNC_ERROR("SHOP");
+
+    save_game(GAME_STATE_SHOP);
+
     shop_change_background();
 
     s_timer = TM_ZERO;
@@ -946,6 +950,4 @@ void shop_on_exit(void)
     increment_blind(BLIND_STATE_DEFEATED); // TODO: Move to game_round_end()?
 
     state_machine_remove(&shop_sm);
-
-    save_game();
 }

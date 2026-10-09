@@ -147,14 +147,6 @@ static void game_over_common_init(enum EndCondition init_condition)
         sprite_object_hide((SpriteObject*)(joker_object));
     }
 
-    // Destroy any preexisting cards in the deck, which will be present if we restart a run
-    Card* card = NULL;
-    while (get_deck_top() >= 0)
-    {
-        card = deck_pop();
-        card_destroy(&card);
-    }
-
     remove_all_skip_tags();
 
     // Clears the round end menu
