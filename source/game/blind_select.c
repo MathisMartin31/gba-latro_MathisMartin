@@ -19,12 +19,14 @@
 
 #include <maxmod.h>
 
-#define BLIND_SELECT_BOSS_BLIND_PANEL_OUTLINE_PID 32
-#define BLIND_SELECT_BOSS_BLIND_PANEL_SHADOW_PID  33
-#define BLIND_SELECT_MAIN_COLOR_PID               22
-#define BLIND_SELECT_OUTLINE_COLOR_PAL_IDX        34
-#define BLIND_SKIP_MAIN_COLOR_PAL_IDX             19
-#define BLIND_SKIP_OUTLINE_COLOR_PAL_IDX          35
+// Palette indices have been reorganized in a neater way in Aseprite.
+// Check the background_blind_select_gfx.png file to learn more before changing anything.
+static const u8 BLIND_SELECT_BOSS_BLIND_PANEL_OUTLINE_PID = 32;
+static const u8 BLIND_SELECT_BOSS_BLIND_PANEL_SHADOW_PID = 33;
+static const u8 BLIND_SELECT_MAIN_COLOR_PID = 22;
+static const u8 BLIND_SELECT_OUTLINE_COLOR_PAL_IDX = 34;
+static const u8 BLIND_SKIP_MAIN_COLOR_PAL_IDX = 19;
+static const u8 BLIND_SKIP_OUTLINE_COLOR_PAL_IDX = 35;
 
 static const u32 TM_DISP_BLIND_PANEL_FINISH = 7;
 static const u32 TM_DISP_BLIND_PANEL_START = 1;
@@ -113,7 +115,7 @@ static const u32 BLIND_RIGHT_X = 160;
 
 enum BlindSelectRow
 {
-    BLIND_ROW,
+    BLIND_ROW = 0,
     SKIP_ROW,
     MAX_ROW
 };
@@ -730,6 +732,10 @@ void blind_select_on_init(void)
     // doesn't run that moves the tokens. that should probably happen here.
     change_background(BG_BLIND_SELECT, true);
 
+    // "SELECT" button will always be selected by default
+    button_set_highlight(&blind_select_buttons[BLIND_ROW], true);
+    button_set_highlight(&blind_select_buttons[SKIP_ROW], false);
+
     play_sfx(SFX_POP, MM_BASE_PITCH_RATE, SFX_DEFAULT_VOLUME);
 }
 
@@ -778,10 +784,6 @@ void blind_select_change_background(void)
         blind_get_color(g_game_vars.next_boss_blind, BLIND_BACKGROUND_MAIN_COLOR_INDEX);
     pal_bg_mem[BLIND_SELECT_BOSS_BLIND_PANEL_SHADOW_PID] =
         blind_get_color(g_game_vars.next_boss_blind, BLIND_BACKGROUND_SHADOW_COLOR_INDEX);
-
-    // "SELECT" button will always be selected by default
-    button_set_highlight(&blind_select_buttons[BLIND_ROW], true);
-    button_set_highlight(&blind_select_buttons[SKIP_ROW], false);
 
     for (int i = 0; i < NUM_BLINDS_PER_ANTE; i++)
     {
