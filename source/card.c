@@ -140,8 +140,13 @@ void card_object_set_sprite(CardObject* card_object, s16 layer)
     sprite_object_set_sprite((SpriteObject*)card_object, sprite);
 }
 
-void card_object_set_sprite_face_down(CardObject* card_object, enum DeckType deck, s16 layer)
+void card_object_set_sprite_face_down(CardObject* card_object, enum DeckType deck, s16 layer, bool is_deck)
 {
+    // Specifically for this, since there is only 1 Sprite available for the Deck sprite type,
+    // we need to free it before creating the new one
+    if (is_deck)
+        sprite_destroy(&card_object->sprite);
+
     int tile_index = sprite_get_tid(DECK_SPRITE, layer);
     memcpy32(
         &tile_mem[TILE_MEM_OBJ_CHARBLOCK0_IDX][tile_index],
@@ -149,7 +154,7 @@ void card_object_set_sprite_face_down(CardObject* card_object, enum DeckType dec
         TILE_SIZE * CARD_SPRITE_TILES
     );
     Sprite* sprite = sprite_new(
-        ATTR0_SQUARE | ATTR0_4BPP | ATTR0_AFF,
+        ATTR0_SQUARE | ATTR0_4BPP | (is_deck ? 0 : ATTR0_AFF),
         ATTR1_SIZE_32,
         tile_index,
         DECK_PB,

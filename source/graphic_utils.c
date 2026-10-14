@@ -228,6 +228,47 @@ void main_bg_se_copy_expand_3w_row(Rect se_dest_rect, BG_POINT src_row_left_pnt)
     }
 }
 
+// Helper: Copy the top and bottom sides of a 3h tile block
+static inline void main_bg_se_3h_copy_expand_top_bottom_sides(
+    const Rect* se_dest_rect,
+    const BG_POINT* src_top_pnt
+)
+{
+    SE top_se = se_mat[MAIN_BG_SBB][src_top_pnt->y][src_top_pnt->x];
+    // Assuming height 3 so the bottom side is + 2
+    SE bottom_se = se_mat[MAIN_BG_SBB][src_top_pnt->y + 2][src_top_pnt->x];
+    int dest_rect_width = rect_width(se_dest_rect);
+    int dest_rect_height = rect_height(se_dest_rect);
+    for (int x = 0; x < dest_rect_width; x++)
+    {
+        se_mat[MAIN_BG_SBB][se_dest_rect->top][se_dest_rect->left + x] = top_se;
+        se_mat[MAIN_BG_SBB][se_dest_rect->top + dest_rect_height - 1][se_dest_rect->left + x] =
+            bottom_se;
+    }
+}
+
+void main_bg_se_copy_expand_3h_col(Rect se_dest_rect, BG_POINT src_col_top_pnt)
+{
+    clip_se_rect_to_screenblock(&se_dest_rect);
+    int dest_rect_height = rect_height(&se_dest_rect);
+    if (dest_rect_height < 2)
+        return;
+
+    // Copy left and right sides
+    main_bg_se_3h_copy_expand_top_bottom_sides(&se_dest_rect, &src_col_top_pnt);
+
+    if (dest_rect_height > 2)
+    {
+        SE middle_fill_se = se_mat[MAIN_BG_SBB][src_col_top_pnt.y + 1][src_col_top_pnt.x];
+        Rect dest_inner_fill_rect = se_dest_rect;
+
+        // Avoid copying the top and bottom sides when filling the rect.
+        dest_inner_fill_rect.top += 1;
+        dest_inner_fill_rect.bottom -= 1;
+        main_bg_se_fill_rect_with_se(middle_fill_se, dest_inner_fill_rect);
+    }
+}
+
 // Helper: Copy the four corners of a 9-patch
 static inline void main_bg_se_expand_9_patch_copy_corners(
     Rect se_dest_rect,

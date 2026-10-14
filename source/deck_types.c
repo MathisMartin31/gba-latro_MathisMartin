@@ -23,14 +23,14 @@ static const char DECK_NAMES[DECK_TYPE_MAX][DECK_NAME_LENGTH] = {
     "Painted Deck "
 };
 
-static void print_desc_red_deck(BG_POINT pos);
-static void print_desc_blue_deck(BG_POINT pos);
-static void print_desc_yellow_deck(BG_POINT pos);
-static void print_desc_green_deck(BG_POINT pos);
-static void print_desc_black_deck(BG_POINT pos);
-static void print_desc_painted_deck(BG_POINT pos);
+static void print_desc_red_deck(Rect dest_rect);
+static void print_desc_blue_deck(Rect dest_rect);
+static void print_desc_yellow_deck(Rect dest_rect);
+static void print_desc_green_deck(Rect dest_rect);
+static void print_desc_black_deck(Rect dest_rect);
+static void print_desc_painted_deck(Rect dest_rect);
 
-typedef void (*PrintDescCallback)(BG_POINT);
+typedef void (*PrintDescCallback)(Rect);
 static const PrintDescCallback deck_description_functions[DECK_TYPE_MAX] = {
     print_desc_red_deck,
     print_desc_blue_deck,
@@ -45,24 +45,12 @@ void print_deck_name(enum DeckType deck, BG_POINT pos)
     tte_printf("#{P:%d,%d; cx:0x%X000}%s", pos.x, pos.y, TTE_WHITE_PB, DECK_NAMES[deck]);
 }
 
-void print_deck_description(enum DeckType deck, BG_POINT pos)
+void print_deck_description(enum DeckType deck, Rect dest_rect)
 {
     if (deck_description_functions[deck] == NULL)
         return;
 
-    deck_description_functions[deck](pos);
-}
-
-/**
- * @brief Print an empty string of 13 characters long at given coordinates.
- *         Reduces boilerplate in deck descriptions functions.
- *
- * @param pos_x
- * @param pos_y
- */
-static inline void print_empty_desc_line(int pos_x, int pos_y)
-{
-    tte_printf("#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT, pos_x, pos_y, TTE_BLACK_PB, "             ");
+    deck_description_functions[deck](dest_rect);
 }
 
 /**
@@ -76,27 +64,10 @@ static inline void print_empty_desc_line(int pos_x, int pos_y)
  * ```
  * @param pos position of the rectagle to print the description to
  */
-static void print_desc_red_deck(BG_POINT pos)
+static void print_desc_red_deck(Rect dest_rect)
 {
-    print_empty_desc_line(pos.x, pos.y);
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y + TILE_SIZE,
-        TTE_RED_PB,
-        " +1 ",
-        TTE_BLACK_PB,
-        "discard  "
-    );
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y + 2 * TILE_SIZE,
-        TTE_BLACK_PB,
-        " every Round "
-    );
-    print_empty_desc_line(pos.x, pos.y + 3 * TILE_SIZE);
-    print_empty_desc_line(pos.x, pos.y + 4 * TILE_SIZE);
+    static const char desc[] = "\n" TTE_RED_TAG "+1 " TTE_BLACK_TAG "discard every Round";
+    tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
 }
 
 /**
@@ -110,27 +81,10 @@ static void print_desc_red_deck(BG_POINT pos)
  * ```
  * @param pos position of the rectagle to print the description to
  */
-static void print_desc_blue_deck(BG_POINT pos)
+static void print_desc_blue_deck(Rect dest_rect)
 {
-    print_empty_desc_line(pos.x, pos.y);
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y + TILE_SIZE,
-        TTE_BLUE_PB,
-        "   +1 ",
-        TTE_BLACK_PB,
-        "hand   "
-    );
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y + 2 * TILE_SIZE,
-        TTE_BLACK_PB,
-        " every Round "
-    );
-    print_empty_desc_line(pos.x, pos.y + 3 * TILE_SIZE);
-    print_empty_desc_line(pos.x, pos.y + 4 * TILE_SIZE);
+    static const char desc[] = "\n" TTE_BLUE_TAG "+1 " TTE_BLACK_TAG "hand every Round";
+    (void)tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
 }
 
 /**
@@ -144,27 +98,10 @@ static void print_desc_blue_deck(BG_POINT pos)
  * ```
  * @param pos position of the rectagle to print the description to
  */
-static void print_desc_yellow_deck(BG_POINT pos)
+static void print_desc_yellow_deck(Rect dest_rect)
 {
-    print_empty_desc_line(pos.x, pos.y);
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y + TILE_SIZE,
-        TTE_BLACK_PB,
-        " Start with  "
-    );
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y + 2 * TILE_SIZE,
-        TTE_BLACK_PB,
-        "an extra",
-        TTE_YELLOW_PB,
-        " $10 "
-    );
-    print_empty_desc_line(pos.x, pos.y + 3 * TILE_SIZE);
-    print_empty_desc_line(pos.x, pos.y + 4 * TILE_SIZE);
+    static const char desc[] = "\n" TTE_BLACK_TAG "Start with an extra " TTE_YELLOW_TAG "$10";
+    (void)tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
 }
 
 /**
@@ -178,89 +115,31 @@ static void print_desc_yellow_deck(BG_POINT pos)
  * ```
  * @param pos position of the rectagle to print the description to
  */
-static void print_desc_green_deck(BG_POINT pos)
+static void print_desc_green_deck(Rect dest_rect)
 {
-    tte_printf("#{P:%d,%d; cx:0x%X000}%s", pos.x, pos.y, TTE_BLACK_PB, "End of Round:");
-    print_empty_desc_line(pos.x, pos.y + TILE_SIZE);
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT
-            TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y + 2 * TILE_SIZE,
-        TTE_BLACK_PB,
-        "-",
-        TTE_YELLOW_PB,
-        "$2 ",
-        TTE_BLACK_PB,
-        "per ",
-        TTE_RED_PB,
-        "Hand "
-    );
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT
-            TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y + 3 * TILE_SIZE,
-        TTE_BLACK_PB,
-        "-",
-        TTE_YELLOW_PB,
-        "$1 ",
-        TTE_BLACK_PB,
-        "per ",
-        TTE_BLUE_PB,
-        "Disc."
-    );
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y + 4 * TILE_SIZE,
-        TTE_BLACK_PB,
-        "-No ",
-        TTE_YELLOW_PB,
-        "Interest "
-    );
+    static const char desc[] =
+        TTE_BLACK_TAG "End of Round:\n\n-" TTE_YELLOW_TAG "$2 " TTE_BLACK_TAG "per " TTE_BLUE_TAG
+                      "Hand" TTE_BLACK_TAG "\n-" TTE_YELLOW_TAG "$2 " TTE_BLACK_TAG
+                      "per " TTE_RED_TAG "Disc." TTE_BLACK_TAG "\n-No " TTE_YELLOW_TAG "Interest";
+    (void)tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_LEFT, SCREEN_LEFT, true);
 }
 
 /**
  * @brief Print the decription of the Black Deck
  * ```
- * "+1 Joker slot"
  * "             "
+ * "+1 Joker slot"
  * "   -1 hand   "
  * " every Round "
  * "             "
  * ```
  * @param pos position of the rectagle to print the description to
  */
-static void print_desc_black_deck(BG_POINT pos)
+static void print_desc_black_deck(Rect dest_rect)
 {
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y,
-        TTE_YELLOW_PB,
-        "+1 ",
-        TTE_BLACK_PB,
-        "Joker slot"
-    );
-    print_empty_desc_line(pos.x, pos.y + TILE_SIZE);
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y + 2 * TILE_SIZE,
-        TTE_BLUE_PB,
-        "   -1 ",
-        TTE_BLACK_PB,
-        "hand   "
-    );
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y + 3 * TILE_SIZE,
-        TTE_BLACK_PB,
-        " every Round "
-    );
-    print_empty_desc_line(pos.x, pos.y + 4 * TILE_SIZE);
+    static const char desc[] = TTE_YELLOW_TAG "\n+1 " TTE_BLACK_TAG "Joker slot\n" TTE_BLUE_TAG
+                                              "-1 " TTE_BLACK_TAG "hand every Round";
+    (void)tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
 }
 
 /**
@@ -274,27 +153,9 @@ static void print_desc_black_deck(BG_POINT pos)
  * ```
  * @param pos position of the rectagle to print the description to
  */
-static void print_desc_painted_deck(BG_POINT pos)
+static void print_desc_painted_deck(Rect dest_rect)
 {
-    print_empty_desc_line(pos.x, pos.y);
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y + TILE_SIZE,
-        TTE_YELLOW_PB,
-        "+2 ",
-        TTE_BLACK_PB,
-        "Hand size "
-    );
-    tte_printf(
-        "#{P:%d,%d}" TTE_COLOR_TEXT_FORMAT TTE_COLOR_TEXT_FORMAT,
-        pos.x,
-        pos.y + 2 * TILE_SIZE,
-        TTE_RED_PB,
-        "-1 ",
-        TTE_BLACK_PB,
-        "Joker slot"
-    );
-    print_empty_desc_line(pos.x, pos.y + 3 * TILE_SIZE);
-    print_empty_desc_line(pos.x, pos.y + 4 * TILE_SIZE);
+    static const char desc[] = TTE_YELLOW_TAG "\n+2 " TTE_BLACK_TAG "Hand size\n" TTE_RED_TAG
+                                              "-1 " TTE_BLACK_TAG "Joker slot";
+    (void)tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
 }

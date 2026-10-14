@@ -157,6 +157,8 @@ static void game_over_common_init(enum EndCondition init_condition)
 
     remove_all_skip_tags();
 
+    sprite_object_hide((SpriteObject*)g_game_vars.deck_sprite);
+
     // Clears the round end menu
     toggle_windows(false, false);
     GRIT_CPY(pal_bg_mem, background_game_over_gfxPal);

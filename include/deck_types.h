@@ -23,6 +23,14 @@ enum DeckType
     DECK_TYPE_MAX
 };
 
+enum DeckEvent
+{
+    DECK_EVENT_ON_GAME_START,
+    DECK_EVENT_ON_ROUND_START,
+    DECK_EVENT_ON_ROUND_END,
+    DECK_EVENT_MAX
+};
+
 /**
  * @brief Prints the Deck name string to the screen at the given position.
  *
@@ -32,12 +40,11 @@ enum DeckType
 void print_deck_name(enum DeckType deck, BG_POINT pos);
 
 /**
- * @brief Prints the Deck description string to the screen at the given position.
+ * @brief Prints the Deck description string to the screen inside the given rectangle region.
  *
  * @param deck DeckType we want the description of.
- * @param pos screen position in pixels of the top-left corner of the rectangle
- *             we'll print the Deck description into
+ * @param dest_rect rectangle to display the Deck description into
  */
-void print_deck_description(enum DeckType deck, BG_POINT pos);
+void print_deck_description(enum DeckType deck, Rect dest_rect);
 
 #endif // DECK_TYPES_H

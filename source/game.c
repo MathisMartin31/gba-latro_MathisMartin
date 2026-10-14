@@ -186,8 +186,8 @@ void game_init()
     g_game_vars.score = STARTING_SCORE;
     g_game_vars.chips = 0;
     g_game_vars.mult = 0;
-    g_game_vars.hands = MAX_HANDS;
-    g_game_vars.discards = MAX_DISCARDS;
+    g_game_vars.hands = BASE_HANDS;
+    g_game_vars.discards = BASE_DISCARDS;
     g_game_vars.money = STARTING_MONEY;
     g_game_vars.hand_size = DEFAULT_HAND_SIZE;
     g_game_vars.ante = STARTING_ANTE;
@@ -662,8 +662,8 @@ void game_start(void)
     affine_background_change_background(AFFINE_BG_GAME);
     tte_colors_setup();
 
-    g_game_vars.hands = MAX_HANDS;
-    g_game_vars.discards = MAX_DISCARDS;
+    g_game_vars.hands = BASE_HANDS;
+    g_game_vars.discards = BASE_DISCARDS;
 
     // Fill the deck with all the cards. Later on this can be replaced with a more dynamic system
     // that allows for different decks and card types.
@@ -675,6 +675,12 @@ void game_start(void)
             deck_push(card);
         }
     }
+
+    sprite_object_position(
+        (SpriteObject*)g_game_vars.deck_sprite,
+        DECK_SPRITE_POS.x,
+        DECK_SPRITE_POS.y
+    );
 
     // Deck size/max size
     tte_erase_rect_wrapper(DECK_SIZE_RECT);

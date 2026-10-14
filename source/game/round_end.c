@@ -448,8 +448,8 @@ static inline void round_end_cashout(void)
     g_game_vars.money += s_cashout;
     display_money();
 
-    g_game_vars.hands = MAX_HANDS;       // Reset the hands to the maximum
-    g_game_vars.discards = MAX_DISCARDS; // Reset the discards to the maximum
+    g_game_vars.hands = BASE_HANDS;       // Reset the hands to the maximum
+    g_game_vars.discards = BASE_DISCARDS; // Reset the discards to the maximum
     // TODO: these can just be in one spot, passing global to global
     display_hands();    // Set the hands display
     display_discards(); // Set the discards display

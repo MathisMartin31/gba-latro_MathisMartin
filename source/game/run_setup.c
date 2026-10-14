@@ -23,20 +23,22 @@
 
 // Palette Indices
 
-#define CHANGE_DECK_BTN_MAIN_COLOR_PAL_IDX   1
+#define CURRENT_DECK_BTN_MAIN_COLOR_PAL_IDX  1
 #define RED_BTN_MAIN_COLOR_PAL_IDX           10
 #define RED_DISABLED_BTN_MAIN_COLOR_PAL_IDX  11
 #define BLUE_BTN_MAIN_COLOR_PAL_IDX          12
 #define BLUE_DISABLED_BTN_MAIN_COLOR_PAL_IDX 13
 #define BACK_BTN_MAIN_COLOR_PAL_IDX          14
 
-#define NEW_RUN_BTN_OUTLINE_COLOR_PAL_IDX     30
-#define RESUME_BTN_OUTLINE_COLOR_PAL_IDX      31
-#define CHANGE_DECK_BTN_OUTLINE_COLOR_PAL_IDX 32
-#define SEED_CHECK_BTN_OUTLINE_COLOR_PAL_IDX  33
-#define SEED_DECK_BTN_OUTLINE_COLOR_PAL_IDX   34
-#define PLAY_BTN_OUTLINE_COLOR_PAL_IDX        35
-#define BACK_BTN_OUTLINE_COLOR_PAL_IDX        36
+#define NEW_RUN_BTN_OUTLINE_COLOR_PAL_IDX      30
+#define RESUME_BTN_OUTLINE_COLOR_PAL_IDX       31
+#define PREV_DECK_BTN_OUTLINE_COLOR_PAL_IDX    32
+#define CURRENT_DECK_BTN_OUTLINE_COLOR_PAL_IDX 33
+#define NEXT_DECK_BTN_OUTLINE_COLOR_PAL_IDX    34
+#define SEED_CHECK_BTN_OUTLINE_COLOR_PAL_IDX   35
+#define SEED_DECK_BTN_OUTLINE_COLOR_PAL_IDX    36
+#define PLAY_BTN_OUTLINE_COLOR_PAL_IDX         37
+#define BACK_BTN_OUTLINE_COLOR_PAL_IDX         38
 
 #define KEYBOARD_1_BTN_OUTLINE_COLOR_PAL_IDX 40
 #define KEYBOARD_2_BTN_OUTLINE_COLOR_PAL_IDX 41
@@ -129,6 +131,9 @@ static StateMachine run_setup_sm = {
 //static const Rect     RUN_SETUP_RESUME_TAB_DISABLED_SRC                   = {19, 22, 23, 23};
 //static const BG_POINT RUN_SETUP_RESUME_TAB_DISABLED_DEST_POS              = {15, 1};
 
+static const Rect     RUN_SETUP_DECK_DESC_RECT                            = {10,  7,  22,  12};
+static const Rect     RUN_SETUP_DECK_DESC_TEXT_RECT                       = {80, 56, 184, 104};
+
 static const BG_POINT RUN_SETUP_FRAME_BG_SE_FILL_SRC_POS                  = {9 , 31};
 
 static const Rect          RUN_SETUP_CHOOSE_DECK_CHOICE_BG_9_PTCH_DEST    = {6 , 4 , 23, 13};
@@ -136,6 +141,16 @@ static const NinePatchRect RUN_SETUP_CHOOSE_DECK_CHOICE_BG_9_PTCH_SRC     = {
     { 0 , 21, 7 , 28},
     { 5 , 3 , 2 , 4 }
 };
+
+static const BG_POINT RUN_SETUP_CHOOSE_DECK_PREV_BTN_3H_SRC               = { 8, 20};
+static const Rect     RUN_SETUP_CHOOSE_DECK_PREV_BTN_3H_DEST              = { 4,  4,  4, 13};
+static const BG_POINT RUN_SETUP_CHOOSE_DECK_NEXT_BTN_3H_SRC               = { 8, 23};
+static const Rect     RUN_SETUP_CHOOSE_DECK_NEXT_BTN_3H_DEST              = {24,  4, 24, 13};
+static const int      RUN_SETUP_CHOOSE_DECK_PREV_NEXT_BTN_WIDTH           = 2;
+static const Rect     RUN_SETUP_CHOOSE_DECK_PREV_BTN_ARROW_SRC            = {10, 20, 11, 21};
+static const BG_POINT RUN_SETUP_CHOOSE_DECK_PREV_BTN_ARROW_DEST           = { 4,  8};
+static const Rect     RUN_SETUP_CHOOSE_DECK_NEXT_BTN_ARROW_SRC            = {10, 22, 11, 23};
+static const BG_POINT RUN_SETUP_CHOOSE_DECK_NEXT_BTN_ARROW_DEST           = {24,  8};
 
 static const Rect     RUN_SETUP_CHOOSE_DECK_CLEAN_LEFT_DEST               = {4 , 6 , 5 , 13};
 static const Rect     RUN_SETUP_CHOOSE_DECK_CLEAN_RIGHT_DEST              = {24, 6 ,25 , 13};
@@ -161,7 +176,6 @@ static const Rect     RUN_SETUP_CHOOSE_SEED_DECK_BTN_DEST                 = {17,
 #define RUN_SETUP_DECK_SPRITE_T_X 48
 #define RUN_SETUP_DECK_SPRITE_T_Y 54
 static const BG_POINT RUN_SETUP_DECK_NAME_TEXT_POS  = {80 , 40 };
-static const BG_POINT RUN_SETUP_DECK_DESC_TEXT_POS  = {80 , 56 };
 static const Rect     RUN_SETUP_DECK_NAME_DESC_RECT = {80 , 40 ,176, 96 };
 static const BG_POINT RUN_SETUP_SEED_FIELD_TEXT_POS = {96 , 40 };
 static const BG_POINT RUN_SETUP_SEED_DECK_TEXT_POS  = {152, 120};
@@ -302,12 +316,24 @@ static SelectionGrid choose_deck_selection_grid = {
 
 // CHOOSE DECK BUTTONS
 
-static void change_deck_on_pressed(void);
+static Button current_deck_button = {
+    CURRENT_DECK_BTN_OUTLINE_COLOR_PAL_IDX,
+    CURRENT_DECK_BTN_MAIN_COLOR_PAL_IDX,
+    NULL,
+    NULL
+};
 
-static Button change_deck_button = {
-    CHANGE_DECK_BTN_OUTLINE_COLOR_PAL_IDX,
-    CHANGE_DECK_BTN_MAIN_COLOR_PAL_IDX,
-    change_deck_on_pressed,
+static Button prev_deck_button = {
+    PREV_DECK_BTN_OUTLINE_COLOR_PAL_IDX,
+    RED_BTN_MAIN_COLOR_PAL_IDX,
+    NULL,
+    NULL
+};
+
+static Button next_deck_button = {
+    NEXT_DECK_BTN_OUTLINE_COLOR_PAL_IDX,
+    RED_BTN_MAIN_COLOR_PAL_IDX,
+    NULL,
     NULL
 };
 
@@ -328,7 +354,6 @@ static Button choose_deck_bottom_buttons[RUN_SETUP_DECK_BB_MAX] = {
 // clang-format on
 
 static bool use_seed = false;
-static CardObject* run_setup_deck = NULL;
 
 #pragma endregion
 
@@ -607,17 +632,9 @@ void run_setup_on_init(void)
     toggle_seed_enabled(use_seed);
 
     // Rank doesn't matter, won't see it
-    run_setup_deck = card_object_new(card_new(SPADES, ACE));
-
-    // We put it at the same layer as the main menu Ace card, but it's okay because
-    // both cards do not exist at the same time, one is destroyed before the other is created.
-    card_object_set_sprite_face_down(run_setup_deck, g_game_vars.deck, 0);
-
-    sprite_object_position(
-        (SpriteObject*)run_setup_deck,
-        RUN_SETUP_DECK_SPRITE_T_X,
-        RUN_SETUP_DECK_SPRITE_T_Y
-    );
+    // Created only once, MUST NOT be deleted EVER
+    if (g_game_vars.deck_sprite == NULL)
+        g_game_vars.deck_sprite = card_object_new(card_new(SPADES, ACE));
 
     /* Uncomment these lines when we figure out how to properly restore a game save
     is_saved_game_valid = is_game_data_valid();
@@ -640,10 +657,6 @@ void run_setup_on_update(void)
 void run_setup_on_exit(void)
 {
     state_machine_remove(&run_setup_sm);
-
-    card_destroy(&run_setup_deck->card);
-    card_object_destroy(&run_setup_deck);
-
     tte_erase_screen();
 }
 
@@ -656,15 +669,29 @@ void run_setup_on_exit(void)
 
 // CHOOSE DECK
 
+static void update_deck_type(void)
+{
+    // We put the Sprite at the same layer as the main menu Ace card, but it's okay because
+    // both cards do not exist at the same time, one is destroyed before the other is created.
+    card_object_set_sprite_face_down(g_game_vars.deck_sprite, g_game_vars.deck, 0, true);
+    sprite_object_position(
+        (SpriteObject*)g_game_vars.deck_sprite,
+        RUN_SETUP_DECK_SPRITE_T_X,
+        RUN_SETUP_DECK_SPRITE_T_Y
+    );
+    sprite_object_unhide((SpriteObject*)g_game_vars.deck_sprite);
+
+    tte_erase_rect_wrapper(RUN_SETUP_DECK_DESC_TEXT_RECT);
+    print_deck_name(g_game_vars.deck, RUN_SETUP_DECK_NAME_TEXT_POS);
+    print_deck_description(g_game_vars.deck, RUN_SETUP_DECK_DESC_RECT);
+}
+
 /**
  * @brief Initializes the Deck changing substate.
  */
 static void choose_deck_substate_init(void)
 {
-    // Show Deck sprite, name and TODO: description
-    sprite_object_unhide((SpriteObject*)run_setup_deck);
-    print_deck_name(g_game_vars.deck, RUN_SETUP_DECK_NAME_TEXT_POS);
-    print_deck_description(g_game_vars.deck, RUN_SETUP_DECK_DESC_TEXT_POS);
+    update_deck_type();
 
     // Clean frame and expand 9-patch for the Deck choice background
     main_bg_se_copy_expand_tile(
@@ -680,7 +707,36 @@ static void choose_deck_substate_init(void)
         &RUN_SETUP_CHOOSE_DECK_CHOICE_BG_9_PTCH_SRC
     );
 
-    // TODO: add left/right navigation arrows once more decks have been implemented
+    // Prev/Next deck buttons
+    Rect prev_dest = RUN_SETUP_CHOOSE_DECK_PREV_BTN_3H_DEST;
+    BG_POINT prev_src = RUN_SETUP_CHOOSE_DECK_PREV_BTN_3H_SRC;
+    Rect next_dest = RUN_SETUP_CHOOSE_DECK_NEXT_BTN_3H_DEST;
+    BG_POINT next_src = RUN_SETUP_CHOOSE_DECK_NEXT_BTN_3H_SRC;
+    for (int i = 0; i < RUN_SETUP_CHOOSE_DECK_PREV_NEXT_BTN_WIDTH; i++)
+    {
+        main_bg_se_copy_expand_3h_col(
+            prev_dest,
+            prev_src
+        );
+        main_bg_se_copy_expand_3h_col(
+            next_dest,
+            next_src
+        );
+        prev_dest.left += 1;
+        prev_dest.right += 1;
+        prev_src.x += 1;
+        next_dest.left += 1;
+        next_dest.right += 1;
+        next_src.x += 1;
+    }
+    main_bg_se_copy_rect(
+        RUN_SETUP_CHOOSE_DECK_PREV_BTN_ARROW_SRC,
+        RUN_SETUP_CHOOSE_DECK_PREV_BTN_ARROW_DEST
+    );
+    main_bg_se_copy_rect(
+        RUN_SETUP_CHOOSE_DECK_NEXT_BTN_ARROW_SRC,
+        RUN_SETUP_CHOOSE_DECK_NEXT_BTN_ARROW_DEST
+    );
 
     // Set Tab to "New Run"
     // Uncomment when tab row is re-added (clang-format made it ugly, sorry)
@@ -688,7 +744,9 @@ static void choose_deck_substate_init(void)
     // RUN_SETUP_RESUME_TAB_DISABLED_DEST_POS); tab_set_highlight(RUN_SETUP_TAB_NEW_RUN);
 
     // Set button highlights
-    button_set_highlight(&change_deck_button, true);
+    button_set_highlight(&current_deck_button, true);
+    button_set_highlight(&prev_deck_button, false);
+    button_set_highlight(&next_deck_button, false);
     button_set_highlight(&choose_deck_bottom_buttons[RUN_SETUP_DECK_BB_USE_SEED], false);
     button_set_highlight(&choose_deck_bottom_buttons[RUN_SETUP_DECK_BB_PLAY], false);
     button_set_highlight(&back_button, false);
@@ -741,7 +799,7 @@ static inline Button* change_deck_get_button_from_sel(const Selection* sel)
     switch (sel->y)
     {
         case RUN_SETUP_DECK_ROW_CHANGE_DECK:
-            return &change_deck_button;
+            return &current_deck_button;
 
         case RUN_SETUP_DECK_ROW_SEED_PLAY:
             if (sel->x >= RUN_SETUP_DECK_BB_MAX)
@@ -770,11 +828,23 @@ static bool choose_deck_row_on_selection_changed(
     const Selection* new_selection
 )
 {
+    // left/right press on Change Deck row to allow swapping
+    bool change_deck = (row_idx == RUN_SETUP_DECK_ROW_CHANGE_DECK) &&
+                       (prev_selection->y == row_idx) && (new_selection->y == row_idx);
+    if (change_deck)
+    {
+        enum ScreenHorzDir deck_change = 0;
+        if (key_hit(KEY_LEFT))
+            deck_change = SCREEN_LEFT;
+        else if (key_hit(KEY_RIGHT))
+            deck_change = SCREEN_RIGHT;
+        g_game_vars.deck = (g_game_vars.deck + deck_change + DECK_TYPE_MAX) % DECK_TYPE_MAX;
+        update_deck_type();
+        return false;
+    }
+
     button_set_highlight(change_deck_get_button_from_sel(prev_selection), false);
     button_set_highlight(change_deck_get_button_from_sel(new_selection), true);
-
-    // TODO: detect left/right press on Change Deck row to allow swapping
-    // Decks need to be implemented for this
 
     return true;
 }
@@ -825,9 +895,10 @@ static void seed_keyboard_substate_init(void)
 {
     choose_seed_selection_grid.selection = RUN_SETUP_CHOOSE_SEED_INIT_SEL;
     tte_erase_rect_wrapper(RUN_SETUP_DECK_NAME_DESC_RECT);
+    tte_erase_rect_wrapper(RUN_SETUP_DECK_DESC_TEXT_RECT);
 
     // Hide Deck card sprite
-    sprite_object_hide((SpriteObject*)run_setup_deck);
+    sprite_object_hide((SpriteObject*)g_game_vars.deck_sprite);
 
     // Clean deck swap screen with frame BG color
     main_bg_se_copy_expand_tile(
@@ -1105,7 +1176,7 @@ static void deck_on_pressed(void)
 {
     state_machine_change_state(&run_setup_sm, RUN_SETUP_SUBSTATE_CHOOSE_DECK);
     choose_deck_selection_grid.selection = RUN_SETUP_CHOOSE_DECK_SEL_FROM_SEED;
-    button_set_highlight(&change_deck_button, false);
+    button_set_highlight(&current_deck_button, false);
     button_set_highlight(&choose_deck_bottom_buttons[RUN_SETUP_DECK_BB_SEED], true);
 }
 
@@ -1119,7 +1190,7 @@ static void resume_substate_init(void)
     tab_set_highlight(RUN_SETUP_TAB_RESUME);
 
     // Show Deck card sprite
-    sprite_object_unhide((SpriteObject*)run_setup_deck);
+    sprite_object_unhide((SpriteObject*)g_game_vars.deck_sprite);
 }
 
 // COMMON BUTTONS
@@ -1199,14 +1270,8 @@ static void play_on_pressed(void)
  */
 static void back_on_pressed(void)
 {
+    sprite_object_hide((SpriteObject*)g_game_vars.deck_sprite);
     game_change_state(GAME_STATE_MAIN_MENU);
-}
-
-/**
- * @brief Button Callback used for cycling through the Decks.
- */
-static void change_deck_on_pressed(void)
-{
 }
 
 /**

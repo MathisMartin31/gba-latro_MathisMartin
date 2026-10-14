@@ -405,6 +405,22 @@ void main_bg_se_copy_expand_3x3_rect(Rect se_rect_dest, BG_POINT se_rect_src_3x3
 void main_bg_se_copy_expand_3w_row(Rect se_dest_rect, BG_POINT src_row_left_pnt);
 
 /**
+ * @brief Copies a 3-height SE rect and expands it to fit a passed rect.
+ *
+ * Performs the following operation:
+ *
+ * 1. The top and bottom are stretched
+ * 2. The center is filled.
+ *
+ * @param se_rect_dest destination for the copy; if rect height is 2, the center is not filled and
+ *                     only the top and bottom are copied. **But dest rect height must be at
+ *                     least 2.**
+ *
+ * @param src_col_top_pnt points to the topmost tile of the source 3-height rect.
+ */
+void main_bg_se_copy_expand_3h_col(Rect se_dest_rect, BG_POINT src_col_top_pnt);
+
+/**
  * @brief Moves a rect in the main background vertically in direction by a single tile.
  *
  * Note that tiles in the previous location will be transparent (0x000)

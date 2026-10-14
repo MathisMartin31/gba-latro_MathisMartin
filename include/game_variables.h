@@ -24,8 +24,8 @@
 #define DEFAULT_MUSIC_VOLUME VOLUME_OPTION_MAX
 #define DEFAULT_SOUND_VOLUME VOLUME_OPTION_MAX
 
-#define MAX_HANDS    4
-#define MAX_DISCARDS 4
+#define BASE_HANDS    4
+#define BASE_DISCARDS 4
 
 #define DEFAULT_HAND_SIZE 8
 
@@ -58,6 +58,7 @@ typedef struct
     s32 round;
     s32 deck;
     u32 nb_played_hands[HAND_TYPE_MAX];
+    CardObject* deck_sprite;
 
     // Hidden variables
 

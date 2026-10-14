@@ -15,6 +15,7 @@ static const BG_POINT TOP_LEFT_PANEL_POINT             = {0,       0};
 static const BG_POINT ROUND_END_REWARDS_ELLIPSIS_POS   = {10,      13};
 static const BG_POINT ITEM_DISCARD_TARGET              = {240,     30};
 static const BG_POINT HELD_JOKERS_POS                  = {108,     10};
+static const BG_POINT DECK_SPRITE_POS                  = {204,    115};
 // Rects                                                  left     top     right   bottom
 static const Rect TOP_LEFT_PANEL_ANIM_RECT             = {0,       0,      8,      4};
 static const Rect POP_MENU_ANIM_RECT                   = {9,       7,      24,     31};
