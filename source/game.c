@@ -46,7 +46,6 @@
 
 #define STARTING_ROUND 0
 #define STARTING_ANTE  1
-#define STARTING_MONEY 4
 #define STARTING_SCORE 0
 
 #define EXPIRE_ANIMATION_FRAME_COUNT 3
@@ -664,6 +663,8 @@ void game_start(void)
 
     g_game_vars.hands = BASE_HANDS;
     g_game_vars.discards = BASE_DISCARDS;
+
+    deck_apply_effect_for_event(g_game_vars.deck, DECK_EVENT_ON_GAME_START);
 
     // Fill the deck with all the cards. Later on this can be replaced with a more dynamic system
     // that allows for different decks and card types.

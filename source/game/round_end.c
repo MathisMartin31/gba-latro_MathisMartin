@@ -450,6 +450,9 @@ static inline void round_end_cashout(void)
 
     g_game_vars.hands = BASE_HANDS;       // Reset the hands to the maximum
     g_game_vars.discards = BASE_DISCARDS; // Reset the discards to the maximum
+
+    deck_apply_effect_for_event(g_game_vars.deck, DECK_EVENT_ON_ROUND_END);
+
     // TODO: these can just be in one spot, passing global to global
     display_hands();    // Set the hands display
     display_discards(); // Set the discards display

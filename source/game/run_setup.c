@@ -682,8 +682,8 @@ static void update_deck_type(void)
     sprite_object_unhide((SpriteObject*)g_game_vars.deck_sprite);
 
     tte_erase_rect_wrapper(RUN_SETUP_DECK_DESC_TEXT_RECT);
-    print_deck_name(g_game_vars.deck, RUN_SETUP_DECK_NAME_TEXT_POS);
-    print_deck_description(g_game_vars.deck, RUN_SETUP_DECK_DESC_RECT);
+    deck_print_name(g_game_vars.deck, RUN_SETUP_DECK_NAME_TEXT_POS);
+    deck_print_description(g_game_vars.deck, RUN_SETUP_DECK_DESC_RECT);
 }
 
 /**
@@ -1262,6 +1262,7 @@ static void play_on_pressed(void)
 
     use_seed = false;
 
+    sprite_object_unhide((SpriteObject*)g_game_vars.deck_sprite);
     game_change_state(GAME_STATE_GAME_START);
 }
 
