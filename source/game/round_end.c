@@ -27,6 +27,7 @@ enum GameRoundEndStates
 enum RewardType
 {
     REWARD_TYPE_HAND,
+    REWARD_TYPE_DISCARD,
     REWARD_TYPE_INVESTMENT,
     REWARD_TYPE_INTEREST,
     REWARD_TYPE_MAX
@@ -78,11 +79,8 @@ typedef struct RewardTypeData
      * @brief how many dollars the player recieves every time a certain type of reward is counted
      * towards the total cashout. Equal to 1 most of the time, but the Investment Tag increments
      * by a full reward amount per tag so the the multiplier is a full amount.
-     *
-     * @note make this not const if "To the Moon" is ever implemented, since it increases the
-     * Interest multiplier from 1 to 2
      */
-    const int multiplier;
+    int multiplier;
 
     /**
      * @brief how many times the reward was earned by the player during the last round
@@ -101,6 +99,13 @@ static RewardTypeData s_reward_data[] = {
         .text = "Hands",
         .text_color = TTE_BLUE_PB,
         .multiplier = 1,
+        .count = 0,
+        .remaining = 0
+    },
+    [REWARD_TYPE_DISCARD] = {
+        .text = "Discard",
+        .text_color = TTE_RED_PB,
+        .multiplier = 2,
         .count = 0,
         .remaining = 0
     },
@@ -186,7 +191,19 @@ static void round_end_start(void)
         s_reward_data[REWARD_TYPE_INVESTMENT].count = g_game_vars.current_blind >= BLIND_TYPE_BOSS
                                                         ? skip_tag_count(SKIP_TAG_TYPE_INVESTMENT)
                                                         : 0;
-        s_reward_data[REWARD_TYPE_INTEREST].count = calculate_interest_reward();
+
+        if (g_game_vars.deck == DECK_TYPE_GREEN)
+        {
+            s_reward_data[REWARD_TYPE_HAND].multiplier = 2;
+            s_reward_data[REWARD_TYPE_DISCARD].count = g_game_vars.discards;
+            s_reward_data[REWARD_TYPE_INTEREST].count = 0;
+        }
+        else
+        {
+            s_reward_data[REWARD_TYPE_HAND].multiplier = 1;
+            s_reward_data[REWARD_TYPE_DISCARD].count = 0;
+            s_reward_data[REWARD_TYPE_INTEREST].count = calculate_interest_reward();
+        }
 
         s_cashout = blind_get_reward(g_game_vars.current_blind);
         for (enum RewardType i = 0; i < REWARD_TYPE_MAX; i++)
