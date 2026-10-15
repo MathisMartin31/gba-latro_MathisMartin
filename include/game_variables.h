@@ -57,6 +57,7 @@ typedef struct
     s32 ante;
     s32 round;
     s32 deck;
+    s32 nb_held_jokers;
     u32 nb_played_hands[HAND_TYPE_MAX];
     CardObject* deck_sprite;
 

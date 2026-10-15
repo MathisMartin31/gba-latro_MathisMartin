@@ -270,11 +270,12 @@ static inline void discarded_items_update_loop(void)
 static inline void held_jokers_update_loop(void)
 {
     static const int SPACING_LUT[MAX_JOKERS_HELD_SIZE][MAX_JOKERS_HELD_SIZE] = {
-        {0,  0,   0,   0,   0  },
-        {13, -13, 0,   0,   0  },
-        {26, 0,   -26, 0,   0  },
-        {39, 13,  -13, -39, 0  },
-        {40, 20,  0,   -20, -40}
+        {0,  0,   0,   0,   0,   0  },
+        {13, -13, 0,   0,   0,   0  },
+        {26, 0,   -26, 0,   0,   0  },
+        {39, 13,  -13, -39, 0,   0  },
+        {40, 20,  0,   -20, -40, 0  },
+        {40, 23,  8,   -9,  -24, -40} // Approx.
     };
 
     FIXED hand_x = int2fx(HELD_JOKERS_POS.x);
@@ -295,7 +296,7 @@ static inline void held_jokers_update_loop(void)
 bool joker_object_can_acquire(Item* joker_object)
 {
     GBAL_RETURN_IF_NULL(joker_object, false);
-    return (list_get_len(get_jokers_list()) < MAX_JOKERS_HELD_SIZE);
+    return (list_get_len(get_jokers_list()) < g_game_vars.nb_held_jokers);
 }
 
 static inline void expired_jokers_update_loop(void)

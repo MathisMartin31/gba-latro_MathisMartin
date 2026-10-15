@@ -170,7 +170,7 @@ static void black_deck_effect(enum DeckEvent event)
     switch (event)
     {
         case DECK_EVENT_ON_GAME_START:
-            // TODO: variable Jokers held size
+            g_game_vars.nb_held_jokers = BASE_JOKERS_HELD_SIZE + 1;
             g_game_vars.hands = BASE_HANDS - 1;
             break;
 
@@ -188,7 +188,7 @@ static void painted_deck_effect(enum DeckEvent event)
     switch (event)
     {
         case DECK_EVENT_ON_GAME_START:
-            // TODO: variable Jokers held size
+            g_game_vars.nb_held_jokers = BASE_JOKERS_HELD_SIZE - 1;
             g_game_vars.hand_size = DEFAULT_HAND_SIZE + 2;
             break;
 

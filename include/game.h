@@ -8,10 +8,11 @@
 
 #include <tonc.h>
 
-#define MAX_DECK_SIZE        52
-#define MAX_JOKERS_HELD_SIZE 5 // This doesn't account for negatives right now.
-#define MAX_SHOP_ITEMS       2 // TODO: Make this dynamic
-#define FRAMES(x)            (((x) + (g_game_vars.game_speed) - 1) / (g_game_vars.game_speed))
+#define MAX_DECK_SIZE         52
+#define BASE_JOKERS_HELD_SIZE 5
+#define MAX_JOKERS_HELD_SIZE  6 // This doesn't account for negatives right now.
+#define MAX_SHOP_ITEMS        2 // TODO: Make this dynamic
+#define FRAMES(x)             (((x) + (g_game_vars.game_speed) - 1) / (g_game_vars.game_speed))
 
 // TODO: Can make these dynamic to support interest-related jokers and vouchers
 #define MAX_INTEREST   5
