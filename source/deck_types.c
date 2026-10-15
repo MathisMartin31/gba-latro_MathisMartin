@@ -5,7 +5,10 @@
  */
 #include "deck_types.h"
 
+#include "blind_select.h"
 #include "game.h"
+#include "list.h"
+#include "skip_tag.h"
 
 #include <tonc.h>
 
@@ -20,7 +23,8 @@ static const char DECK_NAMES[DECK_TYPE_MAX][DECK_NAME_LENGTH] = {
     " Yellow Deck ",
     " Green Deck  ",
     " Black Deck  ",
-    "Painted Deck "
+    "Painted Deck ",
+    "Anaglyph Deck"
 };
 
 static void print_desc_red_deck(Rect dest_rect);
@@ -29,6 +33,7 @@ static void print_desc_yellow_deck(Rect dest_rect);
 static void print_desc_green_deck(Rect dest_rect);
 static void print_desc_black_deck(Rect dest_rect);
 static void print_desc_painted_deck(Rect dest_rect);
+static void print_desc_anaglyph_deck(Rect dest_rect);
 
 typedef void (*PrintDescCallback)(Rect);
 // clang-format off
@@ -38,7 +43,8 @@ static const PrintDescCallback deck_description_functions[DECK_TYPE_MAX] = {
     [DECK_TYPE_YELLOW]  = print_desc_yellow_deck,
     [DECK_TYPE_GREEN]   = print_desc_green_deck,
     [DECK_TYPE_BLACK]   = print_desc_black_deck,
-    [DECK_TYPE_PAINTED] = print_desc_painted_deck
+    [DECK_TYPE_PAINTED] = print_desc_painted_deck,
+    [DECK_TYPE_ANAGLYPH] = print_desc_anaglyph_deck
 };
 // clang-format on
 
@@ -47,16 +53,18 @@ static void blue_deck_effect(enum DeckEvent event);
 static void yellow_deck_effect(enum DeckEvent event);
 static void black_deck_effect(enum DeckEvent event);
 static void painted_deck_effect(enum DeckEvent event);
+static void anaglyph_deck_effect(enum DeckEvent event);
 
 typedef void (*DeckEffectCallback)(enum DeckEvent);
 // clang-format off
 static const DeckEffectCallback deck_effect_functions[DECK_TYPE_MAX] = {
-    [DECK_TYPE_RED]     = red_deck_effect,
-    [DECK_TYPE_BLUE]    = blue_deck_effect,
-    [DECK_TYPE_YELLOW]  = yellow_deck_effect,
-    [DECK_TYPE_GREEN]   = NULL, // Green Deck is special
-    [DECK_TYPE_BLACK]   = black_deck_effect,
-    [DECK_TYPE_PAINTED] = painted_deck_effect
+    [DECK_TYPE_RED]      = red_deck_effect,
+    [DECK_TYPE_BLUE]     = blue_deck_effect,
+    [DECK_TYPE_YELLOW]   = yellow_deck_effect,
+    [DECK_TYPE_GREEN]    = NULL, // Green Deck is special
+    [DECK_TYPE_BLACK]    = black_deck_effect,
+    [DECK_TYPE_PAINTED]  = painted_deck_effect,
+    [DECK_TYPE_ANAGLYPH] = anaglyph_deck_effect
 };
 // clang-format on
 
@@ -119,6 +127,14 @@ static void print_desc_painted_deck(Rect dest_rect)
 {
     static const char desc[] = TTE_YELLOW_TAG "\n+2 " TTE_BLACK_TAG "Hand size\n" TTE_RED_TAG
                                               "-1 " TTE_BLACK_TAG "Joker slot";
+    (void)tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
+}
+
+static void print_desc_anaglyph_deck(Rect dest_rect)
+{
+    static const char desc[] =
+        TTE_BLACK_TAG "After defeating a " TTE_YELLOW_TAG "Boss Blind" TTE_BLACK_TAG
+                      ", gain a\n" TTE_YELLOW_TAG "Double Tag";
     (void)tte_printf_justified_in_rect(desc, dest_rect, JUSTIFY_CENTER, SCREEN_LEFT, true);
 }
 
@@ -194,6 +210,24 @@ static void painted_deck_effect(enum DeckEvent event)
 
         case DECK_EVENT_ON_ROUND_END:
             g_game_vars.hand_size = DEFAULT_HAND_SIZE + 2;
+            break;
+
+        default:
+            break;
+    }
+}
+
+static void anaglyph_deck_effect(enum DeckEvent event)
+{
+    switch (event)
+    {
+        case DECK_EVENT_ON_ROUND_END:
+            // Do nothing if can't get any more Tags
+            if (list_get_len(get_owned_skip_tags()) >= MAX_SKIP_TAGS - NB_SKIPPABLE_BLINDS)
+                return;
+
+            SkipTag* double_tag = skip_tag_new(SKIP_TAG_TYPE_DOUBLE);
+            add_skip_tag(&double_tag);
             break;
 
         default:
