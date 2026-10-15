@@ -682,7 +682,11 @@ static void shop_show_item_desc_on_update(void)
         if (TM_SHOW_ITEM_DESC_WAIT - s_timer < TM_HIDE_DECK_WAIT)
         {
             main_bg_se_move_rect_1_tile_vert(DECK_ANIM_RECT, SCREEN_DOWN);
-            sprite_object_position((SpriteObject*)g_game_vars.deck_sprite, DECK_SPRITE_POS.x, fx2int(g_game_vars.deck_sprite->ty) + TILE_SIZE);
+            sprite_object_position(
+                (SpriteObject*)g_game_vars.deck_sprite,
+                DECK_SPRITE_POS.x,
+                fx2int(g_game_vars.deck_sprite->ty) + TILE_SIZE
+            );
         }
         // Hide shop panel
         main_bg_se_move_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_DOWN);
@@ -792,7 +796,11 @@ static void shop_hide_item_desc_on_update(void)
             s_timer < (s_show_description_anim_progress - (TM_HIDE_DECK_WAIT + 1)))
         {
             main_bg_se_move_rect_1_tile_vert(DECK_ANIM_RECT, SCREEN_UP);
-            sprite_object_position((SpriteObject*)g_game_vars.deck_sprite, DECK_SPRITE_POS.x, fx2int(g_game_vars.deck_sprite->ty) - TILE_SIZE);
+            sprite_object_position(
+                (SpriteObject*)g_game_vars.deck_sprite,
+                DECK_SPRITE_POS.x,
+                fx2int(g_game_vars.deck_sprite->ty) - TILE_SIZE
+            );
         }
         // Show menu panel
         main_bg_se_move_rect_1_tile_vert(POP_MENU_ANIM_RECT, SCREEN_UP);
