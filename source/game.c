@@ -122,7 +122,6 @@ GameVariables g_game_vars = {
     },
 
     .playing_blind_token = NULL,
-    .round_end_blind_token = NULL,
 
     .game_speed = DEFAULT_GAME_SPEED,
     .music_volume = DEFAULT_MUSIC_VOLUME,
@@ -219,7 +218,6 @@ void game_reset()
     // if I don't destroy the blind tokens they won't
     // show up on the next run.
     sprite_destroy(&g_game_vars.playing_blind_token);
-    sprite_destroy(&g_game_vars.round_end_blind_token);
 
     list_clear(&s_owned_jokers_list);
     list_clear(&s_discarded_items_list);

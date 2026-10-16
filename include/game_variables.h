@@ -72,7 +72,6 @@ typedef struct
     enum BlindState blinds_states[NUM_BLINDS_PER_ANTE];
 
     Sprite* playing_blind_token;
-    Sprite* round_end_blind_token;
 
     // Options variables
 

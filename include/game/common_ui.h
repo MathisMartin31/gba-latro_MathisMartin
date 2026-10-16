@@ -29,7 +29,7 @@ enum SpritePaletteBanks
 #define MAX_ACTIVE_JOKERS  8
 #define MAX_HAND_SIZE      16
 #define MAX_SELECTION_SIZE 5
-#define MAX_BLIND_TOKEN    5
+#define MAX_BLIND_TOKEN    4
 #define MAX_SKIP_TAGS      16
 
 /**

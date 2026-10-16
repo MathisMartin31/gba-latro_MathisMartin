@@ -2148,18 +2148,6 @@ void round_on_init(void)
     //{
     //    sprite_hide(g_game_vars.playing_blind_token); // Hide the blind token sprite for now
     //}
-    sprite_destroy(&g_game_vars.round_end_blind_token);
-    g_game_vars.round_end_blind_token = blind_token_new(
-        g_game_vars.current_blind,
-        81,
-        86,
-        ROUND_END_BLIND_TOKEN_LAYER
-    ); // Create the blind token sprite for round end
-
-    if (g_game_vars.round_end_blind_token != NULL)
-    {
-        sprite_hide(g_game_vars.round_end_blind_token); // Hide the blind token sprite for now
-    }
 
     Rect blind_req_text_rect = BLIND_REQ_TEXT_RECT;
     u32 blind_requirement = blind_get_requirement(g_game_vars.current_blind, g_game_vars.ante);

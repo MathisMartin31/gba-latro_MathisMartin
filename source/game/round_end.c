@@ -210,7 +210,11 @@ static void round_end_start_expand_popup(void)
 
 static void round_end_display_finished_blind(void)
 {
-    sprite_unhide(g_game_vars.round_end_blind_token);
+    sprite_position(
+        g_game_vars.playing_blind_token,
+        ROUND_END_BLIND_TOKEN_POS.x,
+        ROUND_END_BLIND_TOKEN_POS.y
+    );
 
     int current_ante = g_game_vars.ante;
 
@@ -300,7 +304,6 @@ static void round_end_update_blind_reward(void)
     {
         tte_erase_rect_wrapper(BLIND_REWARD_RECT);
         tte_erase_rect_wrapper(BLIND_REQ_TEXT_RECT);
-        sprite_hide(g_game_vars.playing_blind_token);
         affine_background_load_palette(affine_background_gfxPal);
         state_machine_change_state(&round_end_sm, BLIND_PANEL_EXIT);
         g_game_vars.timer = TM_ZERO;
@@ -484,8 +487,8 @@ static void round_end_display_cashout()
         state_machine_change_state(&round_end_sm, DISMISS_ROUND_END_PANEL);
         g_game_vars.timer = TM_ZERO;
 
-        sprite_hide(g_game_vars.round_end_blind_token); // Hide the blind token object
-        tte_erase_rect_wrapper(BLIND_TOKEN_TEXT_RECT);  // Erase the blind token text
+        sprite_hide(g_game_vars.playing_blind_token);  // Hide the blind token object
+        tte_erase_rect_wrapper(BLIND_TOKEN_TEXT_RECT); // Erase the blind token text
     }
 }
 
@@ -544,10 +547,6 @@ void round_end_on_exit(void)
     s_blind_reward = 0;
     s_cashout = 0;
 
-    // Cleanup blind tokens from this round to avoid accumulating
-    // allocated blind sprites each round
-    sprite_destroy(&g_game_vars.playing_blind_token);
-    sprite_destroy(&g_game_vars.round_end_blind_token);
     state_machine_remove(&round_end_sm);
     // TODO: Reuse sprites for blind selection?
 }

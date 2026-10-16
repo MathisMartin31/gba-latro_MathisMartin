@@ -11,6 +11,7 @@
 // clang-format off
 // Points                                                 x        y
 static const BG_POINT CUR_BLIND_TOKEN_POS              = {8,       18};
+static const BG_POINT ROUND_END_BLIND_TOKEN_POS        = {81,      86};
 static const BG_POINT TOP_LEFT_PANEL_POINT             = {0,       0};
 static const BG_POINT ROUND_END_REWARDS_ELLIPSIS_POS   = {10,      13};
 static const BG_POINT ITEM_DISCARD_TARGET              = {240,     30};
