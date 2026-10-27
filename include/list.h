@@ -156,7 +156,7 @@ void list_push_front(List* list, void* data);
 /**
  * Append an entry to the `tail` of a @ref list
  *
- * @param list pointer to a @ref List to append another one to
+ * @param list pointer to a @ref List
  * @param data pointer to data to put into the @ref List
  */
 void list_push_back(List* list, void* data);
@@ -164,7 +164,7 @@ void list_push_back(List* list, void* data);
 /**
  * Append a list of entries to the `tail` of a @ref list
  *
- * @param list pointer to a @ref List
+ * @param list pointer to a @ref List to append another one to
  * @param added_list pointer to a list of data entries to put into the @ref List
  *
  * @warning After appending the lists point to the same memory so @p added_list
