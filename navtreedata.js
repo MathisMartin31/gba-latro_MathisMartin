@@ -28,14 +28,14 @@ var NAVTREE =
     [ "Developer Guide", "index.html", "index" ],
     [ "Balatro-GBA", "md_README.html", [
       [ "Contributing", "md_README.html#autotoc_md38", null ],
-      [ "<strong>Credits:</strong>", "md_README.html#autotoc_md39", [
+      [ "<b>Credits:</b>", "md_README.html#autotoc_md39", [
         [ "Disclaimer", "md_README.html#autotoc_md33", null ],
         [ "Please buy the official full version from these sources below:", "md_README.html#autotoc_md34", null ],
         [ "Controls:", "md_README.html#autotoc_md37", null ],
-        [ "<strong>Game</strong>", "md_README.html#autotoc_md40", null ],
-        [ "<strong>Music</strong>", "md_README.html#autotoc_md41", null ],
-        [ "<strong>Imagery</strong>", "md_README.html#autotoc_md42", null ],
-        [ "<strong>Sounds</strong>", "md_README.html#autotoc_md43", null ]
+        [ "<b>Game</b>", "md_README.html#autotoc_md40", null ],
+        [ "<b>Music</b>", "md_README.html#autotoc_md41", null ],
+        [ "<b>Imagery</b>", "md_README.html#autotoc_md42", null ],
+        [ "<b>Sounds</b>", "md_README.html#autotoc_md43", null ]
       ] ]
     ] ],
     [ "Data Structures", "annotated.html", [
@@ -64,10 +64,11 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "affine__background_8c_source.html",
-"globals_func_t.html",
-"pool_8h_source.html",
-"skip__tag_8h.html#ad9d99eeb24f7ab9ce15f9392741da1d3"
+"hand_8h.html#a02fbe6fa56d5eecb06498a94aa3f654f",
+"run__setup_8c.html#a1bb89f6f4c58f40852b4447aa2f8a654",
+"structJokerEffect.html"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronisation';
-var SYNCOFFMSG = 'click to enable panel synchronisation';
+var SYNCONMSG = 'click to disable panel synchronization';
+var SYNCOFFMSG = 'click to enable panel synchronization';
+var LISTOFALLMEMBERS = 'List of all members';
